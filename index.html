@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>StuDy — Test Series for UPSC, RPSC, SSC</title>
 <meta name="description" content="StuDy: subject-wise tests, full mocks and notes for UPSC, RPSC and SSC aspirants.">
 <meta name="theme-color" content="#ffffff">
@@ -111,10 +111,11 @@ h3{font-size:15px;font-weight:700}
 .tpal{flex:0 0 230px;background:#fbfbfb;border-left:1px solid var(--line);padding:12px;overflow-y:auto;align-self:stretch}
 @media(max-width:760px){.tpal{flex-basis:138px;padding:9px}}
 .qnum{font-size:12px;font-weight:700;color:var(--mut);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
-.qtxt{font-size:16px;line-height:1.55;margin-bottom:14px}
-.opt{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid #dcdcdc;border-radius:11px;padding:11px 12px;margin-bottom:9px;cursor:pointer;font-size:14.5px;line-height:1.45}
+.qtxt{font-size:14.5px;line-height:1.5;margin-bottom:11px}
+html,body{touch-action:manipulation}
+.opt{display:flex;gap:9px;align-items:flex-start;background:#fff;border:1px solid #dcdcdc;border-radius:10px;padding:9px 10px;margin-bottom:7px;cursor:pointer;font-size:13.5px;line-height:1.4}
 .opt.sel{border-color:#111;background:#fafafa}
-.opt .ol{width:24px;height:24px;border-radius:50%;border:1.5px solid #c9c9c9;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;color:#555}
+.opt .ol{width:21px;height:21px;border-radius:50%;border:1.5px solid #c9c9c9;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;color:#555}
 .opt.sel .ol{background:#111;color:#fff;border-color:#111}
 .palgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
 @media(max-width:760px){.palgrid{grid-template-columns:repeat(4,1fr)}}
@@ -271,27 +272,29 @@ footer{color:var(--mut);font-size:12.5px;text-align:center;padding:24px 14px 8px
   <section id="screen-profile" class="hidden">
     <h1 data-i18n="profile">Profile</h1>
     <div class="card" style="margin-top:14px">
-      <div style="display:flex;gap:14px;align-items:center">
+      <div style="display:flex;gap:13px;align-items:center">
         <div class="avatar" id="pf-avatar">S</div>
-        <div style="min-width:0">
+        <div style="min-width:0;flex:1">
           <div style="font-size:17px;font-weight:800" id="pf-name"></div>
-          <div class="sub" id="pf-phone"></div>
-          <div class="sub" id="pf-gmail"></div>
-          <div class="sub"><span data-i18n="dob">Date of birth</span>: <span id="pf-dob"></span></div>
-          <span class="tag" id="pf-level" style="margin-top:5px"></span>
+          <span class="tag" id="pf-level" style="margin-top:4px"></span>
         </div>
-        <div style="margin-left:auto;text-align:right;flex-shrink:0">
+        <div style="text-align:right;flex-shrink:0">
           <div class="sub" data-i18n="yourBalance">Your balance</div>
           <div style="font-size:21px;font-weight:900"><span style="color:var(--goldb)">★</span> <span id="pf-stars">0</span></div>
-          <button class="btn sm" style="margin-top:5px" onclick="go('wallet')" data-i18n="addStarsBtn">Add stars</button>
         </div>
       </div>
-      <div style="margin-top:14px">
+      <div style="margin-top:13px;border-top:1px solid var(--line);padding-top:11px;display:flex;flex-direction:column;gap:6px">
+        <div class="sub" id="pf-phone" style="font-size:13px"></div>
+        <div class="sub" id="pf-gmail" style="font-size:13px;word-break:break-all"></div>
+        <div class="sub" style="font-size:13px"><span data-i18n="dob">Date of birth</span>: <span id="pf-dob"></span></div>
+      </div>
+      <div style="margin-top:13px">
         <div style="display:flex;justify-content:space-between;font-size:12px"><span class="sub" data-i18n="levelProgress">Progress to next level</span><span id="pf-xp-txt"></span></div>
         <div class="bar" style="margin-top:5px"><i id="pf-xp" style="width:0%"></i></div>
       </div>
+      <button class="btn" style="width:100%;margin-top:13px" onclick="go('wallet')" data-i18n="addStarsBtn">Add stars</button>
     </div>
-    <div class="grid g3" style="margin-top:10px">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px">
       <div class="card stat"><div class="n" id="st-tests">0</div><div class="l" data-i18n="testsTaken">Tests taken</div></div>
       <div class="card stat"><div class="n" id="st-avg">0%</div><div class="l" data-i18n="avgScore">Average score</div></div>
       <div class="card stat"><div class="n" id="st-acc">0%</div><div class="l" data-i18n="accuracy">Accuracy</div></div>
@@ -585,7 +588,7 @@ async function doRegister(){
   if(!/^\d{6}$/.test(code)) return err.textContent=T("errOtp");
   if(BACKEND_URL){
     const r = await api("register", {..._otpFlow, code});
-    if(!r.ok) return err.textContent=T("errBadOtp");
+    if(!r.ok) return err.textContent = r.error==="exists" ? T("errExists") : T("errBadOtp");
     finishLogin(r.user); return;
   }
   if(code!==_otpFlow.code || Date.now()>_otpFlow.exp) return err.textContent=T("errBadOtp");
@@ -608,14 +611,18 @@ async function doLogin(){
   if(u.pass!==pass) return err.textContent=T("errBadPass");
   finishLogin(u);
 }
+function _sessPath(){ return location.pathname.replace(/[^/]*$/, ""); }
+function setSessionCookie(ph){ try{ document.cookie = "study_session=" + encodeURIComponent(ph) + "; max-age=31536000; path=" + _sessPath() + "; SameSite=Lax"; }catch(e){} }
+function clearSessionCookie(){ try{ document.cookie = "study_session=; max-age=0; path=" + _sessPath() + "; SameSite=Lax"; }catch(e){} }
+function getSessionPhone(){ const ls = localStorage.getItem("study_session"); if(ls) return ls; const m = document.cookie.match(/(?:^|; )study_session=([^;]*)/); if(m){ const ph = decodeURIComponent(m[1]); try{ localStorage.setItem("study_session", ph); }catch(e){} return ph; } return null; }
 function finishLogin(user){
-  ME = user; localStorage.setItem("study_session", user.phone);
+  ME = user; localStorage.setItem("study_session", user.phone); setSessionCookie(user.phone);
   if(user.lang){ LANG = user.lang; localStorage.setItem("study_lang", LANG); }
   $("pf-lang").value = LANG; applyI18n(); _otpFlow=null;
   $("admin-entry").classList.toggle("hidden", !isAdmin());
   go("home"); toast(T("welcome"));
 }
-function doLogout(){ ME=null; localStorage.removeItem("study_session"); go("auth"); }
+function doLogout(){ ME=null; localStorage.removeItem("study_session"); clearSessionCookie(); go("auth"); }
 function setLang(l, fromProfile){
   LANG=l; localStorage.setItem("study_lang", l); $("pf-lang").value=l; applyI18n();
   if(ME){ ME.lang=l; if(!BACKEND_URL) Store.updateMe(u=>u.lang=l); else api("setLang",{phone:ME.phone, lang:l}); }
@@ -876,7 +883,7 @@ function renderProfile(){
   $("pf-avatar").textContent = initialOf(ME);
   $("pf-phone").textContent = "📱 " + ME.phone;
   $("pf-gmail").textContent = "✉️ " + ME.gmail;
-  $("pf-dob").textContent = ME.dob || "";
+  $("pf-dob").textContent = ME.dob ? new Date(ME.dob).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric",timeZone:"Asia/Kolkata"}) : "";
   $("pf-stars").textContent = ME.stars||0;
   const mine = Store.attempts().filter(a=>a.phone===ME.phone);
   const firsts = mine.filter(a=>a.first);
@@ -1104,16 +1111,17 @@ function showInstallIOS(){
 
 /* ---------------- Init ---------------- */
 window.addEventListener("load", async ()=>{
+  document.addEventListener("gesturestart", e=>e.preventDefault());
   if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
   document.querySelectorAll("img[data-a]").forEach(im=>{ im.src = ASSET[im.dataset.a]; });
   applyI18n();
   if(BACKEND_URL){
     try{ const b = await api("bootstrap", {}); if(b.ok){ window._settings = b.settings; if(b.notifs) localStorage.setItem("study_notifs_cache", JSON.stringify(b.notifs)); } }catch(e){}
-    const ph = localStorage.getItem("study_session");
+    const ph = getSessionPhone();
     if(ph){ const r = await api("me", {phone: ph}); if(r.ok){ finishLogin(r.user); return; } }
     go("auth"); return;
   }
-  const ph = localStorage.getItem("study_session");
+  const ph = getSessionPhone();
   if(ph){ const u = Store.users().find(x=>x.phone===ph); if(u){ finishLogin(u); return; } }
   go("auth");
   setTimeout(()=>{ if(!isStandalone && isIOS) showInstallIOS(); }, 4000);
