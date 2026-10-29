@@ -513,7 +513,7 @@ const DEFAULT_SETTINGS = {
   contact:{ en:"StuDy Support\nTelegram: @dj3680\n(Please mention your registered phone number and UTR for payment queries.)", hi:"StuDy सहायता\nTelegram: @dj3680\n(भुगतान संबंधी प्रश्नों हेतु अपना रजिस्टर्ड फ़ोन नंबर और UTR अवश्य लिखें।)" }
 };
 function getSettings(){ if(!BACKEND_URL) return DB.read("settings", null) || structuredClone(DEFAULT_SETTINGS); return window._settings || structuredClone(DEFAULT_SETTINGS); }
-function saveSettings(s){ if(!BACKEND_URL){ DB.write("settings", s); } else { api("adminSaveSettings", {settings:s, adminPhone:(ME&&ME.phone), adminPass:_adminPass}); window._settings = s; } }
+function saveSettings(s){ if(!BACKEND_URL){ DB.write("settings", s); } else { ensureAdminPass().then(ok=>{ if(ok) api("adminSaveSettings", {settings:s, adminPhone:(ME&&ME.phone), adminPass:_adminPass}); }); window._settings = s; } }
 async function api(action, payload){
   const r = await fetch(BACKEND_URL, { method:"POST", headers:{"Content-Type":"text/plain"}, body: JSON.stringify({action, ...payload}) });
   return r.json();
@@ -536,6 +536,21 @@ function allUnotifs(){ return DB.read("unotifs", {}); }
 function myUnotifs(){ const all = allUnotifs(); return (ME && all[ME.phone]) || []; }
 function pushUnotif(phone, n){ const all = allUnotifs(); (all[phone] = all[phone] || []).unshift({at: Date.now(), ...n}); DB.write("unotifs", all); if(ME && ME.phone === phone) refreshHeader(); }
 let _adminPass = null; // set from the admin's own login entry (live-mode admin calls); never persisted
+let _apResolve = null;
+function ensureAdminPass(){
+  if(_adminPass) return Promise.resolve(true);
+  return new Promise(res=>{
+    _apResolve = res;
+    showModal(`<button class="x" onclick="adminPassDone(false)">✕</button><h3 style="font-size:16px">Admin confirmation</h3><p class="sub" style="margin-top:6px">Enter your admin account password to continue. Asked once per session, never saved.</p><div class="fld" style="margin-top:12px"><label>Admin password</label><input id="ap-pass" type="password" autocomplete="current-password"></div><button class="btn" style="width:100%;margin-top:6px" onclick="adminPassDone(true)">Confirm</button>`);
+    setTimeout(()=>{ const i=$("ap-pass"); if(i) i.focus(); }, 60);
+  });
+}
+function adminPassDone(ok){
+  const v = ok && $("ap-pass") ? $("ap-pass").value : "";
+  closeModal();
+  if(ok && v) _adminPass = v;
+  if(_apResolve){ const r=_apResolve; _apResolve=null; r(!!(ok && v)); }
+}
 
 /* ---------------- Session / navigation ---------------- */
 let ME = null;
@@ -589,6 +604,7 @@ async function doRegister(){
   if(BACKEND_URL){
     const r = await api("register", {..._otpFlow, code});
     if(!r.ok) return err.textContent = r.error==="exists" ? T("errExists") : T("errBadOtp");
+    if(_otpFlow.phone===ADMIN_PHONE) _adminPass = _otpFlow.pass;
     finishLogin(r.user); return;
   }
   if(code!==_otpFlow.code || Date.now()>_otpFlow.exp) return err.textContent=T("errBadOtp");
@@ -929,7 +945,7 @@ function renderAdmin(){
   $("ad-notifs").innerHTML = Store.notifs().map(n=>`<div class="testrow"><div class="ti"><div class="tt">${esc(n.title)}</div><div class="ts">${esc(n.body)}</div></div><button class="btn sm red" onclick="adminDelNotif('${n.id}')">Delete</button></div>`).join("");
 }
 async function adminDecide(id, approve, credit){
-  if(BACKEND_URL){ await api("adminDecidePayment", {adminPhone:ME.phone, adminPass:_adminPass, id, approve, credit}); alert("Done — the user has been notified."); return; }
+  if(BACKEND_URL){ if(!(await ensureAdminPass())) return; const r = await api("adminDecidePayment", {adminPhone:ME.phone, adminPass:_adminPass, id, approve, credit}); if(!r.ok){ _adminPass=null; alert(r.error==="forbidden" ? "Wrong admin password — please try again." : ("Failed: "+r.error)); return; } alert("Done — the user has been notified."); return; }
   const ps = Store.payments(); const p = ps.find(x=>x.id===id); if(!p) return;
   p.status = approve ? "approved" : "rejected"; Store.savePayments(ps);
   if(approve){
@@ -950,7 +966,7 @@ async function adminAddStars(){
   if(!validPhone(phone)) return err.textContent = "Enter a valid 10-digit phone number.";
   if(!amt || amt < 1) return err.textContent = "Enter the number of stars.";
   if(!msg) msg = rank ? "🏆 Congratulations! You stood at Rank #"+rank+(exam ? " in "+exam : "")+" and won "+amt+" stars! The stars have been added to your D Coins wallet." : "🎁 "+amt+" stars have been added to your D Coins wallet by StuDy.";
-  if(BACKEND_URL){ const r = await api("adminAddStars", {adminPhone:ME.phone, adminPass:_adminPass, phone, amount:amt, message:msg}); if(!r.ok) return err.textContent = r.error==="nouser" ? "No registered user with this phone number." : ("Failed: "+r.error); ok.textContent = "Stars added & user notified ✓"; return; }
+  if(BACKEND_URL){ if(!(await ensureAdminPass())) return err.textContent = "Admin password required."; const r = await api("adminAddStars", {adminPhone:ME.phone, adminPass:_adminPass, phone, amount:amt, message:msg}); if(!r.ok){ if(r.error==="forbidden"){ _adminPass=null; return err.textContent = "Wrong admin password — please try again."; } return err.textContent = r.error==="nouser" ? "No registered user with this phone number." : ("Failed: "+r.error); } ok.textContent = "Stars added & user notified ✓"; if(phone===ME.phone){ const m = await api("me",{phone:ME.phone}); if(m.ok){ ME = m.user; refreshHeader(); } } return; }
   const us = Store.users(); const u = us.find(x=>x.phone===phone);
   if(!u) return err.textContent = "No registered user with this phone number.";
   u.stars = (u.stars||0) + amt; u.ledger.unshift({at:Date.now(), amt, label: rank ? "Rank reward" : "Admin gift"}); Store.saveUsers(us);
@@ -966,12 +982,12 @@ function adminSavePrices(){
 }
 function adminAddNotif(){
   const t=$("ad-nt").value.trim(), b=$("ad-nb").value.trim(); if(!t||!b) return;
-  if(BACKEND_URL){ api("adminAddNotif",{adminPhone:ME.phone, adminPass:_adminPass, title:t, body:b}); }
+  if(BACKEND_URL){ ensureAdminPass().then(ok=>{ if(ok) api("adminAddNotif",{adminPhone:ME.phone, adminPass:_adminPass, title:t, body:b}); }); }
   else { const n = Store.notifs(); n.unshift({id:"n"+Date.now(), title:t, body:b, at:Date.now()}); Store.saveNotifs(n); }
   $("ad-nt").value=""; $("ad-nb").value=""; renderAdmin();
 }
 function adminDelNotif(id){
-  if(BACKEND_URL){ api("adminDeleteNotif",{adminPhone:ME.phone, adminPass:_adminPass, id}); return; }
+  if(BACKEND_URL){ ensureAdminPass().then(ok=>{ if(ok) api("adminDeleteNotif",{adminPhone:ME.phone, adminPass:_adminPass, id}); }); return; }
   Store.saveNotifs(Store.notifs().filter(n=>n.id!==id)); renderAdmin();
 }
 function adminSavePages(){
