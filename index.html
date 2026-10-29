@@ -18,6 +18,9 @@ input,select,textarea{font-family:inherit;font-size:14px;background:#fff;border:
 input:focus,select:focus,textarea:focus{border-color:var(--goldb)}
 a{color:var(--gold);text-decoration:none}
 .hidden{display:none!important}
+.spin{width:30px;height:30px;border-radius:50%;border:3px solid #eee;border-top-color:var(--goldb);animation:spRot .8s linear infinite}
+@keyframes spRot{to{transform:rotate(360deg)}}
+@keyframes spPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .wrap{max-width:880px;margin:0 auto;padding:0 16px 96px}
 /* Header */
 header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line2)}
@@ -150,6 +153,12 @@ footer{color:var(--mut);font-size:12.5px;text-align:center;padding:24px 14px 8px
 </style>
 </head>
 <body>
+<div id="splash" style="position:fixed;inset:0;background:#fff;z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px">
+  <img data-a="logo" alt="StuDy" style="height:84px;animation:spPulse 1.2s ease-in-out infinite">
+  <div style="font-size:23px;font-weight:900">Stu<span style="color:var(--goldb)">Dy</span></div>
+  <div class="spin"></div>
+  <div class="sub">Loading…</div>
+</div>
 
 <header id="appheader" class="hidden">
   <div class="hin">
@@ -677,7 +686,7 @@ function finishLogin(user){
   if(user.lang){ LANG = user.lang; localStorage.setItem("study_lang", LANG); }
   $("pf-lang").value = LANG; applyI18n(); _otpFlow=null;
   $("admin-entry").classList.toggle("hidden", !isAdmin());
-  go("home"); toast(T("welcome"));
+  go("home"); hideSplash(); toast(T("welcome"));
 }
 function doLogout(){ ME=null; localStorage.removeItem("study_session"); clearSessionCookie(); go("auth"); }
 function setLang(l, fromProfile){
@@ -1166,22 +1175,30 @@ function showInstallIOS(){
     <p class="sub" style="margin-top:6px;line-height:1.6;text-align:left">1. Tap the <b>Share</b> button <span style="border:1px solid var(--line);border-radius:6px;padding:0 6px">⎙</span> in Safari's toolbar.<br>2. Scroll down and tap <b>"Add to Home Screen"</b>.<br>3. Tap <b>Add</b> — StuDy will appear on your home screen like an app.</p></div>`);
 }
 
+/* ---------------- Splash + install prompt ---------------- */
+const _bootT = Date.now();
+function hideSplash(){ const s = $("splash"); if(!s) return; const wait = Math.max(0, 1400 - (Date.now()-_bootT)); setTimeout(()=>{ s.style.transition = "opacity .35s"; s.style.opacity = "0"; setTimeout(()=>{ if(s.parentNode) s.remove(); }, 380); }, wait); }
+setTimeout(()=>{ const s = $("splash"); if(s) s.remove(); }, 8000);
+function scheduleInstallPrompt(){
+  setTimeout(()=>{ if(isStandalone || !isIOS) return; const last = +localStorage.getItem("study_install_shown")||0; if(Date.now()-last < 24*3600*1000) return; localStorage.setItem("study_install_shown", Date.now()); showInstallIOS(); }, 3000);
+}
+
 /* ---------------- Init ---------------- */
 window.addEventListener("load", async ()=>{
   document.addEventListener("gesturestart", e=>e.preventDefault());
   if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
   document.querySelectorAll("img[data-a]").forEach(im=>{ im.src = ASSET[im.dataset.a]; });
   applyI18n();
+  scheduleInstallPrompt();
   if(BACKEND_URL){
     try{ const b = await api("bootstrap", {}); if(b.ok){ window._settings = b.settings; if(b.notifs) localStorage.setItem("study_notifs_cache", JSON.stringify(b.notifs)); } }catch(e){}
     const ph = getSessionPhone();
     if(ph){ const r = await api("me", {phone: ph}); if(r.ok){ finishLogin(r.user); return; } }
-    go("auth"); return;
+    go("auth"); hideSplash(); return;
   }
   const ph = getSessionPhone();
   if(ph){ const u = Store.users().find(x=>x.phone===ph); if(u){ finishLogin(u); return; } }
-  go("auth");
-  setTimeout(()=>{ if(!isStandalone && isIOS) showInstallIOS(); }, 4000);
+  go("auth"); hideSplash();
 });
 </script>
 </body>

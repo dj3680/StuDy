@@ -1,7 +1,7 @@
 /* StuDy service worker — offline shell + installability.
    NOTE: true Web Push needs a push server (phase 2). This SW keeps the
    app installable and usable offline for already-loaded content. */
-const CACHE = "study-v2-8";
+const CACHE = "study-v2-9";
 const CORE = ["./", "./index.html", "./questions.js", "./manifest.webmanifest",
   ];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(()=>self.skipWaiting())); });
