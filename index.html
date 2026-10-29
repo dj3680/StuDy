@@ -196,7 +196,7 @@ footer{color:var(--mut);font-size:12.5px;text-align:center;padding:24px 14px 8px
         <div class="fld"><label data-i18n="phone">Phone number</label><input id="li-phone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"></div>
         <div class="fld"><label data-i18n="password">Password</label><input id="li-pass" type="password" placeholder="••••••••"></div>
         <div class="err" id="li-err"></div>
-        <button class="btn" style="width:100%" onclick="doLogin()" data-i18n="loginBtn">Login</button>
+        <button class="btn" id="li-btn" style="width:100%" onclick="doLogin()" data-i18n="loginBtn">Login</button>
         <p style="margin-top:10px;text-align:center"><a href="#" onclick="fpOpen(event)" data-i18n="forgot" style="color:var(--goldb);font-size:13.5px;font-weight:600">Forgot password?</a></p>
         <p class="sub" style="margin-top:12px;text-align:center"><a href="#" onclick="showHelp();return false" data-i18n="helpLink">Help / FAQ</a> · <a href="#" onclick="showContact();return false" data-i18n="contactLink">Contact Us</a></p>
       </div>
@@ -271,7 +271,7 @@ footer{color:var(--mut);font-size:12.5px;text-align:center;padding:24px 14px 8px
       </div>
       <div class="fld" style="margin-top:14px"><label data-i18n="utr">UPI Transaction / UTR number (12 digits)</label><input id="dep-utr" inputmode="numeric" maxlength="12" placeholder="e.g. 4022xxxxxxxx"></div>
       <div class="err" id="dep-err"></div><div class="okmsg" id="dep-ok"></div>
-      <button class="btn gold" style="width:100%" onclick="submitDeposit()" data-i18n="paidBtn">I have paid — submit for approval</button>
+      <button class="btn gold" id="dep-btn" style="width:100%" onclick="submitDeposit(this)" data-i18n="paidBtn">I have paid — submit for approval</button>
       <p class="sub" style="margin-top:8px" data-i18n="approveNote">Stars are credited after a quick approval, usually within a few hours.</p>
     </div>
     <h2 data-i18n="history">History</h2>
@@ -525,8 +525,10 @@ const DEFAULT_SETTINGS = {
 function getSettings(){ if(!BACKEND_URL) return DB.read("settings", null) || structuredClone(DEFAULT_SETTINGS); return window._settings || structuredClone(DEFAULT_SETTINGS); }
 function saveSettings(s){ if(!BACKEND_URL){ DB.write("settings", s); } else { ensureAdminPass().then(ok=>{ if(ok) api("adminSaveSettings", {settings:s, adminPhone:(ME&&ME.phone), adminPass:_adminPass}); }); window._settings = s; } }
 async function api(action, payload){
-  const r = await fetch(BACKEND_URL, { method:"POST", headers:{"Content-Type":"text/plain"}, body: JSON.stringify({action, ...payload}) });
-  return r.json();
+  try{
+    const r = await fetch(BACKEND_URL, { method:"POST", headers:{"Content-Type":"text/plain"}, body: JSON.stringify({action, ...payload}) });
+    return await r.json();
+  }catch(e){ return {ok:false, error:"network"}; }
 }
 const Store = {
   users(){ return DB.read("users", []); },
@@ -597,8 +599,10 @@ async function doRegister(){
     if(!dob) return err.textContent=T("errDob");
     if(!pass || pass.length<6) return err.textContent=T("errPass");
     if(BACKEND_URL){
+      setBtnLoading($("rg-btn"), true);
       const r = await api("sendOtp", {phone, gmail});
-      if(!r.ok) return err.textContent = r.error==="exists" ? T("errExists") : r.error;
+      setBtnLoading($("rg-btn"), false);
+      if(!r.ok) return err.textContent = r.error==="exists" ? T("errExists") : (r.error==="network" ? (LANG==="hi" ? "नेटवर्क त्रुटि — फिर कोशिश करें।" : "Network error — please try again.") : r.error);
       _otpFlow = {name, phone, gmail, dob, pass};
     } else {
       if(Store.users().some(u=>u.phone===phone)) return err.textContent=T("errExists");
@@ -612,7 +616,9 @@ async function doRegister(){
   const code=$("rg-otp").value.trim();
   if(!/^\d{6}$/.test(code)) return err.textContent=T("errOtp");
   if(BACKEND_URL){
+    setBtnLoading($("rg-btn"), true);
     const r = await api("register", {..._otpFlow, code});
+    setBtnLoading($("rg-btn"), false);
     if(!r.ok) return err.textContent = r.error==="exists" ? T("errExists") : T("errBadOtp");
     if(_otpFlow.phone===ADMIN_PHONE) _adminPass = _otpFlow.pass;
     finishLogin(r.user); return;
@@ -626,14 +632,16 @@ async function doRegister(){
 let _fpPhone = null, _fpDemo = null;
 function fpOpen(e){ if(e) e.preventDefault(); fpStep1(); }
 function fpStep1(){
-  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG==="hi"?"पासवर्ड रीसेट करें":"Reset your password"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi"?"अपना रजिस्टर्ड फ़ोन नंबर डालें — OTP आपके रजिस्टर्ड Gmail पर भेजा जाएगा।":"Enter your registered phone number — an OTP will be sent to your registered Gmail."}</p><div class="fld" style="margin-top:12px"><label>${T("phone")}</label><input id="fp-phone" type="tel" maxlength="10" inputmode="numeric"></div><p class="err" id="fp-err"></p><button class="btn" style="width:100%" onclick="fpSend()">${LANG==="hi"?"OTP भेजें":"Send OTP"}</button>`);
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG==="hi"?"पासवर्ड रीसेट करें":"Reset your password"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi"?"अपना रजिस्टर्ड फ़ोन नंबर डालें — OTP आपके रजिस्टर्ड Gmail पर भेजा जाएगा।":"Enter your registered phone number — an OTP will be sent to your registered Gmail."}</p><div class="fld" style="margin-top:12px"><label>${T("phone")}</label><input id="fp-phone" type="tel" maxlength="10" inputmode="numeric"></div><p class="err" id="fp-err"></p><button class="btn" style="width:100%" onclick="fpSend(this)">${LANG==="hi"?"OTP भेजें":"Send OTP"}</button>`);
   setTimeout(()=>{ const i=$("fp-phone"); if(i) i.focus(); }, 60);
 }
-async function fpSend(){
+async function fpSend(btn){
   const phone = $("fp-phone").value.trim(), err = $("fp-err"); err.textContent = "";
   if(!validPhone(phone)) return err.textContent = T("errPhone");
   if(BACKEND_URL){
+    setBtnLoading(btn, true);
     const r = await api("sendResetOtp", {phone});
+    setBtnLoading(btn, false);
     if(!r.ok) return err.textContent = r.error==="nouser" ? (LANG==="hi"?"इस नंबर से कोई खाता नहीं है।":"No account found with this number.") : ("Failed: "+r.error);
   } else {
     const u = Store.users().find(x=>x.phone===phone);
@@ -644,15 +652,17 @@ async function fpSend(){
   _fpPhone = phone; fpStep2();
 }
 function fpStep2(){
-  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG==="hi"?"नया पासवर्ड बनाएँ":"Set a new password"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi"?"OTP आपके Gmail पर भेजा गया है। इनबॉक्स में न मिले तो Spam फ़ोल्डर देखें।":"The OTP has been sent to your Gmail. If it's not in the inbox, check the Spam folder."}</p><div class="fld" style="margin-top:12px"><label>${T("otp")}</label><input id="fp-otp" type="tel" maxlength="6" inputmode="numeric"></div><div class="fld"><label>${LANG==="hi"?"नया पासवर्ड":"New password"}</label><input id="fp-pass" type="password"></div><p class="err" id="fp-err2"></p><button class="btn" style="width:100%" onclick="fpReset()">${LANG==="hi"?"पासवर्ड रीसेट करें":"Reset password"}</button>`);
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG==="hi"?"नया पासवर्ड बनाएँ":"Set a new password"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi"?"OTP आपके Gmail पर भेजा गया है। इनबॉक्स में न मिले तो Spam फ़ोल्डर देखें।":"The OTP has been sent to your Gmail. If it's not in the inbox, check the Spam folder."}</p><div class="fld" style="margin-top:12px"><label>${T("otp")}</label><input id="fp-otp" type="tel" maxlength="6" inputmode="numeric"></div><div class="fld"><label>${LANG==="hi"?"नया पासवर्ड":"New password"}</label><input id="fp-pass" type="password"></div><p class="err" id="fp-err2"></p><button class="btn" style="width:100%" onclick="fpReset(this)">${LANG==="hi"?"पासवर्ड रीसेट करें":"Reset password"}</button>`);
   setTimeout(()=>{ const i=$("fp-otp"); if(i) i.focus(); }, 60);
 }
-async function fpReset(){
+async function fpReset(btn){
   const code = $("fp-otp").value.trim(), np = $("fp-pass").value, err = $("fp-err2"); err.textContent = "";
   if(!/^\d{6}$/.test(code)) return err.textContent = T("errOtp");
   if(!np || np.length<6) return err.textContent = T("errPass");
   if(BACKEND_URL){
+    setBtnLoading(btn, true);
     const r = await api("resetPassword", {phone:_fpPhone, code, newPass:np});
+    setBtnLoading(btn, false);
     if(!r.ok) return err.textContent = r.error==="badotp" ? T("errBadOtp") : ("Failed: "+r.error);
   } else {
     if(!_fpDemo || code!==_fpDemo.code || Date.now()>_fpDemo.exp) return err.textContent = T("errBadOtp");
@@ -668,8 +678,9 @@ async function doLogin(){
   if(!validPhone(phone)) return err.textContent=T("errPhone");
   _adminPass = (phone===ADMIN_PHONE) ? pass : null;
   if(BACKEND_URL){
+    setBtnLoading($("li-btn"), true);
     const r = await api("login", {phone, pass});
-    if(!r.ok) return err.textContent = r.error==="nouser" ? T("errNoUser") : T("errBadPass");
+    if(!r.ok){ setBtnLoading($("li-btn"), false); return err.textContent = r.error==="nouser" ? T("errNoUser") : (r.error==="network" ? (LANG==="hi" ? "नेटवर्क त्रुटि — फिर कोशिश करें।" : "Network error — please try again.") : T("errBadPass")); }
     finishLogin(r.user); return;
   }
   const u = Store.users().find(x=>x.phone===phone);
@@ -930,11 +941,11 @@ function renderWallet(){
     : `<p class="sub" style="padding:12px 0">${T("noHistory")}</p>`;
   refreshHeader();
 }
-async function submitDeposit(){
+async function submitDeposit(btn){
   const utr = $("dep-utr").value.trim(); const err=$("dep-err"), ok=$("dep-ok"); err.textContent=""; ok.textContent="";
   if(!/^\d{12}$/.test(utr)) return err.textContent=T("depErrUtr");
   const insta = !!($("dep-insta") && $("dep-insta").checked);
-  if(BACKEND_URL){ const r = await api("requestDeposit", {phone:ME.phone, amount:DEP_AMT, utr, insta}); if(!r.ok) return err.textContent=T("depDup"); }
+  if(BACKEND_URL){ setBtnLoading(btn || $("dep-btn"), true); const r = await api("requestDeposit", {phone:ME.phone, amount:DEP_AMT, utr, insta}); setBtnLoading(btn || $("dep-btn"), false); if(!r.ok) return err.textContent = r.error==="network" ? (LANG==="hi" ? "नेटवर्क त्रुटि — फिर कोशिश करें।" : "Network error — please try again.") : T("depDup"); }
   else {
     const ps = Store.payments();
     if(ps.some(p=>p.utr===utr)) return err.textContent=T("depDup");
@@ -1047,25 +1058,108 @@ function adminSavePages(){
 
 /* ---------------- Featured: Rewards & Offers ---------------- */
 const maskPhone = p => p ? "XXXXX" + String(p).slice(-5) : "";
-function topRankers(){
+function allRankers(){
   const names = {}; Store.users().forEach(u=> names[u.phone] = u.name || u.phone);
   const agg = {};
   Store.attempts().filter(a=>a.first).forEach(a=>{ const k = a.phone; agg[k] = agg[k] || {phone:k, score:0, tests:0}; agg[k].score += a.score; agg[k].tests++; });
-  return Object.values(agg).sort((x,y)=>y.score-x.score).slice(0,10).map(r=>({...r, name: names[r.phone] || r.phone}));
+  return Object.values(agg).sort((x,y)=>y.score-x.score).map(r=>({...r, name: names[r.phone] || r.phone}));
 }
+function topRankers(){ return allRankers().slice(0,10); }
 async function showRewards(){
-  let rows = topRankers();
-  if(BACKEND_URL){ try{ const r = await api("leaderboard", {}); if(r.ok && r.rows) rows = r.rows; }catch(e){} }
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">🏆 ${LANG==="hi" ? "रिवार्ड्स और टॉप रैंकर्स" : "Rewards & Top Rankers"}</h3><p class="sub" style="margin-top:6px">${T("why4")}</p><div id="rank-body" style="margin-top:6px"><div style="text-align:center;padding:22px 6px"><div class="spin" style="margin:0 auto"></div><p class="sub" style="margin-top:10px">${LANG==="hi" ? "रैंकिंग लोड हो रही है…" : "Loading rankings…"}</p></div></div>`);
+  let rows = [], meRank = null;
+  if(BACKEND_URL){ const r = await api("leaderboard", {phone: ME ? ME.phone : ""}); if(r.ok){ rows = r.rows || []; meRank = r.me || null; } }
+  else { rows = topRankers(); if(ME){ const all = allRankers(); const i = all.findIndex(r=>r.phone===ME.phone); if(i>=0) meRank = {rank:i+1, score:all[i].score, tests:all[i].tests}; } }
+  const box = $("rank-body"); if(!box) return;
   const medals = ["🥇","🥈","🥉"];
-  const body = rows.length ? rows.map((r,i)=>`<div class="testrow"><div class="ti"><div class="tt">${medals[i] || "#"+(i+1)} ${esc(r.name)}</div><div class="ts">${r.tests} ${T("testsTaken").toLowerCase()}${r.phone ? " · " + maskPhone(r.phone) : ""}</div></div><b>${r.score} pts</b></div>`).join("") : `<p class="sub" style="padding:10px 0">${LANG==="hi" ? "अभी कोई रैंकिंग नहीं है — पहले टॉपर बनें!" : "No rankings yet — be the first topper!"}</p>`;
-  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">🏆 ${LANG==="hi" ? "रिवार्ड्स और टॉप रैंकर्स" : "Rewards & Top Rankers"}</h3><p class="sub" style="margin-top:6px">${T("why4")}</p><div style="margin-top:6px">${body}</div>`);
+  const rowHtml = (r, i, mine) => `<div class="testrow"${mine ? ' style="background:#fffbf0;border:1px solid #ecd28a;border-radius:10px;padding-left:8px;padding-right:8px"' : ""}><div class="ti"><div class="tt">${medals[i] || "#"+(i+1)} ${esc(r.name)}${mine ? ' <span class="tag">You</span>' : ""}</div><div class="ts">${r.tests} ${T("testsTaken").toLowerCase()}${r.phone ? " · " + maskPhone(r.phone) : ""}</div></div><b>${r.score} pts</b></div>`;
+  let body = rows.length ? rows.slice(0,10).map((r,i)=> rowHtml(r, i, !!(meRank && meRank.rank===i+1))).join("") : `<p class="sub" style="padding:10px 0">${LANG==="hi" ? "अभी कोई रैंकिंग नहीं है — पहले टॉपर बनें!" : "No rankings yet — be the first topper!"}</p>`;
+  if(ME && meRank && meRank.rank > 10) body += `<div style="border-top:1px dashed var(--line);margin-top:8px;padding-top:8px">${rowHtml({name: ME.name || "", phone: ME.phone, score: meRank.score, tests: meRank.tests}, meRank.rank-1, true)}</div>`;
+  else if(ME && !meRank) body += `<p class="sub" style="margin-top:8px">${LANG==="hi" ? "आपकी अभी कोई रैंक नहीं है — पहला टेस्ट दें और रैंक पाएँ!" : "You are not ranked yet — take your first test to get a rank!"}</p>`;
+  box.innerHTML = body;
 }
 
 
 /* ---------------- Help / Contact / Modals ---------------- */
-function showModal(html){ $("modal-root").innerHTML = `<div class="mback" onclick="if(event.target===this)closeModal()"><div class="modal">${html}</div></div>`; }
-function closeModal(){ $("modal-root").innerHTML=""; }
-function showHelp(){ const s=getSettings(); const txt = (LANG==="hi"? s.help.hi : s.help.en) || s.help.en;
+function showModal(html){ $("modal-root").innerHTML = `<div class="mback" onclick="if(event.target===this)closeModal()"><div class="modal">${html}</div></div>`; document.body.style.overflow = "hidden"; }
+function closeModal(){ $("modal-root").innerHTML=""; document.body.style.overflow = ""; }
+function showLoading(msg){ showModal(`<div style="text-align:center;padding:26px 6px"><div class="spin" style="margin:0 auto"></div><p class="sub" style="margin-top:12px">${msg || (LANG==="hi" ? "लोड हो रहा है…" : "Loading…")}</p></div>`); }
+function setBtnLoading(btn, on){
+  if(!btn) return;
+  if(on){ if(btn.dataset._old === undefined) btn.dataset._old = btn.innerHTML; btn.disabled = true; btn.innerHTML = "⏳ " + (LANG==="hi" ? "कृपया प्रतीक्षा करें…" : "Please wait…"); }
+  else { btn.disabled = false; if(btn.dataset._old !== undefined){ btn.innerHTML = btn.dataset._old; delete btn.dataset._old; } }
+}
+const HOWTO_TEXT = { en:"How to use StuDy\n\n1. Register with your name, phone number and Gmail.\n2. Add stars to your D Coins wallet using UPI (minimum \u20B9100, then multiples of \u20B950).\n3. Buy any subject test (5\u2605), full mock (10\u2605) or notes (30\u2605) \u2014 once bought, it stays unlocked in your account forever.\n4. Your first attempt's marks are final; re-attempts are free practice with fresh questions.\n5. A question once shown to you will not repeat in your account (except a few very important ones).\n\nPayments are approved manually, usually within a few hours. If your stars don't arrive, contact us with your UTR number.", hi:"StuDy का उपयोग कैसे करें\n\n1. अपने नाम, फ़ोन नंबर और Gmail से रजिस्टर करें।\n2. UPI से D Coins वॉलेट में स्टार्स जोड़ें (न्यूनतम \u20B9100, फिर \u20B950 के गुणज)।\n3. कोई भी विषय टेस्ट (5\u2605), पूर्ण मॉक (10\u2605) या नोट्स (30\u2605) खरीदें \u2014 एक बार खरीदा, हमेशा अनलॉक रहेगा।\n4. पहले प्रयास के अंक अंतिम हैं; पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ।\n5. जो प्रश्न एक बार दिखा, वह दोबारा नहीं आएगा (कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर)।\n\nभुगतान मैन्युअली स्वीकृत होते हैं, प्रायः कुछ घंटों में। स्टार्स न आएँ तो UTR नंबर के साथ संपर्क करें।" };
+const FAQ_TEXT = { en:`Frequently Asked Questions (FAQ)
+
+Q. How do I add stars to my wallet?
+A. Go to Wallet → Add stars. Pay on the UPI QR (minimum Rs.100, then multiples of Rs.50), enter the 12-digit UTR number and tap "I have paid". Stars are credited after a quick manual approval, usually within a few hours.
+
+Q. What is the Instagram bonus?
+A. Tick "Follow the owner on Instagram" while submitting your payment and you get 10% EXTRA stars on approval - for example, Rs.200 becomes 220 stars. Your follow may be checked before approval.
+
+Q. I paid but my stars have not arrived. What should I do?
+A. Approvals are manual, so please allow a few hours. If they still don't arrive, message us on Telegram (@dj3680) with your registered phone number and UTR number.
+
+Q. Can I re-attempt a test?
+A. Yes - re-attempts are free practice with fresh questions, but your FIRST attempt's marks are final and count for your rank.
+
+Q. Will questions repeat?
+A. A question once shown to you never repeats in your account, except a few marked very important.
+
+Q. How do I get the notes?
+A. Buy a subject's notes (30 stars) or the all-subjects bundle (50 stars) inside any exam category, then download the PDF from the same section. Once bought, notes stay yours forever.
+
+Q. I forgot my password. What now?
+A. On the Login screen, tap "Forgot password?", enter your registered phone number, and an OTP will be sent to your registered Gmail. Enter the OTP and set a new password.
+
+Q. How are ranks calculated?
+A. Ranks are based on the total marks of your first attempts across all tests. Top rankers receive star rewards directly in their wallets.
+
+Q. What is the report card?
+A. In your Profile you can download a verified StuDy report card (PDF) with your complete attempt record and a verification code. Anyone can check its authenticity from Help - Verify a Report Card.
+
+Q. How do I install the StuDy app?
+A. Android (Chrome): tap "Install" in your Profile. iPhone (Safari): tap the Share button, then "Add to Home Screen".
+
+Q. How do I change the app language?
+A. Profile - App language: switch between English and Hindi anytime.`, hi:`अक्सर पूछे जाने वाले प्रश्न (FAQ)
+
+प्र. वॉलेट में स्टार्स कैसे जोड़ें?
+उ. Wallet - Add stars पर जाएँ। UPI QR से भुगतान करें (न्यूनतम ₹100, फिर ₹50 के गुणज में), 12 अंकों का UTR नंबर डालें और "I have paid" दबाएँ। स्टार्स मैन्युअल स्वीकृति के बाद जुड़ते हैं, प्रायः कुछ घंटों में।
+
+प्र. Instagram बोनस क्या है?
+उ. भुगतान भेजते समय "Follow the owner on Instagram" टिक करें - स्वीकृति पर 10% अतिरिक्त स्टार्स मिलते हैं, जैसे ₹200 पर 220 स्टार्स। स्वीकृति से पहले आपका फ़ॉलो जाँचा जा सकता है।
+
+प्र. भुगतान किया, पर स्टार्स नहीं आए। क्या करूँ?
+उ. स्वीकृति मैन्युअल होती है, कृपया कुछ घंटे प्रतीक्षा करें। फिर भी न आएँ तो Telegram (@dj3680) पर अपना रजिस्टर्ड फ़ोन नंबर और UTR भेजें।
+
+प्र. क्या मैं टेस्ट दोबारा दे सकता हूँ?
+उ. हाँ - पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ; परंतु पहले प्रयास के अंक अंतिम हैं और रैंक में वही गिने जाते हैं।
+
+प्र. क्या प्रश्न दोहराए जाएँगे?
+उ. जो प्रश्न आपको एक बार दिखा, वह आपके खाते में दोबारा नहीं आएगा - कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर।
+
+प्र. नोट्स कैसे मिलेंगे?
+उ. किसी परीक्षा श्रेणी में विषय के नोट्स (30 स्टार्स) या सभी विषयों का बंडल (50 स्टार्स) खरीदें, फिर उसी सेक्शन से PDF डाउनलोड करें। एक बार खरीदे नोट्स हमेशा आपके रहेंगे।
+
+प्र. पासवर्ड भूल गया हूँ। क्या करूँ?
+उ. Login स्क्रीन पर "पासवर्ड भूल गए?" दबाएँ, रजिस्टर्ड फ़ोन नंबर डालें - OTP आपके रजिस्टर्ड Gmail पर आएगा। OTP डालकर नया पासवर्ड बनाएँ।
+
+प्र. रैंक कैसे तय होती है?
+उ. सभी टेस्टों के पहले प्रयासों के कुल अंकों से। टॉप रैंकर्स को वॉलेट में सीधे स्टार्स रिवार्ड मिलता है।
+
+प्र. रिपोर्ट कार्ड क्या है?
+उ. Profile से सत्यापित StuDy रिपोर्ट कार्ड (PDF) डाउनलोड कर सकते हैं - पूर्ण प्रयास रिकॉर्ड और सत्यापन कोड सहित। इसकी असलियत Help - Verify a Report Card से जाँची जा सकती है।
+
+प्र. StuDy ऐप कैसे इंस्टॉल करें?
+उ. Android (Chrome): Profile में "Install" दबाएँ। iPhone (Safari): Share बटन, फिर "Add to Home Screen"।
+
+प्र. ऐप की भाषा कैसे बदलें?
+उ. Profile - App language: English और हिंदी कभी भी बदल सकते हैं।` };
+function showHelp(){ const s=getSettings(); let txt = (LANG==="hi"? s.help.hi : s.help.en) || s.help.en;
+  if(!txt || txt.trim().length < 60) txt = (LANG==="hi" ? HOWTO_TEXT.hi : HOWTO_TEXT.en);
+  if(!/FAQ/.test(txt)) txt += "\n\n" + (LANG==="hi" ? FAQ_TEXT.hi : FAQ_TEXT.en);
   showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${T("helpLink")}</h3><div class="sub" style="white-space:pre-line;margin-top:8px;font-size:13.5px;color:var(--txt)">${esc(txt)}</div><button class="btn gold" style="width:100%;margin-top:14px" onclick="showVerifier()">🔎 ${LANG==="hi" ? "रिपोर्ट कार्ड सत्यापित करें" : "Verify a Report Card"}</button><p class="sub" style="margin-top:6px;text-align:center">${LANG==="hi" ? "किसी भी StuDy रिपोर्ट कार्ड की असलियत उसके कोड से जाँचें।" : "Check any StuDy report card's authenticity with its code."}</p>`); }
 function showContact(){ const s=getSettings(); const txt = (LANG==="hi"? s.contact.hi : s.contact.en) || s.contact.en;
   const m = String(txt).match(/@([A-Za-z0-9_]{4,})/); const handle = m ? m[1] : "dj3680";
@@ -1102,6 +1196,7 @@ function cardCode(s){
   return "SDY-" + hex.slice(0,4) + "-" + hex.slice(4,8) + "-" + hex.slice(8,12);
 }
 async function showReportCard(){
+  showLoading(LANG==="hi" ? "रिपोर्ट कार्ड तैयार हो रहा है…" : "Preparing your report card…");
   const mine = Store.attempts().filter(a=>a.phone===ME.phone); const firsts = mine.filter(a=>a.first);
   const points = firsts.reduce((s,a)=>s+a.score,0);
   const avg = firsts.length ? Math.round(100*firsts.reduce((s,a)=>s+a.score/a.total,0)/firsts.length) : 0;
@@ -1143,7 +1238,11 @@ async function showReportCard(){
     </div>
   </div>`;
   $("print-area").innerHTML = cardHtml;
-  showModal(cardHtml + `<div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal()">${LANG==="hi" ? "बंद करें" : "Close"}</button><button class="btn" style="flex:1" onclick="window.print()">⬇ ${LANG==="hi" ? "डाउनलोड / PDF" : "Download / Print PDF"}</button></div>`);
+  showModal(cardHtml + `<div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal()">${LANG==="hi" ? "बंद करें" : "Close"}</button><button class="btn" style="flex:1" onclick="printCard(this)">⬇ ${LANG==="hi" ? "डाउनलोड / PDF" : "Download / Print PDF"}</button></div>`);
+}
+function printCard(btn){
+  const old = btn.innerHTML; btn.disabled = true; btn.innerHTML = "⏳ " + (LANG==="hi" ? "तैयार हो रहा है…" : "Preparing…");
+  setTimeout(()=>{ window.print(); btn.disabled = false; btn.innerHTML = old; }, 700);
 }
 function showVerifier(){
   showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">🔎 ${LANG==="hi" ? "रिपोर्ट कार्ड सत्यापित करें" : "Verify a Report Card"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi" ? "कार्ड पर छपा सत्यापन कोड डालें।" : "Enter the verification code printed on the card."}</p><div class="fld" style="margin-top:10px"><input id="vf-code" placeholder="SDY-XXXX-XXXX-XXXX" style="text-transform:uppercase;font-family:ui-monospace,monospace"></div><div id="vf-res"></div><button class="btn" style="width:100%;margin-top:6px" onclick="doVerify()">${LANG==="hi" ? "सत्यापित करें" : "Verify"}</button>`);
