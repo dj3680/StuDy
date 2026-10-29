@@ -70,3 +70,10 @@ The app works in two modes:
 - Muse pushes all code files (text) directly to `dj3680/StuDy` on request. **PDFs and PNGs cannot be pushed by Muse** (connector accepts text only) — upload the `notes/` PDFs once via GitHub's web UI: repo → `notes` folder (create via Add file → Create new file → name `notes/keep.txt`, then Add file → Upload files → select all 20 PDFs).
 - Updates: just tell Muse in chat ("update current affairs", "add questions", "change price X") — code changes are pushed automatically; regenerated notes PDFs are delivered in chat for re-upload.
 - GitHub Pages: repo Settings → Pages → Source: `main` / root. App URL: `https://dj3680.github.io/StuDy/`.
+
+## Live deployment (2026-10-29)
+- App: https://dj3680.github.io/StuDy/
+- Repo: https://github.com/dj3680/StuDy
+- Backend (Apps Script Web App): https://script.google.com/macros/s/AKfycbxRiO-cXu6nheMpQ7ah05CdSraBr7P7o0mNeJclcdPecrL-JeKdkZd4ydVzkDLHe_8E/exec
+- Sheet: 'StuDy DB' (owner's Google account), script project 'StuDy Backend', deployment v1, access: Anyone.
+- BACKEND_URL in index.html is set to the URL above. If the script is ever redeployed, update BACKEND_URL to the new /exec URL and re-push index.html.
