@@ -85,6 +85,14 @@ h3{font-size:15px;font-weight:700}
 .catlogo{width:48px;height:48px;object-fit:contain;border:1px solid var(--line2);border-radius:10px;padding:4px;background:#fff;flex-shrink:0}
 .catletter{width:48px;height:48px;border-radius:10px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800;flex-shrink:0}
 .testrow{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line2)}
+.payrow{padding:13px 2px;border-bottom:1px solid var(--line2)}
+.payrow:last-child{border-bottom:none}
+.paybtns{display:grid;gap:8px;margin-top:11px}
+.paybtns.c3{grid-template-columns:1fr 1fr}
+.paybtns.c3 .btn:last-child{grid-column:1/-1}
+.paybtns.c2{grid-template-columns:1fr 1fr}
+.paybtns .btn{width:100%;padding:11px 6px;font-size:13px;white-space:normal;line-height:1.3;text-align:center}
+.paybtns .btn[disabled]{opacity:.65;pointer-events:none}
 .testrow:last-child{border-bottom:none}
 .testrow .ti{flex:1;min-width:0}
 .testrow .tt{font-weight:600;font-size:14px}
@@ -382,7 +390,10 @@ html,body{overscroll-behavior-y:none;}
       <div class="card stat"><div class="n" id="ad-attempts">0</div><div class="l">Total attempts</div></div>
       <div class="card stat"><div class="n" id="ad-revenue">₹0</div><div class="l">Balance spent (revenue)</div></div>
     </div>
-    <h2>Payment approvals</h2>
+    <div style="display:flex;align-items:center;gap:8px;margin:22px 0 10px">
+      <h2 style="margin:0;flex:1">Payment approvals</h2>
+      <button class="btn sm ghost" id="ad-refresh" onclick="refreshAdminData()">↻ Refresh</button>
+    </div>
     <div class="card" id="ad-payments"></div>
     <h2>Add balance to a user (no payment needed)</h2>
     <div class="card">
@@ -1225,11 +1236,24 @@ function adminPaymentHtml(p){
   const insta = p.insta===true || +p.insta===1;
   const bonus = Math.round(p.amount*1.1);
   const btns = insta
-    ? `<button class="btn sm gold" onclick="adminDecide('${p.id}',true,${bonus})">Approve bonus ₹${bonus}</button><button class="btn sm" onclick="adminDecide('${p.id}',true,${p.amount})">Approve payment ₹${p.amount}</button><button class="btn sm red" onclick="adminDecide('${p.id}',false)">Reject</button>`
-    : `<button class="btn sm" onclick="adminDecide('${p.id}',true)">Approve</button><button class="btn sm red" onclick="adminDecide('${p.id}',false)">Reject</button>`;
-  return `<div class="testrow"><div class="ti"><div class="tt">${esc(p.name||"")} · ${esc(p.phone)} — ₹${p.amount}${insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0">📸 Insta follow — +10% bonus</span>':""}</div><div class="ts">UTR: ${esc(p.utr)} · ${new Date(p.at).toLocaleString()}${insta?" · bonus ₹"+bonus+" if followed, or payment-only ₹"+p.amount+" if not":""}</div></div>${btns}</div>`;
+    ? `<div class="paybtns c3"><button class="btn gold" onclick="adminDecide('${p.id}',true,${bonus},this)">Approve bonus ₹${bonus}</button><button class="btn" onclick="adminDecide('${p.id}',true,${p.amount},this)">Approve ₹${p.amount} only</button><button class="btn red" onclick="adminDecide('${p.id}',false,null,this)">Reject</button></div>`
+    : `<div class="paybtns c2"><button class="btn" onclick="adminDecide('${p.id}',true,null,this)">Approve ₹${p.amount}</button><button class="btn red" onclick="adminDecide('${p.id}',false,null,this)">Reject</button></div>`;
+  return `<div class="payrow" id="pay-${p.id}">
+    <div style="font-weight:800;font-size:15px">${esc(p.name||"")} <span style="color:var(--mut);font-weight:600">· ${esc(p.phone)}</span></div>
+    <div style="font-size:19px;font-weight:900;margin-top:2px">₹${p.amount}${insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0;vertical-align:middle">📸 Insta follow — +10% bonus</span>':""}</div>
+    <div class="sub" style="margin-top:3px">UTR: ${esc(p.utr)} · ${new Date(p.at).toLocaleString()}${insta?`<br>Bonus ₹${bonus} if followed · ₹${p.amount} only if not followed`:""}</div>
+    ${btns}</div>`;
 }
 let ADMIN_STATS_LOADING = false;
+async function refreshAdminData(){
+  const btn = $("ad-refresh");
+  if(btn){ btn.disabled = true; btn.textContent = "⏳ Refreshing…"; }
+  if(!BACKEND_URL){ renderAdmin(); if(btn){ btn.disabled = false; btn.textContent = "↻ Refresh"; } return; }
+  let tries = 0;
+  while(ADMIN_STATS_LOADING && tries < 48){ await new Promise(r=>setTimeout(r, 250)); tries++; }
+  await loadAdminStats();
+  if(btn){ btn.disabled = false; btn.textContent = "↻ Refresh"; }
+}
 function adminNotifHtml(n){ return `<div class="testrow"><div class="ti"><div class="tt">${esc(n.title)}</div><div class="ts">${esc(n.body)}</div></div><button class="btn sm red" onclick="adminDelNotif('${n.id}')">Delete</button></div>`; }
 function adminLoadFail(msg){
   ["ad-users","ad-attempts","ad-revenue"].forEach(id=>{ const e=$(id); if(e) e.textContent = "—"; });
@@ -1273,18 +1297,35 @@ function renderAdmin(){
   $("ad-payments").innerHTML = pend.length ? pend.map(adminPaymentHtml).join("") : `<p class="sub" style="padding:10px 0">No pending payments.</p>`;
   $("ad-notifs").innerHTML = Store.notifs().map(adminNotifHtml).join("");
 }
-async function adminDecide(id, approve, credit){
-  if(BACKEND_URL){ if(!(await ensureAdminPass())) return; const r = await api("adminDecidePayment", {adminPhone:ME.phone, adminPass:_adminPass, id, approve, credit}); if(!r.ok){ _adminPass=null; alert(r.error==="forbidden" ? "Wrong admin password — please try again." : ("Failed: "+r.error)); return; } alert("Done — the user has been notified."); loadAdminStats(); return; }
-  const ps = Store.payments(); const p = ps.find(x=>x.id===id); if(!p) return;
+async function adminDecide(id, approve, credit, btn){
+  const row = btn ? btn.closest(".payrow") : null;
+  const setBusy = on => {
+    if(!row) return;
+    row.querySelectorAll("button").forEach(b=>{ b.disabled = on; });
+    if(on && btn){ btn.dataset.label = btn.innerHTML; btn.innerHTML = "⏳ Processing…"; }
+    if(!on && btn && btn.dataset.label){ btn.innerHTML = btn.dataset.label; }
+  };
+  if(BACKEND_URL){
+    setBusy(true);
+    if(!(await ensureAdminPass())){ setBusy(false); return; }
+    const r = await api("adminDecidePayment", {adminPhone:ME.phone, adminPass:_adminPass, id, approve, credit});
+    if(!r.ok){ _adminPass=null; setBusy(false); alert(r.error==="forbidden" ? "Wrong admin password — please try again." : ("Failed: "+r.error)); return; }
+    if(row){ row.remove(); const box = $("ad-payments"); if(box && !box.querySelector(".payrow")) box.innerHTML = `<p class="sub" style="padding:10px 0">No pending payments.</p>`; }
+    alert("Done — the user has been notified.");
+    loadAdminStats();
+    return;
+  }
+  setBusy(true);
+  const ps = Store.payments(); const p = ps.find(x=>x.id===id); if(!p){ setBusy(false); return; }
   p.status = approve ? "approved" : "rejected"; Store.savePayments(ps);
   if(approve){
     const creditAmt = (credit!=null ? credit : (p.insta ? Math.round(p.amount*1.1) : p.amount));
     const us = Store.users(); const u = us.find(x=>x.phone===p.phone);
     if(u){ u.stars=(u.stars||0)+creditAmt; u.ledger.unshift({at:Date.now(), amt:creditAmt, label:"Wallet top-up ₹"+p.amount+(creditAmt<p.amount?" (paid-amount approval)":"")}); Store.saveUsers(us); if(ME.phone===p.phone){ ME.stars=u.stars; ME.ledger=u.ledger; } }
-    pushUnotif(p.phone, { title:"Payment approved ✅", body:"Your ₹"+p.amount+" deposit (UTR "+p.utr+") is approved. "+creditAmt+" has been added to your StuDy wallet." + (creditAmt>p.amount ? " This includes your Instagram bonus of ₹"+(creditAmt-p.amount)+". bonus." : "") });
+    pushUnotif(p.phone, { title:"Payment approved ✅", body:"Your ₹"+p.amount+" deposit (UTR "+p.utr+") is approved. "+creditAmt+" has been added to your StuDy wallet." + (creditAmt>p.amount ? " This includes your Instagram bonus of ₹"+(creditAmt-p.amount)+"." : "") });
   } else {
     const n = { title:"Payment not approved", body:"Your ₹"+p.amount+" deposit (UTR "+p.utr+") could not be approved. Please check the UTR number and amount, then submit again, or contact us on Telegram." };
-    if(p.insta){ n.body = "Your Instagram-discount deposit of ₹"+p.amount+" (UTR "+p.utr+") was not approved — we could not verify your follow of @dinesh.jangir_. If you have followed, tap below and DM us; after checking, we will add your balance."; n.link = "https://ig.me/m/dinesh.jangir_"; n.linkLabel = "DM on Instagram"; }
+    if(p.insta){ n.body = "Your Instagram-bonus deposit of ₹"+p.amount+" (UTR "+p.utr+") was not approved — we could not verify your follow of @dinesh.jangir_. If you have followed, tap below and DM us; after checking, we will add your balance."; n.link = "https://ig.me/m/dinesh.jangir_"; n.linkLabel = "DM on Instagram"; }
     pushUnotif(p.phone, n);
   }
   renderAdmin(); refreshHeader();
