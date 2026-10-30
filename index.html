@@ -459,7 +459,7 @@ html[data-theme="dark"] #totop{background:#f4f4f5;color:#141414}
     <div class="card">
       <div class="fld"><label>Title</label><input id="ad-nt"></div>
       <div class="fld"><label>Message</label><textarea id="ad-nb" rows="2"></textarea></div>
-      <button class="btn sm" onclick="adminAddNotif()">Post notification</button>
+      <button class="btn sm" onclick="adminAddNotif(this)">Post notification</button>
       <div id="ad-notifs" style="margin-top:10px"></div>
     </div>
     <h2>Help page & Contact info</h2>
@@ -868,6 +868,10 @@ function playPromoOnce(){
   setTimeout(()=>{ if(dl) dl.classList.remove("promo"); }, 3800);
 }
 function toggleCollapse(id, btn){ const el = $(id); if(!el) return; el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", !el.classList.contains("hidden")); }
+function hidePremiumStrip(){
+  try{ localStorage.setItem("study_phide_"+(ME?ME.phone:""), isSubActive() ? String((ME&&ME.subUntil)||"") : "promo"); }catch(e){}
+  const el = $("home-premium"); if(el) el.innerHTML = "";
+}
 function dismissBanner(id){ localStorage.setItem("study_banner_x", String(id)); renderHome(); }
 function renderHome(){
   const ea = $("exam-actions"), dlBtn = $("installfloat"), igBtn = $("igfloat");
@@ -877,9 +881,12 @@ function renderHome(){
   const n = Store.notifs()[0];
   const dismissed = localStorage.getItem("study_banner_x");
   $("home-banner").innerHTML = (n && dismissed !== String(n.id)) ? `<div class="banner"><div style="font-size:17px">📢</div><div style="flex:1;min-width:0"><div class="bt">${esc(n.title)}</div><div class="bs">${esc(n.body)}</div></div><button onclick="dismissBanner('${n.id}')" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0">✕</button></div>` : "";
-  $("home-premium").innerHTML = isSubActive()
-    ? `<div class="card" style="margin-top:16px;border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff)"><b>👑 StuDy Premium active</b> <span class="sub">— everything unlocked · till ${subTillText()}</span></div>`
-    : `<div class="card" style="margin-top:16px;border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff);display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><b>👑 StuDy Premium — ₹1,000/year</b><div class="sub">Unlock EVERY test, mock and notes — no per-test buying.</div></div><button class="btn gold sm" onclick="go('wallet')">Get Premium</button></div>`;
+  let phide = ""; try{ phide = localStorage.getItem("study_phide_"+(ME?ME.phone:"")) || ""; }catch(e){}
+  const stripKey = isSubActive() ? String((ME&&ME.subUntil)||"") : "promo";
+  $("home-premium").innerHTML = (phide === stripKey) ? ""
+    : isSubActive()
+    ? `<div class="card" style="margin-top:16px;border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff);display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><b>👑 StuDy Premium active</b> <span class="sub">— everything unlocked · till ${subTillText()}</span></div><button onclick="hidePremiumStrip()" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0">✕</button></div>`
+    : `<div class="card" style="margin-top:16px;border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff);display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><b>👑 StuDy Premium — ₹1,000/year</b><div class="sub">Unlock EVERY test, mock and notes — no per-test buying.</div></div><button class="btn gold sm" onclick="go('wallet')">Get Premium</button><button onclick="hidePremiumStrip()" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0">✕</button></div>`;
   const CAT_ORDER = ["rpsc","upsc","ssc","reet","school"];
   $("catgrid").innerHTML = Object.entries(CATS).sort((a,b)=> CAT_ORDER.indexOf(a[0]) - CAT_ORDER.indexOf(b[0])).map(([k,c])=>`
     <button class="catrow" onclick="renderCategory('${k}');go('category')">
@@ -1370,7 +1377,7 @@ async function refreshAdminData(){
   await loadAdminStats();
   if(btn){ btn.disabled = false; btn.textContent = "↻ Refresh"; }
 }
-function adminNotifHtml(n){ return `<div class="testrow"><div class="ti"><div class="tt">${esc(n.title)}</div><div class="ts">${esc(n.body)}</div></div><button class="btn sm red" onclick="adminDelNotif('${n.id}')">Delete</button></div>`; }
+function adminNotifHtml(n){ return `<div class="testrow"><div class="ti"><div class="tt">${esc(n.title)}</div><div class="ts">${esc(n.body)}</div></div><button class="btn sm red" onclick="adminDelNotif('${n.id}',this)">Delete</button></div>`; }
 function adminLoadFail(msg){
   ["ad-users","ad-attempts","ad-revenue"].forEach(id=>{ const e=$(id); if(e) e.textContent = "—"; });
   const html = `<p class="sub" style="padding:10px 0">${msg}</p>`;
@@ -1482,14 +1489,36 @@ function adminSavePrices(){
   const s = getSettings(); s.prices = { test:+$("ad-p-test").value||5, mock:+$("ad-p-mock").value||10, notes:+$("ad-p-notes").value||30, bundle:+$("ad-p-bundle").value||50 };
   saveSettings(s); $("ad-price-ok").textContent="Saved ✓";
 }
-function adminAddNotif(){
+async function adminAddNotif(btn){
   const t=$("ad-nt").value.trim(), b=$("ad-nb").value.trim(); if(!t||!b) return;
-  if(BACKEND_URL){ ensureAdminPass().then(ok=>{ if(ok) api("adminAddNotif",{adminPhone:ME.phone, adminPass:_adminPass, title:t, body:b}); }); }
-  else { const n = Store.notifs(); n.unshift({id:"n"+Date.now(), title:t, body:b, at:Date.now()}); Store.saveNotifs(n); }
+  if(BACKEND_URL){
+    if(btn){ btn.disabled = true; btn.textContent = "⏳ Posting…"; }
+    const restore = ()=>{ if(btn){ btn.disabled = false; btn.textContent = "Post notification"; } };
+    if(!(await ensureAdminPass())){ restore(); return; }
+    const r = await api("adminAddNotif", {adminPhone:ME.phone, adminPass:_adminPass, title:t, body:b});
+    if(!r.ok){ if(r.error==="forbidden") _adminPass = null; restore(); alert(r.error==="forbidden" ? "Wrong admin password — please try again." : "Could not post — please try again."); return; }
+    restore();
+    $("ad-nt").value=""; $("ad-nb").value="";
+    toast(LANG==="hi" ? "सूचना पोस्ट हो गई ✓" : "Notification posted ✓");
+    loadAdminStats();
+    return;
+  }
+  const n = Store.notifs(); n.unshift({id:"n"+Date.now(), title:t, body:b, at:Date.now()}); Store.saveNotifs(n);
   $("ad-nt").value=""; $("ad-nb").value=""; renderAdmin();
 }
-function adminDelNotif(id){
-  if(BACKEND_URL){ ensureAdminPass().then(ok=>{ if(ok) api("adminDeleteNotif",{adminPhone:ME.phone, adminPass:_adminPass, id}); }); return; }
+async function adminDelNotif(id, btn){
+  if(BACKEND_URL){
+    const row = btn ? btn.closest(".testrow") : null;
+    if(btn){ btn.disabled = true; btn.textContent = "⏳ Deleting…"; }
+    const restore = ()=>{ if(btn){ btn.disabled = false; btn.textContent = "Delete"; } };
+    if(!(await ensureAdminPass())){ restore(); return; }
+    const r = await api("adminDeleteNotif", {adminPhone:ME.phone, adminPass:_adminPass, id});
+    if(!r.ok){ if(r.error==="forbidden") _adminPass = null; restore(); alert(r.error==="forbidden" ? "Wrong admin password — please try again." : "Could not delete — please try again."); return; }
+    if(row) row.remove();
+    const box = $("ad-notifs"); if(box && !box.querySelector(".testrow")) box.innerHTML = `<p class="sub" style="padding:10px 0">No notifications.</p>`;
+    toast(LANG==="hi" ? "सूचना हटा दी गई ✓" : "Notification deleted ✓");
+    return;
+  }
   Store.saveNotifs(Store.notifs().filter(n=>n.id!==id)); renderAdmin();
 }
 function adminSavePages(){
