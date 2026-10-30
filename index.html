@@ -1159,7 +1159,7 @@ async function submitDeposit(btn){
   const utr = $("dep-utr").value.trim(); const err=$("dep-err"), ok=$("dep-ok"); err.textContent=""; ok.textContent="";
   if(!/^\d{12}$/.test(utr)) return err.textContent=T("depErrUtr");
   const insta = !!($("dep-insta") && $("dep-insta").checked);
-  if(BACKEND_URL){ setBtnLoading(btn || $("dep-btn"), true); const r = await api("requestDeposit", {phone:ME.phone, amount:DEP_AMT, utr, insta}); setBtnLoading(btn || $("dep-btn"), false); if(!r.ok) return err.textContent = r.error==="network" ? (LANG==="hi" ? "नेटवर्क त्रुटि — फिर कोशिश करें।" : "Network error — please try again.") : T("depDup"); }
+  if(BACKEND_URL){ setBtnLoading(btn || $("dep-btn"), true); const r = await api("requestDeposit", {id:"p"+Date.now(), at:Date.now(), phone:ME.phone, amount:DEP_AMT, utr, insta}); setBtnLoading(btn || $("dep-btn"), false); if(!r.ok) return err.textContent = r.error==="network" ? (LANG==="hi" ? "नेटवर्क त्रुटि — फिर कोशिश करें।" : "Network error — please try again.") : T("depDup"); }
   else {
     const ps = Store.payments();
     if(ps.some(p=>p.utr===utr)) return err.textContent=T("depDup");
@@ -1238,10 +1238,10 @@ function adminPaymentHtml(p){
   const btns = insta
     ? `<div class="paybtns c3"><button class="btn gold" onclick="adminDecide('${p.id}',true,${bonus},this)">Approve bonus ₹${bonus}</button><button class="btn" onclick="adminDecide('${p.id}',true,${p.amount},this)">Approve ₹${p.amount} only</button><button class="btn red" onclick="adminDecide('${p.id}',false,null,this)">Reject</button></div>`
     : `<div class="paybtns c2"><button class="btn" onclick="adminDecide('${p.id}',true,null,this)">Approve ₹${p.amount}</button><button class="btn red" onclick="adminDecide('${p.id}',false,null,this)">Reject</button></div>`;
-  return `<div class="payrow" id="pay-${p.id}">
+  return `<div class="payrow" id="pay-${p.id}" data-utr="${esc(p.utr)}">
     <div style="font-weight:800;font-size:15px">${esc(p.name||"")} <span style="color:var(--mut);font-weight:600">· ${esc(p.phone)}</span></div>
     <div style="font-size:19px;font-weight:900;margin-top:2px">₹${p.amount}${insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0;vertical-align:middle">📸 Insta follow — +10% bonus</span>':""}</div>
-    <div class="sub" style="margin-top:3px">UTR: ${esc(p.utr)} · ${new Date(p.at).toLocaleString()}${insta?`<br>Bonus ₹${bonus} if followed · ₹${p.amount} only if not followed`:""}</div>
+    <div class="sub" style="margin-top:3px">UTR: ${esc(p.utr)} · ${p.at ? new Date(p.at).toLocaleString() : "time not recorded"}${insta?`<br>Bonus ₹${bonus} if followed · ₹${p.amount} only if not followed`:""}</div>
     ${btns}</div>`;
 }
 let ADMIN_STATS_LOADING = false;
@@ -1308,7 +1308,7 @@ async function adminDecide(id, approve, credit, btn){
   if(BACKEND_URL){
     setBusy(true);
     if(!(await ensureAdminPass())){ setBusy(false); return; }
-    const r = await api("adminDecidePayment", {adminPhone:ME.phone, adminPass:_adminPass, id, approve, credit});
+    const r = await api("adminDecidePayment", {adminPhone:ME.phone, adminPass:_adminPass, id, utr: row ? row.dataset.utr : "", approve, credit});
     if(!r.ok){ _adminPass=null; setBusy(false); alert(r.error==="forbidden" ? "Wrong admin password — please try again." : ("Failed: "+r.error)); return; }
     if(row){ row.remove(); const box = $("ad-payments"); if(box && !box.querySelector(".payrow")) box.innerHTML = `<p class="sub" style="padding:10px 0">No pending payments.</p>`; }
     alert("Done — the user has been notified.");
