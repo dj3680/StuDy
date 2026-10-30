@@ -298,7 +298,7 @@ footer{color:var(--mut);font-size:12.5px;text-align:center;padding:24px 14px 8px
       <div style="margin-top:13px;border-top:1px solid var(--line);padding-top:11px;display:flex;flex-direction:column;gap:6px">
         <div class="sub" id="pf-phone" style="font-size:13px"></div>
         <div class="sub" id="pf-gmail" style="font-size:13px;word-break:break-all"></div>
-        <div class="sub" style="font-size:13px"><span data-i18n="dob">Date of birth</span>: <span id="pf-dob"></span></div>
+        <div class="sub" style="font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span><span data-i18n="dob">Date of birth</span>: <span id="pf-dob"></span></span><button class="btn sm ghost" style="padding:3px 10px;font-size:11.5px" onclick="editDob()">✎ Edit</button></div>
       </div>
       <div style="margin-top:13px">
         <div style="display:flex;justify-content:space-between;font-size:12px"><span class="sub" data-i18n="levelProgress">Progress to next level</span><span id="pf-xp-txt"></span></div>
@@ -501,8 +501,17 @@ const CATS = {
   rpsc: { name:{en:"RPSC",hi:"RPSC"}, desc:{en:"RAS · RPSC Exams — Rajasthan Public Service Commission",hi:"RAS · RPSC परीक्षाएँ — राजस्थान लोक सेवा आयोग"},
           subjects:[["raj","Rajasthan GK","राजस्थान सामान्य ज्ञान"],["hist","Indian History","भारतीय इतिहास"],["geo","Geography","भूगोल"],["pol","Polity","राजनीति विज्ञान"],["sci","General Science","सामान्य विज्ञान"],["ca","Current Affairs","समसामयिक घटनाएँ"]] },
   upsc: { name:{en:"UPSC",hi:"UPSC"}, desc:{en:"Civil Services (IAS/IPS) — Union Public Service Commission",hi:"सिविल सेवा (IAS/IPS) — संघ लोक सेवा आयोग"},
-          subjects:[["hist","History","इतिहास"],["geo","Geography","भूगोल"],["pol","Polity","राजनीति विज्ञान"],["eco","Economy","अर्थशास्त्र"],["env","Environment & Ecology","पर्यावरण एवं पारिस्थितिकी"],["ca","Current Affairs","समसामयिक घटनाएँ"]] }
+          subjects:[["hist","History","इतिहास"],["geo","Geography","भूगोल"],["pol","Polity","राजनीति विज्ञान"],["eco","Economy","अर्थशास्त्र"],["env","Environment & Ecology","पर्यावरण एवं पारिस्थितिकी"],["ca","Current Affairs","समसामयिक घटनाएँ"]] },
+  school: { name:{en:"School (Class 9–12)",hi:"स्कूल (कक्षा 9–12)"}, desc:{en:"NCERT-based fixed tests · Major subjects only",hi:"NCERT-आधारित फिक्स्ड टेस्ट · केवल मुख्य विषय"},
+          subjects:[["c9_math","Class 9 · Mathematics","कक्षा 9 · गणित"],["c9_sci","Class 9 · Science","कक्षा 9 · विज्ञान"],["c9_sst","Class 9 · Social Science","कक्षा 9 · सामाजिक विज्ञान"],["c9_eng","Class 9 · English","कक्षा 9 · अंग्रेज़ी"],["c10_math","Class 10 · Mathematics","कक्षा 10 · गणित"],["c10_sci","Class 10 · Science","कक्षा 10 · विज्ञान"],["c10_sst","Class 10 · Social Science","कक्षा 10 · सामाजिक विज्ञान"],["c10_eng","Class 10 · English","कक्षा 10 · अंग्रेज़ी"],["c11_phy","Class 11 · Physics","कक्षा 11 · भौतिकी"],["c11_chem","Class 11 · Chemistry","कक्षा 11 · रसायन विज्ञान"],["c11_math","Class 11 · Mathematics","कक्षा 11 · गणित"],["c11_bio","Class 11 · Biology","कक्षा 11 · जीव विज्ञान"],["c11_eng","Class 11 · English","कक्षा 11 · अंग्रेज़ी"],["c12_phy","Class 12 · Physics","कक्षा 12 · भौतिकी"],["c12_chem","Class 12 · Chemistry","कक्षा 12 · रसायन विज्ञान"],["c12_math","Class 12 · Mathematics","कक्षा 12 · गणित"],["c12_bio","Class 12 · Biology","कक्षा 12 · जीव विज्ञान"],["c12_eng","Class 12 · English","कक्षा 12 · अंग्रेज़ी"]] }
 };
+const SCHOOL_CLASSES = {
+  c9:  { label:{en:"Class 9",hi:"कक्षा 9"},  subjects:[["math","Mathematics","गणित"],["sci","Science","विज्ञान"],["sst","Social Science","सामाजिक विज्ञान"],["eng","English","अंग्रेज़ी"]] },
+  c10: { label:{en:"Class 10",hi:"कक्षा 10"}, subjects:[["math","Mathematics","गणित"],["sci","Science","विज्ञान"],["sst","Social Science","सामाजिक विज्ञान"],["eng","English","अंग्रेज़ी"]] },
+  c11: { label:{en:"Class 11",hi:"कक्षा 11"}, subjects:[["phy","Physics","भौतिकी"],["chem","Chemistry","रसायन विज्ञान"],["math","Mathematics","गणित"],["bio","Biology","जीव विज्ञान"],["eng","English","अंग्रेज़ी"]] },
+  c12: { label:{en:"Class 12",hi:"कक्षा 12"}, subjects:[["phy","Physics","भौतिकी"],["chem","Chemistry","रसायन विज्ञान"],["math","Mathematics","गणित"],["bio","Biology","जीव विज्ञान"],["eng","English","अंग्रेज़ी"]] }
+};
+let CURCLASS = "c10";
 const subName = (cat, sub, lang) => { const s = (CATS[cat]?.subjects||[]).find(x=>x[0]===sub); return s ? s[lang==="hi"?2:1] : sub; };
 
 /* ---------------- i18n ---------------- */
@@ -758,11 +767,11 @@ function renderHome(){
       <span style="flex:1;min-width:0">
         <span style="display:block;font-weight:700;font-size:15.5px">${c.name[LANG]||c.name.en}</span>
         <span class="sub" style="display:block;margin-top:1px">${c.desc[LANG]||c.desc.en}</span>
-        <span style="display:block;margin-top:6px"><span class="tag">${c.subjects.length} ${T("subjectTests")}</span> <span class="tag free">1 ${T("free")} mock</span></span>
+        <span style="display:block;margin-top:6px"><span class="tag">${k==="school" ? (LANG==="hi" ? "कक्षा 9–12 · फिक्स्ड टेस्ट" : "Class 9–12 · Fixed tests") : c.subjects.length + " " + T("subjectTests")}</span>${k==="school" ? "" : ` <span class="tag free">1 ${T("free")} mock</span>`}</span>
       </span>
       <span style="color:#bbb;font-size:20px">›</span>
     </button>`).join("");
-  $("freemocks").innerHTML = Object.entries(CATS).map(([k,c])=>`
+  $("freemocks").innerHTML = Object.entries(CATS).filter(([k])=>k!=="school").map(([k,c])=>`
     <div class="card" style="padding:12px 14px"><div style="display:flex;align-items:center;gap:12px">
       <img class="catlogo" src="${ASSET[k]}" alt="" style="width:42px;height:42px" onerror="this.style.display='none'">
       <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14.5px">${c.name.en} — ${T("freeMocks")}</div><div class="sub">${T("freeMockSub")} · 10 ${T("minutes")}</div></div>
@@ -772,7 +781,8 @@ function renderHome(){
 let CURCAT = "ssc";
 function renderCategory(cat){
   CURCAT = cat; const c = CATS[cat]; const P = getSettings().prices;
-  $("cat-logo").src = ASSET[cat];
+  if(cat === "school"){ renderSchoolCategory(c, P); return; }
+  $("cat-logo").style.display = ""; $("cat-logo").src = ASSET[cat];
   $("cat-title").textContent = c.name[LANG]||c.name.en;
   $("cat-desc").textContent = c.desc[LANG]||c.desc.en;
   const myAttempts = Store.attempts().filter(a=>ME && a.phone===ME.phone);
@@ -785,11 +795,13 @@ function renderCategory(cat){
              :`<span class="price">★ ${P.test}</span><button class="btn sm gold" onclick="buyTest('${cat}','${sub}')">${T("buyStart")}</button>`}
     </div>`; }).join("");
   const mockOwned = hasMock(cat);
-  $("mock-card").innerHTML = `<div class="testrow"><div class="ti"><div class="tt">${T("fullMock")} — ${c.name.en}</div>
-    <div class="ts">20 ${T("questions")} · 20 ${T("minutes")} · ${T("mockSub")}</div></div>
-    ${mockOwned?`<span class="tag free">${T("owned")}</span><button class="btn sm" onclick="startTest('${cat}','mock')">${T("start")}</button>`
-               :`<span class="price">★ ${P.mock}</span><button class="btn sm gold" onclick="buyMock('${cat}')">${T("buyStart")}</button>`}</div>
-    <p class="sub" style="padding:8px 0 10px">${T("firstCounts")}</p>`;
+  const mockRow = n => { const att = myAttempts.filter(a=>a.cat===cat && a.sub==="mock"+n && a.type==="mock" && a.win===mockWindow());
+    return `<div class="testrow"><div class="ti"><div class="tt">${T("fullMock")} ${n} — ${c.name.en}</div>
+    <div class="ts">20 ${T("questions")} · 20 ${T("minutes")} · ${T("mockSub")}${att.length ? ` · ${att.length} ${T("attempts")}` : ""}</div></div>
+    ${mockOwned ? `<span class="tag free">${T("owned")}</span><button class="btn sm" onclick="startTest('${cat}','mock${n}')">${T("start")}</button>`
+                : `<span class="price">★ ${P.mock}</span><button class="btn sm gold" onclick="buyMock('${cat}')">${T("buyStart")}</button>`}</div>`; };
+  $("mock-card").innerHTML = mockRow(1) + mockRow(2) + mockRow(3) +
+    `<p class="sub" style="padding:8px 0 10px">${T("firstCounts")} ${LANG==="hi" ? "तीनों मॉक हर 3 दिन में नए प्रश्नों के साथ बदल जाते हैं" : "All 3 mocks refresh with new questions every 3 days"} — ${mockRefreshIn()}.</p>`;
   $("notes-list").innerHTML =
     c.subjects.map(([sub])=>{
       const key = cat+"_"+sub, owned = hasNotes(key);
@@ -800,6 +812,24 @@ function renderCategory(cat){
     `<div class="testrow"><div class="ti"><div class="tt">${T("bundle")}</div><div class="ts">${T("bundleSub")}</div></div>
       ${hasNotes(cat+"_bundle")?`<button class="btn sm" onclick="downloadNotes('${cat}','bundle')">${T("download")}</button>`
              :`<span class="price">★ ${P.bundle}</span><button class="btn sm gold" onclick="buyNotes('${cat}','bundle','${c.name.en} all-subject notes')">${T("buyNotes")}</button>`}</div>`;
+}
+function renderSchoolCategory(c, P){
+  const lg = $("cat-logo"); lg.style.display = "none";
+  $("cat-title").textContent = c.name[LANG]||c.name.en;
+  $("cat-desc").textContent = c.desc[LANG]||c.desc.en;
+  const myAttempts = Store.attempts().filter(a=>ME && a.phone===ME.phone);
+  const cls = SCHOOL_CLASSES[CURCLASS];
+  const head = `<div class="fld" style="margin:2px 0 8px"><label>${LANG==="hi" ? "कक्षा चुनें" : "Select your class"}</label><select id="school-class" onchange="CURCLASS=this.value;renderCategory('school')">${Object.entries(SCHOOL_CLASSES).map(([k,v])=>`<option value="${k}"${k===CURCLASS ? " selected" : ""}>${v.label[LANG]||v.label.en}</option>`).join("")}</select></div>`;
+  $("subject-list").innerHTML = head + cls.subjects.map(([s, en, hi])=>{
+    const sub = CURCLASS + "_" + s, owned = hasTest("school", sub);
+    const att = myAttempts.filter(a=>a.cat==="school" && a.sub===sub && a.type==="test");
+    return `<div class="testrow"><div class="ti"><div class="tt">${LANG==="hi" ? hi : en}</div>
+      <div class="ts">10 ${T("questions")} · 10 ${T("minutes")}${att.length ? ` · ${att.length} ${T("attempts")} · ${T("bestScore")}: ${Math.max(...att.filter(a=>a.first).map(a=>a.score), 0)}` : ""}</div></div>
+      ${owned ? `<span class="tag free">${T("owned")}</span><button class="btn sm" onclick="startTest('school','${sub}')">${T("start")}</button>`
+              : `<span class="price">★ ${P.test}</span><button class="btn sm gold" onclick="buyTest('school','${sub}')">${T("buyStart")}</button>`}
+    </div>`; }).join("");
+  $("mock-card").innerHTML = "";
+  $("notes-list").innerHTML = "";
 }
 function downloadNotes(cat, key){
   const files = window.NOTES_FILES || {};
@@ -823,7 +853,19 @@ function drawQuestions(cat, sub, n){
 function assembleTest(cat, kind){
   if(kind==="free") return assembleMixed(cat, 10);
   if(kind==="mock") return assembleMixed(cat, 20);
+  if(/^mock[123]$/.test(kind)) return assembleMockSet(cat, +kind.slice(4));
   return drawQuestions(cat, kind, 10);
+}
+/* Rotating full mocks: 3 fixed sets per category, re-drawn every 3 days (deterministic per window) */
+function mockWindow(){ return Math.floor(Date.now() / (3*24*3600*1000)); }
+function mockRefreshIn(){ const end = (mockWindow()+1)*3*24*3600*1000 - Date.now(); const d = Math.floor(end/86400000), h = Math.floor(end%86400000/3600000); return LANG==="hi" ? `नए मॉक ${d} दिन ${h} घंटे में` : `New mocks in ${d}d ${h}h`; }
+function seedFor(str){ let h = 2166136261; for(let i=0;i<str.length;i++){ h = Math.imul(h ^ str.charCodeAt(i), 16777619); } return h>>>0; }
+function seededShuffle(arr, seed){ let s = (seed>>>0) || 1; const rnd = ()=>{ s = (Math.imul(s, 1664525) + 1013904223)>>>0; return s/4294967296; }; const a = [...arr]; for(let i=a.length-1;i>0;i--){ const j = Math.floor(rnd()*(i+1)); const tmp = a[i]; a[i] = a[j]; a[j] = tmp; } return a; }
+function assembleMockSet(cat, setNo){
+  const subs = CATS[cat].subjects.map(s=>s[0]); const total = 20;
+  const per = Math.floor(total/subs.length); let rest = total - per*subs.length; const out = [];
+  for(const sub of subs){ const take = per + (rest-->0 ? 1 : 0); out.push(...seededShuffle(poolFor(cat, sub), seedFor(cat+"|"+sub+"|"+setNo+"|"+mockWindow())).slice(0, take)); }
+  return seededShuffle(out, seedFor(cat+"|set"+setNo+"|"+mockWindow())).slice(0, total);
 }
 function assembleMixed(cat, total){
   const subs = CATS[cat].subjects.map(s=>s[0]);
@@ -834,16 +876,16 @@ function assembleMixed(cat, total){
 
 /* ---------------- Test engine ---------------- */
 let TEST = null;
-function qLang(q){ return (q && q[2]==="eng") ? "en" : LANG; }
+function qLang(q){ return (q && (q[2]==="eng" || /_eng$/.test(q[2]))) ? "en" : LANG; }
 let CURCAT_SUBJECT = "";
 function startTest(cat, kind){
   const qs = assembleTest(cat, kind);
   if(!qs.length){ toast("No questions available yet."); return; }
   CURCAT_SUBJECT = kind;
-  TEST = { cat, kind, qs, idx:0, ans:Array(qs.length).fill(-1), marked:Array(qs.length).fill(false),
+  TEST = { cat, kind, win: /^mock[123]$/.test(kind) ? mockWindow() : null, qs, idx:0, ans:Array(qs.length).fill(-1), marked:Array(qs.length).fill(false),
            visited:Array(qs.length).fill(false), left: qs.length*60, startedAt: Date.now(), timer:null, fs:false, done:false };
   TEST.visited[0]=true;
-  if(kind!=="free" && kind!=="mock"){ const sub=kind; addSeen(cat, sub, qs.map(q=>q[0])); }
+  if(kind!=="free" && kind!=="mock" && !/^mock[123]$/.test(kind)){ const sub=kind; addSeen(cat, sub, qs.map(q=>q[0])); }
   else { const bySub={}; qs.forEach(q=>{ (bySub[q[2]]=bySub[q[2]]||[]).push(q[0]); }); Object.entries(bySub).forEach(([s,ids])=>addSeen(cat,s,ids)); }
   ["appheader","mainwrap","bnav"].forEach(id=>$(id).classList.add("hidden"));
   $("igfloat").classList.add("hidden");
@@ -851,7 +893,7 @@ function startTest(cat, kind){
   refreshInstallFloat();
   const c = CATS[cat];
   $("t-catname").textContent = c.name.en;
-  $("t-subname").textContent = kind==="free" ? "Free Mock" : kind==="mock" ? "Full Mock" : subName(cat,kind,"en");
+  $("t-subname").textContent = kind==="free" ? "Free Mock" : kind==="mock" ? "Full Mock" : /^mock[123]$/.test(kind) ? "Full Mock " + kind.slice(4) : subName(cat,kind,"en");
   const el = document.documentElement;
   if(el.requestFullscreen){ el.requestFullscreen().then(()=>{ if(TEST){ TEST.fs = true; } if(screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(()=>{}); }).catch(()=>{}); }
   renderQ(); startTimer(); updTimer();
@@ -899,10 +941,10 @@ function submitTest(){
   let correct=0, wrong=0;
   TEST.qs.forEach((q,i)=>{ if(TEST.ans[i]===q[6]) correct++; else if(TEST.ans[i]>=0) wrong++; });
   const total = TEST.qs.length, skipped = total-correct-wrong, score = correct;
-  const type = TEST.kind==="free" ? "free" : TEST.kind==="mock" ? "mock" : "test";
+  const type = TEST.kind==="free" ? "free" : (TEST.kind==="mock" || /^mock[123]$/.test(TEST.kind)) ? "mock" : "test";
   const atts = Store.attempts();
-  const first = !atts.some(a=> a.phone===ME.phone && a.cat===TEST.cat && a.sub===TEST.kind && a.type===type);
-  const rec = { phone:ME.phone, cat:TEST.cat, sub:TEST.kind, type, score, total, correct, wrong, skipped, first, at:Date.now(),
+  const first = !atts.some(a=> a.phone===ME.phone && a.cat===TEST.cat && a.sub===TEST.kind && a.type===type && (TEST.win==null || a.win===TEST.win));
+  const rec = { phone:ME.phone, cat:TEST.cat, sub:TEST.kind, type, win:(TEST.win ?? null), score, total, correct, wrong, skipped, first, at:Date.now(),
                 detail: TEST.qs.map((q,i)=>({id:q[0], pick:TEST.ans[i], right:q[6]})) };
   atts.push(rec); Store.saveAttempts(atts);
   if(BACKEND_URL) api("submitAttempt", rec);
@@ -962,12 +1004,38 @@ async function submitDeposit(btn){
 }
 
 /* ---------------- Profile ---------------- */
+function fmtDob(v){
+  if(!v) return "";
+  let s = String(v).trim();
+  if(s.startsWith('"') && s.endsWith('"')){ try{ s = JSON.parse(s); }catch(e){ s = s.slice(1,-1); } }
+  const d = new Date(s);
+  if(!isNaN(d)) return d.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric",timeZone:"Asia/Kolkata"});
+  return s;
+}
+function dobISO(v){
+  if(!v) return "";
+  let s = String(v).trim();
+  if(s.startsWith('"') && s.endsWith('"')){ try{ s = JSON.parse(s); }catch(e){ s = s.slice(1,-1); } }
+  const d = new Date(s);
+  if(isNaN(d)){ const m = String(s).match(/^\d{4}-\d{2}-\d{2}/); return m ? m[0] : ""; }
+  return d.toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"});
+}
+function editDob(){
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG==="hi" ? "जन्म तिथि सुधारें" : "Edit date of birth"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi" ? "यहाँ केवल आपकी जन्म तिथि बदली जा सकती है।" : "Only your date of birth can be changed here."}</p><div class="fld" style="margin-top:12px"><label>${T("dob")}</label><input id="ed-dob" type="date" value="${dobISO(ME.dob)}"></div><p class="err" id="ed-err"></p><button class="btn" style="width:100%" onclick="saveDob(this)">${LANG==="hi" ? "सहेजें" : "Save"}</button>`);
+}
+async function saveDob(btn){
+  const v = $("ed-dob").value, err = $("ed-err"); err.textContent = "";
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(v)) return err.textContent = T("errDob");
+  if(BACKEND_URL){ setBtnLoading(btn, true); const r = await api("updateDob", {phone:ME.phone, dob:v}); setBtnLoading(btn, false); if(!r.ok) return err.textContent = "Failed: " + r.error; }
+  else Store.updateMe(u=>u.dob = v);
+  ME.dob = v; closeModal(); renderProfile(); toast(LANG==="hi" ? "जन्म तिथि अपडेट हो गई ✓" : "Date of birth updated ✓");
+}
 function renderProfile(){
   $("pf-name").textContent = ME.name || ME.phone;
   $("pf-avatar").textContent = initialOf(ME);
   $("pf-phone").textContent = "📱 " + ME.phone;
   $("pf-gmail").textContent = "✉️ " + ME.gmail;
-  $("pf-dob").textContent = ME.dob ? new Date(ME.dob).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric",timeZone:"Asia/Kolkata"}) : "";
+  $("pf-dob").textContent = fmtDob(ME.dob);
   $("pf-stars").textContent = ME.stars||0;
   const mine = Store.attempts().filter(a=>a.phone===ME.phone);
   const firsts = mine.filter(a=>a.first);
