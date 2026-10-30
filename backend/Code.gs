@@ -118,11 +118,19 @@ function dailyPrizeCheck(){
   }
   s.appendRow([today, String(top.phone), streak, credited]);
 }
+function pruneNotifs(){
+  const cut = Date.now() - 5*24*3600*1000;
+  [["Notifications",3],["UserNotifs",3]].forEach(function(cfg){
+    const s = sheet(cfg[0]); const v = s.getDataRange().getValues();
+    for(let i = v.length - 1; i >= 1; i--){ const at = +v[i][cfg[1]] || 0; if(at && at < cut) s.deleteRow(i + 1); }
+  });
+}
 function doPost(e){
   let req; try{ req = JSON.parse(e.postData.contents); }catch(err){ return json({ok:false,error:"badjson"}); }
   const a = req.action;
   try{
     if(a==="bootstrap"){
+      try{ pruneNotifs(); }catch(e){}
       return json({ok:true, settings:getSettings(), notifs: rows("Notifications").map(n=>({id:String(n.id),title:n.title,body:n.body,at:+n.at})).sort((x,y)=>y.at-x.at) });
     }
     if(a==="sendOtp"){
@@ -321,6 +329,7 @@ function doPost(e){
       for(let i=1;i<v.length;i++){ if(v[i][0]==="main"){ s.getRange(i+1,2).setValue(JSON.stringify(req.settings)); return json({ok:true}); } }
       s.appendRow(["main", JSON.stringify(req.settings)]); return json({ok:true}); }
     if(a==="adminAddNotif"){ if(!adminOk()) return json({ok:false,error:"forbidden"});
+      try{ pruneNotifs(); }catch(e){}
       sheet("Notifications").appendRow(["n"+Date.now(), req.title, req.body, Date.now()]); return json({ok:true}); }
     if(a==="adminDeleteNotif"){ if(!adminOk()) return json({ok:false,error:"forbidden"});
       const s=sheet("Notifications"); const v=s.getDataRange().getValues();
