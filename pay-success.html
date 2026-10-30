@@ -25,6 +25,10 @@
 <script>
   var claim = null;
   try{ claim = JSON.parse(localStorage.getItem("study_payclaim") || "null"); }catch(e){}
+  if(!claim){
+    var qs = new URLSearchParams(location.search);
+    if(qs.get("amt")) claim = { id:null, kind: qs.get("kind") || "wallet", amount: qs.get("amt") };
+  }
   if(claim){
     document.getElementById("amt").textContent = claim.kind === "sub" ? "StuDy Premium — 1 year" : "₹" + claim.amount;
     document.getElementById("go").textContent = claim.kind === "sub" ? "Activate my Premium" : "Add ₹" + claim.amount + " to my wallet";
@@ -33,7 +37,7 @@
     document.getElementById("go").textContent = "Open StuDy";
   }
   document.getElementById("go").addEventListener("click", function(){
-    if(claim){ try{ localStorage.setItem("study_payok", JSON.stringify({id: claim.id, at: Date.now()})); }catch(e){} }
+    if(claim && claim.id){ try{ localStorage.setItem("study_payok", JSON.stringify({id: claim.id, at: Date.now()})); }catch(e){} }
     location.href = "index.html";
   });
 </script>
