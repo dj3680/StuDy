@@ -435,7 +435,7 @@ html,body{overscroll-behavior-y:none;}
 
 <nav class="bnav hidden" id="bnav">
   <button id="bn-home" class="on" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span data-i18n="navHome">Home</span><span class="ndot"></span></button>
-  <button id="bn-wallet" onclick="go('wallet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 14.7 9l6 .9-4.3 4.2 1 6L12 17.3 6.6 20.1l1-6L3.3 9.9l6-.9z"/></svg><span data-i18n="navWallet">Wallet</span><span class="ndot"></span></button>
+  <button id="bn-wallet" onclick="go('wallet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.2A2.7 2.7 0 0 1 6.2 4.5h11.1a2.7 2.7 0 0 1 2.7 2.7v9.6a2.7 2.7 0 0 1-2.7 2.7H6.2a2.7 2.7 0 0 1-2.7-2.7z"/><path d="M3.5 9.3h16.5"/><path d="M16.2 14.4h.9a1.4 1.4 0 0 1 0 2.8h-.9a1.4 1.4 0 0 1 0-2.8z" fill="currentColor" stroke="none"/></svg><span data-i18n="navWallet">Wallet</span><span class="ndot"></span></button>
   <button id="bn-notifications" onclick="go('notifications')" style="position:relative"><span class="dot hidden" id="notifdot" style="position:absolute;top:2px;right:16px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid #fff"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span data-i18n="navNotif">Alerts</span><span class="ndot"></span></button>
   <button id="bn-profile" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-3.6 4.5-5.4 8-5.4s6.5 1.8 8 5.4"/></svg><span data-i18n="navProfile">Profile</span><span class="ndot"></span></button>
 </nav>
@@ -446,14 +446,13 @@ html,body{overscroll-behavior-y:none;}
     <span id="t-catname">Test</span><span style="color:var(--mut);font-weight:600" id="t-subname"></span>
     <div class="timer">⏱ <span id="t-timer">10:00</span></div>
   </div>
-  <div style="background:#fef2f2;color:#b91c1c;font-size:12px;font-weight:600;text-align:center;padding:6px 10px">⚠ Negative marking: −0.25 for each wrong answer · No deduction for skipped questions · नकारात्मक अंकन: प्रत्येक गलत उत्तर पर −0.25 · छोड़े गए प्रश्न पर कोई कटौती नहीं</div>
+  <div id="neg-banner" style="background:#fef2f2;color:#b91c1c;font-size:12px;font-weight:600;padding:6px 8px 6px 10px;display:flex;align-items:center;gap:8px"><span style="flex:1;text-align:center">⚠ Negative marking: −0.25 for each wrong answer · No deduction for skipped questions · नकारात्मक अंकन: प्रत्येक गलत उत्तर पर −0.25 · छोड़े गए प्रश्न पर कोई कटौती नहीं</span><button type="button" aria-label="Close" onclick="closeNegBanner()" style="background:#fff;border:1px solid #fecaca;color:#b91c1c;border-radius:999px;width:22px;height:22px;line-height:20px;font-weight:800;cursor:pointer;flex:0 0 auto">✕</button></div>
   <div class="rotatehint">कृपया फ़ोन को घुमाकर landscape करें — Please rotate your phone for the best test view</div>
   <div class="tbody">
     <div class="tmain">
       <div class="qnum" id="t-qnum">Question 1</div>
       <div class="qtxt" id="t-qtxt"></div>
       <div id="t-opts"></div>
-      <div style="margin-top:12px"><button id="t-clear2" onclick="tClear()" style="background:#fff;border:1.5px solid #dc2626;color:#dc2626;font-weight:700;border-radius:8px;padding:8px 16px;font-size:13.5px;cursor:pointer">✕ Clear Response</button></div>
     </div>
     <div class="tpal">
       <div style="font-weight:700;font-size:12.5px;margin-bottom:8px" id="t-palname">Question Palette</div>
@@ -872,7 +871,6 @@ function renderSchoolCategory(c, P){
       const cAtt = myAttempts.filter(a=>a.cat==="school" && a.sub===ck && a.type==="test");
       const cOwned = hasTest("school", ck) || owned;
       const label = `${LANG==="hi" ? "अध्याय" : "Chapter"} ${i+1} · ${LANG==="hi" ? chT[1] : chT[0]}`;
-      if(nQ < 10) return `<div class="testrow"><div class="ti"><div class="tt">${label}</div><div class="ts">100 ${T("questions")} · 100 ${T("minutes")}</div></div><span class="tag">${LANG==="hi" ? "जल्द आ रहा है" : "Coming soon"}</span></div>`;
       return `<div class="testrow"><div class="ti"><div class="tt">${label}</div><div class="ts">100 ${T("questions")} · 100 ${T("minutes")}${cAtt.length ? ` · ${cAtt.length} ${T("attempts")}` : ""}</div></div>
         ${cOwned ? `<span class="tag free">${T("owned")}</span><button class="btn sm" onclick="startTest('school','${ck}')">${cAtt.length ? reAtt : T("start")}</button>`
                  : `<span class="tag">🔒 ${LANG==="hi" ? "विषय खरीदने पर खुलेगा" : "Unlocks with the subject"}</span>`}</div>`;
@@ -904,9 +902,21 @@ function drawQuestions(cat, sub, n){
   const anySeen = shuffle(pool.filter(q=> seen.has(q[0]) && q[9]!==1));
   return [...fresh, ...importantSeen, ...anySeen].slice(0, n);
 }
+function topicPoolFor(sub){
+  const own = poolFor("school", sub);
+  if(own.length) return own;
+  const parent = sub.replace(/_ch\d+$/, "");
+  const fam = parent.split("_")[1];
+  const out = [], used = new Set();
+  const add = arr => arr.forEach(q=>{ if(!used.has(q[0])){ used.add(q[0]); out.push(q); } });
+  add(poolFor("school", parent));
+  add(window.STUDY_QUESTIONS.filter(q=> q[1]==="school" && !/_ch\d+$/.test(q[2]) && q[2].split("_")[1]===fam));
+  if(out.length < 10) add(window.STUDY_QUESTIONS.filter(q=> q[1]==="school" && !/_ch\d+$/.test(q[2])));
+  return out;
+}
 function assembleTopicTest(cat, sub){
-  const pool = poolFor(cat, sub); if(!pool.length) return [];
-  const out = [];
+  const pool = topicPoolFor(sub); if(!pool.length) return [];
+  const out = [...seededShuffle(pool, seedFor(sub))];
   while(out.length < 100) out.push(...shuffle(pool));
   return out.slice(0, 100);
 }
@@ -994,6 +1004,7 @@ function startTestWith(cat, kind, qs, markSeen){
   ["appheader","mainwrap","bnav"].forEach(id=>$(id).classList.add("hidden"));
   $("igfloat").classList.add("hidden");
   $("screen-test").classList.remove("hidden");
+  showNegBanner();
   refreshInstallFloat();
   const c = CATS[cat];
   $("t-catname").textContent = c.name.en;
@@ -1001,6 +1012,17 @@ function startTestWith(cat, kind, qs, markSeen){
   const el = document.documentElement;
   if(el.requestFullscreen){ el.requestFullscreen().then(()=>{ if(TEST){ TEST.fs = true; } if(screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(()=>{}); }).catch(()=>{}); }
   renderQ(); startTimer(); updTimer();
+}
+let NEG_BANNER_TIMER = null;
+function showNegBanner(){
+  const b = $("neg-banner"); if(!b) return;
+  b.style.display = "flex";
+  if(NEG_BANNER_TIMER) clearTimeout(NEG_BANNER_TIMER);
+  NEG_BANNER_TIMER = setTimeout(()=>{ const x = $("neg-banner"); if(x) x.style.display = "none"; NEG_BANNER_TIMER = null; }, 5000);
+}
+function closeNegBanner(){
+  const b = $("neg-banner"); if(b) b.style.display = "none";
+  if(NEG_BANNER_TIMER){ clearTimeout(NEG_BANNER_TIMER); NEG_BANNER_TIMER = null; }
 }
 function startTimer(){ if(!TEST) return; clearInterval(TEST.timer); TEST.timer = setInterval(()=>{ TEST.left--; if(TEST.left<=0){ clearInterval(TEST.timer); toast(T("timeUp")); submitTest(); } updTimer(); }, 1000); }
 if(document.addEventListener) document.addEventListener("fullscreenchange", ()=>{
@@ -1033,6 +1055,7 @@ function tMark(){ TEST.marked[TEST.idx]=!TEST.marked[TEST.idx]; renderQ(); }
 function tConfirmSubmit(){ showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${T("submitConfirm")}</h3>
   <div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal()">${LANG==="hi"?"रद्द करें":"Cancel"}</button><button class="btn" style="flex:1" onclick="closeModal();submitTest()">${LANG==="hi"?"जमा करें":"Submit"}</button></div>`); }
 function exitTestUI(){
+  closeNegBanner();
   ["appheader","mainwrap","bnav"].forEach(id=>$(id).classList.remove("hidden"));
   $("igfloat").classList.remove("hidden");
   $("screen-test").classList.add("hidden");
@@ -1172,6 +1195,26 @@ function renderNotifs(){
 function enableNotifs(){ if("Notification" in window){ Notification.requestPermission().then(p=> toast(p==="granted" ? "Notifications enabled ✓" : "Notifications not allowed")); } else toast("Not supported on this browser"); }
 
 /* ---------------- Admin ---------------- */
+function adminPaymentHtml(p){
+  const insta = p.insta===true || +p.insta===1;
+  return `<div class="testrow"><div class="ti"><div class="tt">${esc(p.name||"")} · ${esc(p.phone)} — ₹${p.amount}${insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0">📸 Insta follow — +10% bonus</span>':""}</div><div class="ts">UTR: ${esc(p.utr)} · ${new Date(p.at).toLocaleString()}${insta?" · approves as ₹"+Math.round(p.amount*1.1)+" (with bonus)":""}</div></div><button class="btn sm" onclick="adminDecide('${p.id}',true)">Approve</button><button class="btn sm red" onclick="adminDecide('${p.id}',false)">Reject</button></div>`;
+}
+let ADMIN_STATS_LOADING = false;
+async function loadAdminStats(){
+  if(!BACKEND_URL || !isAdmin() || ADMIN_STATS_LOADING) return;
+  ADMIN_STATS_LOADING = true;
+  try{
+    if(!_adminPass){ const ok = await ensureAdminPass(); if(!ok){ if($("ad-users")) $("ad-users").textContent = "—"; return; } }
+    const r = await api("adminStats", {adminPhone:ME.phone, adminPass:_adminPass});
+    if(!r.ok){ if(r.error==="forbidden") _adminPass = null; if($("ad-users")) $("ad-users").textContent = "—"; return; }
+    if(CURSCREEN!=="admin") return;
+    $("ad-users").textContent = r.users ?? 0;
+    $("ad-attempts").textContent = r.attempts ?? 0;
+    $("ad-revenue").textContent = "₹" + (r.revenue ?? 0);
+    const pend = r.pending || [];
+    $("ad-payments").innerHTML = pend.length ? pend.map(adminPaymentHtml).join("") : `<p class="sub" style="padding:10px 0">No pending payments.</p>`;
+  }finally{ ADMIN_STATS_LOADING = false; }
+}
 function renderAdmin(){
   if(!isAdmin()) return;
   const us = Store.users(), atts = Store.attempts();
@@ -1179,14 +1222,15 @@ function renderAdmin(){
   const rev = us.reduce((s,u)=> s + (u.ledger||[]).filter(l=>l.amt<0).reduce((x,l)=>x-l.amt,0), 0);
   $("ad-revenue").textContent = "₹"+rev;
   const pend = Store.payments().filter(p=>p.status==="pending");
-  $("ad-payments").innerHTML = pend.length ? pend.map(p=>`<div class="testrow"><div class="ti"><div class="tt">${esc(p.name||"")} · ${esc(p.phone)} — ₹${p.amount}${p.insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0">📸 Insta follow — +10% bonus</span>':""}</div><div class="ts">UTR: ${esc(p.utr)} · ${new Date(p.at).toLocaleString()}${p.insta?" · approves as ₹"+Math.round(p.amount*1.1)+" (with bonus)":""}</div></div><button class="btn sm" onclick="adminDecide('${p.id}',true)">Approve</button><button class="btn sm red" onclick="adminDecide('${p.id}',false)">Reject</button></div>`).join("") : `<p class="sub" style="padding:10px 0">No pending payments.</p>`;
+  $("ad-payments").innerHTML = pend.length ? pend.map(adminPaymentHtml).join("") : `<p class="sub" style="padding:10px 0">No pending payments.</p>`;
+  if(BACKEND_URL) loadAdminStats();
   const P = getSettings().prices;
   $("ad-p-test").value=P.test; $("ad-p-mock").value=P.mock; $("ad-p-notes").value=P.notes; $("ad-p-bundle").value=P.bundle;
   $("ad-help").value = getSettings().help.en; $("ad-contact").value = getSettings().contact.en;
   $("ad-notifs").innerHTML = Store.notifs().map(n=>`<div class="testrow"><div class="ti"><div class="tt">${esc(n.title)}</div><div class="ts">${esc(n.body)}</div></div><button class="btn sm red" onclick="adminDelNotif('${n.id}')">Delete</button></div>`).join("");
 }
 async function adminDecide(id, approve, credit){
-  if(BACKEND_URL){ if(!(await ensureAdminPass())) return; const r = await api("adminDecidePayment", {adminPhone:ME.phone, adminPass:_adminPass, id, approve, credit}); if(!r.ok){ _adminPass=null; alert(r.error==="forbidden" ? "Wrong admin password — please try again." : ("Failed: "+r.error)); return; } alert("Done — the user has been notified."); return; }
+  if(BACKEND_URL){ if(!(await ensureAdminPass())) return; const r = await api("adminDecidePayment", {adminPhone:ME.phone, adminPass:_adminPass, id, approve, credit}); if(!r.ok){ _adminPass=null; alert(r.error==="forbidden" ? "Wrong admin password — please try again." : ("Failed: "+r.error)); return; } alert("Done — the user has been notified."); loadAdminStats(); return; }
   const ps = Store.payments(); const p = ps.find(x=>x.id===id); if(!p) return;
   p.status = approve ? "approved" : "rejected"; Store.savePayments(ps);
   if(approve){
