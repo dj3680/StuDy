@@ -300,16 +300,6 @@ html[data-theme="dark"] #totop{background:#f4f4f5;color:#141414}
       <div style="font-size:34px;font-weight:900;margin:4px 0"><span style="color:var(--goldb)">₹</span> <span id="wstars">0</span></div>
       <div class="sub">Balance in rupees (₹) · <span data-i18n="starsUse">Your balance buys tests, mocks and notes</span></div>
     </div>
-    <h2>Pay online — instant · ऑनलाइन भुगतान</h2>
-    <div class="card">
-      <p class="sub" style="margin-bottom:12px">Pay by card / UPI on our secure payment page. Balance is added the moment your payment succeeds.</p>
-      <div style="display:flex;gap:8px">
-        <button class="paypack" onclick="payOnline('wallet',100)">₹100<small>Wallet pack</small></button>
-        <button class="paypack" onclick="payOnline('wallet',200)">₹200<small>Wallet pack</small></button>
-        <button class="paypack" onclick="payOnline('wallet',500)">₹500<small>Wallet pack</small></button>
-      </div>
-      <p class="sub" style="margin-top:10px">Payment failed, or money deducted but not added? <a href="pay-failed.html" style="color:var(--gold);font-weight:700">Contact us — we will fix it</a></p>
-    </div>
     <h2>StuDy Premium 👑</h2>
     <div class="card" id="sub-card"></div>
     <h2 data-i18n="addStars">Add money (UPI)</h2>
@@ -330,6 +320,7 @@ html[data-theme="dark"] #totop{background:#f4f4f5;color:#141414}
       <div class="err" id="dep-err"></div><div class="okmsg" id="dep-ok"></div>
       <button class="btn gold" id="dep-btn" style="width:100%" onclick="submitDeposit(this)" data-i18n="paidBtn">I have paid — submit for approval</button>
       <p class="sub" style="margin-top:8px" data-i18n="approveNote">Money is credited after a quick approval, usually within a few hours.</p>
+      <p class="sub" style="margin-top:6px">Payment issue? <a href="https://t.me/dj3680" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700">Message us on Telegram</a> — we will fix it.</p>
     </div>
     <h2 data-i18n="history">History</h2>
     <div class="card" id="wallet-history" style="padding:4px 14px"></div>
@@ -821,7 +812,6 @@ function finishLogin(user){
   applyTheme(user.theme || localStorage.getItem("study_theme") || "light", false);
   $("admin-entry").classList.toggle("hidden", !isAdmin());
   go("home"); hideSplash(); toast(T("welcome"));
-  processPayClaim();
 }
 function doLogout(){ ME=null; localStorage.removeItem("study_session"); clearSessionCookie(); go("auth"); }
 function setLang(l, fromProfile){
@@ -1252,7 +1242,7 @@ function renderWallet(){
   if(sc){ sc.innerHTML = isSubActive()
     ? `<div style="display:flex;align-items:center;gap:10px"><div style="font-size:26px">👑</div><div><b>Premium is ACTIVE</b><div class="sub">Everything is unlocked · valid till ${subTillText()}</div></div></div>`
     : `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="flex:1;min-width:200px"><b>Unlock EVERYTHING for 1 year — ₹1,000</b><div class="sub">All subject tests, series, full mocks, REET mock, school chapters and notes. No per-test buying.</div></div></div>
-       <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn gold" onclick="payOnline('sub',1000)">Pay ₹1,000 online</button><button class="btn ghost" onclick="buySubWithBalance(this)">Buy with wallet balance (₹${ME.stars||0})</button></div>`; }
+       <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn gold" onclick="buySubWithBalance(this)">Buy with wallet balance (₹${ME.stars||0})</button></div>`; }
   $("amtchips").innerHTML = [100,200,500].map(a=>`<button class="${a===DEP_AMT?"on":""}" onclick="DEP_AMT=${a};renderWallet()">₹${a}</button>`).join("");
   $("qrimg").src = ASSET["qr"+DEP_AMT];
   const dc = $("dep-disc"), df = $("dep-full"); if(dc) dc.textContent = "₹"+Math.round(DEP_AMT*1.1); if(df) df.textContent = "₹"+DEP_AMT;
@@ -1265,32 +1255,6 @@ function renderWallet(){
     ? items.slice(0,3).map(rowHtml).join("") + (items.length > 3 ? `<div id="wh-more" class="hidden">${items.slice(3).map(rowHtml).join("")}</div><button class="btn ghost sm" style="width:100%;margin:8px 0" onclick="toggleWh(this)">${LANG==="hi" ? "पूरा इतिहास दिखाएँ ▾" : "Show full history ▾"}</button>` : "")
     : `<p class="sub" style="padding:12px 0">${T("noHistory")}</p>`;
   refreshHeader();
-}
-const PAY_PAGES = { "100":"", "200":"", "500":"", "sub":"" };
-async function payOnline(kind, amount){
-  if(!BACKEND_URL){ toast("Online payment works in the live app."); return; }
-  const url = PAY_PAGES[kind === "sub" ? "sub" : String(amount)];
-  if(!url){ toast(LANG==="hi" ? "ऑनलाइन पेमेंट पेज जल्द तैयार हो रहा है — तब तक UPI QR से जोड़ें।" : "Online payment pages are being set up — please use the UPI QR below for now."); return; }
-  const r = await api("payClaim", {phone:ME.phone, kind, amount, session:mySess()});
-  if(!r.ok || !r.id){ toast(LANG==="hi" ? "पेमेंट शुरू नहीं हो पाया — फिर कोशिश करें।" : "Could not start the payment — please try again."); return; }
-  try{ localStorage.setItem("study_payclaim", JSON.stringify({id:r.id, kind, amount, at:Date.now()})); }catch(e){}
-  location.href = url;
-}
-async function processPayClaim(){
-  if(!BACKEND_URL || !ME) return;
-  let c = null, okFlag = null;
-  try{ c = JSON.parse(localStorage.getItem("study_payclaim") || "null"); okFlag = JSON.parse(localStorage.getItem("study_payok") || "null"); }catch(e){}
-  if(!c) return;
-  if(!okFlag || okFlag.id !== c.id){ return; }
-  localStorage.removeItem("study_payclaim"); localStorage.removeItem("study_payok");
-  if(Date.now() - (okFlag.at || 0) > 30*60*1000) return;
-  const r = await api("gatewayCredit", {phone:ME.phone, claimId:c.id, session:mySess()});
-  if(r.ok && r.user){ ME.stars = r.user.stars; ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger; refreshHeader();
-    toast(c.kind === "sub" ? (LANG==="hi" ? "👑 प्रीमियम 1 वर्ष के लिए सक्रिय!" : "👑 Premium activated for 1 year!") : (LANG==="hi" ? "₹" + c.amount + " आपके वॉलेट में जुड़ गए ✓" : "₹" + c.amount + " added to your wallet ✓"));
-    if(CURSCREEN === "wallet") renderWallet();
-  } else {
-    toast(LANG==="hi" ? "पेमेंट क्रेडिट नहीं हो पाया — Telegram/Instagram पर संपर्क करें, हम ठीक करेंगे।" : "Payment could not be credited — contact us on Telegram/Instagram and we will fix it.");
-  }
 }
 async function buySubWithBalance(btn){
   if(isSubActive()){ toast(LANG==="hi" ? "प्रीमियम पहले से सक्रिय है।" : "Premium is already active."); return; }
