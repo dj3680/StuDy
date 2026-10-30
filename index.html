@@ -167,7 +167,7 @@ html,body{overscroll-behavior-y:none;}
   <div class="hin">
     <div class="wordmark" onclick="go('home')">Stu<img class="wmD" data-a="logo" alt="D">y</div>
     <div class="hspace"></div>
-    <button class="chip" onclick="go('wallet')"><span class="st">★</span><span id="hstars">0</span></button>
+    <button class="chip" onclick="go('wallet')"><span class="st">₹</span><span id="hstars">0</span></button>
     <a class="iconbtn" href="https://t.me/dj3680?text=Hi.%20I%27m%20a%20user%20of%20StuDy%20App%2C%20I%20need%20some%20help." target="_blank" rel="noopener" aria-label="Telegram" title="Telegram — chat with us">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
     </a>
@@ -229,10 +229,10 @@ html,body{overscroll-behavior-y:none;}
     <div class="grid" id="freemocks"></div>
     <h2 data-i18n="whyUs">Why StuDy</h2>
     <div class="grid g3">
-      <div class="card"><h3 data-i18n="why1t">D Coins wallet</h3><p class="sub" style="margin-top:4px" data-i18n="why1">Top up once (min ₹100), then buy any test or notes instantly with stars.</p></div>
+      <div class="card"><h3 data-i18n="why1t">StuDy wallet</h3><p class="sub" style="margin-top:4px" data-i18n="why1">Top up once (min ₹100), then buy any test or notes instantly with your balance.</p></div>
       <div class="card"><h3 data-i18n="why2t">No repeated questions</h3><p class="sub" style="margin-top:4px" data-i18n="why2">A question once shown to you is never repeated in your account.</p></div>
       <div class="card"><h3 data-i18n="why3t">Detailed results & solutions</h3><p class="sub" style="margin-top:4px" data-i18n="why3">Score, rank, percentile, accuracy and full solutions.</p></div>
-      <div class="card"><h3 data-i18n="why4t">Top rankers win stars</h3><p class="sub" style="margin-top:4px" data-i18n="why4">Top rankers receive rewards as stars directly in their accounts. Rank high, earn stars, unlock more tests free.</p></div>
+      <div class="card"><h3 data-i18n="why4t">Top rankers win ₹100</h3><p class="sub" style="margin-top:4px" data-i18n="why4">Top rankers receive rewards as stars directly in their accounts. Rank high, earn stars, unlock more tests free.</p></div>
     </div>
   </section>
 
@@ -253,19 +253,19 @@ html,body{overscroll-behavior-y:none;}
 
   <!-- ============ WALLET ============ -->
   <section id="screen-wallet" class="hidden">
-    <h1 data-i18n="wallet">D Coins Wallet</h1>
+    <h1 data-i18n="wallet">StuDy Wallet</h1>
     <div class="card" style="margin-top:14px;text-align:center;padding:20px 14px">
       <div class="sub" data-i18n="yourBalance">Your balance</div>
-      <div style="font-size:34px;font-weight:900;margin:4px 0"><span style="color:var(--goldb)">★</span> <span id="wstars">0</span></div>
-      <div class="sub">1 ★ = ₹1 · <span data-i18n="starsUse">Stars buy tests, mocks and notes</span></div>
+      <div style="font-size:34px;font-weight:900;margin:4px 0"><span style="color:var(--goldb)">₹</span> <span id="wstars">0</span></div>
+      <div class="sub">Balance in rupees (₹) · <span data-i18n="starsUse">Your balance buys tests, mocks and notes</span></div>
     </div>
-    <h2 data-i18n="addStars">Add stars (UPI)</h2>
+    <h2 data-i18n="addStars">Add money (UPI)</h2>
     <div class="card">
       <p class="sub" style="margin-bottom:10px" data-i18n="minDep">Minimum ₹100, then in multiples of ₹50.</p>
       <div class="amtchips" id="amtchips"></div>
       <label style="display:flex;gap:10px;align-items:flex-start;border:1px dashed #e5b95c;background:#fffbf0;border-radius:12px;padding:11px 12px;margin-top:14px;cursor:pointer">
         <input type="checkbox" id="dep-insta" style="width:18px;height:18px;margin-top:1px;flex-shrink:0" onchange="renderWallet()">
-        <span style="font-size:13px;line-height:1.5"><b>Follow the owner on Instagram & get 10% EXTRA stars</b> — follow <a href="https://www.instagram.com/dinesh.jangir_/" target="_blank" rel="noopener" onclick="event.stopPropagation()"><b>@dinesh.jangir_</b></a> and tick this box. You pay the full <span id="dep-full">₹100</span>; on approval you receive <b id="dep-disc">★110</b> (10% bonus stars). The owner verifies your follow before approving.</span>
+        <span style="font-size:13px;line-height:1.5"><b>Follow the owner on Instagram & get 10% EXTRA balance</b> — follow <a href="https://www.instagram.com/dinesh.jangir_/" target="_blank" rel="noopener" onclick="event.stopPropagation()"><b>@dinesh.jangir_</b></a> and tick this box. You pay the full <span id="dep-full">₹100</span>; on approval you receive <b id="dep-disc">₹110</b> (10% bonus). The owner verifies your follow before approving.</span>
       </label>
       <div class="qrbox" style="margin-top:16px">
         <img id="qrimg" alt="UPI QR">
@@ -275,7 +275,7 @@ html,body{overscroll-behavior-y:none;}
       <div class="fld" style="margin-top:14px"><label data-i18n="utr">UPI Transaction / UTR number (12 digits)</label><input id="dep-utr" inputmode="numeric" maxlength="12" placeholder="e.g. 4022xxxxxxxx"></div>
       <div class="err" id="dep-err"></div><div class="okmsg" id="dep-ok"></div>
       <button class="btn gold" id="dep-btn" style="width:100%" onclick="submitDeposit(this)" data-i18n="paidBtn">I have paid — submit for approval</button>
-      <p class="sub" style="margin-top:8px" data-i18n="approveNote">Stars are credited after a quick approval, usually within a few hours.</p>
+      <p class="sub" style="margin-top:8px" data-i18n="approveNote">Money is credited after a quick approval, usually within a few hours.</p>
     </div>
     <h2 data-i18n="history">History</h2>
     <div class="card" id="wallet-history" style="padding:4px 14px"></div>
@@ -293,7 +293,7 @@ html,body{overscroll-behavior-y:none;}
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div class="sub" data-i18n="yourBalance">Your balance</div>
-          <div style="font-size:21px;font-weight:900"><span style="color:var(--goldb)">★</span> <span id="pf-stars">0</span></div>
+          <div style="font-size:21px;font-weight:900"><span style="color:var(--goldb)">₹</span> <span id="pf-stars">0</span></div>
         </div>
       </div>
       <div style="margin-top:13px;border-top:1px solid var(--line);padding-top:11px;display:flex;flex-direction:column;gap:6px">
@@ -305,7 +305,7 @@ html,body{overscroll-behavior-y:none;}
         <div style="display:flex;justify-content:space-between;font-size:12px"><span class="sub" data-i18n="levelProgress">Progress to next level</span><span id="pf-xp-txt"></span></div>
         <div class="bar" style="margin-top:5px"><i id="pf-xp" style="width:0%"></i></div>
       </div>
-      <button class="btn" style="width:100%;margin-top:13px" onclick="go('wallet')" data-i18n="addStarsBtn">Add stars</button>
+      <button class="btn" style="width:100%;margin-top:13px" onclick="go('wallet')" data-i18n="addStarsBtn">Add money</button>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px">
       <div class="card stat"><div class="n" id="st-tests">0</div><div class="l" data-i18n="testsTaken">Tests taken</div></div>
@@ -376,23 +376,23 @@ html,body{overscroll-behavior-y:none;}
     <div class="grid g3" style="margin-top:14px">
       <div class="card stat"><div class="n" id="ad-users">0</div><div class="l">Registered users</div></div>
       <div class="card stat"><div class="n" id="ad-attempts">0</div><div class="l">Total attempts</div></div>
-      <div class="card stat"><div class="n" id="ad-revenue">0★</div><div class="l">Stars spent (revenue)</div></div>
+      <div class="card stat"><div class="n" id="ad-revenue">₹0</div><div class="l">Balance spent (revenue)</div></div>
     </div>
     <h2>Payment approvals</h2>
     <div class="card" id="ad-payments"></div>
-    <h2>Add stars to a user (no payment needed)</h2>
+    <h2>Add balance to a user (no payment needed)</h2>
     <div class="card">
       <div class="grid g2">
         <div class="fld"><label>User phone number</label><input id="ad-as-phone" inputmode="numeric" maxlength="10" placeholder="10-digit phone"></div>
-        <div class="fld"><label>Stars to add</label><input id="ad-as-amt" type="number" placeholder="e.g. 50"></div>
+        <div class="fld"><label>Amount to add (₹)</label><input id="ad-as-amt" type="number" placeholder="e.g. 50"></div>
         <div class="fld"><label>Rank (optional, for reward message)</label><input id="ad-as-rank" type="number" placeholder="e.g. 1"></div>
         <div class="fld"><label>Exam / test (optional)</label><input id="ad-as-exam" type="text" placeholder="e.g. RPSC Full Mock"></div>
       </div>
       <div class="fld"><label>Notification message (auto-filled for rank rewards — edit freely)</label><textarea id="ad-as-msg" rows="2"></textarea></div>
-      <button class="btn sm" onclick="adminAddStars()">Add stars & notify user</button>
+      <button class="btn sm" onclick="adminAddStars()">Add balance & notify user</button>
       <div class="okmsg" id="ad-as-ok"></div><div class="err" id="ad-as-err"></div>
     </div>
-    <h2>Prices (in ★)</h2>
+    <h2>Prices (in ₹)</h2>
     <div class="card">
       <div class="grid g2">
         <div class="fld"><label>Subject test price</label><input id="ad-p-test" type="number"></div>
@@ -446,12 +446,14 @@ html,body{overscroll-behavior-y:none;}
     <span id="t-catname">Test</span><span style="color:var(--mut);font-weight:600" id="t-subname"></span>
     <div class="timer">⏱ <span id="t-timer">10:00</span></div>
   </div>
+  <div style="background:#fef2f2;color:#b91c1c;font-size:12px;font-weight:600;text-align:center;padding:6px 10px">⚠ Negative marking: −0.25 for each wrong answer · No deduction for skipped questions · नकारात्मक अंकन: प्रत्येक गलत उत्तर पर −0.25 · छोड़े गए प्रश्न पर कोई कटौती नहीं</div>
   <div class="rotatehint">कृपया फ़ोन को घुमाकर landscape करें — Please rotate your phone for the best test view</div>
   <div class="tbody">
     <div class="tmain">
       <div class="qnum" id="t-qnum">Question 1</div>
       <div class="qtxt" id="t-qtxt"></div>
       <div id="t-opts"></div>
+      <div style="margin-top:12px"><button id="t-clear2" onclick="tClear()" style="background:#fff;border:1.5px solid #dc2626;color:#dc2626;font-weight:700;border-radius:8px;padding:8px 16px;font-size:13.5px;cursor:pointer">✕ Clear Response</button></div>
     </div>
     <div class="tpal">
       <div style="font-weight:700;font-size:12.5px;margin-bottom:8px" id="t-palname">Question Palette</div>
@@ -544,10 +546,10 @@ const subName = (cat, sub, lang) => { const hi = lang==="hi";
 
 /* ---------------- i18n ---------------- */
 const STR = {
-en:{tagline:"Tests • Mocks • Notes — UPSC · RPSC · SSC",login:"Login",register:"Register",name:"Student name",phone:"Phone number",password:"Password",gmail:"Gmail",dob:"Date of birth",otp:"OTP (sent to your Gmail)",spamNote:"If you don't find the OTP in your inbox, please check the Spam folder.",loginBtn:"Login",forgot:"Forgot password?",sendOtp:"Send OTP & Register",verifyBtn:"Verify OTP & Create Account",helpLink:"Help / FAQ",contactLink:"Contact Us",langNote:"Language can be changed anytime in your Profile.",chooseCat:"Choose your exam",freeMocks:"Free mock tests",whyUs:"Why StuDy",why1t:"D Coins wallet",why1:"Top up once (min ₹100), then buy any test or notes instantly with stars.",why2t:"No repeated questions",why2:"A question once shown to you is never repeated in your account.",why3t:"Detailed results & solutions",why3:"Score, rank, percentile, accuracy and full solutions.",why4t:"Top rankers win stars",why4:"Hold Rank #1 on the leaderboard continuously for a full week (7 days) and win 100 bonus stars — credited automatically to your account. Every week is a new race!",back:"Back",subjectTests:"Subject-wise tests",fullMock:"Full mock test",paidNotes:"Paid notes (PDF)",wallet:"D Coins Wallet",yourBalance:"Your balance",starsUse:"Stars buy tests, mocks and notes",addStars:"Add stars (UPI)",addStarsBtn:"Add stars",minDep:"Minimum ₹100, then in multiples of ₹50.",scanPay:"Scan the QR with any UPI app (GPay / PhonePe / Paytm) and pay.",utr:"UPI Transaction / UTR number (12 digits)",paidBtn:"I have paid — submit for approval",approveNote:"Stars are credited after a quick approval, usually within a few hours.",history:"History",profile:"Profile",levelProgress:"Progress to next level",testsTaken:"Tests taken",avgScore:"Average score",accuracy:"Accuracy",settings:"Settings",appLang:"App language / ऐप भाषा",notifT:"Notifications",notifD:"Get alerts for new tests and current affairs",enable:"Enable",installT:"Install app",installD:"Add StuDy to your home screen",install:"Install",myPurchases:"My purchases",myAttempts:"My attempts",logout:"Logout",notifications:"Notifications",result:"Result",rank:"Rank",percentile:"Percentile",correct:"Correct",wrong:"Wrong",skipped:"Skipped",goHome:"Go home",reattempt:"Re-attempt (practice)",solutions:"Solutions",navHome:"Home",navWallet:"Wallet",navNotif:"Alerts",navProfile:"Profile",lgAns:"Answered",lgNot:"Not answered",lgMark:"Marked for review",lgNotVis:"Not visited",
-free:"FREE",start:"Start",buyStart:"Buy & Start",owned:"Owned",questions:"questions",minutes:"min",attempts:"attempts",bestScore:"Best (1st attempt)",download:"Download",buyNotes:"Buy notes",bundle:"All subjects — one PDF",bundleSub:"Every subject of this exam in a single PDF",mockSub:"Mixed questions from all subjects",freeMockSub:"One free mock for this exam — 10 questions",firstCounts:"Only your first attempt's marks count. Re-attempts are free practice.",depositPending:"Deposit submitted — waiting for approval.",noHistory:"Nothing here yet.",noNotif:"No notifications yet.",noPurchases:"No purchases yet.",noAttempts:"No attempts yet — take your first test!",errName:"Please enter the student's full name.",errPhone:"Enter a valid 10-digit phone number.",errPass:"Password must be at least 6 characters.",errGmail:"Enter a valid Gmail address.",errDob:"Select your date of birth.",errOtp:"Enter the 6-digit OTP.",errExists:"This phone number is already registered. Please login.",errNoUser:"Account not found. Please register first.",errBadPass:"Wrong password. Please try again.",errBadOtp:"Incorrect or expired OTP.",otpSent:"OTP sent to your Gmail. If you don't find it, check the Spam folder.",welcome:"Welcome to StuDy!",insufficient:"Not enough stars. Add stars to your wallet first.",purchased:"Unlocked!",depErrUtr:"Enter the 12-digit UTR / transaction number.",depDup:"This UTR is already submitted.",submitConfirm:"Submit the test? You cannot change answers after submitting.",timeUp:"Time is over — your test was auto-submitted.",firstAttemptNote:"This score is from your first attempt and is final.",practiceNote:"Practice attempt — your first-attempt score remains the official one.",level:"Level",reportCard:"My Report Card",telegram:"Chat on Telegram",telegramSub:"Fastest support — replies within a few hours"},
-hi:{tagline:"टेस्ट • मॉक • नोट्स — UPSC · RPSC · SSC",login:"लॉगिन",register:"रजिस्टर",name:"छात्र का नाम",phone:"फ़ोन नंबर",password:"पासवर्ड",gmail:"Gmail",dob:"जन्म तिथि",otp:"OTP (आपके Gmail पर भेजा गया)",spamNote:"यदि OTP इनबॉक्स में न मिले, तो कृपया Spam फ़ोल्डर देखें।",loginBtn:"लॉगिन करें",forgot:"पासवर्ड भूल गए?",sendOtp:"OTP भेजें और रजिस्टर करें",verifyBtn:"OTP सत्यापित करें और खाता बनाएँ",helpLink:"सहायता / FAQ",contactLink:"संपर्क करें",langNote:"भाषा कभी भी प्रोफ़ाइल में बदली जा सकती है।",chooseCat:"अपनी परीक्षा चुनें",freeMocks:"निःशुल्क मॉक टेस्ट",whyUs:"StuDy ही क्यों",why1t:"D Coins वॉलेट",why1:"एक बार टॉप-अप करें (न्यूनतम ₹100), फिर स्टार्स से कोई भी टेस्ट या नोट्स तुरंत खरीदें।",why2t:"कोई प्रश्न दोहराया नहीं",why2:"जो प्रश्न आपको एक बार दिखा, वह आपके खाते में दोबारा नहीं आएगा।",why3t:"विस्तृत परिणाम और हल",why3:"स्कोर, रैंक, प्रतिशतक, सटीकता और पूर्ण हल।",why4t:"टॉप रैंकर्स जीतें स्टार्स",why4:"लीडरबोर्ड पर लगातार पूरे एक सप्ताह (7 दिन) Rank #1 बनाए रखें और 100 बोनस स्टार्स जीतें — आपके खाते में अपने-आप क्रेडिट होंगे। हर सप्ताह एक नई दौड़ है!",back:"वापस",subjectTests:"विषयवार टेस्ट",fullMock:"पूर्ण मॉक टेस्ट",paidNotes:"सशुल्क नोट्स (PDF)",wallet:"D Coins वॉलेट",yourBalance:"आपका बैलेंस",starsUse:"स्टार्स से टेस्ट, मॉक और नोट्स खरीदें",addStars:"स्टार्स जोड़ें (UPI)",addStarsBtn:"स्टार्स जोड़ें",minDep:"न्यूनतम ₹100, फिर ₹50 के गुणज में।",scanPay:"किसी भी UPI ऐप (GPay / PhonePe / Paytm) से QR स्कैन कर भुगतान करें।",utr:"UPI लेनदेन / UTR नंबर (12 अंक)",paidBtn:"मैंने भुगतान कर दिया — स्वीकृति हेतु भेजें",approveNote:"त्वरित स्वीकृति के बाद स्टार्स जुड़ जाते हैं, प्रायः कुछ घंटों में।",history:"इतिहास",profile:"प्रोफ़ाइल",levelProgress:"अगले स्तर की प्रगति",testsTaken:"दिए गए टेस्ट",avgScore:"औसत स्कोर",accuracy:"सटीकता",settings:"सेटिंग्स",appLang:"ऐप भाषा / App language",notifT:"सूचनाएँ",notifD:"नए टेस्ट और समसामयिकी की सूचना पाएँ",enable:"चालू करें",installT:"ऐप इंस्टॉल करें",installD:"StuDy को होम स्क्रीन पर जोड़ें",install:"इंस्टॉल",myPurchases:"मेरी खरीद",myAttempts:"मेरे प्रयास",logout:"लॉगआउट",notifications:"सूचनाएँ",result:"परिणाम",rank:"रैंक",percentile:"प्रतिशतक",correct:"सही",wrong:"गलत",skipped:"छोड़े गए",goHome:"होम पर जाएँ",reattempt:"पुनः प्रयास (अभ्यास)",solutions:"हल",navHome:"होम",navWallet:"वॉलेट",navNotif:"सूचनाएँ",navProfile:"प्रोफ़ाइल",lgAns:"उत्तर दिया",lgNot:"उत्तर नहीं दिया",lgMark:"समीक्षा हेतु चिह्नित",lgNotVis:"देखा नहीं",
-free:"निःशुल्क",start:"प्रारंभ करें",buyStart:"खरीदें और प्रारंभ करें",owned:"खरीदा हुआ",questions:"प्रश्न",minutes:"मिनट",attempts:"प्रयास",bestScore:"सर्वश्रेष्ठ (पहला प्रयास)",download:"डाउनलोड",buyNotes:"नोट्स खरीदें",bundle:"सभी विषय — एक PDF",bundleSub:"इस परीक्षा के सभी विषय एक ही PDF में",mockSub:"सभी विषयों के मिश्रित प्रश्न",freeMockSub:"इस परीक्षा का एक निःशुल्क मॉक — 10 प्रश्न",firstCounts:"केवल आपके पहले प्रयास के अंक मान्य हैं। पुनः प्रयास निःशुल्क अभ्यास है।",depositPending:"जमा अनुरोध भेजा गया — स्वीकृति की प्रतीक्षा है।",noHistory:"अभी यहाँ कुछ नहीं है।",noNotif:"अभी कोई सूचना नहीं है।",noPurchases:"अभी कोई खरीद नहीं है।",noAttempts:"अभी कोई प्रयास नहीं — अपना पहला टेस्ट दें!",errName:"कृपया छात्र का पूरा नाम डालें।",errPhone:"सही 10-अंकों का फ़ोन नंबर डालें।",errPass:"पासवर्ड कम से कम 6 अक्षरों का हो।",errGmail:"सही Gmail पता डालें।",errDob:"अपनी जन्म तिथि चुनें।",errOtp:"6-अंकों का OTP डालें।",errExists:"यह फ़ोन नंबर पहले से रजिस्टर्ड है। कृपया लॉगिन करें।",errNoUser:"खाता नहीं मिला। कृपया पहले रजिस्टर करें।",errBadPass:"गलत पासवर्ड। पुनः प्रयास करें।",errBadOtp:"गलत या समाप्त OTP।",otpSent:"OTP आपके Gmail पर भेजा गया। न मिले तो Spam फ़ोल्डर देखें।",welcome:"StuDy में आपका स्वागत है!",insufficient:"स्टार्स पर्याप्त नहीं हैं। पहले वॉलेट में स्टार्स जोड़ें।",purchased:"अनलॉक हो गया!",depErrUtr:"12-अंकों का UTR / लेनदेन नंबर डालें।",depDup:"यह UTR पहले से भेजा जा चुका है।",submitConfirm:"टेस्ट जमा करें? जमा करने के बाद उत्तर नहीं बदले जा सकेंगे।",timeUp:"समय समाप्त — आपका टेस्ट स्वतः जमा हो गया।",firstAttemptNote:"यह स्कोर आपके पहले प्रयास का है और अंतिम है।",practiceNote:"अभ्यास प्रयास — आपका पहला-प्रयास स्कोर ही आधिकारिक रहेगा।",level:"स्तर",reportCard:"मेरी रिपोर्ट कार्ड",telegram:"Telegram पर चैट करें",telegramSub:"सबसे तेज़ सहायता — कुछ घंटों में जवाब"}
+en:{tagline:"Tests • Mocks • Notes — UPSC · RPSC · SSC",login:"Login",register:"Register",name:"Student name",phone:"Phone number",password:"Password",gmail:"Gmail",dob:"Date of birth",otp:"OTP (sent to your Gmail)",spamNote:"If you don't find the OTP in your inbox, please check the Spam folder.",loginBtn:"Login",forgot:"Forgot password?",sendOtp:"Send OTP & Register",verifyBtn:"Verify OTP & Create Account",helpLink:"Help / FAQ",contactLink:"Contact Us",langNote:"Language can be changed anytime in your Profile.",chooseCat:"Choose your exam",freeMocks:"Free mock tests",whyUs:"Why StuDy",why1t:"StuDy wallet",why1:"Top up once (min ₹100), then buy any test or notes instantly with your balance.",why2t:"No repeated questions",why2:"A question once shown to you is never repeated in your account.",why3t:"Detailed results & solutions",why3:"Score, rank, percentile, accuracy and full solutions.",why4t:"Top rankers win ₹100",why4:"Hold Rank #1 on the leaderboard continuously for a full week (7 days) and win a ₹100 bonus — credited automatically to your account. Every week is a new race!",back:"Back",subjectTests:"Subject-wise tests",fullMock:"Full mock test",paidNotes:"Paid notes (PDF)",wallet:"StuDy Wallet",yourBalance:"Your balance",starsUse:"Stars buy tests, mocks and notes",addStars:"Add stars (UPI)",addStarsBtn:"Add money",minDep:"Minimum ₹100, then in multiples of ₹50.",scanPay:"Scan the QR with any UPI app (GPay / PhonePe / Paytm) and pay.",utr:"UPI Transaction / UTR number (12 digits)",paidBtn:"I have paid — submit for approval",approveNote:"Stars are credited after a quick approval, usually within a few hours.",history:"History",profile:"Profile",levelProgress:"Progress to next level",testsTaken:"Tests taken",avgScore:"Average score",accuracy:"Accuracy",settings:"Settings",appLang:"App language / ऐप भाषा",notifT:"Notifications",notifD:"Get alerts for new tests and current affairs",enable:"Enable",installT:"Install app",installD:"Add StuDy to your home screen",install:"Install",myPurchases:"My purchases",myAttempts:"My attempts",logout:"Logout",notifications:"Notifications",result:"Result",rank:"Rank",percentile:"Percentile",correct:"Correct",wrong:"Wrong",skipped:"Skipped",goHome:"Go home",reattempt:"Re-attempt (practice)",solutions:"Solutions",navHome:"Home",navWallet:"Wallet",navNotif:"Alerts",navProfile:"Profile",lgAns:"Answered",lgNot:"Not answered",lgMark:"Marked for review",lgNotVis:"Not visited",
+free:"FREE",start:"Start",buyStart:"Buy & Start",owned:"Owned",questions:"questions",minutes:"min",attempts:"attempts",bestScore:"Best (1st attempt)",download:"Download",buyNotes:"Buy notes",bundle:"All subjects — one PDF",bundleSub:"Every subject of this exam in a single PDF",mockSub:"Mixed questions from all subjects",freeMockSub:"One free mock for this exam — 10 questions",firstCounts:"Only your first attempt's marks count. Re-attempts are free practice.",depositPending:"Deposit submitted — waiting for approval.",noHistory:"Nothing here yet.",noNotif:"No notifications yet.",noPurchases:"No purchases yet.",noAttempts:"No attempts yet — take your first test!",errName:"Please enter the student's full name.",errPhone:"Enter a valid 10-digit phone number.",errPass:"Password must be at least 6 characters.",errGmail:"Enter a valid Gmail address.",errDob:"Select your date of birth.",errOtp:"Enter the 6-digit OTP.",errExists:"This phone number is already registered. Please login.",errNoUser:"Account not found. Please register first.",errBadPass:"Wrong password. Please try again.",errBadOtp:"Incorrect or expired OTP.",otpSent:"OTP sent to your Gmail. If you don't find it, check the Spam folder.",welcome:"Welcome to StuDy!",insufficient:"Not enough balance. Add money to your StuDy wallet first.",purchased:"Unlocked!",depErrUtr:"Enter the 12-digit UTR / transaction number.",depDup:"This UTR is already submitted.",submitConfirm:"Submit the test? You cannot change answers after submitting.",timeUp:"Time is over — your test was auto-submitted.",firstAttemptNote:"This score is from your first attempt and is final.",practiceNote:"Practice attempt — your first-attempt score remains the official one.",level:"Level",reportCard:"My Report Card",telegram:"Chat on Telegram",telegramSub:"Fastest support — replies within a few hours"},
+hi:{tagline:"टेस्ट • मॉक • नोट्स — UPSC · RPSC · SSC",login:"लॉगिन",register:"रजिस्टर",name:"छात्र का नाम",phone:"फ़ोन नंबर",password:"पासवर्ड",gmail:"Gmail",dob:"जन्म तिथि",otp:"OTP (आपके Gmail पर भेजा गया)",spamNote:"यदि OTP इनबॉक्स में न मिले, तो कृपया Spam फ़ोल्डर देखें।",loginBtn:"लॉगिन करें",forgot:"पासवर्ड भूल गए?",sendOtp:"OTP भेजें और रजिस्टर करें",verifyBtn:"OTP सत्यापित करें और खाता बनाएँ",helpLink:"सहायता / FAQ",contactLink:"संपर्क करें",langNote:"भाषा कभी भी प्रोफ़ाइल में बदली जा सकती है।",chooseCat:"अपनी परीक्षा चुनें",freeMocks:"निःशुल्क मॉक टेस्ट",whyUs:"StuDy ही क्यों",why1t:"StuDy वॉलेट",why1:"एक बार टॉप-अप करें (न्यूनतम ₹100), फिर बैलेंस से कोई भी टेस्ट या नोट्स तुरंत खरीदें।",why2t:"कोई प्रश्न दोहराया नहीं",why2:"जो प्रश्न आपको एक बार दिखा, वह आपके खाते में दोबारा नहीं आएगा।",why3t:"विस्तृत परिणाम और हल",why3:"स्कोर, रैंक, प्रतिशतक, सटीकता और पूर्ण हल।",why4t:"टॉप रैंकर्स जीतें ₹100",why4:"लीडरबोर्ड पर लगातार पूरे एक सप्ताह (7 दिन) Rank #1 बनाए रखें और ₹100 बोनस जीतें — आपके खाते में अपने-आप क्रेडिट होंगे। हर सप्ताह एक नई दौड़ है!",back:"वापस",subjectTests:"विषयवार टेस्ट",fullMock:"पूर्ण मॉक टेस्ट",paidNotes:"सशुल्क नोट्स (PDF)",wallet:"StuDy वॉलेट",yourBalance:"आपका बैलेंस",starsUse:"बैलेंस से टेस्ट, मॉक और नोट्स खरीदें",addStars:"पैसे जोड़ें (UPI)",addStarsBtn:"पैसे जोड़ें",minDep:"न्यूनतम ₹100, फिर ₹50 के गुणज में।",scanPay:"किसी भी UPI ऐप (GPay / PhonePe / Paytm) से QR स्कैन कर भुगतान करें।",utr:"UPI लेनदेन / UTR नंबर (12 अंक)",paidBtn:"मैंने भुगतान कर दिया — स्वीकृति हेतु भेजें",approveNote:"त्वरित स्वीकृति के बाद पैसे जुड़ जाते हैं, प्रायः कुछ घंटों में।",history:"इतिहास",profile:"प्रोफ़ाइल",levelProgress:"अगले स्तर की प्रगति",testsTaken:"दिए गए टेस्ट",avgScore:"औसत स्कोर",accuracy:"सटीकता",settings:"सेटिंग्स",appLang:"ऐप भाषा / App language",notifT:"सूचनाएँ",notifD:"नए टेस्ट और समसामयिकी की सूचना पाएँ",enable:"चालू करें",installT:"ऐप इंस्टॉल करें",installD:"StuDy को होम स्क्रीन पर जोड़ें",install:"इंस्टॉल",myPurchases:"मेरी खरीद",myAttempts:"मेरे प्रयास",logout:"लॉगआउट",notifications:"सूचनाएँ",result:"परिणाम",rank:"रैंक",percentile:"प्रतिशतक",correct:"सही",wrong:"गलत",skipped:"छोड़े गए",goHome:"होम पर जाएँ",reattempt:"पुनः प्रयास (अभ्यास)",solutions:"हल",navHome:"होम",navWallet:"वॉलेट",navNotif:"सूचनाएँ",navProfile:"प्रोफ़ाइल",lgAns:"उत्तर दिया",lgNot:"उत्तर नहीं दिया",lgMark:"समीक्षा हेतु चिह्नित",lgNotVis:"देखा नहीं",
+free:"निःशुल्क",start:"प्रारंभ करें",buyStart:"खरीदें और प्रारंभ करें",owned:"खरीदा हुआ",questions:"प्रश्न",minutes:"मिनट",attempts:"प्रयास",bestScore:"सर्वश्रेष्ठ (पहला प्रयास)",download:"डाउनलोड",buyNotes:"नोट्स खरीदें",bundle:"सभी विषय — एक PDF",bundleSub:"इस परीक्षा के सभी विषय एक ही PDF में",mockSub:"सभी विषयों के मिश्रित प्रश्न",freeMockSub:"इस परीक्षा का एक निःशुल्क मॉक — 10 प्रश्न",firstCounts:"केवल आपके पहले प्रयास के अंक मान्य हैं। पुनः प्रयास निःशुल्क अभ्यास है।",depositPending:"जमा अनुरोध भेजा गया — स्वीकृति की प्रतीक्षा है।",noHistory:"अभी यहाँ कुछ नहीं है।",noNotif:"अभी कोई सूचना नहीं है।",noPurchases:"अभी कोई खरीद नहीं है।",noAttempts:"अभी कोई प्रयास नहीं — अपना पहला टेस्ट दें!",errName:"कृपया छात्र का पूरा नाम डालें।",errPhone:"सही 10-अंकों का फ़ोन नंबर डालें।",errPass:"पासवर्ड कम से कम 6 अक्षरों का हो।",errGmail:"सही Gmail पता डालें।",errDob:"अपनी जन्म तिथि चुनें।",errOtp:"6-अंकों का OTP डालें।",errExists:"यह फ़ोन नंबर पहले से रजिस्टर्ड है। कृपया लॉगिन करें।",errNoUser:"खाता नहीं मिला। कृपया पहले रजिस्टर करें।",errBadPass:"गलत पासवर्ड। पुनः प्रयास करें।",errBadOtp:"गलत या समाप्त OTP।",otpSent:"OTP आपके Gmail पर भेजा गया। न मिले तो Spam फ़ोल्डर देखें।",welcome:"StuDy में आपका स्वागत है!",insufficient:"बैलेंस पर्याप्त नहीं है। पहले StuDy वॉलेट में पैसे जोड़ें।",purchased:"अनलॉक हो गया!",depErrUtr:"12-अंकों का UTR / लेनदेन नंबर डालें।",depDup:"यह UTR पहले से भेजा जा चुका है।",submitConfirm:"टेस्ट जमा करें? जमा करने के बाद उत्तर नहीं बदले जा सकेंगे।",timeUp:"समय समाप्त — आपका टेस्ट स्वतः जमा हो गया।",firstAttemptNote:"यह स्कोर आपके पहले प्रयास का है और अंतिम है।",practiceNote:"अभ्यास प्रयास — आपका पहला-प्रयास स्कोर ही आधिकारिक रहेगा।",level:"स्तर",reportCard:"मेरी रिपोर्ट कार्ड",telegram:"Telegram पर चैट करें",telegramSub:"सबसे तेज़ सहायता — कुछ घंटों में जवाब"}
 };
 let LANG = localStorage.getItem("study_lang") || "en";
 const T = k => (STR[LANG] && STR[LANG][k]) || STR.en[k] || k;
@@ -560,8 +562,8 @@ const DB = {
 };
 const DEFAULT_SETTINGS = {
   prices:{ test:5, mock:10, notes:30, bundle:50 },
-  help:{ en:"How to use StuDy\n\n1. Register with your name, phone number and Gmail.\n2. Add stars to your D Coins wallet using UPI (minimum ₹100, then multiples of ₹50).\n3. Buy any subject test (5★), full mock (10★) or notes (30★) — once bought, it stays unlocked in your account forever.\n4. Your first attempt's marks are final; re-attempts are free practice with fresh questions.\n5. A question once shown to you will not repeat in your account (except a few very important ones).\n\nPayments are approved manually, usually within a few hours. If your stars don't arrive, contact us with your UTR number.",
-         hi:"StuDy का उपयोग कैसे करें\n\n1. अपने नाम, फ़ोन नंबर और Gmail से रजिस्टर करें।\n2. UPI से D Coins वॉलेट में स्टार्स जोड़ें (न्यूनतम ₹100, फिर ₹50 के गुणज)।\n3. कोई भी विषय टेस्ट (5★), पूर्ण मॉक (10★) या नोट्स (30★) खरीदें — एक बार खरीदा, हमेशा अनलॉक रहेगा।\n4. पहले प्रयास के अंक अंतिम हैं; पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ।\n5. जो प्रश्न एक बार दिखा, वह दोबारा नहीं आएगा (कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर)।\n\nभुगतान मैन्युअली स्वीकृत होते हैं, प्रायः कुछ घंटों में। स्टार्स न आएँ तो UTR नंबर के साथ संपर्क करें।" },
+  help:{ en:"How to use StuDy\n\n1. Register with your name, phone number and Gmail.\n2. Add money to your StuDy wallet using UPI (minimum ₹100, then multiples of ₹50).\n3. Buy any subject test (₹__T__), full mock (₹__M__) or notes (₹__N__) — once bought, it stays unlocked in your account forever.\n4. Your first attempt's marks are final; re-attempts are free practice with fresh questions.\n5. A question once shown to you will not repeat in your account (except a few very important ones).\n\nPayments are approved manually, usually within a few hours. If your stars don't arrive, contact us with your UTR number.",
+         hi:"StuDy का उपयोग कैसे करें\n\n1. अपने नाम, फ़ोन नंबर और Gmail से रजिस्टर करें।\n2. UPI से StuDy वॉलेट में पैसे जोड़ें (न्यूनतम ₹100, फिर ₹50 के गुणज)।\n3. कोई भी विषय टेस्ट (₹__T__), पूर्ण मॉक (₹__M__) या नोट्स (₹__N__) खरीदें — एक बार खरीदा, हमेशा अनलॉक रहेगा।\n4. पहले प्रयास के अंक अंतिम हैं; पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ।\n5. जो प्रश्न एक बार दिखा, वह दोबारा नहीं आएगा (कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर)।\n\nभुगतान मैन्युअली स्वीकृत होते हैं, प्रायः कुछ घंटों में। स्टार्स न आएँ तो UTR नंबर के साथ संपर्क करें।" },
   contact:{ en:"StuDy Support\nTelegram: @dj3680\n(Please mention your registered phone number and UTR for payment queries.)", hi:"StuDy सहायता\nTelegram: @dj3680\n(भुगतान संबंधी प्रश्नों हेतु अपना रजिस्टर्ड फ़ोन नंबर और UTR अवश्य लिखें।)" }
 };
 function getSettings(){ if(!BACKEND_URL) return DB.read("settings", null) || structuredClone(DEFAULT_SETTINGS); return window._settings || structuredClone(DEFAULT_SETTINGS); }
@@ -579,7 +581,7 @@ const Store = {
   updateMe(fn){ const us = Store.users(); const i = us.findIndex(u=>u.phone===localStorage.getItem("study_session")); if(i>=0){ fn(us[i]); Store.saveUsers(us); } },
   attempts(){ return DB.read("attempts", []); },
   saveAttempts(a){ DB.write("attempts", a); },
-  notifs(){ return DB.read("notifs", [{id:"n0", title:"Welcome to StuDy!", body:"Your first mock test for every exam category is FREE. Add stars to your wallet and unlock all tests and notes.", at: Date.now()} ]); },
+  notifs(){ return DB.read("notifs", [{id:"n0", title:"Welcome to StuDy!", body:"Your first mock test for every exam category is FREE. Add money to your StuDy wallet and unlock all tests and notes.", at: Date.now()} ]); },
   saveNotifs(n){ DB.write("notifs", n); },
   payments(){ return DB.read("payments", []); },
   savePayments(p){ DB.write("payments", p); }
@@ -611,6 +613,7 @@ let ME = null;
 function isAdmin(){ return ME && ME.phone === ADMIN_PHONE; }
 let CURSCREEN = "auth";
 function go(screen){
+  if(!NAVBACK && CURSCREEN && CURSCREEN !== screen && CURSCREEN !== "auth") NAVHIST = [CURSCREEN];
   CURSCREEN = screen;
   ["auth","home","category","wallet","profile","notifications","result","admin"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
   $("appheader").classList.toggle("hidden", screen==="auth");
@@ -752,7 +755,7 @@ function setLang(l, fromProfile){
 }
 
 /* ---------------- Entitlements ---------------- */
-const hasTest  = (cat,sub) => !!(ME && ME.purchases.tests[cat+"_"+sub]);
+const hasTest  = (cat,sub) => { if(!(ME && ME.purchases && ME.purchases.tests)) return false; if(ME.purchases.tests[cat+"_"+sub]) return true; if(cat==="school" && /_ch\d+$/.test(sub)) return !!ME.purchases.tests[cat+"_"+sub.replace(/_ch\d+$/, "")]; return false; };
 const hasMock  = cat => !!(ME && ME.purchases.mocks[cat]);
 const hasNotes = key => !!(ME && ME.purchases.notes[key]);
 function spendStars(amount, label){
@@ -824,7 +827,7 @@ function renderCategory(cat){
     return `<div class="testrow"><div class="ti"><div class="tt">${LANG==="hi" ? "टेस्ट" : "Test"} ${n}</div>
       <div class="ts">10 ${T("questions")} · 10 ${T("minutes")}${att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : ""}</div></div>
       ${owned ? `<button class="btn sm" onclick="startSeries('${cat}','${sub}',${n})">${att.length ? reAtt : T("start")}</button>`
-              : `<span class="price">★ ${P.test}</span><button class="btn sm gold" onclick="buySeries('${cat}','${sub}',${n})">${T("buyStart")}</button>`}
+              : `<span class="price">₹${P.test}</span><button class="btn sm gold" onclick="buySeries('${cat}','${sub}',${n})">${T("buyStart")}</button>`}
     </div>`; };
   $("subject-list").innerHTML = c.subjects.map(([sub])=>{
     const exp = EXPANDED.has(cat + "_" + sub);
@@ -838,7 +841,7 @@ function renderCategory(cat){
     return `<div class="testrow"><div class="ti"><div class="tt">${T("fullMock")} ${n} — ${c.name.en}</div>
     <div class="ts">20 ${T("questions")} · 20 ${T("minutes")} · ${T("mockSub")}${att.length ? ` · ${att.length} ${T("attempts")}` : ""}</div></div>
     ${mockOwned ? `<span class="tag free">${T("owned")}</span><button class="btn sm" onclick="startTest('${cat}','mock${n}')">${att.length ? (LANG==="hi" ? "पुनः प्रयास" : "Re-Attempt") : T("start")}</button>`
-                : `<span class="price">★ ${P.mock}</span><button class="btn sm gold" onclick="buyMock('${cat}')">${T("buyStart")}</button>`}</div>`; };
+                : `<span class="price">₹${P.mock}</span><button class="btn sm gold" onclick="buyMock('${cat}')">${T("buyStart")}</button>`}</div>`; };
   $("mock-card").innerHTML = mockRow(1) + mockRow(2) + mockRow(3) +
     `<p class="sub" style="padding:8px 0 10px">${T("firstCounts")} ${LANG==="hi" ? "तीनों मॉक हर 3 दिन में नए प्रश्नों के साथ बदल जाते हैं" : "All 3 mocks refresh with new questions every 3 days"} — ${mockRefreshIn()}.</p>`;
   $("notes-list").innerHTML =
@@ -846,11 +849,11 @@ function renderCategory(cat){
       const key = cat+"_"+sub, owned = hasNotes(key);
       return `<div class="testrow"><div class="ti"><div class="tt">${subName(cat,sub,LANG)} — Notes PDF</div><div class="ts">StuDy watermark notes</div></div>
       ${owned?`<button class="btn sm" onclick="downloadNotes('${cat}','${sub}')">${T("download")}</button>`
-             :`<span class="price">★ ${P.notes}</span><button class="btn sm gold" onclick="buyNotes('${cat}','${sub}','${esc(subName(cat,sub,"en"))} notes')">${T("buyNotes")}</button>`}</div>`;
+             :`<span class="price">₹${P.notes}</span><button class="btn sm gold" onclick="buyNotes('${cat}','${sub}','${esc(subName(cat,sub,"en"))} notes')">${T("buyNotes")}</button>`}</div>`;
     }).join("") +
     `<div class="testrow"><div class="ti"><div class="tt">${T("bundle")}</div><div class="ts">${T("bundleSub")}</div></div>
       ${hasNotes(cat+"_bundle")?`<button class="btn sm" onclick="downloadNotes('${cat}','bundle')">${T("download")}</button>`
-             :`<span class="price">★ ${P.bundle}</span><button class="btn sm gold" onclick="buyNotes('${cat}','bundle','${c.name.en} all-subject notes')">${T("buyNotes")}</button>`}</div>`;
+             :`<span class="price">₹${P.bundle}</span><button class="btn sm gold" onclick="buyNotes('${cat}','bundle','${c.name.en} all-subject notes')">${T("buyNotes")}</button>`}</div>`;
 }
 function renderSchoolCategory(c, P){
   const lg = $("cat-logo"); lg.style.display = ""; lg.style.height = "76px"; lg.src = ASSET.school || ASSET.logo; lg.onerror = function(){ this.style.display = "none"; };
@@ -867,17 +870,17 @@ function renderSchoolCategory(c, P){
     const chapters = (SCHOOL_CHAPTERS[sub] || []).map((chT, i)=>{
       const ck = chapterKey(CURCLASS, s, i), nQ = poolFor("school", ck).length;
       const cAtt = myAttempts.filter(a=>a.cat==="school" && a.sub===ck && a.type==="test");
-      const cOwned = hasTest("school", ck);
+      const cOwned = hasTest("school", ck) || owned;
       const label = `${LANG==="hi" ? "अध्याय" : "Chapter"} ${i+1} · ${LANG==="hi" ? chT[1] : chT[0]}`;
       if(nQ < 10) return `<div class="testrow"><div class="ti"><div class="tt">${label}</div><div class="ts">100 ${T("questions")} · 100 ${T("minutes")}</div></div><span class="tag">${LANG==="hi" ? "जल्द आ रहा है" : "Coming soon"}</span></div>`;
       return `<div class="testrow"><div class="ti"><div class="tt">${label}</div><div class="ts">100 ${T("questions")} · 100 ${T("minutes")}${cAtt.length ? ` · ${cAtt.length} ${T("attempts")}` : ""}</div></div>
         ${cOwned ? `<span class="tag free">${T("owned")}</span><button class="btn sm" onclick="startTest('school','${ck}')">${cAtt.length ? reAtt : T("start")}</button>`
-                 : `<span class="price">★ ${P.test}</span><button class="btn sm gold" onclick="buyTest('school','${ck}')">${T("buyStart")}</button>`}</div>`;
+                 : `<span class="tag">🔒 ${LANG==="hi" ? "विषय खरीदने पर खुलेगा" : "Unlocks with the subject"}</span>`}</div>`;
     }).join("");
     return `<div class="testrow" style="background:#fafafa"><div class="ti"><div class="tt">${sname} — ${LANG==="hi" ? "पूर्ण विषय टेस्ट" : "Complete Subject Test"}</div>
       <div class="ts">10 ${T("questions")} · 10 ${T("minutes")}${att.length ? ` · ${att.length} ${T("attempts")} · ${T("bestScore")}: ${Math.max(...att.filter(a=>a.first).map(a=>a.score), 0)}` : ""}</div></div>
       ${owned ? `<span class="tag free">${T("owned")}</span><button class="btn sm" onclick="startTest('school','${sub}')">${att.length ? reAtt : T("start")}</button>`
-              : `<span class="price">★ ${P.test}</span><button class="btn sm gold" onclick="buyTest('school','${sub}')">${T("buyStart")}</button>`}
+              : `<span class="price">₹${P.test}</span><button class="btn sm gold" onclick="buyTest('school','${sub}')">${T("buyStart")}</button>`}
     </div><div style="padding-left:12px">${chapters}</div>`; }).join("");
   $("mock-card").innerHTML = "";
   $("notes-list").innerHTML = "";
@@ -1042,7 +1045,7 @@ function submitTest(){
   clearInterval(TEST.timer);
   let correct=0, wrong=0;
   TEST.qs.forEach((q,i)=>{ if(TEST.ans[i]===q[6]) correct++; else if(TEST.ans[i]>=0) wrong++; });
-  const total = TEST.qs.length, skipped = total-correct-wrong, score = correct;
+  const total = TEST.qs.length, skipped = total-correct-wrong, score = Math.round((correct - wrong*0.25)*100)/100;
   const type = TEST.kind==="free" ? "free" : (TEST.kind==="mock" || /^mock[123]$/.test(TEST.kind)) ? "mock" : "test";
   const atts = Store.attempts();
   const first = !atts.some(a=> a.phone===ME.phone && a.cat===TEST.cat && a.sub===TEST.kind && a.type===type && (TEST.win==null || a.win===TEST.win));
@@ -1083,12 +1086,12 @@ function renderWallet(){
   $("wstars").textContent = ME.stars||0;
   $("amtchips").innerHTML = [100,150,200,250,300,500].map(a=>`<button class="${a===DEP_AMT?"on":""}" onclick="DEP_AMT=${a};renderWallet()">₹${a}</button>`).join("");
   $("qrimg").src = ASSET["qr"+DEP_AMT];
-  const dc = $("dep-disc"), df = $("dep-full"); if(dc) dc.textContent = "★"+Math.round(DEP_AMT*1.1); if(df) df.textContent = "₹"+DEP_AMT;
+  const dc = $("dep-disc"), df = $("dep-full"); if(dc) dc.textContent = "₹"+Math.round(DEP_AMT*1.1); if(df) df.textContent = "₹"+DEP_AMT;
   const pend = Store.payments().filter(p=>p.phone===ME.phone && p.status==="pending");
   const items = [ ...pend.map(p=>({...p, pending:true})), ...(ME.ledger||[]) ];
   $("wallet-history").innerHTML = items.length ? items.map(it=> it.pending
     ? `<div class="testrow"><div class="ti"><div class="tt">₹${it.amount} — ${T("depositPending")}${it.insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0">📸 −10%</span>':""}</div><div class="ts">UTR: ${esc(it.utr)} · ${new Date(it.at).toLocaleString()}</div></div><span class="tag">⏳</span></div>`
-    : `<div class="testrow"><div class="ti"><div class="tt">${esc(it.label)}</div><div class="ts">${new Date(it.at).toLocaleString()}</div></div><span class="price" style="color:${it.amt>=0?"var(--grn)":"var(--red)"}">${it.amt>=0?"+":""}${it.amt}★</span></div>`).join("")
+    : `<div class="testrow"><div class="ti"><div class="tt">${esc(it.label)}</div><div class="ts">${new Date(it.at).toLocaleString()}</div></div><span class="price" style="color:${it.amt>=0?"var(--grn)":"var(--red)"}">${it.amt>=0?"+":""}₹${it.amt}</span></div>`).join("")
     : `<p class="sub" style="padding:12px 0">${T("noHistory")}</p>`;
   refreshHeader();
 }
@@ -1152,9 +1155,9 @@ function renderProfile(){
   $("pf-xp-txt").textContent = into+" / 200 XP";
   const P = getSettings().prices;
   const rows = [];
-  Object.keys(ME.purchases.tests).forEach(k=>{ const [c,s]=k.split("_"); rows.push({t:`${CATS[c].name.en} — ${subName(c,s,"en")} test`, v:"★"+P.test}); });
-  Object.keys(ME.purchases.mocks).forEach(c=> rows.push({t:`${CATS[c].name.en} — Full mock`, v:"★"+P.mock}));
-  Object.keys(ME.purchases.notes).forEach(k=> rows.push({t:`Notes — ${k}`, v:"★"}));
+  Object.keys(ME.purchases.tests).forEach(k=>{ const [c,s]=k.split("_"); rows.push({t:`${CATS[c].name.en} — ${subName(c,s,"en")} test`, v:"₹"+P.test}); });
+  Object.keys(ME.purchases.mocks).forEach(c=> rows.push({t:`${CATS[c].name.en} — Full mock`, v:"₹"+P.mock}));
+  Object.keys(ME.purchases.notes).forEach(k=> rows.push({t:`Notes — ${k}`, v:"Paid"}));
   $("pf-purchases").innerHTML = rows.length ? rows.map(r=>`<div class="testrow"><div class="ti"><div class="tt">${esc(r.t)}</div></div><span class="tag free">${T("owned")}</span></div>`).join("") : `<p class="sub" style="padding:12px 0">${T("noPurchases")}</p>`;
   $("pf-attempts").innerHTML = mine.length ? [...mine].reverse().slice(0,15).map(a=>`<div class="testrow"><div class="ti"><div class="tt">${CATS[a.cat].name.en} — ${a.type==="test"?subName(a.cat,a.sub,"en"):a.type==="mock"?"Full Mock":"Free Mock"}</div><div class="ts">${new Date(a.at).toLocaleString()} ${a.first?"":"· practice"}</div></div><b>${a.score}/${a.total}</b></div>`).join("") : `<p class="sub" style="padding:12px 0">${T("noAttempts")}</p>`;
   $("admin-entry").classList.toggle("hidden", !isAdmin());
@@ -1174,9 +1177,9 @@ function renderAdmin(){
   const us = Store.users(), atts = Store.attempts();
   $("ad-users").textContent = us.length; $("ad-attempts").textContent = atts.length;
   const rev = us.reduce((s,u)=> s + (u.ledger||[]).filter(l=>l.amt<0).reduce((x,l)=>x-l.amt,0), 0);
-  $("ad-revenue").textContent = rev+"★";
+  $("ad-revenue").textContent = "₹"+rev;
   const pend = Store.payments().filter(p=>p.status==="pending");
-  $("ad-payments").innerHTML = pend.length ? pend.map(p=>`<div class="testrow"><div class="ti"><div class="tt">${esc(p.name||"")} · ${esc(p.phone)} — ₹${p.amount}${p.insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0">📸 Insta follow — +10% bonus</span>':""}</div><div class="ts">UTR: ${esc(p.utr)} · ${new Date(p.at).toLocaleString()}${p.insta?" · approves as ★"+Math.round(p.amount*1.1)+" (with bonus)":""}</div></div><button class="btn sm" onclick="adminDecide('${p.id}',true)">Approve</button><button class="btn sm red" onclick="adminDecide('${p.id}',false)">Reject</button></div>`).join("") : `<p class="sub" style="padding:10px 0">No pending payments.</p>`;
+  $("ad-payments").innerHTML = pend.length ? pend.map(p=>`<div class="testrow"><div class="ti"><div class="tt">${esc(p.name||"")} · ${esc(p.phone)} — ₹${p.amount}${p.insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0">📸 Insta follow — +10% bonus</span>':""}</div><div class="ts">UTR: ${esc(p.utr)} · ${new Date(p.at).toLocaleString()}${p.insta?" · approves as ₹"+Math.round(p.amount*1.1)+" (with bonus)":""}</div></div><button class="btn sm" onclick="adminDecide('${p.id}',true)">Approve</button><button class="btn sm red" onclick="adminDecide('${p.id}',false)">Reject</button></div>`).join("") : `<p class="sub" style="padding:10px 0">No pending payments.</p>`;
   const P = getSettings().prices;
   $("ad-p-test").value=P.test; $("ad-p-mock").value=P.mock; $("ad-p-notes").value=P.notes; $("ad-p-bundle").value=P.bundle;
   $("ad-help").value = getSettings().help.en; $("ad-contact").value = getSettings().contact.en;
@@ -1190,7 +1193,7 @@ async function adminDecide(id, approve, credit){
     const creditAmt = (credit!=null ? credit : (p.insta ? Math.round(p.amount*1.1) : p.amount));
     const us = Store.users(); const u = us.find(x=>x.phone===p.phone);
     if(u){ u.stars=(u.stars||0)+creditAmt; u.ledger.unshift({at:Date.now(), amt:creditAmt, label:"Wallet top-up ₹"+p.amount+(creditAmt<p.amount?" (paid-amount approval)":"")}); Store.saveUsers(us); if(ME.phone===p.phone){ ME.stars=u.stars; ME.ledger=u.ledger; } }
-    pushUnotif(p.phone, { title:"Payment approved ✅", body:"Your ₹"+p.amount+" deposit (UTR "+p.utr+") is approved. "+creditAmt+"★ have been added to your D Coins wallet." + (creditAmt>p.amount ? " This includes your "+(creditAmt-p.amount)+"★ Instagram bonus." : "") });
+    pushUnotif(p.phone, { title:"Payment approved ✅", body:"Your ₹"+p.amount+" deposit (UTR "+p.utr+") is approved. "+creditAmt+" has been added to your StuDy wallet." + (creditAmt>p.amount ? " This includes your Instagram bonus of ₹"+(creditAmt-p.amount)+". bonus." : "") });
   } else {
     const n = { title:"Payment not approved", body:"Your ₹"+p.amount+" deposit (UTR "+p.utr+") could not be approved. Please check the UTR number and amount, then submit again, or contact us on Telegram." };
     if(p.insta){ n.body = "Your Instagram-discount deposit of ₹"+p.amount+" (UTR "+p.utr+") was not approved — we could not verify your follow of @dinesh.jangir_. If you have followed, tap below and DM us; after checking, we will add your stars."; n.link = "https://ig.me/m/dinesh.jangir_"; n.linkLabel = "DM on Instagram"; }
@@ -1202,15 +1205,15 @@ async function adminAddStars(){
   const phone = $("ad-as-phone").value.trim(), amt = +$("ad-as-amt").value, rank = $("ad-as-rank").value.trim(), exam = $("ad-as-exam").value.trim();
   let msg = $("ad-as-msg").value.trim(); const err = $("ad-as-err"), ok = $("ad-as-ok"); err.textContent=""; ok.textContent="";
   if(!validPhone(phone)) return err.textContent = "Enter a valid 10-digit phone number.";
-  if(!amt || amt < 1) return err.textContent = "Enter the number of stars.";
-  if(!msg) msg = rank ? "🏆 Congratulations! You stood at Rank #"+rank+(exam ? " in "+exam : "")+" and won "+amt+" stars! The stars have been added to your D Coins wallet." : "🎁 "+amt+" stars have been added to your D Coins wallet by StuDy.";
-  if(BACKEND_URL){ if(!(await ensureAdminPass())) return err.textContent = "Admin password required."; const r = await api("adminAddStars", {adminPhone:ME.phone, adminPass:_adminPass, phone, amount:amt, message:msg}); if(!r.ok){ if(r.error==="forbidden"){ _adminPass=null; return err.textContent = "Wrong admin password — please try again."; } return err.textContent = r.error==="nouser" ? "No registered user with this phone number." : ("Failed: "+r.error); } ok.textContent = "Stars added & user notified ✓"; if(phone===ME.phone){ const m = await api("me",{phone:ME.phone}); if(m.ok){ ME = m.user; refreshHeader(); } } return; }
+  if(!amt || amt < 1) return err.textContent = "Enter the amount.";
+  if(!msg) msg = rank ? "🏆 Congratulations! You stood at Rank #"+rank+(exam ? " in "+exam : "")+" and won ₹"+amt+"! The amount has been added to your StuDy wallet." : "🎁 ₹"+amt+" has been added to your StuDy wallet by StuDy.";
+  if(BACKEND_URL){ if(!(await ensureAdminPass())) return err.textContent = "Admin password required."; const r = await api("adminAddStars", {adminPhone:ME.phone, adminPass:_adminPass, phone, amount:amt, message:msg}); if(!r.ok){ if(r.error==="forbidden"){ _adminPass=null; return err.textContent = "Wrong admin password — please try again."; } return err.textContent = r.error==="nouser" ? "No registered user with this phone number." : ("Failed: "+r.error); } ok.textContent = "Balance added & user notified ✓"; if(phone===ME.phone){ const m = await api("me",{phone:ME.phone}); if(m.ok){ ME = m.user; refreshHeader(); } } return; }
   const us = Store.users(); const u = us.find(x=>x.phone===phone);
   if(!u) return err.textContent = "No registered user with this phone number.";
   u.stars = (u.stars||0) + amt; u.ledger.unshift({at:Date.now(), amt, label: rank ? "Rank reward" : "Admin gift"}); Store.saveUsers(us);
   if(ME.phone===phone){ ME.stars = u.stars; ME.ledger = u.ledger; }
-  pushUnotif(phone, { title: rank ? "🏆 Rank reward!" : "🎁 Stars added", body: msg });
-  ok.textContent = "Added "+amt+"★ to "+(u.name||phone)+" & notified ✓";
+  pushUnotif(phone, { title: rank ? "🏆 Rank reward!" : "🎁 Balance added", body: msg });
+  ok.textContent = "Added ₹"+amt+" to "+(u.name||phone)+" & notified ✓";
   $("ad-as-phone").value=""; $("ad-as-amt").value=""; $("ad-as-rank").value=""; $("ad-as-exam").value=""; $("ad-as-msg").value="";
   renderAdmin();
 }
@@ -1260,7 +1263,7 @@ async function showRewards(){
     const tp = w.top;
     const line = tp ? `${LANG==="hi" ? "इस सप्ताह के #1" : "This week's #1"}: <b>${esc(tp.name || "")}</b> · ${tp.score} ${LANG==="hi" ? "अंक" : "pts"} · ${LANG==="hi" ? "लगातार #1" : "#1 streak"}: <b>${tp.streak || 0}/7</b> ${LANG==="hi" ? "दिन" : "days"}`
                     : (LANG==="hi" ? "इस सप्ताह अभी कोई रैंकिंग नहीं है।" : "No weekly ranking yet.");
-    wb.innerHTML = `<div style="padding:10px 12px;margin-bottom:10px;background:#fffbf0;border:1px solid #ecd28a;border-radius:10px"><div style="font-weight:700;font-size:13px">🏆 ${LANG==="hi" ? "साप्ताहिक #1 इनाम — 100★ अपने-आप" : "Weekly #1 Prize — 100★ auto-credit"}</div><div class="sub" style="margin-top:3px">${line}</div></div>` + wb.innerHTML;
+    wb.innerHTML = `<div style="padding:10px 12px;margin-bottom:10px;background:#fffbf0;border:1px solid #ecd28a;border-radius:10px"><div style="font-weight:700;font-size:13px">🏆 ${LANG==="hi" ? "साप्ताहिक #1 इनाम — ₹100 अपने-आप" : "Weekly #1 Prize — ₹100 auto-credit"}</div><div class="sub" style="margin-top:3px">${line}</div></div>` + wb.innerHTML;
   }
 }
 
@@ -1274,11 +1277,11 @@ function setBtnLoading(btn, on){
   if(on){ if(btn.dataset._old === undefined) btn.dataset._old = btn.innerHTML; btn.disabled = true; btn.innerHTML = "⏳ " + (LANG==="hi" ? "कृपया प्रतीक्षा करें…" : "Please wait…"); }
   else { btn.disabled = false; if(btn.dataset._old !== undefined){ btn.innerHTML = btn.dataset._old; delete btn.dataset._old; } }
 }
-const HOWTO_TEXT = { en:"How to use StuDy\n\n1. Register with your name, phone number and Gmail.\n2. Add stars to your D Coins wallet using UPI (minimum \u20B9100, then multiples of \u20B950).\n3. Buy any subject test (5\u2605), full mock (10\u2605) or notes (30\u2605) \u2014 once bought, it stays unlocked in your account forever.\n4. Your first attempt's marks are final; re-attempts are free practice with fresh questions.\n5. A question once shown to you will not repeat in your account (except a few very important ones).\n\nPayments are approved manually, usually within a few hours. If your stars don't arrive, contact us with your UTR number.", hi:"StuDy का उपयोग कैसे करें\n\n1. अपने नाम, फ़ोन नंबर और Gmail से रजिस्टर करें।\n2. UPI से D Coins वॉलेट में स्टार्स जोड़ें (न्यूनतम \u20B9100, फिर \u20B950 के गुणज)।\n3. कोई भी विषय टेस्ट (5\u2605), पूर्ण मॉक (10\u2605) या नोट्स (30\u2605) खरीदें \u2014 एक बार खरीदा, हमेशा अनलॉक रहेगा।\n4. पहले प्रयास के अंक अंतिम हैं; पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ।\n5. जो प्रश्न एक बार दिखा, वह दोबारा नहीं आएगा (कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर)।\n\nभुगतान मैन्युअली स्वीकृत होते हैं, प्रायः कुछ घंटों में। स्टार्स न आएँ तो UTR नंबर के साथ संपर्क करें।" };
+const HOWTO_TEXT = { en:"How to use StuDy\n\n1. Register with your name, phone number and Gmail.\n2. Add money to your StuDy wallet using UPI (minimum \u20B9100, then multiples of \u20B950).\n3. Buy any subject test (5\u2605), full mock (10\u2605) or notes (30\u2605) \u2014 once bought, it stays unlocked in your account forever.\n4. Your first attempt's marks are final; re-attempts are free practice with fresh questions.\n5. A question once shown to you will not repeat in your account (except a few very important ones).\n\nPayments are approved manually, usually within a few hours. If your stars don't arrive, contact us with your UTR number.", hi:"StuDy का उपयोग कैसे करें\n\n1. अपने नाम, फ़ोन नंबर और Gmail से रजिस्टर करें।\n2. UPI से StuDy वॉलेट में पैसे जोड़ें (न्यूनतम \u20B9100, फिर \u20B950 के गुणज)।\n3. कोई भी विषय टेस्ट (5\u2605), पूर्ण मॉक (10\u2605) या नोट्स (30\u2605) खरीदें \u2014 एक बार खरीदा, हमेशा अनलॉक रहेगा।\n4. पहले प्रयास के अंक अंतिम हैं; पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ।\n5. जो प्रश्न एक बार दिखा, वह दोबारा नहीं आएगा (कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर)।\n\nभुगतान मैन्युअली स्वीकृत होते हैं, प्रायः कुछ घंटों में। स्टार्स न आएँ तो UTR नंबर के साथ संपर्क करें।" };
 const FAQ_TEXT = { en:`Frequently Asked Questions (FAQ)
 
 Q. How do I add stars to my wallet?
-A. Go to Wallet → Add stars. Pay on the UPI QR (minimum Rs.100, then multiples of Rs.50), enter the 12-digit UTR number and tap "I have paid". Stars are credited after a quick manual approval, usually within a few hours.
+A. Go to Wallet → Add money. Pay on the UPI QR (minimum Rs.100, then multiples of Rs.50), enter the 12-digit UTR number and tap "I have paid". Stars are credited after a quick manual approval, usually within a few hours.
 
 Q. What is the Instagram bonus?
 A. Tick "Follow the owner on Instagram" while submitting your payment and you get 10% EXTRA stars on approval - for example, Rs.200 becomes 220 stars. Your follow may be checked before approval.
@@ -1293,7 +1296,7 @@ Q. Will questions repeat?
 A. A question once shown to you never repeats in your account, except a few marked very important.
 
 Q. How do I get the notes?
-A. Buy a subject's notes (30 stars) or the all-subjects bundle (50 stars) inside any exam category, then download the PDF from the same section. Once bought, notes stay yours forever.
+A. Buy a subject's notes (₹__N__) or the all-subjects bundle (₹__B__) inside any exam category, then download the PDF from the same section. Once bought, notes stay yours forever.
 
 Q. I forgot my password. What now?
 A. On the Login screen, tap "Forgot password?", enter your registered phone number, and an OTP will be sent to your registered Gmail. Enter the OTP and set a new password.
@@ -1326,7 +1329,7 @@ A. Profile - App language: switch between English and Hindi anytime.`, hi:`अ�
 उ. जो प्रश्न आपको एक बार दिखा, वह आपके खाते में दोबारा नहीं आएगा - कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर।
 
 प्र. नोट्स कैसे मिलेंगे?
-उ. किसी परीक्षा श्रेणी में विषय के नोट्स (30 स्टार्स) या सभी विषयों का बंडल (50 स्टार्स) खरीदें, फिर उसी सेक्शन से PDF डाउनलोड करें। एक बार खरीदे नोट्स हमेशा आपके रहेंगे।
+उ. किसी परीक्षा श्रेणी में विषय के नोट्स (₹__N__) या सभी विषयों का बंडल (₹__B__) खरीदें, फिर उसी सेक्शन से PDF डाउनलोड करें। एक बार खरीदे नोट्स हमेशा आपके रहेंगे।
 
 प्र. पासवर्ड भूल गया हूँ। क्या करूँ?
 उ. Login स्क्रीन पर "पासवर्ड भूल गए?" दबाएँ, रजिस्टर्ड फ़ोन नंबर डालें - OTP आपके रजिस्टर्ड Gmail पर आएगा। OTP डालकर नया पासवर्ड बनाएँ।
@@ -1345,6 +1348,7 @@ A. Profile - App language: switch between English and Hindi anytime.`, hi:`अ�
 function showHelp(){ const s=getSettings(); let txt = (LANG==="hi"? s.help.hi : s.help.en) || s.help.en;
   if(!txt || txt.trim().length < 60) txt = (LANG==="hi" ? HOWTO_TEXT.hi : HOWTO_TEXT.en);
   if(!/FAQ/.test(txt)) txt += "\n\n" + (LANG==="hi" ? FAQ_TEXT.hi : FAQ_TEXT.en);
+  const PP = s.prices || {}; txt = txt.replaceAll("__T__", PP.test ?? 5).replaceAll("__M__", PP.mock ?? 10).replaceAll("__N__", PP.notes ?? 30).replaceAll("__B__", PP.bundle ?? 50);
   showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${T("helpLink")}</h3><div class="sub" style="white-space:pre-line;margin-top:8px;font-size:13.5px;color:var(--txt)">${esc(txt)}</div><button class="btn gold" style="width:100%;margin-top:14px" onclick="showVerifier()">🔎 ${LANG==="hi" ? "रिपोर्ट कार्ड सत्यापित करें" : "Verify a Report Card"}</button><p class="sub" style="margin-top:6px;text-align:center">${LANG==="hi" ? "किसी भी StuDy रिपोर्ट कार्ड की असलियत उसके कोड से जाँचें।" : "Check any StuDy report card's authenticity with its code."}</p>`); }
 function showContact(){ const s=getSettings(); const txt = (LANG==="hi"? s.contact.hi : s.contact.en) || s.contact.en;
   const m = String(txt).match(/@([A-Za-z0-9_]{4,})/); const handle = m ? m[1] : "dj3680";
@@ -1407,7 +1411,7 @@ async function showReportCard(){
       <div style="border:1px solid #eee;border-radius:10px;text-align:center;padding:10px 4px"><div style="font-size:19px;font-weight:900">#${snap.rank}</div><div style="font-size:11px;color:#70757d">Overall rank</div></div>
       <div style="border:1px solid #eee;border-radius:10px;text-align:center;padding:10px 4px"><div style="font-size:19px;font-weight:900">${snap.avg}%</div><div style="font-size:11px;color:#70757d">Average score</div></div>
       <div style="border:1px solid #eee;border-radius:10px;text-align:center;padding:10px 4px"><div style="font-size:19px;font-weight:900">${snap.acc}%</div><div style="font-size:11px;color:#70757d">Accuracy</div></div>
-      <div style="border:1px solid #eee;border-radius:10px;text-align:center;padding:10px 4px"><div style="font-size:19px;font-weight:900">★ ${ME.stars||0}</div><div style="font-size:11px;color:#70757d">Star balance</div></div>
+      <div style="border:1px solid #eee;border-radius:10px;text-align:center;padding:10px 4px"><div style="font-size:19px;font-weight:900">₹${ME.stars||0}</div><div style="font-size:11px;color:#70757d">Star balance</div></div>
     </div>
     <div style="margin-top:14px">
       <div style="font-size:11px;letter-spacing:1.2px;color:#70757d;font-weight:800;margin-bottom:5px">COMPLETE ATTEMPT RECORD</div>
@@ -1474,17 +1478,17 @@ function scheduleInstallPrompt(){
 }
 
 /* ---------------- Init ---------------- */
-/* Android/browser back button: first back goes Home; on Home, ask before exiting */
+/* Back button: go to the previous screen first, then Home. No exit confirmation. */
+let NAVHIST = [], NAVBACK = false;
 function armBack(){ try{ history.pushState({study:1}, ""); }catch(e){} }
-function showExitConfirm(){
-  showModal(`<h3 style="font-size:16px">${LANG==="hi" ? "ऐप से बाहर निकलें?" : "Exit StuDy?"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi" ? "क्या आप निश्चित रूप से बाहर निकलना चाहते हैं?" : "Are you sure you want to exit the app?"}</p><div style="display:flex;gap:10px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal();armBack()">${LANG==="hi" ? "रहें" : "Stay"}</button><button class="btn" style="flex:1" onclick="closeModal();history.back()">${LANG==="hi" ? "बाहर निकलें" : "Exit"}</button></div>`);
-}
 window.addEventListener("popstate", ()=>{
   if($("modal-root") && $("modal-root").innerHTML){ closeModal(); armBack(); return; }
   if(TEST && !TEST.done){ armBack(); return; }
-  if(CURSCREEN === "home"){ showExitConfirm(); return; }
-  if(CURSCREEN !== "auth"){ go("home"); armBack(); return; }
-  armBack();
+  if(CURSCREEN === "auth"){ armBack(); return; }
+  const prev = NAVHIST.pop();
+  if(prev && prev !== CURSCREEN){ NAVBACK = true; go(prev); NAVBACK = false; armBack(); return; }
+  if(CURSCREEN !== "home"){ NAVBACK = true; go("home"); NAVBACK = false; armBack(); return; }
+  /* at Home with nothing behind: let the browser do its default */
 });
 window.addEventListener("load", async ()=>{
   armBack();
