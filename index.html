@@ -42,10 +42,10 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);border-
 .bnav button.on .ndot{width:4px;height:4px;border-radius:50%;background:var(--goldb)}
 .bnav .ndot{width:4px;height:4px}
 /* Floating Instagram */
-#igfloat{position:fixed;left:14px;bottom:86px;z-index:55;width:44px;height:44px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:0 4px 16px rgba(0,0,0,.10);display:flex;align-items:center;justify-content:center}
-#igfloat svg{width:23px;height:23px}
-#installfloat{position:fixed;right:14px;bottom:86px;z-index:55;width:44px;height:44px;border-radius:50%;background:#fff;border:1.5px solid var(--goldb);box-shadow:0 4px 16px rgba(0,0,0,.10);display:flex;align-items:center;justify-content:center;color:#141414;cursor:pointer;padding:0}
-#installfloat svg{width:23px;height:23px}
+#igfloat{position:static;width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+#igfloat svg{width:21px;height:21px}
+#installfloat{position:static;width:38px;height:38px;border-radius:50%;background:#fff;border:1.5px solid var(--goldb);box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;color:#141414;cursor:pointer;padding:0;flex:0 0 auto}
+#installfloat svg{width:21px;height:21px}
 /* Type + layout */
 h1{font-size:20px;font-weight:800;letter-spacing:-.2px}
 h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.1px;color:var(--mut);margin:22px 0 10px}
@@ -223,7 +223,10 @@ html,body{overscroll-behavior-y:none;}
   <!-- ============ HOME ============ -->
   <section id="screen-home" class="hidden">
     <div id="home-banner"></div>
-    <h2 data-i18n="chooseCat">Choose your exam</h2>
+    <div style="display:flex;align-items:center;gap:8px;margin:22px 0 10px">
+      <h2 data-i18n="chooseCat" style="margin:0;flex:1">Choose your exam</h2>
+      <span id="exam-actions" style="display:flex;gap:8px;align-items:center"></span>
+    </div>
     <div class="grid" id="catgrid"></div>
     <h2 data-i18n="freeMocks">Free mock tests</h2>
     <div class="grid" id="freemocks"></div>
@@ -268,9 +271,10 @@ html,body{overscroll-behavior-y:none;}
         <span style="font-size:13px;line-height:1.5"><b>Follow the owner on Instagram & get 10% EXTRA balance</b> — follow <a href="https://www.instagram.com/dinesh.jangir_/" target="_blank" rel="noopener" onclick="event.stopPropagation()"><b>@dinesh.jangir_</b></a> and tick this box. You pay the full <span id="dep-full">₹100</span>; on approval you receive <b id="dep-disc">₹110</b> (10% bonus). The owner verifies your follow before approving.</span>
       </label>
       <div class="qrbox" style="margin-top:16px">
-        <img id="qrimg" alt="UPI QR">
-        <p style="margin-top:10px;font-weight:700;font-size:13.5px">UPI ID: <span style="color:var(--gold)">dineshjangirdjsp-1@oksbi</span></p>
+        <img id="qrimg" alt="UPI QR" title="Tap to save this QR" onclick="saveQR()" style="cursor:pointer">
+        <p style="margin-top:10px;font-weight:700;font-size:13.5px">UPI ID: <span id="upi-id" onclick="copyUPI()" title="Tap to copy" style="color:var(--gold);cursor:pointer;text-decoration:underline dotted">dineshjangirdjsp-1@oksbi</span> <span class="sub" style="font-weight:400">(tap to copy)</span></p>
         <p class="sub" data-i18n="scanPay">Scan the QR with any UPI app (GPay / PhonePe / Paytm) and pay.</p>
+        <p class="sub" style="margin-top:4px">Tap the QR to save it · QR सहेजने के लिए उस पर टैप करें</p>
       </div>
       <div class="fld" style="margin-top:14px"><label data-i18n="utr">UPI Transaction / UTR number (12 digits)</label><input id="dep-utr" inputmode="numeric" maxlength="12" placeholder="e.g. 4022xxxxxxxx"></div>
       <div class="err" id="dep-err"></div><div class="okmsg" id="dep-ok"></div>
@@ -400,6 +404,7 @@ html,body{overscroll-behavior-y:none;}
         <div class="fld"><label>Subject notes price</label><input id="ad-p-notes" type="number"></div>
         <div class="fld"><label>All-subjects bundle price</label><input id="ad-p-bundle" type="number"></div>
       </div>
+      <p class="sub" style="margin:2px 0 10px">School subject prices are fixed by class — Class 9: ₹10 · Class 10: ₹20 · Class 11: ₹25 · Class 12: ₹30 — and do not change with the prices above.</p>
       <button class="btn sm" onclick="adminSavePrices()">Save prices</button>
       <div class="okmsg" id="ad-price-ok"></div>
     </div>
@@ -536,6 +541,8 @@ const SCHOOL_CHAPTERS = {
  "c12_eng": ENG_UNITS
 };
 let CURCLASS = "c10";
+const SCHOOL_PRICE = { c9:10, c10:20, c11:25, c12:30 };
+function schoolSubjectPrice(sub){ return SCHOOL_PRICE[String(sub||"").split("_")[0]] || getSettings().prices.test; }
 function chapterOf(sub){ const m = /^(c\d+)_(.+)_ch(\d+)$/.exec(sub||""); if(!m) return null; const list = SCHOOL_CHAPTERS[m[1]+"_"+m[2]]; if(!list) return null; return list[+m[3]-1] || null; }
 function chapterKey(cls, s, i){ return cls + "_" + s + "_ch" + (i+1); }
 const subName = (cat, sub, lang) => { const hi = lang==="hi";
@@ -766,7 +773,7 @@ function spendStars(amount, label){
   return true;
 }
 function buyTest(cat, sub){
-  const p = getSettings().prices.test;
+  const p = cat==="school" ? schoolSubjectPrice(sub) : getSettings().prices.test;
   if(!spendStars(p, "Test: "+CATS[cat].name.en+" "+subName(cat,sub,"en"))) return;
   ME.purchases.tests[cat+"_"+sub] = Date.now();
   if(!BACKEND_URL) Store.updateMe(u=>u.purchases=ME.purchases); else api("buy",{phone:ME.phone, kind:"test", key:cat+"_"+sub});
@@ -790,6 +797,9 @@ function buyNotes(cat, key, label){
 /* ---------------- Home / Category ---------------- */
 function dismissBanner(id){ localStorage.setItem("study_banner_x", String(id)); renderHome(); }
 function renderHome(){
+  const ea = $("exam-actions"), dlBtn = $("installfloat"), igBtn = $("igfloat");
+  if(ea && dlBtn && igBtn){ ea.appendChild(dlBtn); ea.appendChild(igBtn); }
+  refreshInstallFloat();
   const n = Store.notifs()[0];
   const dismissed = localStorage.getItem("study_banner_x");
   $("home-banner").innerHTML = (n && dismissed !== String(n.id)) ? `<div class="banner"><div style="font-size:17px">📢</div><div style="flex:1;min-width:0"><div class="bt">${esc(n.title)}</div><div class="bs">${esc(n.body)}</div></div><button onclick="dismissBanner('${n.id}')" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0">✕</button></div>` : "";
@@ -878,7 +888,7 @@ function renderSchoolCategory(c, P){
     return `<div class="testrow" style="background:#fafafa"><div class="ti"><div class="tt">${sname} — ${LANG==="hi" ? "पूर्ण विषय टेस्ट" : "Complete Subject Test"}</div>
       <div class="ts">10 ${T("questions")} · 10 ${T("minutes")}${att.length ? ` · ${att.length} ${T("attempts")} · ${T("bestScore")}: ${Math.max(...att.filter(a=>a.first).map(a=>a.score), 0)}` : ""}</div></div>
       ${owned ? `<span class="tag free">${T("owned")}</span><button class="btn sm" onclick="startTest('school','${sub}')">${att.length ? reAtt : T("start")}</button>`
-              : `<span class="price">₹${P.test}</span><button class="btn sm gold" onclick="buyTest('school','${sub}')">${T("buyStart")}</button>`}
+              : `<span class="price">₹${schoolSubjectPrice(sub)}</span><button class="btn sm gold" onclick="buyTest('school','${sub}')">${T("buyStart")}</button>`}
     </div><div style="padding-left:12px">${chapters}</div>`; }).join("");
   $("mock-card").innerHTML = "";
   $("notes-list").innerHTML = "";
@@ -1105,6 +1115,22 @@ function renderResult(rec){
 
 /* ---------------- Wallet ---------------- */
 let DEP_AMT = 100;
+function saveQR(){
+  const img = $("qrimg"); if(!img || !img.src) return;
+  const a = document.createElement("a"); a.href = img.src; a.download = "StuDy-UPI-QR-" + DEP_AMT + ".png";
+  document.body.appendChild(a); a.click(); a.remove();
+  toast(LANG==="hi" ? "QR डाउनलोड हो रहा है — गैलरी/डाउनलोड में देखें" : "QR downloading — check your gallery/downloads");
+}
+function fallbackCopy(text, done){
+  const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); done(); }catch(e){} ta.remove();
+}
+function copyUPI(){
+  const id = "dineshjangirdjsp-1@oksbi";
+  const done = ()=> toast((LANG==="hi" ? "UPI ID कॉपी हो गया ✓ " : "UPI ID copied ✓ ") + id);
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(id).then(done).catch(()=>fallbackCopy(id, done)); }
+  else fallbackCopy(id, done);
+}
 function renderWallet(){
   $("wstars").textContent = ME.stars||0;
   $("amtchips").innerHTML = [100,150,200,250,300,500].map(a=>`<button class="${a===DEP_AMT?"on":""}" onclick="DEP_AMT=${a};renderWallet()">₹${a}</button>`).join("");
@@ -1113,7 +1139,7 @@ function renderWallet(){
   const pend = Store.payments().filter(p=>p.phone===ME.phone && p.status==="pending");
   const items = [ ...pend.map(p=>({...p, pending:true})), ...(ME.ledger||[]) ];
   $("wallet-history").innerHTML = items.length ? items.map(it=> it.pending
-    ? `<div class="testrow"><div class="ti"><div class="tt">₹${it.amount} — ${T("depositPending")}${it.insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0">📸 −10%</span>':""}</div><div class="ts">UTR: ${esc(it.utr)} · ${new Date(it.at).toLocaleString()}</div></div><span class="tag">⏳</span></div>`
+    ? `<div class="testrow"><div class="ti"><div class="tt">₹${it.amount} — ${T("depositPending")}${it.insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0">📸 +10% bonus</span>':""}</div><div class="ts">UTR: ${esc(it.utr)} · ${new Date(it.at).toLocaleString()}</div></div><span class="tag">⏳</span></div>`
     : `<div class="testrow"><div class="ti"><div class="tt">${esc(it.label)}</div><div class="ts">${new Date(it.at).toLocaleString()}</div></div><span class="price" style="color:${it.amt>=0?"var(--grn)":"var(--red)"}">${it.amt>=0?"+":""}₹${it.amt}</span></div>`).join("")
     : `<p class="sub" style="padding:12px 0">${T("noHistory")}</p>`;
   refreshHeader();
@@ -1197,37 +1223,55 @@ function enableNotifs(){ if("Notification" in window){ Notification.requestPermi
 /* ---------------- Admin ---------------- */
 function adminPaymentHtml(p){
   const insta = p.insta===true || +p.insta===1;
-  return `<div class="testrow"><div class="ti"><div class="tt">${esc(p.name||"")} · ${esc(p.phone)} — ₹${p.amount}${insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0">📸 Insta follow — +10% bonus</span>':""}</div><div class="ts">UTR: ${esc(p.utr)} · ${new Date(p.at).toLocaleString()}${insta?" · approves as ₹"+Math.round(p.amount*1.1)+" (with bonus)":""}</div></div><button class="btn sm" onclick="adminDecide('${p.id}',true)">Approve</button><button class="btn sm red" onclick="adminDecide('${p.id}',false)">Reject</button></div>`;
+  const bonus = Math.round(p.amount*1.1);
+  const btns = insta
+    ? `<button class="btn sm gold" onclick="adminDecide('${p.id}',true,${bonus})">Approve bonus ₹${bonus}</button><button class="btn sm" onclick="adminDecide('${p.id}',true,${p.amount})">Approve payment ₹${p.amount}</button><button class="btn sm red" onclick="adminDecide('${p.id}',false)">Reject</button>`
+    : `<button class="btn sm" onclick="adminDecide('${p.id}',true)">Approve</button><button class="btn sm red" onclick="adminDecide('${p.id}',false)">Reject</button>`;
+  return `<div class="testrow"><div class="ti"><div class="tt">${esc(p.name||"")} · ${esc(p.phone)} — ₹${p.amount}${insta?' <span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0">📸 Insta follow — +10% bonus</span>':""}</div><div class="ts">UTR: ${esc(p.utr)} · ${new Date(p.at).toLocaleString()}${insta?" · bonus ₹"+bonus+" if followed, or payment-only ₹"+p.amount+" if not":""}</div></div>${btns}</div>`;
 }
 let ADMIN_STATS_LOADING = false;
+function adminNotifHtml(n){ return `<div class="testrow"><div class="ti"><div class="tt">${esc(n.title)}</div><div class="ts">${esc(n.body)}</div></div><button class="btn sm red" onclick="adminDelNotif('${n.id}')">Delete</button></div>`; }
+function adminLoadFail(msg){
+  ["ad-users","ad-attempts","ad-revenue"].forEach(id=>{ const e=$(id); if(e) e.textContent = "—"; });
+  const html = `<p class="sub" style="padding:10px 0">${msg}</p>`;
+  if($("ad-payments")) $("ad-payments").innerHTML = html;
+  if($("ad-notifs")) $("ad-notifs").innerHTML = html;
+}
 async function loadAdminStats(){
   if(!BACKEND_URL || !isAdmin() || ADMIN_STATS_LOADING) return;
   ADMIN_STATS_LOADING = true;
   try{
-    if(!_adminPass){ const ok = await ensureAdminPass(); if(!ok){ if($("ad-users")) $("ad-users").textContent = "—"; return; } }
+    if(!_adminPass){ const ok = await ensureAdminPass(); if(!ok){ adminLoadFail("Admin confirmation needed to load live data."); return; } }
     const r = await api("adminStats", {adminPhone:ME.phone, adminPass:_adminPass});
-    if(!r.ok){ if(r.error==="forbidden") _adminPass = null; if($("ad-users")) $("ad-users").textContent = "—"; return; }
+    if(!r.ok){ if(r.error==="forbidden") _adminPass = null; adminLoadFail("Could not load live data — reopen the panel to retry."); return; }
     if(CURSCREEN!=="admin") return;
     $("ad-users").textContent = r.users ?? 0;
     $("ad-attempts").textContent = r.attempts ?? 0;
     $("ad-revenue").textContent = "₹" + (r.revenue ?? 0);
     const pend = r.pending || [];
     $("ad-payments").innerHTML = pend.length ? pend.map(adminPaymentHtml).join("") : `<p class="sub" style="padding:10px 0">No pending payments.</p>`;
+    const nots = r.notifs || [];
+    $("ad-notifs").innerHTML = nots.length ? nots.map(adminNotifHtml).join("") : `<p class="sub" style="padding:10px 0">No notifications.</p>`;
   }finally{ ADMIN_STATS_LOADING = false; }
 }
 function renderAdmin(){
   if(!isAdmin()) return;
+  const P = getSettings().prices;
+  $("ad-p-test").value=P.test; $("ad-p-mock").value=P.mock; $("ad-p-notes").value=P.notes; $("ad-p-bundle").value=P.bundle;
+  $("ad-help").value = getSettings().help.en; $("ad-contact").value = getSettings().contact.en;
+  if(BACKEND_URL){
+    const loading = `<div style="display:flex;align-items:center;gap:10px;padding:12px 2px"><div class="spin"></div><span class="sub">${LANG==="hi" ? "लाइव डेटा लोड हो रहा है…" : "Loading live data…"}</span></div>`;
+    $("ad-users").textContent = "…"; $("ad-attempts").textContent = "…"; $("ad-revenue").textContent = "…";
+    $("ad-payments").innerHTML = loading; $("ad-notifs").innerHTML = loading;
+    loadAdminStats(); return;
+  }
   const us = Store.users(), atts = Store.attempts();
   $("ad-users").textContent = us.length; $("ad-attempts").textContent = atts.length;
   const rev = us.reduce((s,u)=> s + (u.ledger||[]).filter(l=>l.amt<0).reduce((x,l)=>x-l.amt,0), 0);
   $("ad-revenue").textContent = "₹"+rev;
   const pend = Store.payments().filter(p=>p.status==="pending");
   $("ad-payments").innerHTML = pend.length ? pend.map(adminPaymentHtml).join("") : `<p class="sub" style="padding:10px 0">No pending payments.</p>`;
-  if(BACKEND_URL) loadAdminStats();
-  const P = getSettings().prices;
-  $("ad-p-test").value=P.test; $("ad-p-mock").value=P.mock; $("ad-p-notes").value=P.notes; $("ad-p-bundle").value=P.bundle;
-  $("ad-help").value = getSettings().help.en; $("ad-contact").value = getSettings().contact.en;
-  $("ad-notifs").innerHTML = Store.notifs().map(n=>`<div class="testrow"><div class="ti"><div class="tt">${esc(n.title)}</div><div class="ts">${esc(n.body)}</div></div><button class="btn sm red" onclick="adminDelNotif('${n.id}')">Delete</button></div>`).join("");
+  $("ad-notifs").innerHTML = Store.notifs().map(adminNotifHtml).join("");
 }
 async function adminDecide(id, approve, credit){
   if(BACKEND_URL){ if(!(await ensureAdminPass())) return; const r = await api("adminDecidePayment", {adminPhone:ME.phone, adminPass:_adminPass, id, approve, credit}); if(!r.ok){ _adminPass=null; alert(r.error==="forbidden" ? "Wrong admin password — please try again." : ("Failed: "+r.error)); return; } alert("Done — the user has been notified."); loadAdminStats(); return; }
@@ -1240,7 +1284,7 @@ async function adminDecide(id, approve, credit){
     pushUnotif(p.phone, { title:"Payment approved ✅", body:"Your ₹"+p.amount+" deposit (UTR "+p.utr+") is approved. "+creditAmt+" has been added to your StuDy wallet." + (creditAmt>p.amount ? " This includes your Instagram bonus of ₹"+(creditAmt-p.amount)+". bonus." : "") });
   } else {
     const n = { title:"Payment not approved", body:"Your ₹"+p.amount+" deposit (UTR "+p.utr+") could not be approved. Please check the UTR number and amount, then submit again, or contact us on Telegram." };
-    if(p.insta){ n.body = "Your Instagram-discount deposit of ₹"+p.amount+" (UTR "+p.utr+") was not approved — we could not verify your follow of @dinesh.jangir_. If you have followed, tap below and DM us; after checking, we will add your stars."; n.link = "https://ig.me/m/dinesh.jangir_"; n.linkLabel = "DM on Instagram"; }
+    if(p.insta){ n.body = "Your Instagram-discount deposit of ₹"+p.amount+" (UTR "+p.utr+") was not approved — we could not verify your follow of @dinesh.jangir_. If you have followed, tap below and DM us; after checking, we will add your balance."; n.link = "https://ig.me/m/dinesh.jangir_"; n.linkLabel = "DM on Instagram"; }
     pushUnotif(p.phone, n);
   }
   renderAdmin(); refreshHeader();
@@ -1455,14 +1499,6 @@ async function showReportCard(){
       <div style="border:1px solid #eee;border-radius:10px;text-align:center;padding:10px 4px"><div style="font-size:19px;font-weight:900">#${snap.rank}</div><div style="font-size:11px;color:#70757d">Overall rank</div></div>
       <div style="border:1px solid #eee;border-radius:10px;text-align:center;padding:10px 4px"><div style="font-size:19px;font-weight:900">${snap.avg}%</div><div style="font-size:11px;color:#70757d">Average score</div></div>
       <div style="border:1px solid #eee;border-radius:10px;text-align:center;padding:10px 4px"><div style="font-size:19px;font-weight:900">${snap.acc}%</div><div style="font-size:11px;color:#70757d">Accuracy</div></div>
-      <div style="border:1px solid #eee;border-radius:10px;text-align:center;padding:10px 4px"><div style="font-size:19px;font-weight:900">₹${ME.stars||0}</div><div style="font-size:11px;color:#70757d">Star balance</div></div>
-    </div>
-    <div style="margin-top:14px">
-      <div style="font-size:11px;letter-spacing:1.2px;color:#70757d;font-weight:800;margin-bottom:5px">COMPLETE ATTEMPT RECORD</div>
-      <table style="width:100%;border-collapse:collapse;font-size:11.5px">
-        <tr style="color:#70757d;text-align:left"><th style="padding:4px 3px;border-bottom:1px solid #e6e6e6">#</th><th style="padding:4px 3px;border-bottom:1px solid #e6e6e6">Date</th><th style="padding:4px 3px;border-bottom:1px solid #e6e6e6">Exam</th><th style="padding:4px 3px;border-bottom:1px solid #e6e6e6">Test</th><th style="padding:4px 3px;border-bottom:1px solid #e6e6e6">Type</th><th style="padding:4px 3px;border-bottom:1px solid #e6e6e6">Score</th></tr>
-        ${mine.length ? [...mine].sort((a,b)=>a.at-b.at).map((a,i)=>`<tr><td style="padding:4px 3px;border-bottom:1px solid #f0f0f0">${i+1}</td><td style="padding:4px 3px;border-bottom:1px solid #f0f0f0">${new Date(a.at).toLocaleDateString()}</td><td style="padding:4px 3px;border-bottom:1px solid #f0f0f0">${CATS[a.cat].name.en}</td><td style="padding:4px 3px;border-bottom:1px solid #f0f0f0">${a.type==="test" ? subName(a.cat,a.sub,"en") : a.type==="mock" ? "Full Mock" : "Free Mock"}</td><td style="padding:4px 3px;border-bottom:1px solid #f0f0f0">${a.first ? "First" : "Practice"}</td><td style="padding:4px 3px;border-bottom:1px solid #f0f0f0"><b>${a.score}/${a.total}</b></td></tr>`).join("") : `<tr><td colspan="6" style="padding:8px 3px;color:#70757d">No attempts yet.</td></tr>`}
-      </table>
     </div>
     <div style="margin-top:14px;background:#fafafa;border:1px dashed #d9d9d9;border-radius:10px;padding:10px;text-align:center">
       <div style="font-size:10.5px;letter-spacing:1.4px;color:#70757d;font-weight:700">VERIFICATION CODE</div>
