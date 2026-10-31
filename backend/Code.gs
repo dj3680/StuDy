@@ -58,7 +58,7 @@ function pubUser(u){
 function getSettings(){
   const r = rows("Settings").find(x=>x.key==="main");
   if(r) return JSON.parse(r.json);
-  return { prices:{test:5,mock:10,notes:30,bundle:50},
+  return { prices:{test:5,mock:10,notes:30,bundle:50,sub:1000},
     help:{en:"See Help in the app.",hi:"See Help in the app."}, contact:{en:"Telegram: @dj3680",hi:"Telegram: @dj3680"} };
 }
 function json(o){ return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
@@ -137,7 +137,7 @@ function doPost(e){
       if(findUser(req.phone)) return json({ok:false,error:"exists"});
       const code = String(Math.floor(100000+Math.random()*900000));
       sheet("OTPs").appendRow([req.gmail, code, Date.now()+10*60*1000, req.phone]);
-      MailApp.sendEmail(req.gmail, "StuDy - your OTP", "Your StuDy registration OTP is: " + code + "\n\nValid for 10 minutes. If you did not request this, ignore this email.");
+      MailApp.sendEmail({to: req.gmail, subject: "StuDy - your OTP", body: "Your StuDy registration OTP is: " + code + "\n\nValid for 10 minutes. If you did not request this, ignore this email.", name: "StuDy"});
       return json({ok:true});
     }
     if(a==="register"){
@@ -153,7 +153,7 @@ function doPost(e){
       const u = findUser(req.phone); if(!u) return json({ok:false,error:"nouser"});
       const code = String(Math.floor(100000+Math.random()*900000));
       sheet("OTPs").appendRow([u.gmail, code, Date.now()+10*60*1000, req.phone]);
-      MailApp.sendEmail(u.gmail, "StuDy - password reset OTP", "Your StuDy password reset OTP is: " + code + "\n\nValid for 10 minutes. If you did not request this, ignore this email.");
+      MailApp.sendEmail({to: u.gmail, subject: "StuDy - password reset OTP", body: "Your StuDy password reset OTP is: " + code + "\n\nValid for 10 minutes. If you did not request this, ignore this email.", name: "StuDy"});
       return json({ok:true});
     }
     if(a==="resetPassword"){
@@ -264,10 +264,11 @@ function doPost(e){
       const u = findUser(req.phone); if(!u) return json({ok:false,error:"nouser"});
       if(u.session && String(req.session||"") !== String(u.session)) return json({ok:false,error:"session"});
       if((+u.subUntil||0) > Date.now()) return json({ok:false,error:"active"});
-      if((+u.stars||0) < 1000) return json({ok:false,error:"funds"});
-      u.stars = (+u.stars||0) - 1000;
+      const subPrice = +(((getSettings()||{}).prices||{}).sub) || 1000;
+      if((+u.stars||0) < subPrice) return json({ok:false,error:"funds"});
+      u.stars = (+u.stars||0) - subPrice;
       u.subUntil = Date.now() + 365*24*3600*1000;
-      const led = JSON.parse(u.ledger||"[]"); led.unshift({at:Date.now(), amt:-1000, label:"StuDy Premium (1 year)"}); u.ledger = JSON.stringify(led);
+      const led = JSON.parse(u.ledger||"[]"); led.unshift({at:Date.now(), amt:-subPrice, label:"StuDy Premium (1 year)"}); u.ledger = JSON.stringify(led);
       saveUser(u); return json({ok:true, user:pubUser(u)});
     }
     const adminOk = () => { const u = findUser(ADMIN_PHONE); return String(req.adminPhone)===ADMIN_PHONE && u && String(u.pass)===String(req.adminPass); };
