@@ -125,6 +125,42 @@ function pruneNotifs(){
     for(let i = v.length - 1; i >= 1; i--){ const at = +v[i][cfg[1]] || 0; if(at && at < cut) s.deleteRow(i + 1); }
   });
 }
+/* Professional OTP email (plain text + HTML), sent under the name "StuDy" */
+function otpMail(to, code, kind){
+  const isReg = kind === "register";
+  const subject = isReg ? "StuDy - Your Registration OTP" : "StuDy - Password Reset OTP";
+  const intro = isReg
+    ? "Welcome to StuDy! Please use the one-time password (OTP) below to verify your Gmail and complete your registration."
+    : "We received a request to reset the password of your StuDy account. Please use the one-time password (OTP) below to set a new password.";
+  const ignore = isReg
+    ? "If you did not request this OTP, please ignore this email - no account will be created without verification."
+    : "If you did not request this OTP, please ignore this email - your password will remain unchanged.";
+  const thanks = isReg ? "Thank you for joining StuDy. We wish you the very best for your preparation!" : "Thank you for learning with StuDy.";
+  const body = "Hello,\n\n" + intro + "\n\nYour OTP is: " + code + "\n\nThis OTP is valid for 10 minutes.\n\nFor your security, never share this OTP with anyone. Team StuDy will never call, message or email you asking for your OTP.\n\n" + ignore + "\n\n" + thanks + "\n\nWarm regards,\nTeam StuDy\nOwner: Dinesh";
+  const html = `<div style="margin:0;padding:24px 12px;background:#f6f4ee;font-family:Arial,Helvetica,sans-serif">
+  <div style="max-width:520px;margin:0 auto;background:#ffffff;border:1px solid #e8e2d4;border-radius:14px;overflow:hidden">
+    <div style="background:#111111;padding:18px 24px">
+      <span style="color:#ffffff;font-size:22px;font-weight:bold">Stu<span style="color:#e5b95c">D</span>y</span>
+      <div style="color:#cbbd93;font-size:12px;margin-top:3px">Tests \u2022 Mocks \u2022 Notes - UPSC \u00b7 RPSC \u00b7 SSC \u00b7 NEET \u00b7 JEE \u00b7 REET</div>
+    </div>
+    <div style="padding:24px;color:#222222;font-size:14.5px;line-height:1.6">
+      <p style="margin:0 0 12px">Hello,</p>
+      <p style="margin:0 0 6px">${intro}</p>
+      <div style="text-align:center;margin:22px 0">
+        <span style="display:inline-block;background:#fffbf0;border:1.5px dashed #e5b95c;border-radius:12px;padding:13px 30px;font-size:30px;font-weight:bold;letter-spacing:8px;color:#111111">${code}</span>
+      </div>
+      <p style="margin:0 0 12px">This OTP is valid for <b>10 minutes</b>.</p>
+      <p style="margin:0 0 12px;color:#666666;font-size:13px">For your security, never share this OTP with anyone. Team StuDy will never call, message or email you asking for your OTP.</p>
+      <p style="margin:0 0 12px;color:#666666;font-size:13px">${ignore}</p>
+      <p style="margin:0">${thanks}</p>
+      <p style="margin:20px 0 0">Warm regards,<br><b>Team StuDy</b><br><span style="color:#666666;font-size:13px">Owner: Dinesh</span></p>
+    </div>
+  </div>
+  <div style="max-width:520px;margin:10px auto 0;text-align:center;color:#999999;font-size:11.5px">This is an automated email from the StuDy app. Please do not reply.</div>
+</div>`;
+  MailApp.sendEmail({to: to, subject: subject, body: body, htmlBody: html, name: "StuDy"});
+}
+
 function doPost(e){
   let req; try{ req = JSON.parse(e.postData.contents); }catch(err){ return json({ok:false,error:"badjson"}); }
   const a = req.action;
@@ -137,7 +173,7 @@ function doPost(e){
       if(findUser(req.phone)) return json({ok:false,error:"exists"});
       const code = String(Math.floor(100000+Math.random()*900000));
       sheet("OTPs").appendRow([req.gmail, code, Date.now()+10*60*1000, req.phone]);
-      MailApp.sendEmail({to: req.gmail, subject: "StuDy - your OTP", body: "Your StuDy registration OTP is: " + code + "\n\nValid for 10 minutes. If you did not request this, ignore this email.", name: "StuDy"});
+      otpMail(req.gmail, code, "register");
       return json({ok:true});
     }
     if(a==="register"){
@@ -153,7 +189,7 @@ function doPost(e){
       const u = findUser(req.phone); if(!u) return json({ok:false,error:"nouser"});
       const code = String(Math.floor(100000+Math.random()*900000));
       sheet("OTPs").appendRow([u.gmail, code, Date.now()+10*60*1000, req.phone]);
-      MailApp.sendEmail({to: u.gmail, subject: "StuDy - password reset OTP", body: "Your StuDy password reset OTP is: " + code + "\n\nValid for 10 minutes. If you did not request this, ignore this email.", name: "StuDy"});
+      otpMail(u.gmail, code, "reset");
       return json({ok:true});
     }
     if(a==="resetPassword"){
