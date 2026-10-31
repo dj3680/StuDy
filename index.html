@@ -562,6 +562,7 @@ const CATS = {
           subjects:[["raj","Rajasthan GK","राजस्थान सामान्य ज्ञान"],["hist","Indian History","भारतीय इतिहास"],["geo","Geography","भूगोल"],["pol","Polity","राजनीति विज्ञान"],["sci","General Science","सामान्य विज्ञान"],["ca","Current Affairs","समसामयिक घटनाएँ"]] },
   upsc: { name:{en:"UPSC",hi:"UPSC"}, desc:{en:"Civil Services (IAS/IPS) — Union Public Service Commission",hi:"सिविल सेवा (IAS/IPS) — संघ लोक सेवा आयोग"},
           subjects:[["hist","History","इतिहास"],["geo","Geography","भूगोल"],["pol","Polity","राजनीति विज्ञान"],["eco","Economy","अर्थशास्त्र"],["env","Environment & Ecology","पर्यावरण एवं पारिस्थितिकी"],["ca","Current Affairs","समसामयिक घटनाएँ"]] },
+  ca:   { name:{en:"Current Affairs",hi:"करंट अफेयर्स"}, desc:{en:"Daily 50-question test · RPSC + UPSC · No time limit",hi:"रोज़ 50 प्रश्नों की टेस्ट · RPSC + UPSC · कोई समय सीमा नहीं"}, subjects:[] },
   reet: { name:{en:"REET",hi:"REET"}, desc:{en:"Rajasthan Eligibility Examination for Teachers — complete mock test only",hi:"राजस्थान अध्यापक पात्रता परीक्षा — केवल पूर्ण मॉक टेस्ट"},
           subjects:[] },
   neet: { name:{en:"NEET",hi:"NEET"}, desc:{en:"National Eligibility cum Entrance Test (UG) \u2014 complete mock test only",hi:"\u0930\u093e\u0937\u094d\u091f\u094d\u0930\u0940\u092f \u092a\u093e\u0924\u094d\u0930\u0924\u093e \u0938\u0939 \u092a\u094d\u0930\u0935\u0947\u0936 \u092a\u0930\u0940\u0915\u094d\u0937\u093e (UG) \u2014 \u0915\u0947\u0935\u0932 \u092a\u0942\u0930\u094d\u0923 \u092e\u0949\u0915 \u091f\u0947\u0938\u094d\u091f"},
@@ -873,6 +874,53 @@ function buyNotes(cat, key, label){
   toast(T("purchased")); renderCategory(cat);
 }
 
+
+/* ---------------- Daily Current Affairs ---------------- */
+if(!ASSET.ca) ASSET.ca = ASSET.logo;
+const CA_PRICE = 5;
+function caSets(){
+  const byDate = {};
+  (window.STUDY_QUESTIONS || []).forEach(q=>{ if(q[1] === "ca" && /^\d{4}-\d{2}-\d{2}$/.test(q[2])){ (byDate[q[2]] = byDate[q[2]] || []).push(q); } });
+  return Object.keys(byDate).sort().reverse().map(d=>({ date:d, qs:byDate[d] }));
+}
+function caOwned(date){ return isSubActive() || !!(ME && ME.purchases && ME.purchases.tests && ME.purchases.tests["ca_" + date]); }
+function caDateLabel(d){
+  const dt = new Date(d + "T00:00:00"), now = new Date();
+  const iso = x => x.getFullYear() + "-" + String(x.getMonth() + 1).padStart(2, "0") + "-" + String(x.getDate()).padStart(2, "0");
+  const nice = dt.toLocaleDateString(LANG === "hi" ? "hi-IN" : "en-IN", { day:"numeric", month:"short", year:"numeric" });
+  return (iso(now) === d ? (LANG === "hi" ? "आज · " : "Today · ") : "") + nice;
+}
+function renderCACategory(c){
+  const lg = $("cat-logo"); lg.style.display = ""; lg.style.height = "54px"; lg.src = ASSET.ca; lg.onerror = function(){ this.style.display = "none"; };
+  $("cat-title").textContent = c.name[LANG] || c.name.en;
+  $("cat-desc").textContent = c.desc[LANG] || c.desc.en;
+  ["mock-card","notes-list"].forEach(id=>{ const el = $(id); el.innerHTML = ""; el.classList.add("hidden"); const h = el.previousElementSibling; if(h && h.tagName === "H2") h.classList.add("hidden"); });
+  { const h = $("subject-list").previousElementSibling; if(h && h.tagName === "H2") h.classList.add("hidden"); }
+  const sets = caSets();
+  const mine = Store.attempts().filter(a=> ME && a.phone === ME.phone && a.cat === "ca");
+  $("subject-list").innerHTML =
+    `<div class="card" style="border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff)"><b>📰 ${LANG === "hi" ? "रोज़ नई करंट अफेयर्स टेस्ट" : "Daily new Current Affairs test"}</b><div class="sub" style="margin-top:4px">${LANG === "hi" ? "हर दिन 50 नए प्रश्न · RPSC + UPSC संयोजन · उच्च कठिनाई स्तर · कोई समय सीमा नहीं · मात्र ₹5 प्रति टेस्ट" : "50 fresh questions every day · RPSC + UPSC combined · High difficulty · No time limit · Only ₹5 per test"}</div></div>` +
+    (sets.length ? sets.map(s=>{
+      const owned = caOwned(s.date);
+      const att = mine.find(a=> a.sub === s.date && a.first);
+      const btn = owned
+        ? `<button class="btn sm" onclick="startCADaily('${s.date}')">${att ? (LANG === "hi" ? "पुनः प्रयास" : "Re-Attempt") : (LANG === "hi" ? "शुरू करें" : "Start")}</button>`
+        : `<button class="btn sm gold" onclick="buyCA('${s.date}', this)">${LANG === "hi" ? "₹5 में खरीदें और शुरू करें" : "Buy ₹5 & Start"}</button>`;
+      return `<div class="testrow"><div class="ti"><div class="tt">${caDateLabel(s.date)}</div><div class="ts">${s.qs.length} ${T("questions")} · ${LANG === "hi" ? "कोई समय सीमा नहीं" : "No time limit"} · ${LANG === "hi" ? "उच्च कठिनाई" : "High difficulty"}${att ? ` · ${LANG === "hi" ? "स्कोर" : "Score"}: ${att.score}/${att.total}` : ""}</div></div>${btn}</div>`;
+    }).join("") : `<div class="card"><p class="sub">${LANG === "hi" ? "आज की टेस्ट जल्द आ रही है।" : "Today's test is coming soon."}</p></div>`);
+}
+function buyCA(date, btn){
+  if(!spendStars(CA_PRICE, "Daily Current Affairs: " + date)) return;
+  ME.purchases.tests["ca_" + date] = Date.now();
+  if(!BACKEND_URL) Store.updateMe(u=>u.purchases = ME.purchases); else api("buy", {phone:ME.phone, kind:"test", key:"ca_" + date});
+  toast(T("purchased")); renderCACategory(CATS.ca);
+}
+function startCADaily(date){
+  const qs = (window.STUDY_QUESTIONS || []).filter(q=> q[1] === "ca" && q[2] === date);
+  if(!qs.length){ toast(LANG === "hi" ? "प्रश्न उपलब्ध नहीं हैं।" : "No questions available yet."); return; }
+  startTestWith("ca", date, qs.slice(), false, -1);
+}
+
 /* ---------------- Home / Category ---------------- */
 let _promoPlayed = false;
 function playPromoOnce(){
@@ -903,7 +951,7 @@ function renderHome(){
     : isSubActive()
     ? `<div class="card" style="margin-top:16px;border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff);display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><b>👑 StuDy Premium active</b> <span class="sub">— everything unlocked · till ${subTillText()}</span></div><button onclick="hidePremiumStrip()" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:8px 10px;flex-shrink:0">✕</button></div>`
     : `<div class="card" style="margin-top:16px;border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff);display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><b>👑 StuDy Premium — ₹${subPrice()}/year</b><div class="sub">Unlock EVERY test, mock and notes — no per-test buying.</div></div><button class="btn gold sm" onclick="go('wallet')">Get Premium</button><button onclick="hidePremiumStrip()" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:8px 10px;flex-shrink:0">✕</button></div>`;
-  const CAT_ORDER = ["rpsc","upsc","ssc","neet","jee","reet","school"];
+  const CAT_ORDER = ["rpsc","upsc","ssc","neet","jee","reet","ca","school"];
   $("catgrid").innerHTML = Object.entries(CATS).sort((a,b)=> CAT_ORDER.indexOf(a[0]) - CAT_ORDER.indexOf(b[0])).map(([k,c])=>`
     <button class="catrow" onclick="renderCategory('${k}');go('category')">
       <img class="catlogo" src="${ASSET[k]}" alt="${c.name.en} logo" onerror="this.outerHTML='<div class=catletter>${k[0].toUpperCase()}</div>'">
@@ -929,6 +977,7 @@ function renderCategory(cat){
   CURCAT = cat; const c = CATS[cat]; const P = getSettings().prices;
   resetCatSections();
   if(FULLMOCK[cat]){ renderFullMockCategory(cat, c, P); return; }
+  if(cat === "ca"){ renderCACategory(c); return; }
   if(cat === "school"){ renderSchoolCategory(c, P); return; }
   $("cat-logo").style.display = ""; $("cat-logo").style.height = "54px"; $("cat-logo").src = ASSET[cat];
   $("cat-title").textContent = c.name[LANG]||c.name.en;
@@ -1143,7 +1192,7 @@ function startTestWith(cat, kind, qs, markSeen, secs){
   if(!qs.length){ toast("No questions available yet."); return; }
   CURCAT_SUBJECT = kind;
   TEST = { cat, kind, win: /^mock[123]$/.test(kind) ? mockWindow() : null, qs, idx:0, ans:Array(qs.length).fill(-1), marked:Array(qs.length).fill(false),
-           visited:Array(qs.length).fill(false), left: secs || qs.length*60, startedAt: Date.now(), timer:null, fs:false, done:false };
+           visited:Array(qs.length).fill(false), left: secs === -1 ? 0 : (secs || qs.length*60), noTimer: secs === -1, startedAt: Date.now(), timer:null, fs:false, done:false };
   TEST.visited[0]=true;
   if(markSeen && kind!=="free" && kind!=="mock" && !/^mock[123]$/.test(kind)){ const baseSub = kind.split(":")[0]; addSeen(cat, baseSub, qs.map(q=>q[0])); }
   else if(markSeen){ const bySub={}; qs.forEach(q=>{ (bySub[q[2]]=bySub[q[2]]||[]).push(q[0]); }); Object.entries(bySub).forEach(([s,ids])=>addSeen(cat,s,ids)); }
@@ -1154,7 +1203,7 @@ function startTestWith(cat, kind, qs, markSeen, secs){
   refreshInstallFloat();
   const c = CATS[cat];
   $("t-catname").textContent = c.name.en;
-  $("t-subname").textContent = kind==="free" ? "Free Mock" : kind==="mock" ? "Full Mock" : /^mock[123]$/.test(kind) ? "Full Mock " + kind.slice(4) : subName(cat,kind,"en");
+  $("t-subname").textContent = cat==="ca" ? (LANG==="hi" ? "डेली टेस्ट · " : "Daily Test · ") + kind : kind==="free" ? "Free Mock" : kind==="mock" ? "Full Mock" : /^mock[123]$/.test(kind) ? "Full Mock " + kind.slice(4) : subName(cat,kind,"en");
   const el = document.documentElement;
   if(el.requestFullscreen){ el.requestFullscreen().then(()=>{ if(TEST){ TEST.fs = true; } if(screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(()=>{}); }).catch(()=>{}); }
   renderQ(); startTimer(); updTimer();
@@ -1170,7 +1219,7 @@ function closeNegBanner(){
   const b = $("neg-banner"); if(b) b.style.display = "none";
   if(NEG_BANNER_TIMER){ clearTimeout(NEG_BANNER_TIMER); NEG_BANNER_TIMER = null; }
 }
-function startTimer(){ if(!TEST) return; clearInterval(TEST.timer); TEST.timer = setInterval(()=>{ TEST.left--; if(TEST.left<=0){ clearInterval(TEST.timer); toast(T("timeUp")); submitTest(); } updTimer(); }, 1000); }
+function startTimer(){ if(!TEST) return; clearInterval(TEST.timer); if(TEST.noTimer){ updTimer(); return; } TEST.timer = setInterval(()=>{ TEST.left--; if(TEST.left<=0){ clearInterval(TEST.timer); toast(T("timeUp")); submitTest(); } updTimer(); }, 1000); }
 if(document.addEventListener) document.addEventListener("fullscreenchange", ()=>{
   if(!TEST || TEST.done || !TEST.fs) return;
   if(document.fullscreenElement) return;
@@ -1179,7 +1228,7 @@ if(document.addEventListener) document.addEventListener("fullscreenchange", ()=>
 });
 function exitTestNow(){ if(!TEST) return; const cat = TEST.cat; TEST.done = true; clearInterval(TEST.timer); closeModal(); exitTestUI(); TEST = null; renderCategory(cat); go("category"); }
 function resumeTest(){ closeModal(); const el = document.documentElement; if(el.requestFullscreen){ el.requestFullscreen().then(()=>{ if(screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(()=>{}); }).catch(()=>{}); } if(TEST) startTimer(); }
-function updTimer(){ if(!TEST) return; const s=Math.max(0,TEST.left); $("t-timer").textContent = String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); }
+function updTimer(){ if(!TEST) return; if(TEST.noTimer){ $("t-timer").textContent = "∞"; return; } const s=Math.max(0,TEST.left); $("t-timer").textContent = String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); }
 function renderQ(){
   const q = TEST.qs[TEST.idx]; const L = qLang(q);
   $("t-qnum").textContent = (LANG==="hi"?"प्रश्न":"Question")+" "+(TEST.idx+1)+" / "+TEST.qs.length;
@@ -1237,7 +1286,7 @@ function renderResult(rec){
   $("res-perc").textContent = rec.first ? perc+"%" : "—";
   $("res-acc").textContent = acc+"%"; $("res-right").textContent = rec.correct; $("res-wrong").textContent = rec.wrong; $("res-skip").textContent = rec.skipped;
   $("res-note").textContent = rec.first ? T("firstAttemptNote") : T("practiceNote");
-  $("res-reattempt").onclick = ()=>{ if(FULLMOCK[rec.cat]){ startFullMock(rec.cat); return; } const sm = /^(.+):(\d+)$/.exec(rec.sub); if(sm) startSeries(rec.cat, sm[1], +sm[2]); else startTest(rec.cat, rec.sub); };
+  $("res-reattempt").onclick = ()=>{ if(rec.cat === "ca"){ startCADaily(rec.sub); return; } if(FULLMOCK[rec.cat]){ startFullMock(rec.cat); return; } const sm = /^(.+):(\d+)$/.exec(rec.sub); if(sm) startSeries(rec.cat, sm[1], +sm[2]); else startTest(rec.cat, rec.sub); };
   const byId = {}; window.STUDY_QUESTIONS.forEach(q=>byId[q[0]]=q);
   $("res-solutions").innerHTML = rec.detail.map((d,i)=>{
     const q = byId[d.id]; if(!q) return ""; const L = (rec.type==="test" && rec.sub==="eng") ? "en" : LANG;
