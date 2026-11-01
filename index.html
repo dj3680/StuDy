@@ -28,9 +28,10 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);border-
 .wordmark{display:flex;align-items:center;font-size:21px;font-weight:800;color:#111;cursor:pointer;user-select:none;letter-spacing:-.2px}
 .wordmark .wmD{height:24px;width:auto;margin:0 1px}
 .hspace{flex:1}
-.chip{display:flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-weight:700;font-size:13px;color:#111;background:#fff}
+.chip{display:flex;align-items:center;gap:5px;border:1px solid #ecd28a;border-radius:999px;padding:5px 11px;font-weight:700;font-size:13px;color:#111;background:linear-gradient(180deg,#fffdf4,#fff3cf);box-shadow:0 1px 5px rgba(211,148,6,.14)}
 .chip .st{color:var(--goldb);font-size:14px}
-.iconbtn{position:relative;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#111}
+.iconbtn{position:relative;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#111;background:#fff;border:1px solid var(--line2);box-shadow:0 1px 4px rgba(0,0,0,.05);transition:transform .12s ease}
+.iconbtn:active{transform:scale(.93)}
 .iconbtn svg{width:21px;height:21px}
 .iconbtn .dot{position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid #fff}
 .havatar{width:32px;height:32px;border-radius:50%;background:#111;color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
@@ -38,14 +39,19 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);border-
 .bnav{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
 .bnav button{color:#9aa0a6;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:3px 12px;font-weight:600}
 .bnav button svg{width:22px;height:22px}
-.bnav button.on{color:#111}
+.bnav button{border-radius:12px}
+.bnav button.on{color:#111;background:#fff6da}
 .bnav button.on .ndot{width:4px;height:4px;border-radius:50%;background:var(--goldb)}
 .bnav .ndot{width:4px;height:4px}
 /* Floating Instagram */
-#igfloat{position:static;width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+#igfloat{position:static;width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:0 3px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;flex:0 0 auto;transition:transform .12s ease,box-shadow .18s ease}
+#igfloat:active{transform:scale(.94)}
 #igfloat svg{width:21px;height:21px}
-#installfloat{position:static;width:38px;height:38px;border-radius:50%;background:#fff;border:1.5px solid var(--goldb);box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;color:#141414;cursor:pointer;padding:0;flex:0 0 auto}
+#installfloat{position:static;width:38px;height:38px;border-radius:50%;background:linear-gradient(180deg,#fffdf4,#ffedb8);border:1.5px solid var(--goldb);box-shadow:0 3px 10px rgba(211,148,6,.22);display:flex;align-items:center;justify-content:center;color:#141414;cursor:pointer;padding:0;flex:0 0 auto;transition:transform .12s ease,box-shadow .18s ease}
+#installfloat:active{transform:scale(.94)}
 #installfloat svg{width:21px;height:21px}
+#igfloat.labeled,#installfloat.labeled{width:auto !important;height:auto;min-height:42px;border-radius:999px !important;padding:8px 15px !important;gap:7px}
+#igfloat.labeled .promo-label,#installfloat.labeled .promo-label{max-width:210px;opacity:1}
 /* Type + layout */
 h1{font-size:20px;font-weight:800;letter-spacing:-.2px}
 h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.1px;color:var(--mut);margin:22px 0 10px}
@@ -55,13 +61,15 @@ h3{font-size:15px;font-weight:700}
 .grid{display:grid;gap:10px}
 .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
 @media(max-width:640px){.g3{grid-template-columns:1fr}.g2{grid-template-columns:1fr}}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#111;color:#fff;font-weight:700;font-size:14px;padding:11px 16px;border-radius:10px}
-.btn:active{transform:scale(.98)}
-.btn.gold{background:var(--goldb);color:#191104}
-.btn.ghost{background:#fff;color:#111;border:1px solid #d8d8d8}
-.btn.red{background:#fff;color:var(--red);border:1px solid #f0caca}
-.btn.sm{padding:7px 12px;font-size:13px;border-radius:9px}
-.btn:disabled{opacity:.45}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:linear-gradient(180deg,#2c2c2f,#101012);color:#fff;font-weight:700;font-size:14px;padding:11px 16px;border-radius:12px;border:1px solid #101012;box-shadow:0 3px 10px rgba(16,16,18,.24),inset 0 1px 0 rgba(255,255,255,.16);letter-spacing:.15px;transition:transform .12s ease,box-shadow .18s ease,filter .18s ease}
+.btn:hover{filter:brightness(1.08);box-shadow:0 5px 15px rgba(16,16,18,.28),inset 0 1px 0 rgba(255,255,255,.16)}
+.btn:active{transform:scale(.97)}
+.btn.gold{background:linear-gradient(180deg,#f8cd4e,#e3a924 55%,#cf9205);color:#221703;border-color:#b57e06;box-shadow:0 3px 11px rgba(207,146,5,.38),inset 0 1px 0 rgba(255,255,255,.55)}
+.btn.gold:hover{filter:brightness(1.05);box-shadow:0 5px 15px rgba(207,146,5,.42),inset 0 1px 0 rgba(255,255,255,.55)}
+.btn.ghost{background:linear-gradient(180deg,#ffffff,#f3f3f4);color:#111;border:1px solid #d3d3d3;box-shadow:0 2px 7px rgba(0,0,0,.07),inset 0 1px 0 #fff}
+.btn.red{background:linear-gradient(180deg,#fff6f6,#ffe8e8);color:var(--red);border:1px solid #efb4b4;box-shadow:0 2px 7px rgba(220,38,38,.12)}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:10px}
+.btn:disabled{opacity:.45;box-shadow:none}
 .tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mut);letter-spacing:.2px}
 .tag.free{color:var(--grn);border-color:#bbe7c8;background:#f4fdf6}
 .price{color:var(--gold);font-weight:800;font-size:14px;white-space:nowrap}
@@ -80,8 +88,9 @@ h3{font-size:15px;font-weight:700}
 .apptitle{text-align:center;font-size:25px;font-weight:800;margin-top:6px}.apptitle .gold{color:var(--gold)}
 .tagline{text-align:center;color:var(--mut);font-size:13px;margin-top:3px}
 /* Category rows with commission logos */
-.catrow{display:flex;align-items:center;gap:13px;border:1px solid var(--line);border-radius:var(--rad);padding:13px 14px;cursor:pointer;background:#fff;width:100%;text-align:left}
-.catrow:active{background:var(--bg2)}
+.catrow{display:flex;align-items:center;gap:13px;border:1px solid var(--line);border-radius:var(--rad);padding:13px 14px;cursor:pointer;background:#fff;width:100%;text-align:left;box-shadow:0 1px 5px rgba(0,0,0,.05);transition:transform .12s ease,box-shadow .18s ease}
+.catrow:hover{box-shadow:0 4px 13px rgba(0,0,0,.09)}
+.catrow:active{background:var(--bg2);transform:scale(.99)}
 .catlogo{width:48px;height:48px;object-fit:contain;border:1px solid var(--line2);border-radius:10px;padding:4px;background:#fff;flex-shrink:0}
 .catletter{width:48px;height:48px;border-radius:10px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800;flex-shrink:0}
 .testrow{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line2)}
@@ -103,8 +112,9 @@ h3{font-size:15px;font-weight:700}
 .bar{height:6px;background:#f0f0f0;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--goldb)}
 /* Wallet */
 .amtchips{display:flex;flex-wrap:wrap;gap:8px}
-.amtchips button{border:1px solid #dcdcdc;background:#fff;padding:9px 14px;border-radius:10px;font-weight:700;font-size:13.5px}
-.amtchips button.on{border-color:#111;background:#111;color:#fff}
+.amtchips button{border:1px solid #dcdcdc;background:#fff;padding:9px 14px;border-radius:999px;font-weight:700;font-size:13.5px;box-shadow:0 1px 4px rgba(0,0,0,.05);transition:transform .12s ease,box-shadow .18s ease}
+.amtchips button:active{transform:scale(.96)}
+.amtchips button.on{border-color:#b57e06;background:linear-gradient(180deg,#f8cd4e,#e3a924);color:#221703;box-shadow:0 3px 9px rgba(207,146,5,.32)}
 .qrbox{text-align:center}.qrbox img{width:196px;height:196px;border:1px solid var(--line);border-radius:12px;padding:6px;background:#fff}
 /* Modal — compact */
 .mback{position:fixed;inset:0;background:rgba(20,20,20,.45);z-index:400;display:flex;align-items:flex-end;justify-content:center}
@@ -112,7 +122,8 @@ h3{font-size:15px;font-weight:700}
 .modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:440px;max-height:86vh;overflow-y:auto;padding:18px}
 @media(min-width:640px){.modal{border-radius:16px}}
 .modal .x{float:right;color:var(--mut);font-size:19px;line-height:1}
-.tgbtn{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:12px;padding:11px 13px;width:100%;text-align:left}
+.tgbtn{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:12px;padding:11px 13px;width:100%;text-align:left;background:linear-gradient(180deg,#ffffff,#f6fbfe);box-shadow:0 2px 8px rgba(34,158,217,.13);transition:transform .12s ease}
+.tgbtn:active{transform:scale(.98)}
 .tgbtn .tgic{width:36px;height:36px;border-radius:50%;background:#229ed9;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .tgbtn .tgic svg{width:19px;height:19px}
 /* Test engine — light, minimal */
@@ -126,7 +137,8 @@ h3{font-size:15px;font-weight:700}
 .qnum{font-size:12px;font-weight:700;color:var(--mut);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
 .qtxt{font-size:14.5px;line-height:1.5;margin-bottom:11px;white-space:pre-line}
 html,body{touch-action:manipulation}
-.opt{display:flex;gap:9px;align-items:flex-start;background:#fff;border:1px solid #dcdcdc;border-radius:10px;padding:9px 10px;margin-bottom:7px;cursor:pointer;font-size:13.5px;line-height:1.4}
+.opt{display:flex;gap:9px;align-items:flex-start;background:#fff;border:1px solid #dcdcdc;border-radius:10px;padding:9px 10px;margin-bottom:7px;cursor:pointer;font-size:13.5px;line-height:1.4;transition:border-color .15s ease,box-shadow .15s ease}
+.opt:hover{border-color:var(--goldb);box-shadow:0 1px 5px rgba(211,148,6,.13)}
 .opt.sel{border-color:#111;background:#fafafa}
 .opt .ol{width:21px;height:21px;border-radius:50%;border:1.5px solid #c9c9c9;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;color:#555}
 .opt.sel .ol{background:#111;color:#fff;border-color:#111}
@@ -141,8 +153,9 @@ html,body{touch-action:manipulation}
 .legend{font-size:11px;color:var(--mut);margin-top:10px;line-height:1.9}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .tfoot{background:#fff;border-top:1px solid var(--line);padding:9px 12px;display:flex;gap:7px;flex-wrap:wrap}
-.tbtn{padding:9px 14px;border-radius:9px;font-weight:700;font-size:13px;border:1px solid #d8d8d8;background:#fff;color:#111}
-.tbtn.m{background:#9333ea;border-color:#9333ea;color:#fff}.tbtn.n{background:#111;border-color:#111;color:#fff}.tbtn.s{background:#16a34a;border-color:#16a34a;color:#fff;margin-left:auto}
+.tbtn{padding:9px 14px;border-radius:10px;font-weight:700;font-size:13px;border:1px solid #d8d8d8;background:linear-gradient(180deg,#ffffff,#f3f3f4);color:#111;box-shadow:0 1px 4px rgba(0,0,0,.07);transition:transform .12s ease,filter .15s ease}
+.tbtn:active{transform:scale(.97)}
+.tbtn.m{background:linear-gradient(180deg,#a855f7,#9333ea);border-color:#7e22ce;color:#fff}.tbtn.n{background:linear-gradient(180deg,#2c2c2f,#101012);border-color:#101012;color:#fff}.tbtn.s{background:linear-gradient(180deg,#22c55e,#16a34a);border-color:#15803d;color:#fff;margin-left:auto;box-shadow:0 2px 8px rgba(22,163,74,.3)}
 .rotatehint{display:none;background:#fff7e0;color:#7a5b00;border-bottom:1px solid #f0dfae;font-weight:600;text-align:center;padding:7px;font-size:12.5px}
 @media(orientation:portrait) and (max-width:760px){.rotatehint{display:block}}
 /* Result */
@@ -175,9 +188,14 @@ html[data-theme="dark"] .opt{background:#232328;border-color:#3a3a41}
 html[data-theme="dark"] .testrow{border-color:var(--line2)}
 html[data-theme="dark"] #igfloat,html[data-theme="dark"] #installfloat{background:#1d1d21;color:#f4f4f5}
 html[data-theme="dark"] .payrow{border-color:var(--line2)}
+html[data-theme="dark"] .btn.ghost{background:linear-gradient(180deg,#26262b,#1d1d21);color:var(--txt);border-color:#3a3a41}
+html[data-theme="dark"] .btn.red{background:linear-gradient(180deg,#2b1e1e,#241919);border-color:#5b2b2b}
+html[data-theme="dark"] .iconbtn{background:#1d1d21;color:var(--txt)}
+html[data-theme="dark"] .bnav button.on{background:#2b2513}
+html[data-theme="dark"] .chip{background:linear-gradient(180deg,#26231a,#1d1d21);color:var(--txt);border-color:#4a3f1e}
 .promo-label{max-width:0;opacity:0;overflow:hidden;white-space:nowrap;font-size:12.5px;font-weight:700;transition:max-width .5s ease,opacity .4s ease,margin .5s ease}
 #igfloat.promo,#installfloat.promo{width:auto !important;border-radius:999px !important;padding:0 12px !important;gap:7px}
-#igfloat.promo .promo-label,#installfloat.promo .promo-label{max-width:130px;opacity:1}
+#igfloat.promo .promo-label,#installfloat.promo .promo-label{max-width:210px;opacity:1}
 .switch{position:relative;width:48px;height:27px;flex:0 0 auto;display:inline-block}
 .switch input{opacity:0;width:0;height:0;position:absolute}
 .switch i{position:absolute;inset:0;background:#d6d6da;border-radius:999px;transition:.25s;cursor:pointer}
@@ -187,9 +205,10 @@ html[data-theme="dark"] .payrow{border-color:var(--line2)}
 .collapse-h{width:100%;display:flex;align-items:center;justify-content:space-between;background:none;border:none;padding:0;margin:22px 0 10px;font-size:19px;font-weight:800;color:var(--txt);cursor:pointer;font-family:inherit}
 .collapse-h .car{color:#bbb;font-size:17px;transition:transform .2s}
 .collapse-h.open .car{transform:rotate(180deg)}
-#totop{position:fixed;right:16px;bottom:86px;width:44px;height:44px;border-radius:50%;background:#141414;color:#fff;border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.22);font-size:19px;z-index:60;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#totop{position:fixed;right:16px;bottom:86px;width:44px;height:44px;border-radius:50%;background:linear-gradient(180deg,#2c2c2f,#101012);color:#fff;border:1px solid var(--line);box-shadow:0 6px 16px rgba(0,0,0,.25);font-size:19px;z-index:60;display:flex;align-items:center;justify-content:center;cursor:pointer}
 html[data-theme="dark"] #totop{background:#f4f4f5;color:#141414}
-.paypack{flex:1;border:1.5px solid var(--goldb);border-radius:12px;background:transparent;color:var(--txt);padding:13px 4px;font-weight:800;font-size:16px;cursor:pointer;font-family:inherit}
+.paypack{flex:1;border:1.5px solid var(--goldb);border-radius:12px;background:linear-gradient(180deg,#fffaf0,#ffedb8);color:var(--txt);padding:13px 4px;font-weight:800;font-size:16px;cursor:pointer;font-family:inherit;box-shadow:0 2px 7px rgba(211,148,6,.16);transition:transform .12s ease,box-shadow .18s ease}
+.paypack:active{transform:scale(.97)}
 .paypack small{display:block;font-weight:600;font-size:11px;color:var(--mut);margin-top:2px}
 </style>
 </head>
@@ -259,6 +278,7 @@ html[data-theme="dark"] #totop{background:#f4f4f5;color:#141414}
         <button class="btn" style="width:100%" id="rg-btn" onclick="doRegister()" data-i18n="sendOtp">Send OTP & Register</button>
       </div>
       <p class="sub" style="text-align:center;margin-top:14px" data-i18n="langNote">Language can be changed anytime in your Profile.</p>
+      <div id="auth-actions" style="display:flex;gap:10px;justify-content:center;align-items:center;margin-top:16px;flex-wrap:wrap"></div>
     </div>
   </section>
 
@@ -273,13 +293,6 @@ html[data-theme="dark"] #totop{background:#f4f4f5;color:#141414}
     <div class="grid" id="catgrid"></div>
     <h2 data-i18n="freeMocks">Free mock tests</h2>
     <div class="grid" id="freemocks"></div>
-    <h2 data-i18n="whyUs">Why StuDy?</h2>
-    <div class="grid g3">
-      <div class="card"><h3 data-i18n="why1t">StuDy wallet</h3><p class="sub" style="margin-top:4px" data-i18n="why1">Top up once (min ₹100), then buy any test or notes instantly with your balance.</p></div>
-      <div class="card"><h3 data-i18n="why2t">No repeated questions</h3><p class="sub" style="margin-top:4px" data-i18n="why2">A question once shown to you is never repeated in your account.</p></div>
-      <div class="card"><h3 data-i18n="why3t">Detailed results & solutions</h3><p class="sub" style="margin-top:4px" data-i18n="why3">Score, rank, percentile, accuracy and full solutions.</p></div>
-      <div class="card"><h3 data-i18n="why4t">Top rankers win ₹100</h3><p class="sub" style="margin-top:4px" data-i18n="why4">Top rankers receive rewards as stars directly in their accounts. Rank high, earn stars, unlock more tests free.</p></div>
-    </div>
   </section>
 
   <!-- ============ CATEGORY ============ -->
@@ -380,8 +393,9 @@ html[data-theme="dark"] #totop{background:#f4f4f5;color:#141414}
     <button class="collapse-h" onclick="toggleCollapse('pf-attempts-wrap',this)"><span data-i18n="myAttempts">My attempts</span><span class="car">▾</span></button>
     <div id="pf-attempts-wrap" class="hidden"><div class="card" id="pf-attempts" style="padding:4px 14px"></div></div>
     <div id="admin-entry" class="hidden" style="margin-top:16px"><button class="btn" style="width:100%" onclick="go('admin')">Admin Panel</button></div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:16px">
       <button class="btn gold" style="width:100%" onclick="showReportCard()">📄 <span data-i18n="reportCard">My Report Card</span></button>
+      <button class="btn" style="width:100%" onclick="showVerifier()">🔎 <span data-i18n="verifyCard">Verify Report Card</span></button>
       <button class="btn ghost" style="width:100%" onclick="showHelp()" data-i18n="helpLink">Help / FAQ</button>
       <button class="btn ghost" style="width:100%" onclick="showContact()" data-i18n="contactLink">Contact Us</button>
     </div>
@@ -497,7 +511,7 @@ html[data-theme="dark"] #totop{background:#f4f4f5;color:#141414}
 
 <!-- Floating Instagram -->
 <a id="igfloat" href="https://www.instagram.com/dinesh.jangir_/" target="_blank" rel="noopener" aria-label="Instagram — dinesh.jangir_">
-  <svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igg" x1="0" y1="24" x2="24" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".65" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="url(#igg)" stroke-width="2"/><circle cx="12" cy="12" r="4.4" stroke="url(#igg)" stroke-width="2"/><circle cx="17.6" cy="6.4" r="1.4" fill="url(#igg)"/></svg><span class="promo-label">Follow me</span>
+  <svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igg" x1="0" y1="24" x2="24" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".65" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="url(#igg)" stroke-width="2"/><circle cx="12" cy="12" r="4.4" stroke="url(#igg)" stroke-width="2"/><circle cx="17.6" cy="6.4" r="1.4" fill="url(#igg)"/></svg><span class="promo-label">Follow on Instagram</span>
 </a>
 
 <!-- Floating Install -->
@@ -626,9 +640,9 @@ const subName = (cat, sub, lang) => { const hi = lang==="hi";
 /* ---------------- i18n ---------------- */
 const STR = {
 en:{tagline:"Tests • Mocks • Notes — UPSC · RPSC · SSC",login:"Login",register:"Register",name:"Student name",phone:"Phone number",password:"Password",gmail:"Gmail",dob:"Date of birth",otp:"OTP (sent to your Gmail)",spamNote:"If you don't find the OTP in your inbox, please check the Spam folder.",loginBtn:"Login",forgot:"Forgot password?",sendOtp:"Send OTP & Register",verifyBtn:"Verify OTP & Create Account",helpLink:"Help / FAQ",contactLink:"Contact Us",langNote:"Language can be changed anytime in your Profile.",chooseCat:"Choose your exam",freeMocks:"Free mock tests",whyUs:"Why StuDy?",why1t:"StuDy wallet",why1:"Top up once (min ₹100), then buy any test or notes instantly with your balance.",why2t:"No repeated questions",why2:"A question once shown to you is never repeated in your account.",why3t:"Detailed results & solutions",why3:"Score, rank, percentile, accuracy and full solutions.",why4t:"Top rankers win ₹100",why4:"Hold Rank #1 on the leaderboard continuously for a full week (7 days) and win a ₹100 bonus — credited automatically to your account. Every week is a new race!",back:"Back",subjectTests:"Subject-wise tests",fullMock:"Full mock test",paidNotes:"Paid notes (PDF)",wallet:"StuDy Wallet",yourBalance:"Your balance",starsUse:"Stars buy tests, mocks and notes",addStars:"Add money",addStarsBtn:"Add money",minDep:"Or pay by UPI QR — packs of ₹100, ₹200, ₹500 or ₹1,000.",scanPay:"Scan the QR with any UPI app (GPay / PhonePe / Paytm) and pay.",utr:"UPI Transaction / UTR number (12 digits)",paidBtn:"I have paid — submit for approval",approveNote:"Stars are credited after a quick approval, usually within a few hours.",history:"History",profile:"Profile",levelProgress:"Progress to next level",testsTaken:"Tests taken",avgScore:"Average score",accuracy:"Accuracy",settings:"Settings",appLang:"App language / ऐप भाषा",notifT:"Notifications",notifD:"Get alerts for new tests and current affairs",enable:"Enable",installT:"Install app",installD:"Add StuDy to your home screen",install:"Install",myPurchases:"My purchases",myAttempts:"My attempts",logout:"Logout",notifications:"Notifications",result:"Result",rank:"Rank",percentile:"Percentile",correct:"Correct",wrong:"Wrong",skipped:"Skipped",goHome:"Go home",reattempt:"Re-attempt (practice)",solutions:"Solutions",navHome:"Home",navWallet:"Wallet",navNotif:"Alerts",navProfile:"Profile",navNotes:"Notes",navPyq:"PYQ",lgAns:"Answered",lgNot:"Not answered",lgMark:"Marked for review",lgNotVis:"Not visited",
-free:"FREE",start:"Start",buyStart:"Buy & Start",owned:"Owned",questions:"questions",minutes:"min",attempts:"attempts",bestScore:"Best (1st attempt)",download:"Download",buyNotes:"Buy notes",bundle:"All subjects — one PDF",bundleSub:"Every subject of this exam in a single PDF",mockSub:"Mixed questions from all subjects",freeMockSub:"One free mock for this exam — 10 questions",firstCounts:"Only your first attempt's marks count. Re-attempts are free practice.",depositPending:"Deposit submitted — waiting for approval.",noHistory:"Nothing here yet.",noNotif:"No notifications yet.",noPurchases:"No purchases yet.",noAttempts:"No attempts yet — take your first test!",errName:"Please enter the student's full name.",errPhone:"Enter a valid 10-digit phone number.",errPass:"Password must be at least 6 characters.",errGmail:"Enter a valid Gmail address.",errDob:"Select your date of birth.",errOtp:"Enter the 6-digit OTP.",errExists:"This phone number is already registered. Please login.",errNoUser:"Account not found. Please register first.",errBadPass:"Wrong password. Please try again.",errBadOtp:"Incorrect or expired OTP.",otpSent:"OTP sent to your Gmail. If you don't find it, check the Spam folder.",welcome:"Welcome to StuDy!",insufficient:"Not enough balance. Add money to your StuDy wallet first.",purchased:"Unlocked!",depErrUtr:"Enter the 12-digit UTR / transaction number.",depDup:"This UTR is already submitted.",submitConfirm:"Submit the test? You cannot change answers after submitting.",timeUp:"Time is over — your test was auto-submitted.",firstAttemptNote:"This score is from your first attempt and is final.",practiceNote:"Practice attempt — your first-attempt score remains the official one.",level:"Level",reportCard:"My Report Card",telegram:"Chat on Telegram",telegramSub:"Fastest support — replies within a few hours"},
+free:"FREE",start:"Start",buyStart:"Buy & Start",owned:"Owned",questions:"questions",minutes:"min",attempts:"attempts",bestScore:"Best (1st attempt)",download:"Download",buyNotes:"Buy notes",bundle:"All subjects — one PDF",bundleSub:"Every subject of this exam in a single PDF",mockSub:"Mixed questions from all subjects",freeMockSub:"One free mock for this exam — 10 questions",firstCounts:"Only your first attempt's marks count. Re-attempts are free practice.",depositPending:"Deposit submitted — waiting for approval.",noHistory:"Nothing here yet.",noNotif:"No notifications yet.",noPurchases:"No purchases yet.",noAttempts:"No attempts yet — take your first test!",errName:"Please enter the student's full name.",errPhone:"Enter a valid 10-digit phone number.",errPass:"Password must be at least 6 characters.",errGmail:"Enter a valid Gmail address.",errDob:"Select your date of birth.",errOtp:"Enter the 6-digit OTP.",errExists:"This phone number is already registered. Please login.",errNoUser:"Account not found. Please register first.",errBadPass:"Wrong password. Please try again.",errBadOtp:"Incorrect or expired OTP.",otpSent:"OTP sent to your Gmail. If you don't find it, check the Spam folder.",welcome:"Welcome to StuDy!",insufficient:"Not enough balance. Add money to your StuDy wallet first.",purchased:"Unlocked!",depErrUtr:"Enter the 12-digit UTR / transaction number.",depDup:"This UTR is already submitted.",submitConfirm:"Submit the test? You cannot change answers after submitting.",timeUp:"Time is over — your test was auto-submitted.",firstAttemptNote:"This score is from your first attempt and is final.",practiceNote:"Practice attempt — your first-attempt score remains the official one.",level:"Level",reportCard:"My Report Card",verifyCard:"Verify Report Card",telegram:"Chat on Telegram",telegramSub:"Fastest support — replies within a few hours"},
 hi:{tagline:"टेस्ट • मॉक • नोट्स — UPSC · RPSC · SSC",login:"लॉगिन",register:"रजिस्टर",name:"छात्र का नाम",phone:"फ़ोन नंबर",password:"पासवर्ड",gmail:"Gmail",dob:"जन्म तिथि",otp:"OTP (आपके Gmail पर भेजा गया)",spamNote:"यदि OTP इनबॉक्स में न मिले, तो कृपया Spam फ़ोल्डर देखें।",loginBtn:"लॉगिन करें",forgot:"पासवर्ड भूल गए?",sendOtp:"OTP भेजें और रजिस्टर करें",verifyBtn:"OTP सत्यापित करें और खाता बनाएँ",helpLink:"सहायता / FAQ",contactLink:"संपर्क करें",langNote:"भाषा कभी भी प्रोफ़ाइल में बदली जा सकती है।",chooseCat:"अपनी परीक्षा चुनें",freeMocks:"निःशुल्क मॉक टेस्ट",whyUs:"StuDy ही क्यों",why1t:"StuDy वॉलेट",why1:"एक बार टॉप-अप करें (न्यूनतम ₹100), फिर बैलेंस से कोई भी टेस्ट या नोट्स तुरंत खरीदें।",why2t:"कोई प्रश्न दोहराया नहीं",why2:"जो प्रश्न आपको एक बार दिखा, वह आपके खाते में दोबारा नहीं आएगा।",why3t:"विस्तृत परिणाम और हल",why3:"स्कोर, रैंक, प्रतिशतक, सटीकता और पूर्ण हल।",why4t:"टॉप रैंकर्स जीतें ₹100",why4:"लीडरबोर्ड पर लगातार पूरे एक सप्ताह (7 दिन) Rank #1 बनाए रखें और ₹100 बोनस जीतें — आपके खाते में अपने-आप क्रेडिट होंगे। हर सप्ताह एक नई दौड़ है!",back:"वापस",subjectTests:"विषयवार टेस्ट",fullMock:"पूर्ण मॉक टेस्ट",paidNotes:"सशुल्क नोट्स (PDF)",wallet:"StuDy वॉलेट",yourBalance:"आपका बैलेंस",starsUse:"बैलेंस से टेस्ट, मॉक और नोट्स खरीदें",addStars:"पैसे जोड़ें",addStarsBtn:"पैसे जोड़ें",minDep:"या UPI QR से जोड़ें — ₹100, ₹200, ₹500 या ₹1,000 के पैक।",scanPay:"किसी भी UPI ऐप (GPay / PhonePe / Paytm) से QR स्कैन कर भुगतान करें।",utr:"UPI लेनदेन / UTR नंबर (12 अंक)",paidBtn:"मैंने भुगतान कर दिया — स्वीकृति हेतु भेजें",approveNote:"त्वरित स्वीकृति के बाद पैसे जुड़ जाते हैं, प्रायः कुछ घंटों में।",history:"इतिहास",profile:"प्रोफ़ाइल",levelProgress:"अगले स्तर की प्रगति",testsTaken:"दिए गए टेस्ट",avgScore:"औसत स्कोर",accuracy:"सटीकता",settings:"सेटिंग्स",appLang:"ऐप भाषा / App language",notifT:"सूचनाएँ",notifD:"नए टेस्ट और समसामयिकी की सूचना पाएँ",enable:"चालू करें",installT:"ऐप इंस्टॉल करें",installD:"StuDy को होम स्क्रीन पर जोड़ें",install:"इंस्टॉल",myPurchases:"मेरी खरीद",myAttempts:"मेरे प्रयास",logout:"लॉगआउट",notifications:"सूचनाएँ",result:"परिणाम",rank:"रैंक",percentile:"प्रतिशतक",correct:"सही",wrong:"गलत",skipped:"छोड़े गए",goHome:"होम पर जाएँ",reattempt:"पुनः प्रयास (अभ्यास)",solutions:"हल",navHome:"होम",navWallet:"वॉलेट",navNotif:"सूचनाएँ",navProfile:"प्रोफ़ाइल",navNotes:"नोट्स",navPyq:"PYQ",lgAns:"उत्तर दिया",lgNot:"उत्तर नहीं दिया",lgMark:"समीक्षा हेतु चिह्नित",lgNotVis:"देखा नहीं",
-free:"निःशुल्क",start:"प्रारंभ करें",buyStart:"खरीदें और प्रारंभ करें",owned:"खरीदा हुआ",questions:"प्रश्न",minutes:"मिनट",attempts:"प्रयास",bestScore:"सर्वश्रेष्ठ (पहला प्रयास)",download:"डाउनलोड",buyNotes:"नोट्स खरीदें",bundle:"सभी विषय — एक PDF",bundleSub:"इस परीक्षा के सभी विषय एक ही PDF में",mockSub:"सभी विषयों के मिश्रित प्रश्न",freeMockSub:"इस परीक्षा का एक निःशुल्क मॉक — 10 प्रश्न",firstCounts:"केवल आपके पहले प्रयास के अंक मान्य हैं। पुनः प्रयास निःशुल्क अभ्यास है।",depositPending:"जमा अनुरोध भेजा गया — स्वीकृति की प्रतीक्षा है।",noHistory:"अभी यहाँ कुछ नहीं है।",noNotif:"अभी कोई सूचना नहीं है।",noPurchases:"अभी कोई खरीद नहीं है।",noAttempts:"अभी कोई प्रयास नहीं — अपना पहला टेस्ट दें!",errName:"कृपया छात्र का पूरा नाम डालें।",errPhone:"सही 10-अंकों का फ़ोन नंबर डालें।",errPass:"पासवर्ड कम से कम 6 अक्षरों का हो।",errGmail:"सही Gmail पता डालें।",errDob:"अपनी जन्म तिथि चुनें।",errOtp:"6-अंकों का OTP डालें।",errExists:"यह फ़ोन नंबर पहले से रजिस्टर्ड है। कृपया लॉगिन करें।",errNoUser:"खाता नहीं मिला। कृपया पहले रजिस्टर करें।",errBadPass:"गलत पासवर्ड। पुनः प्रयास करें।",errBadOtp:"गलत या समाप्त OTP।",otpSent:"OTP आपके Gmail पर भेजा गया। न मिले तो Spam फ़ोल्डर देखें।",welcome:"StuDy में आपका स्वागत है!",insufficient:"बैलेंस पर्याप्त नहीं है। पहले StuDy वॉलेट में पैसे जोड़ें।",purchased:"अनलॉक हो गया!",depErrUtr:"12-अंकों का UTR / लेनदेन नंबर डालें।",depDup:"यह UTR पहले से भेजा जा चुका है।",submitConfirm:"टेस्ट जमा करें? जमा करने के बाद उत्तर नहीं बदले जा सकेंगे।",timeUp:"समय समाप्त — आपका टेस्ट स्वतः जमा हो गया।",firstAttemptNote:"यह स्कोर आपके पहले प्रयास का है और अंतिम है।",practiceNote:"अभ्यास प्रयास — आपका पहला-प्रयास स्कोर ही आधिकारिक रहेगा।",level:"स्तर",reportCard:"मेरी रिपोर्ट कार्ड",telegram:"Telegram पर चैट करें",telegramSub:"सबसे तेज़ सहायता — कुछ घंटों में जवाब"}
+free:"निःशुल्क",start:"प्रारंभ करें",buyStart:"खरीदें और प्रारंभ करें",owned:"खरीदा हुआ",questions:"प्रश्न",minutes:"मिनट",attempts:"प्रयास",bestScore:"सर्वश्रेष्ठ (पहला प्रयास)",download:"डाउनलोड",buyNotes:"नोट्स खरीदें",bundle:"सभी विषय — एक PDF",bundleSub:"इस परीक्षा के सभी विषय एक ही PDF में",mockSub:"सभी विषयों के मिश्रित प्रश्न",freeMockSub:"इस परीक्षा का एक निःशुल्क मॉक — 10 प्रश्न",firstCounts:"केवल आपके पहले प्रयास के अंक मान्य हैं। पुनः प्रयास निःशुल्क अभ्यास है।",depositPending:"जमा अनुरोध भेजा गया — स्वीकृति की प्रतीक्षा है।",noHistory:"अभी यहाँ कुछ नहीं है।",noNotif:"अभी कोई सूचना नहीं है।",noPurchases:"अभी कोई खरीद नहीं है।",noAttempts:"अभी कोई प्रयास नहीं — अपना पहला टेस्ट दें!",errName:"कृपया छात्र का पूरा नाम डालें।",errPhone:"सही 10-अंकों का फ़ोन नंबर डालें।",errPass:"पासवर्ड कम से कम 6 अक्षरों का हो।",errGmail:"सही Gmail पता डालें।",errDob:"अपनी जन्म तिथि चुनें।",errOtp:"6-अंकों का OTP डालें।",errExists:"यह फ़ोन नंबर पहले से रजिस्टर्ड है। कृपया लॉगिन करें।",errNoUser:"खाता नहीं मिला। कृपया पहले रजिस्टर करें।",errBadPass:"गलत पासवर्ड। पुनः प्रयास करें।",errBadOtp:"गलत या समाप्त OTP।",otpSent:"OTP आपके Gmail पर भेजा गया। न मिले तो Spam फ़ोल्डर देखें।",welcome:"StuDy में आपका स्वागत है!",insufficient:"बैलेंस पर्याप्त नहीं है। पहले StuDy वॉलेट में पैसे जोड़ें।",purchased:"अनलॉक हो गया!",depErrUtr:"12-अंकों का UTR / लेनदेन नंबर डालें।",depDup:"यह UTR पहले से भेजा जा चुका है।",submitConfirm:"टेस्ट जमा करें? जमा करने के बाद उत्तर नहीं बदले जा सकेंगे।",timeUp:"समय समाप्त — आपका टेस्ट स्वतः जमा हो गया।",firstAttemptNote:"यह स्कोर आपके पहले प्रयास का है और अंतिम है।",practiceNote:"अभ्यास प्रयास — आपका पहला-प्रयास स्कोर ही आधिकारिक रहेगा।",level:"स्तर",reportCard:"मेरी रिपोर्ट कार्ड",verifyCard:"रिपोर्ट कार्ड सत्यापित करें",telegram:"Telegram पर चैट करें",telegramSub:"सबसे तेज़ सहायता — कुछ घंटों में जवाब"}
 };
 let LANG = localStorage.getItem("study_lang") || "en";
 const T = k => (STR[LANG] && STR[LANG][k]) || STR.en[k] || k;
@@ -699,6 +713,7 @@ function go(screen){
   $("appheader").classList.toggle("hidden", screen==="auth");
   $("bnav").classList.toggle("hidden", screen==="auth");
   ["home","pyq","notes","profile"].forEach(s=>{ const b=$("bn-"+s); if(b) b.classList.toggle("on", s===screen); });
+  if(screen==="auth") placeSocialBtns("auth");
   if(screen==="home") renderHome();
   if(screen==="wallet") renderWallet();
   if(screen==="profile") renderProfile();
@@ -966,14 +981,31 @@ function startCADaily(date){
 }
 
 /* ---------------- Home / Category ---------------- */
-let _promoPlayed = false;
-function playPromoOnce(){
-  if(_promoPlayed) return; _promoPlayed = true;
-  const ig = $("igfloat"), dl = $("installfloat");
-  setTimeout(()=>{ if(ig) ig.classList.add("promo"); }, 350);
-  setTimeout(()=>{ if(ig) ig.classList.remove("promo"); }, 3150);
-  setTimeout(()=>{ if(dl && !dl.classList.contains("hidden")) dl.classList.add("promo"); }, 1000);
-  setTimeout(()=>{ if(dl) dl.classList.remove("promo"); }, 3800);
+/* The Instagram / Download buttons live in different spots per screen:
+   on the login screen they sit labelled, side by side, below the language
+   line (#auth-actions); on Home they sit in the "Choose your exam" row. */
+function placeSocialBtns(where){
+  const ig = $("igfloat"), dl = $("installfloat"); if(!ig || !dl) return;
+  if(where === "auth"){
+    const box = $("auth-actions"); if(!box) return;
+    dl.classList.add("labeled"); ig.classList.add("labeled");
+    box.appendChild(dl); box.appendChild(ig);
+  } else {
+    const ea = $("exam-actions"); if(!ea) return;
+    dl.classList.remove("labeled"); ig.classList.remove("labeled");
+    ea.appendChild(dl); ea.appendChild(ig);
+  }
+}
+/* Promo animation plays EVERY time the Home page opens (user request). */
+let _promoTimers = [];
+function playPromo(){
+  const ig = $("igfloat"), dl = $("installfloat"); if(!ig) return;
+  _promoTimers.forEach(clearTimeout); _promoTimers = [];
+  ig.classList.remove("promo"); if(dl) dl.classList.remove("promo");
+  _promoTimers.push(setTimeout(()=>{ ig.classList.add("promo"); }, 350));
+  _promoTimers.push(setTimeout(()=>{ ig.classList.remove("promo"); }, 3150));
+  _promoTimers.push(setTimeout(()=>{ if(dl && !dl.classList.contains("hidden")) dl.classList.add("promo"); }, 1000));
+  _promoTimers.push(setTimeout(()=>{ if(dl) dl.classList.remove("promo"); }, 3800));
 }
 function toggleCollapse(id, btn){ const el = $(id); if(!el) return; el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", !el.classList.contains("hidden")); }
 function hidePremiumStrip(){
@@ -982,10 +1014,9 @@ function hidePremiumStrip(){
 }
 function dismissBanner(id){ localStorage.setItem("study_banner_x", String(id)); renderHome(); }
 function renderHome(){
-  const ea = $("exam-actions"), dlBtn = $("installfloat"), igBtn = $("igfloat");
-  if(ea && dlBtn && igBtn){ ea.appendChild(dlBtn); ea.appendChild(igBtn); }
+  placeSocialBtns("home");
   refreshInstallFloat();
-  playPromoOnce();
+  playPromo();
   const n = globalNotifs()[0];
   const dismissed = localStorage.getItem("study_banner_x");
   $("home-banner").innerHTML = (n && dismissed !== String(n.id)) ? `<div class="banner"><div style="font-size:17px">📢</div><div style="flex:1;min-width:0"><div class="bt">${esc(n.title)}</div><div class="bs">${esc(n.body)}</div></div><button onclick="dismissBanner('${n.id}')" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0">✕</button></div>` : "";
@@ -1720,7 +1751,7 @@ Q. How are ranks calculated?
 A. Ranks are based on the total marks of your first attempts across all tests. Top rankers receive star rewards directly in their wallets.
 
 Q. What is the report card?
-A. In your Profile you can download a verified StuDy report card (PDF) with your complete attempt record and a verification code. Anyone can check its authenticity from Help - Verify a Report Card.
+A. In your Profile you can download a verified StuDy report card (PDF) with your complete attempt record and a verification code. Anyone can check its authenticity from Profile - Verify Report Card.
 
 Q. How do I install the StuDy app?
 A. Android (Chrome): tap "Install" in your Profile. iPhone (Safari): tap the Share button, then "Add to Home Screen".
@@ -1753,7 +1784,7 @@ A. Profile - App language: switch between English and Hindi anytime.`, hi:`अ�
 उ. सभी टेस्टों के पहले प्रयासों के कुल अंकों से। टॉप रैंकर्स को वॉलेट में सीधे स्टार्स रिवार्ड मिलता है।
 
 प्र. रिपोर्ट कार्ड क्या है?
-उ. Profile से सत्यापित StuDy रिपोर्ट कार्ड (PDF) डाउनलोड कर सकते हैं - पूर्ण प्रयास रिकॉर्ड और सत्यापन कोड सहित। इसकी असलियत Help - Verify a Report Card से जाँची जा सकती है।
+उ. Profile से सत्यापित StuDy रिपोर्ट कार्ड (PDF) डाउनलोड कर सकते हैं - पूर्ण प्रयास रिकॉर्ड और सत्यापन कोड सहित। इसकी असलियत Profile - Verify Report Card से जाँची जा सकती है।
 
 प्र. StuDy ऐप कैसे इंस्टॉल करें?
 उ. Android (Chrome): Profile में "Install" दबाएँ। iPhone (Safari): Share बटन, फिर "Add to Home Screen"।
@@ -1764,7 +1795,7 @@ function showHelp(){ const s=getSettings(); let txt = (LANG==="hi"? s.help.hi : 
   if(!txt || txt.trim().length < 60) txt = (LANG==="hi" ? HOWTO_TEXT.hi : HOWTO_TEXT.en);
   if(!/FAQ/.test(txt)) txt += "\n\n" + (LANG==="hi" ? FAQ_TEXT.hi : FAQ_TEXT.en);
   const PP = s.prices || {}; txt = txt.replaceAll("__T__", PP.test ?? 5).replaceAll("__M__", PP.mock ?? 10).replaceAll("__N__", PP.notes ?? 30).replaceAll("__B__", PP.bundle ?? 50);
-  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${T("helpLink")}</h3><div class="sub" style="white-space:pre-line;margin-top:8px;font-size:13.5px;color:var(--txt)">${esc(txt)}</div><button class="btn gold" style="width:100%;margin-top:14px" onclick="showVerifier()">🔎 ${LANG==="hi" ? "रिपोर्ट कार्ड सत्यापित करें" : "Verify a Report Card"}</button><p class="sub" style="margin-top:6px;text-align:center">${LANG==="hi" ? "किसी भी StuDy रिपोर्ट कार्ड की असलियत उसके कोड से जाँचें।" : "Check any StuDy report card's authenticity with its code."}</p>`); }
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${T("helpLink")}</h3><div class="sub" style="white-space:pre-line;margin-top:8px;font-size:13.5px;color:var(--txt)">${esc(txt)}</div><div style="margin-top:16px;border-top:1px solid var(--line);padding-top:13px"><h3 style="font-size:15px">${T("whyUs")}</h3><div style="display:grid;gap:9px;margin-top:9px"><div><b style="font-size:13.5px">${T("why1t")}</b><div class="sub" style="margin-top:2px">${T("why1")}</div></div><div><b style="font-size:13.5px">${T("why2t")}</b><div class="sub" style="margin-top:2px">${T("why2")}</div></div><div><b style="font-size:13.5px">${T("why3t")}</b><div class="sub" style="margin-top:2px">${T("why3")}</div></div><div><b style="font-size:13.5px">${T("why4t")}</b><div class="sub" style="margin-top:2px">${T("why4")}</div></div></div></div>`); }
 function showContact(){ const s=getSettings(); const txt = (LANG==="hi"? s.contact.hi : s.contact.en) || s.contact.en;
   const m = String(txt).match(/@([A-Za-z0-9_]{4,})/); const handle = m ? m[1] : "dj3680";
   showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${T("contactLink")}</h3>
@@ -1830,7 +1861,7 @@ async function showReportCard(){
     <div style="margin-top:14px;background:#fafafa;border:1px dashed #d9d9d9;border-radius:10px;padding:10px;text-align:center">
       <div style="font-size:10.5px;letter-spacing:1.4px;color:#70757d;font-weight:700">VERIFICATION CODE</div>
       <div style="font-size:17px;font-weight:900;letter-spacing:1px;font-family:ui-monospace,monospace;margin-top:2px">${snap.code}</div>
-      <div style="font-size:11px;color:#70757d;margin-top:3px">Verify at StuDy → Help → Verify a Report Card</div>
+      <div style="font-size:11px;color:#70757d;margin-top:3px">Verify at StuDy → Profile → Verify Report Card</div>
     </div>
   </div>`;
   $("print-area").innerHTML = cardHtml;
