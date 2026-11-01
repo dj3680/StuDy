@@ -530,6 +530,10 @@ html[data-theme="dark"] #totop{background:#f4f4f5;color:#141414}
   <div class="thead">
     <span id="t-catname">Test</span><span style="color:var(--mut);font-weight:600" id="t-subname"></span>
     <div class="timer">⏱ <span id="t-timer">10:00</span></div>
+    <select id="t-lang" onchange="setTestLang(this.value)" aria-label="Test language" title="Question language — saved for future tests" style="width:auto;margin-left:8px;padding:5px 7px;font-size:12.5px;font-weight:700;border-radius:999px;border:1px solid var(--goldb);background:linear-gradient(180deg,#fffdf4,#fff3cf);color:#141414;flex:0 0 auto">
+      <option value="en">English</option>
+      <option value="hi">हिंदी</option>
+    </select>
   </div>
   <div id="neg-banner" style="background:#fef2f2;color:#b91c1c;font-size:12px;font-weight:600;padding:6px 8px 6px 10px;display:flex;align-items:center;gap:8px"><span style="flex:1;text-align:center">⚠ Negative marking: −0.25 for each wrong answer · No deduction for skipped questions · नकारात्मक अंकन: प्रत्येक गलत उत्तर पर −0.25 · छोड़े गए प्रश्न पर कोई कटौती नहीं</span><button type="button" aria-label="Close" onclick="closeNegBanner()" style="background:#fff;border:1px solid #fecaca;color:#b91c1c;border-radius:999px;width:22px;height:22px;line-height:20px;font-weight:800;cursor:pointer;flex:0 0 auto">✕</button></div>
   <div class="rotatehint">कृपया फ़ोन को घुमाकर landscape करें — Please rotate your phone for the best test view</div>
@@ -591,6 +595,7 @@ const CATS = {
   upsc: { name:{en:"UPSC",hi:"UPSC"}, desc:{en:"Civil Services (IAS/IPS) — Union Public Service Commission",hi:"सिविल सेवा (IAS/IPS) — संघ लोक सेवा आयोग"},
           subjects:[["hist","History","इतिहास"],["geo","Geography","भूगोल"],["pol","Polity","राजनीति विज्ञान"],["eco","Economy","अर्थशास्त्र"],["env","Environment & Ecology","पर्यावरण एवं पारिस्थितिकी"],["ca","Current Affairs","समसामयिक घटनाएँ"]] },
   ca:   { name:{en:"Current Affairs",hi:"करंट अफेयर्स"}, desc:{en:"Daily 50-question test · RPSC + UPSC · No time limit",hi:"रोज़ 50 प्रश्नों की टेस्ट · RPSC + UPSC · कोई समय सीमा नहीं"}, subjects:[] },
+  pyq:  { name:{en:"PYQ",hi:"PYQ"}, desc:{en:"Previous year papers",hi:"पिछले वर्षों के पेपर"}, subjects:[] },
   reet: { name:{en:"REET",hi:"REET"}, desc:{en:"Rajasthan Eligibility Examination for Teachers — complete mock test only",hi:"राजस्थान अध्यापक पात्रता परीक्षा — केवल पूर्ण मॉक टेस्ट"},
           subjects:[] },
   neet: { name:{en:"NEET",hi:"NEET"}, desc:{en:"National Eligibility cum Entrance Test (UG) \u2014 complete mock test only",hi:"\u0930\u093e\u0937\u094d\u091f\u094d\u0930\u0940\u092f \u092a\u093e\u0924\u094d\u0930\u0924\u093e \u0938\u0939 \u092a\u094d\u0930\u0935\u0947\u0936 \u092a\u0930\u0940\u0915\u094d\u0937\u093e (UG) \u2014 \u0915\u0947\u0935\u0932 \u092a\u0942\u0930\u094d\u0923 \u092e\u0949\u0915 \u091f\u0947\u0938\u094d\u091f"},
@@ -645,6 +650,11 @@ hi:{tagline:"टेस्ट • मॉक • नोट्स — UPSC · RPSC 
 free:"निःशुल्क",start:"प्रारंभ करें",buyStart:"खरीदें और प्रारंभ करें",owned:"खरीदा हुआ",questions:"प्रश्न",minutes:"मिनट",attempts:"प्रयास",bestScore:"सर्वश्रेष्ठ (पहला प्रयास)",download:"डाउनलोड",buyNotes:"नोट्स खरीदें",bundle:"सभी विषय — एक PDF",bundleSub:"इस परीक्षा के सभी विषय एक ही PDF में",mockSub:"सभी विषयों के मिश्रित प्रश्न",freeMockSub:"इस परीक्षा का एक निःशुल्क मॉक — 10 प्रश्न",firstCounts:"केवल आपके पहले प्रयास के अंक मान्य हैं। पुनः प्रयास निःशुल्क अभ्यास है।",depositPending:"जमा अनुरोध भेजा गया — स्वीकृति की प्रतीक्षा है।",noHistory:"अभी यहाँ कुछ नहीं है।",noNotif:"अभी कोई सूचना नहीं है।",noPurchases:"अभी कोई खरीद नहीं है।",noAttempts:"अभी कोई प्रयास नहीं — अपना पहला टेस्ट दें!",errName:"कृपया छात्र का पूरा नाम डालें।",errPhone:"सही 10-अंकों का फ़ोन नंबर डालें।",errPass:"पासवर्ड कम से कम 6 अक्षरों का हो।",errGmail:"सही Gmail पता डालें।",errDob:"अपनी जन्म तिथि चुनें।",errOtp:"6-अंकों का OTP डालें।",errExists:"यह फ़ोन नंबर पहले से रजिस्टर्ड है। कृपया लॉगिन करें।",errNoUser:"खाता नहीं मिला। कृपया पहले रजिस्टर करें।",errBadPass:"गलत पासवर्ड। पुनः प्रयास करें।",errBadOtp:"गलत या समाप्त OTP।",otpSent:"OTP आपके Gmail पर भेजा गया। न मिले तो Spam फ़ोल्डर देखें।",welcome:"StuDy में आपका स्वागत है!",insufficient:"बैलेंस पर्याप्त नहीं है। पहले StuDy वॉलेट में पैसे जोड़ें।",purchased:"अनलॉक हो गया!",depErrUtr:"12-अंकों का UTR / लेनदेन नंबर डालें।",depDup:"यह UTR पहले से भेजा जा चुका है।",submitConfirm:"टेस्ट जमा करें? जमा करने के बाद उत्तर नहीं बदले जा सकेंगे।",timeUp:"समय समाप्त — आपका टेस्ट स्वतः जमा हो गया।",firstAttemptNote:"यह स्कोर आपके पहले प्रयास का है और अंतिम है।",practiceNote:"अभ्यास प्रयास — आपका पहला-प्रयास स्कोर ही आधिकारिक रहेगा।",level:"स्तर",reportCard:"मेरी रिपोर्ट कार्ड",verifyCard:"रिपोर्ट कार्ड सत्यापित करें",telegram:"Telegram पर चैट करें",telegramSub:"सबसे तेज़ सहायता — कुछ घंटों में जवाब"}
 };
 let LANG = localStorage.getItem("study_lang") || "en";
+/* Test language: the language of questions & options only. It is switched
+   from the selector INSIDE the test screen and saved (study_tlang) as the
+   preference for future tests. The Profile App language keeps its original
+   behaviour — it switches the whole app, and resets TLANG to match. */
+let TLANG = localStorage.getItem("study_tlang") || LANG;
 const T = k => (STR[LANG] && STR[LANG][k]) || STR.en[k] || k;
 function applyI18n(){ document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent = T(el.dataset.i18n); }); document.documentElement.lang = LANG; }
 
@@ -856,6 +866,7 @@ function finishLogin(user){
   ME = user; localStorage.setItem("study_session", user.phone); setSessionCookie(user.phone);
   if(user.session){ try{ localStorage.setItem("study_devsess", user.session); }catch(e){} }
   if(user.lang){ LANG = user.lang; localStorage.setItem("study_lang", LANG); }
+  TLANG = localStorage.getItem("study_tlang") || LANG;
   $("pf-lang").value = LANG; applyI18n(); _otpFlow=null;
   applyTheme(user.theme || localStorage.getItem("study_theme") || "light", false);
   $("admin-entry").classList.toggle("hidden", !isAdmin());
@@ -864,9 +875,24 @@ function finishLogin(user){
 function doLogout(){ ME=null; localStorage.removeItem("study_session"); clearSessionCookie(); go("auth"); }
 function setLang(l, fromProfile){
   LANG=l; localStorage.setItem("study_lang", l); $("pf-lang").value=l; applyI18n();
+  /* App language switches the ENTIRE app, tests included: reset the test
+     language to match. The separate Test language option can then move the
+     questions alone, without touching the app language. */
+  TLANG=l; try{ localStorage.setItem("study_tlang", l); }catch(e){}
+  const ts = $("t-lang"); if(ts) ts.value = TLANG;
   if(ME){ ME.lang=l; if(!BACKEND_URL) Store.updateMe(u=>u.lang=l); else api("setLang",{phone:ME.phone, lang:l}); }
   const cur = ["home","category","wallet","profile","notifications"].find(s=> !$("screen-"+s).classList.contains("hidden"));
   if(cur) go(cur);
+}
+function setTestLang(l){
+  /* Called from the language selector INSIDE the test screen. Switches the
+     question medium immediately and saves it as the preference for all
+     future tests. The app (Profile) language is not touched. */
+  TLANG = (l === "hi") ? "hi" : "en";
+  try{ localStorage.setItem("study_tlang", TLANG); }catch(e){}
+  const ts = $("t-lang"); if(ts) ts.value = TLANG;
+  if(typeof TEST !== "undefined" && TEST && !TEST.done) renderQ();
+  toast(TLANG === "hi" ? "टेस्ट भाषा: हिंदी — आगे के टेस्टों के लिए सहेजी गई" : "Test language: English — saved for future tests");
 }
 
 /* ---------------- Entitlements ---------------- */
@@ -923,15 +949,51 @@ function renderNotes(){
     return `<h2 style="display:flex;align-items:center;gap:10px;margin-top:20px"><img src="${ASSET[cat] || ""}" alt="" style="height:30px" onerror="this.style.display='none'">${c.name[LANG] || c.name.en}</h2><div class="card" style="padding:6px 14px">${rows}</div>`;
   }).join("");
 }
+/* ---------------- PYQ (Previous Year Papers) ----------------
+   Real previous-year papers, typed in full. Price is FIXED at ₹3 per test
+   (user rule) and does not move with admin exam prices. Premium includes
+   PYQ tests, like everything else. */
+const PYQ_PRICE = 3;
+const PYQ_TESTS = [
+  { id:"ras2024", exam:"RPSC",
+    title:{ en:"RPSC RAS Prelims — 2024", hi:"RPSC RAS प्रीलिम्स — 2024" },
+    meta:{ en:"Raj. State & Sub. Services Comb. Comp. (Pre) Exam – 2024 · GK & General Science · Held on 2 Feb 2025 · Official final answer key (24 Feb 2025)",
+           hi:"राज. राज्य एवं अधीनस्थ सेवाएँ संयुक्त प्रतियोगी (प्रा.) परीक्षा – 2024 · सामान्य ज्ञान एवं सामान्य विज्ञान · परीक्षा तिथि 2 फ़रवरी 2025 · आधिकारिक अंतिम उत्तर कुंजी (24 फ़रवरी 2025)" },
+    n:150, mins:180 }
+];
+function pyqQuestions(id){ return (window.STUDY_QUESTIONS || []).filter(q=> q[1] === "pyq" && q[2] === id); }
+function pyqOwned(id){ return isSubActive() || !!(ME && ME.purchases && ME.purchases.tests && ME.purchases.tests["pyq_" + id]); }
+function buyPYQ(id, btn){
+  const t = PYQ_TESTS.find(x=>x.id === id); if(!t) return;
+  if(!spendStars(PYQ_PRICE, "PYQ test: " + t.title.en)) return;
+  ME.purchases.tests["pyq_" + id] = Date.now();
+  if(!BACKEND_URL) Store.updateMe(u=>u.purchases = ME.purchases); else api("buy", {phone:ME.phone, kind:"test", key:"pyq_" + id});
+  toast(T("purchased")); renderPYQ();
+}
+function startPYQ(id){
+  const qs = pyqQuestions(id);
+  if(!qs.length){ toast(LANG === "hi" ? "प्रश्न उपलब्ध नहीं हैं।" : "No questions available yet."); return; }
+  const t = PYQ_TESTS.find(x=>x.id === id);
+  startTestWith("pyq", id, qs.slice(), false, (t ? t.mins : 180) * 60);
+}
 function renderPYQ(){
+  const mine = Store.attempts().filter(a=> ME && a.phone === ME.phone && a.cat === "pyq");
   $("pyq-body").innerHTML = `
-    <div class="card" style="text-align:center;padding:32px 18px">
-      <div style="font-size:44px">📜</div>
-      <h2 style="margin-top:8px">${LANG === "hi" ? "PYQ टेस्ट" : "PYQ Tests"}</h2>
-      <div style="margin-top:10px"><span class="tag" style="color:#b8860b;border-color:#ecd28a;background:#fffbf0;font-size:12.5px;padding:4px 12px">${LANG === "hi" ? "जल्द आ रहा है" : "COMING SOON"}</span></div>
-      <p class="sub" style="margin:14px auto 0;max-width:430px;line-height:1.65">${LANG === "hi" ? "टेस्ट केवल पिछले वर्षों के प्रश्नपत्रों (PYQ PDF) से बनेंगे — बिल्कुल मौजूदा टेस्ट की तरह, और हर टेस्ट पर उसका वर्ष लिखा होगा। हम इन्हें तैयार कर रहे हैं।" : "Tests built only from previous year question papers (PYQ PDFs) — exactly like the current tests, with the year mentioned on every test. We are preparing them."}</p>
-      <div style="margin-top:16px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">${["RPSC","UPSC","SSC","NEET","JEE","REET"].map(x=>`<span class="tag">${x}</span>`).join("")}</div>
-    </div>`;
+    <h1 style="margin-top:6px">${LANG === "hi" ? "पिछले वर्षों के पेपर (PYQ)" : "Previous Year Papers (PYQ)"}</h1>
+    <p class="sub" style="margin-top:5px">${LANG === "hi" ? "असली पिछले पेपर — पूरे प्रश्न, आधिकारिक उत्तर कुंजी के साथ। हर टेस्ट पर उसका वर्ष लिखा है। मात्र ₹3 प्रति टेस्ट।" : "Real previous papers — full questions with the official answer key. Every test carries its year. Only ₹3 per test."}</p>
+    <h2 style="display:flex;align-items:center;gap:10px"><img src="${ASSET.rpsc || ""}" alt="" style="height:30px" onerror="this.style.display='none'">RPSC</h2>
+    <div class="card" style="padding:6px 14px">
+    ${PYQ_TESTS.map(t=>{
+      const owned = pyqOwned(t.id);
+      const att = mine.filter(a=> a.sub === t.id);
+      const first = att.find(a=>a.first);
+      const btn = owned
+        ? `<button class="btn sm" onclick="startPYQ('${t.id}')">${att.length ? (LANG === "hi" ? "पुनः प्रयास" : "Re-Attempt") : (LANG === "hi" ? "शुरू करें" : "Start")}</button>`
+        : `<span class="price">₹${PYQ_PRICE}</span><button class="btn sm gold" onclick="buyPYQ('${t.id}', this)">${LANG === "hi" ? "₹3 में खरीदें और शुरू करें" : "Buy ₹3 & Start"}</button>`;
+      return `<div class="testrow"><div class="ti"><div class="tt">${esc(t.title[LANG] || t.title.en)}</div><div class="ts">${esc(t.meta[LANG] || t.meta.en)}</div><div class="ts">${t.n} ${T("questions")} · ${t.mins} ${T("minutes")}${first ? ` · ${LANG === "hi" ? "पहला स्कोर" : "First score"}: ${first.score}/${first.total}` : ""}${att.length > 1 ? ` · ${att.length} ${T("attempts")}` : ""}</div></div>${btn}</div>`;
+    }).join("")}
+    </div>
+    <p class="sub" style="margin-top:14px;text-align:center">${LANG === "hi" ? "और पेपर (UPSC · SSC · NEET · JEE · REET) जल्द आ रहे हैं।" : "More papers (UPSC · SSC · NEET · JEE · REET) coming soon."}</p>`;
 }
 
 /* ---------------- Daily Current Affairs ---------------- */
@@ -1027,7 +1089,7 @@ function renderHome(){
     ? `<div class="card" style="margin-top:16px;border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff);display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><b>👑 StuDy Premium active</b> <span class="sub">— everything unlocked · till ${subTillText()}</span></div><button onclick="hidePremiumStrip()" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:8px 10px;flex-shrink:0">✕</button></div>`
     : `<div class="card" style="margin-top:16px;border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff);display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><b>👑 StuDy Premium — ₹${subPrice()}/year</b><div class="sub">Unlock EVERY test, mock and notes — no per-test buying.</div></div><button class="btn gold sm" onclick="go('wallet')">Get Premium</button><button onclick="hidePremiumStrip()" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:8px 10px;flex-shrink:0">✕</button></div>`;
   const CAT_ORDER = ["rpsc","upsc","ssc","neet","jee","reet","ca","school"];
-  $("catgrid").innerHTML = Object.entries(CATS).sort((a,b)=> CAT_ORDER.indexOf(a[0]) - CAT_ORDER.indexOf(b[0])).map(([k,c])=>`
+  $("catgrid").innerHTML = Object.entries(CATS).filter(([k])=>k!=="pyq").sort((a,b)=> CAT_ORDER.indexOf(a[0]) - CAT_ORDER.indexOf(b[0])).map(([k,c])=>`
     <button class="catrow" onclick="renderCategory('${k}');go('category')">
       <img class="catlogo" src="${ASSET[k]}" alt="${c.name.en} logo" onerror="this.outerHTML='<div class=catletter>${k[0].toUpperCase()}</div>'">
       <span style="flex:1;min-width:0">
@@ -1037,7 +1099,7 @@ function renderHome(){
       </span>
       <span style="color:#bbb;font-size:20px">›</span>
     </button>`).join("");
-  $("freemocks").innerHTML = Object.entries(CATS).filter(([k])=>k!=="school" && k!=="reet").map(([k,c])=>`
+  $("freemocks").innerHTML = Object.entries(CATS).filter(([k])=>k!=="school" && k!=="reet" && k!=="pyq").map(([k,c])=>`
     <div class="card" style="padding:12px 14px"><div style="display:flex;align-items:center;gap:12px">
       <img class="catlogo" src="${ASSET[k]}" alt="" style="width:42px;height:42px" onerror="this.style.display='none'">
       <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14.5px">${c.name.en} — ${T("freeMocks")}</div><div class="sub">${T("freeMockSub")} · 10 ${T("minutes")}</div></div>
@@ -1049,6 +1111,7 @@ function resetCatSections(){
   ["subject-list","mock-card","notes-list"].forEach(id=>{ const el = $(id); if(el){ el.classList.remove("hidden"); const h = el.previousElementSibling; if(h && h.tagName === "H2") h.classList.remove("hidden"); } });
 }
 function renderCategory(cat){
+  if(cat === "pyq"){ go("pyq"); return; }
   CURCAT = cat; const c = CATS[cat]; const P = getSettings().prices;
   resetCatSections();
   if(FULLMOCK[cat]){ renderFullMockCategory(cat, c, P); return; }
@@ -1217,7 +1280,7 @@ function assembleMixed(cat, total){
 
 /* ---------------- Test engine ---------------- */
 let TEST = null;
-function qLang(q){ return (q && (q[2]==="eng" || /_eng$/.test(q[2]))) ? "en" : LANG; }
+function qLang(q){ return (q && (q[2]==="eng" || /_eng$/.test(q[2]))) ? "en" : TLANG; }
 let CURCAT_SUBJECT = "";
 function startTest(cat, kind){
   const qs = assembleTest(cat, kind);
@@ -1277,8 +1340,9 @@ function startTestWith(cat, kind, qs, markSeen, secs){
   showNegBanner();
   refreshInstallFloat();
   const c = CATS[cat];
+  { const ts = $("t-lang"); if(ts) ts.value = TLANG; }
   $("t-catname").textContent = c.name.en;
-  $("t-subname").textContent = cat==="ca" ? (LANG==="hi" ? "डेली टेस्ट · " : "Daily Test · ") + kind : kind==="free" ? "Free Mock" : kind==="mock" ? "Full Mock" : /^mock[123]$/.test(kind) ? "Full Mock " + kind.slice(4) : subName(cat,kind,"en");
+  $("t-subname").textContent = cat==="pyq" ? ((PYQ_TESTS.find(x=>x.id===kind)||{}).title?.en || kind) : cat==="ca" ? (LANG==="hi" ? "डेली टेस्ट · " : "Daily Test · ") + kind : kind==="free" ? "Free Mock" : kind==="mock" ? "Full Mock" : /^mock[123]$/.test(kind) ? "Full Mock " + kind.slice(4) : subName(cat,kind,"en");
   const el = document.documentElement;
   if(el.requestFullscreen){ el.requestFullscreen().then(()=>{ if(TEST){ TEST.fs = true; } if(screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(()=>{}); }).catch(()=>{}); }
   renderQ(); startTimer(); updTimer();
@@ -1354,17 +1418,17 @@ function renderResult(rec){
   const rank = peers.filter(a=>a.score > rec.score).length + 1;
   const perc = peers.length ? Math.round(100*below/peers.length) : 100;
   const acc = (rec.correct+rec.wrong) ? Math.round(100*rec.correct/(rec.correct+rec.wrong)) : 0;
-  $("res-title").textContent = CATS[rec.cat].name.en + " · " + (rec.type==="test" ? subName(rec.cat, rec.sub, "en") : rec.type==="mock" ? "Full Mock" : "Free Mock");
+  $("res-title").textContent = rec.cat === "pyq" ? ((PYQ_TESTS.find(x=>x.id===rec.sub)||{}).title?.en || "PYQ") : CATS[rec.cat].name.en + " · " + (rec.type==="test" ? subName(rec.cat, rec.sub, "en") : rec.type==="mock" ? "Full Mock" : "Free Mock");
   $("res-score").textContent = rec.score + " / " + rec.total;
   $("res-sub").textContent = LANG==="hi" ? "आपका स्कोर" : "Your score";
   $("res-rank").textContent = rec.first ? "#"+rank : "—";
   $("res-perc").textContent = rec.first ? perc+"%" : "—";
   $("res-acc").textContent = acc+"%"; $("res-right").textContent = rec.correct; $("res-wrong").textContent = rec.wrong; $("res-skip").textContent = rec.skipped;
   $("res-note").textContent = rec.first ? T("firstAttemptNote") : T("practiceNote");
-  $("res-reattempt").onclick = ()=>{ if(rec.cat === "ca"){ startCADaily(rec.sub); return; } if(FULLMOCK[rec.cat]){ startFullMock(rec.cat); return; } const sm = /^(.+):(\d+)$/.exec(rec.sub); if(sm) startSeries(rec.cat, sm[1], +sm[2]); else startTest(rec.cat, rec.sub); };
+  $("res-reattempt").onclick = ()=>{ if(rec.cat === "pyq"){ startPYQ(rec.sub); return; } if(rec.cat === "ca"){ startCADaily(rec.sub); return; } if(FULLMOCK[rec.cat]){ startFullMock(rec.cat); return; } const sm = /^(.+):(\d+)$/.exec(rec.sub); if(sm) startSeries(rec.cat, sm[1], +sm[2]); else startTest(rec.cat, rec.sub); };
   const byId = {}; window.STUDY_QUESTIONS.forEach(q=>byId[q[0]]=q);
   $("res-solutions").innerHTML = rec.detail.map((d,i)=>{
-    const q = byId[d.id]; if(!q) return ""; const L = (rec.type==="test" && rec.sub==="eng") ? "en" : LANG;
+    const q = byId[d.id]; if(!q) return ""; const L = qLang(q);
     const letters=["A","B","C","D"];
     return `<div class="solq"><div style="font-weight:700;font-size:14px">Q${i+1}. ${esc(L==="hi"?q[4]:q[3])}</div>
       ${q[5].map((o,j)=>`<div class="solopt ${j===d.right?"right":(j===d.pick?"wrong":"")}">${letters[j]}. ${esc(L==="hi"?o[1]:o[0])}${j===d.right?" ✓":(j===d.pick?" ✗ — "+(LANG==="hi"?"आपका उत्तर":"your answer"):"")}</div>`).join("")}
@@ -1817,7 +1881,7 @@ function renderSearch(q){
       items.push({cat:k, label:c.name.en+" · "+en+" — Notes", type:"Notes", keys:(en+" "+hi+" "+c.name.en+" notes").toLowerCase()});
     });
   });
-  const hits = items.filter(i=> !q || i.keys.includes(q)).slice(0,12);
+  const hits = items.filter(i=> i.cat !== "pyq" && (!q || i.keys.includes(q))).slice(0,12);
   const box = $("srch-res"); if(!box) return;
   box.innerHTML = hits.length ? hits.map(i=>`<button class="testrow" style="width:100%;text-align:left;background:none" onclick="closeModal();renderCategory('${i.cat}');go('category')"><img class="catlogo" src="${ASSET[i.cat]}" alt="" style="width:34px;height:34px" onerror="this.style.display='none'"><span class="ti"><span class="tt" style="display:block">${esc(i.label)}</span></span><span class="tag">${esc(i.type)}</span></button>`).join("") : `<p class="sub" style="padding:10px 0">${LANG==="hi" ? "कोई परिणाम नहीं मिला।" : "No matches found."}</p>`;
 }
