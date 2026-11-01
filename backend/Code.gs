@@ -5,10 +5,10 @@
  * (Run setup() once from the editor to create them.)
  * Deploy: Deploy → New deployment → Web app → Execute as: Me,
  * Access: Anyone. Paste the Web App URL into BACKEND_URL in index.html.
- * Admin: ADMIN_PHONE below; its password is whatever that account
+ * Admins: ADMIN_PHONES below; each admin's password is whatever that account
  * was registered with. Register that number normally first.
  *************************************************/
-const ADMIN_PHONE = "9588293680";
+const ADMIN_PHONES = ["9588293680", "9628187101"]; // owner + partner (secondary admin)
 const SHEET_NAMES = ["Users","Attempts","Payments","Settings","Notifications","OTPs","UserNotifs","Cards","Claims"];
 
 function ss(){ return SpreadsheetApp.getActiveSpreadsheet(); }
@@ -307,7 +307,7 @@ function doPost(e){
       const led = JSON.parse(u.ledger||"[]"); led.unshift({at:Date.now(), amt:-subPrice, label:"StuDy Premium (1 year)"}); u.ledger = JSON.stringify(led);
       saveUser(u); return json({ok:true, user:pubUser(u)});
     }
-    const adminOk = () => { const u = findUser(ADMIN_PHONE); return String(req.adminPhone)===ADMIN_PHONE && u && String(u.pass)===String(req.adminPass); };
+    const adminOk = () => { const u = findUser(req.adminPhone); return ADMIN_PHONES.indexOf(String(req.adminPhone)) >= 0 && u && String(u.pass)===String(req.adminPass); };
     if(a==="adminStats"){
       if(!adminOk()) return json({ok:false,error:"forbidden"});
       const users = rows("Users");
