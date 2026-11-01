@@ -871,6 +871,7 @@ function finishLogin(user){
   applyTheme(user.theme || localStorage.getItem("study_theme") || "light", false);
   $("admin-entry").classList.toggle("hidden", !isAdmin());
   go("home"); hideSplash(); toast(T("welcome"));
+  settleSavedTest();
 }
 function doLogout(){ ME=null; localStorage.removeItem("study_session"); clearSessionCookie(); go("auth"); }
 function setLang(l, fromProfile){
@@ -959,8 +960,49 @@ const PYQ_TESTS = [
     title:{ en:"RPSC RAS Prelims — 2024", hi:"RPSC RAS प्रीलिम्स — 2024" },
     meta:{ en:"Raj. State & Sub. Services Comb. Comp. (Pre) Exam – 2024 · GK & General Science · Held on 2 Feb 2025 · Official final answer key (24 Feb 2025)",
            hi:"राज. राज्य एवं अधीनस्थ सेवाएँ संयुक्त प्रतियोगी (प्रा.) परीक्षा – 2024 · सामान्य ज्ञान एवं सामान्य विज्ञान · परीक्षा तिथि 2 फ़रवरी 2025 · आधिकारिक अंतिम उत्तर कुंजी (24 फ़रवरी 2025)" },
-    n:150, mins:180 }
+    n:150, mins:180 },
+  { id:"ras2023", exam:"RPSC",
+    title:{ en:"RPSC RAS Prelims — 2023", hi:"RPSC RAS प्रीलिम्स — 2023" },
+    meta:{ en:"Raj. State & Sub. Services Comb. Comp. (Pre) Exam – 2023 · GK & General Science · Held on 1 Oct 2023 · Official final answer key (20 Oct 2023)",
+           hi:"राज. राज्य एवं अधीनस्थ सेवाएँ संयुक्त प्रतियोगी (प्रा.) परीक्षा – 2023 · सामान्य ज्ञान एवं सामान्य विज्ञान · परीक्षा तिथि 1 अक्टूबर 2023 · आधिकारिक अंतिम उत्तर कुंजी (20 अक्टूबर 2023)" },
+    n:150, mins:180 },
+  { id:"ras2021", exam:"RPSC",
+    title:{ en:"RPSC RAS Prelims — 2021", hi:"RPSC RAS प्रीलिम्स — 2021" },
+    meta:{ en:"Raj. State & Sub. Services Comb. Comp. (Pre) Exam – 2021 · GK & General Science · Held on 27 Oct 2021 · Official final answer key (22 Nov 2021)",
+           hi:"राज. राज्य एवं अधीनस्थ सेवाएँ संयुक्त प्रतियोगी (प्रा.) परीक्षा – 2021 · सामान्य ज्ञान एवं सामान्य विज्ञान · परीक्षा तिथि 27 अक्टूबर 2021 · आधिकारिक अंतिम उत्तर कुंजी (22 नवम्बर 2021)" },
+    n:150, mins:180 },
+  { id:"upsc2026", exam:"UPSC",
+    title:{ en:"UPSC Prelims (GS Paper-I) — 2026", hi:"UPSC प्रीलिम्स (GS प्रश्नपत्र-I) — 2026" },
+    meta:{ en:"UPSC Civil Services Preliminary Exam – 2026 · General Studies Paper-I · Questions in English · Answers as per the key given with the paper",
+           hi:"UPSC सिविल सेवा प्रारंभिक परीक्षा – 2026 · सामान्य अध्ययन प्रश्नपत्र-I · प्रश्न अंग्रेज़ी में · उत्तर पेपर के साथ दी गई कुंजी के अनुसार" },
+    n:100, mins:120 },
+  { id:"upsc2025", exam:"UPSC",
+    title:{ en:"UPSC Prelims (GS Paper-I) — 2025", hi:"UPSC प्रीलिम्स (GS प्रश्नपत्र-I) — 2025" },
+    meta:{ en:"UPSC Civil Services Preliminary Exam – 2025 · General Studies Paper-I · Questions in English · Answers as per the key given with the paper",
+           hi:"UPSC सिविल सेवा प्रारंभिक परीक्षा – 2025 · सामान्य अध्ययन प्रश्नपत्र-I · प्रश्न अंग्रेज़ी में · उत्तर पेपर के साथ दी गई कुंजी के अनुसार" },
+    n:100, mins:120 },
+  { id:"upsc2024", exam:"UPSC",
+    title:{ en:"UPSC Prelims (GS Paper-I) — 2024", hi:"UPSC प्रीलिम्स (GS प्रश्नपत्र-I) — 2024" },
+    meta:{ en:"UPSC Civil Services Preliminary Exam – 2024 · General Studies Paper-I · Questions in English · Answers as per the key given with the paper",
+           hi:"UPSC सिविल सेवा प्रारंभिक परीक्षा – 2024 · सामान्य अध्ययन प्रश्नपत्र-I · प्रश्न अंग्रेज़ी में · उत्तर पेपर के साथ दी गई कुंजी के अनुसार" },
+    n:100, mins:120 },
+  { id:"upsc2023", exam:"UPSC",
+    title:{ en:"UPSC Prelims (GS Paper-I) — 2023", hi:"UPSC प्रीलिम्स (GS प्रश्नपत्र-I) — 2023" },
+    meta:{ en:"UPSC Civil Services Preliminary Exam – 2023 · General Studies Paper-I · Questions in English · Answers as per the key given with the paper",
+           hi:"UPSC सिविल सेवा प्रारंभिक परीक्षा – 2023 · सामान्य अध्ययन प्रश्नपत्र-I · प्रश्न अंग्रेज़ी में · उत्तर पेपर के साथ दी गई कुंजी के अनुसार" },
+    n:100, mins:120 },
+  { id:"upsc2022", exam:"UPSC",
+    title:{ en:"UPSC Prelims (GS Paper-I) — 2022", hi:"UPSC प्रीलिम्स (GS प्रश्नपत्र-I) — 2022" },
+    meta:{ en:"UPSC Civil Services Preliminary Exam – 2022 · General Studies Paper-I · Questions in English · Answers as per the key given with the paper",
+           hi:"UPSC सिविल सेवा प्रारंभिक परीक्षा – 2022 · सामान्य अध्ययन प्रश्नपत्र-I · प्रश्न अंग्रेज़ी में · उत्तर पेपर के साथ दी गई कुंजी के अनुसार" },
+    n:100, mins:120 }
 ];
+const PYQ_GROUPS = [
+  { exam:"RPSC", logo:"rpsc", name:{ en:"RPSC — RAS Prelims", hi:"RPSC — RAS प्रीलिम्स" } },
+  { exam:"UPSC", logo:"upsc", name:{ en:"UPSC — Civil Services Prelims", hi:"UPSC — सिविल सेवा प्रीलिम्स" } }
+];
+const PYQ_OPEN = { RPSC:true, UPSC:false };
+function togglePYQGroup(exam){ PYQ_OPEN[exam] = !PYQ_OPEN[exam]; renderPYQ(); }
 function pyqQuestions(id){ return (window.STUDY_QUESTIONS || []).filter(q=> q[1] === "pyq" && q[2] === id); }
 function pyqOwned(id){ return isSubActive() || !!(ME && ME.purchases && ME.purchases.tests && ME.purchases.tests["pyq_" + id]); }
 function buyPYQ(id, btn){
@@ -978,22 +1020,33 @@ function startPYQ(id){
 }
 function renderPYQ(){
   const mine = Store.attempts().filter(a=> ME && a.phone === ME.phone && a.cat === "pyq");
+  const rowFor = t=>{
+    const owned = pyqOwned(t.id);
+    const att = mine.filter(a=> a.sub === t.id);
+    const first = att.find(a=>a.first);
+    const btn = owned
+      ? `<button class="btn sm" onclick="startPYQ('${t.id}')">${att.length ? (LANG === "hi" ? "पुनः प्रयास" : "Re-Attempt") : (LANG === "hi" ? "शुरू करें" : "Start")}</button>`
+      : `<span class="price">₹${PYQ_PRICE}</span><button class="btn sm gold" onclick="buyPYQ('${t.id}', this)">${LANG === "hi" ? "₹3 में खरीदें और शुरू करें" : "Buy ₹3 & Start"}</button>`;
+    return `<div class="testrow"><div class="ti"><div class="tt">${esc(t.title[LANG] || t.title.en)}</div><div class="ts">${esc(t.meta[LANG] || t.meta.en)}</div><div class="ts">${t.n} ${T("questions")} · ${t.mins} ${T("minutes")}${first ? ` · ${LANG === "hi" ? "पहला स्कोर" : "First score"}: ${first.score}/${first.total}` : ""}${att.length > 1 ? ` · ${att.length} ${T("attempts")}` : ""}</div></div>${btn}</div>`;
+  };
   $("pyq-body").innerHTML = `
     <h1 style="margin-top:6px">${LANG === "hi" ? "पिछले वर्षों के पेपर (PYQ)" : "Previous Year Papers (PYQ)"}</h1>
-    <p class="sub" style="margin-top:5px">${LANG === "hi" ? "असली पिछले पेपर — पूरे प्रश्न, आधिकारिक उत्तर कुंजी के साथ। हर टेस्ट पर उसका वर्ष लिखा है। मात्र ₹3 प्रति टेस्ट।" : "Real previous papers — full questions with the official answer key. Every test carries its year. Only ₹3 per test."}</p>
-    <h2 style="display:flex;align-items:center;gap:10px"><img src="${ASSET.rpsc || ""}" alt="" style="height:30px" onerror="this.style.display='none'">RPSC</h2>
-    <div class="card" style="padding:6px 14px">
-    ${PYQ_TESTS.map(t=>{
-      const owned = pyqOwned(t.id);
-      const att = mine.filter(a=> a.sub === t.id);
-      const first = att.find(a=>a.first);
-      const btn = owned
-        ? `<button class="btn sm" onclick="startPYQ('${t.id}')">${att.length ? (LANG === "hi" ? "पुनः प्रयास" : "Re-Attempt") : (LANG === "hi" ? "शुरू करें" : "Start")}</button>`
-        : `<span class="price">₹${PYQ_PRICE}</span><button class="btn sm gold" onclick="buyPYQ('${t.id}', this)">${LANG === "hi" ? "₹3 में खरीदें और शुरू करें" : "Buy ₹3 & Start"}</button>`;
-      return `<div class="testrow"><div class="ti"><div class="tt">${esc(t.title[LANG] || t.title.en)}</div><div class="ts">${esc(t.meta[LANG] || t.meta.en)}</div><div class="ts">${t.n} ${T("questions")} · ${t.mins} ${T("minutes")}${first ? ` · ${LANG === "hi" ? "पहला स्कोर" : "First score"}: ${first.score}/${first.total}` : ""}${att.length > 1 ? ` · ${att.length} ${T("attempts")}` : ""}</div></div>${btn}</div>`;
+    <p class="sub" style="margin-top:5px">${LANG === "hi" ? "असली पिछले पेपर — पूरे प्रश्न, उत्तर कुंजी के साथ। हर टेस्ट पर उसका वर्ष लिखा है। मात्र ₹3 प्रति टेस्ट।" : "Real previous papers — full questions with the answer key. Every test carries its year. Only ₹3 per test."}</p>
+    ${PYQ_GROUPS.map(g=>{
+      const tests = PYQ_TESTS.filter(t=> t.exam === g.exam);
+      if(!tests.length) return "";
+      const open = !!PYQ_OPEN[g.exam];
+      return `<div class="card" style="padding:0;overflow:hidden;margin-top:14px">
+        <div onclick="togglePYQGroup('${g.exam}')" style="display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer">
+          <img src="${ASSET[g.logo] || ""}" alt="" style="height:30px" onerror="this.style.display='none'">
+          <div style="flex:1;font-weight:800;font-size:15.5px">${esc(g.name[LANG] || g.name.en)}</div>
+          <span class="sub">${tests.length} ${LANG === "hi" ? "पेपर" : "papers"}</span>
+          <span style="font-size:15px;color:var(--gold)">${open ? "▾" : "▸"}</span>
+        </div>
+        ${open ? `<div style="padding:2px 14px 8px;border-top:1px solid var(--line)">${tests.map(rowFor).join("")}</div>` : ""}
+      </div>`;
     }).join("")}
-    </div>
-    <p class="sub" style="margin-top:14px;text-align:center">${LANG === "hi" ? "और पेपर (UPSC · SSC · NEET · JEE · REET) जल्द आ रहे हैं।" : "More papers (UPSC · SSC · NEET · JEE · REET) coming soon."}</p>`;
+    <p class="sub" style="margin-top:14px;text-align:center">${LANG === "hi" ? "और पेपर (SSC · NEET · JEE · REET) जल्द आ रहे हैं।" : "More papers (SSC · NEET · JEE · REET) coming soon."}</p>`;
 }
 
 /* ---------------- Daily Current Affairs ---------------- */
@@ -1328,6 +1381,7 @@ function toggleSeries(cat, sub){
 }
 function startTestWith(cat, kind, qs, markSeen, secs){
   if(!qs.length){ toast("No questions available yet."); return; }
+  settleSavedTest();
   CURCAT_SUBJECT = kind;
   TEST = { cat, kind, win: /^mock[123]$/.test(kind) ? mockWindow() : null, qs, idx:0, ans:Array(qs.length).fill(-1), marked:Array(qs.length).fill(false),
            visited:Array(qs.length).fill(false), left: secs === -1 ? 0 : (secs || qs.length*60), noTimer: secs === -1, startedAt: Date.now(), timer:null, fs:false, done:false };
@@ -1365,7 +1419,7 @@ if(document.addEventListener) document.addEventListener("fullscreenchange", ()=>
   clearInterval(TEST.timer);
   showModal(`<h3 style="font-size:16px">${LANG==="hi" ? "टेस्ट से बाहर निकलें?" : "Exit the test?"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi" ? "फ़ुल स्क्रीन बंद हो गया है। यदि आप बाहर निकलते हैं, तो यह प्रयास गिना नहीं जाएगा और आप उसी श्रेणी के पेज पर वापस जाएँगे।" : "Fullscreen was closed. If you exit, this attempt will not be counted and you will go back to the category page."}</p><div style="display:flex;gap:8px;margin-top:14px"><button class="btn red" style="flex:1" onclick="exitTestNow()">${LANG==="hi" ? "टेस्ट छोड़ें" : "Exit test"}</button><button class="btn" style="flex:1" onclick="resumeTest()">${LANG==="hi" ? "टेस्ट जारी रखें" : "Don\'t exit — resume"}</button></div>`);
 });
-function exitTestNow(){ if(!TEST) return; const cat = TEST.cat; TEST.done = true; clearInterval(TEST.timer); closeModal(); exitTestUI(); TEST = null; renderCategory(cat); go("category"); }
+function exitTestNow(){ if(!TEST) return; const cat = TEST.cat; TEST.done = true; clearInTest(); clearInterval(TEST.timer); closeModal(); exitTestUI(); TEST = null; renderCategory(cat); go("category"); }
 function resumeTest(){ closeModal(); const el = document.documentElement; if(el.requestFullscreen){ el.requestFullscreen().then(()=>{ if(screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(()=>{}); }).catch(()=>{}); } if(TEST) startTimer(); }
 function updTimer(){ if(!TEST) return; if(TEST.noTimer){ $("t-timer").textContent = "∞"; return; } const s=Math.max(0,TEST.left); $("t-timer").textContent = String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); }
 function renderQ(){
@@ -1380,6 +1434,7 @@ function renderQ(){
   }).join("");
   $("t-mark").textContent = TEST.marked[TEST.idx] ? (LANG==="hi"?"चिह्न हटाएँ":"Unmark") : (LANG==="hi"?"समीक्षा हेतु चिह्नित करें":"Mark for Review");
   $("t-palname").textContent = LANG==="hi" ? "प्रश्न पैलेट" : "Question Palette";
+  saveInTest();
 }
 function tSelect(i){ TEST.ans[TEST.idx]=i; renderQ(); }
 function tClear(){ if(!TEST) return; TEST.ans[TEST.idx]=-1; renderQ(); }
@@ -1397,8 +1452,46 @@ function exitTestUI(){
   if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
   if(screen.orientation && screen.orientation.unlock) try{ screen.orientation.unlock(); }catch(e){}
 }
+/* ---------------- Unfinished test: auto-submit ----------------
+   While a test runs, its state is saved on the device after every action.
+   If the app is closed without submitting, the saved run is auto-submitted
+   on the next login (or before a new test starts) with the answers marked
+   up to the point the user left — so the attempt counts, and the test then
+   shows Re-Attempt. The explicit in-test "Exit test" keeps its promise and
+   discards the run instead (exitTestNow clears the saved state). */
+function inTestKey(){ return "study_intest_" + (ME ? ME.phone : "guest"); }
+function saveInTest(){
+  if(!TEST || TEST.done || !ME) return;
+  try{ localStorage.setItem(inTestKey(), JSON.stringify({ cat:TEST.cat, kind:TEST.kind, win:(TEST.win ?? null), ids:TEST.qs.map(q=>q[0]), ans:TEST.ans, noTimer:!!TEST.noTimer, startedAt:TEST.startedAt })); }catch(e){}
+}
+function clearInTest(){ if(ME) try{ localStorage.removeItem(inTestKey()); }catch(e){} }
+function autoSubmitSavedTest(){
+  if(!ME) return null;
+  let s = null; try{ s = JSON.parse(localStorage.getItem(inTestKey()) || "null"); }catch(e){}
+  if(!s || !s.ids || !s.ids.length) return null;
+  clearInTest();
+  const byId = {}; window.STUDY_QUESTIONS.forEach(q=> byId[q[0]] = q);
+  const pairs = s.ids.map((id,i)=>({ q:byId[id], pick:(s.ans && typeof s.ans[i] === "number") ? s.ans[i] : -1 })).filter(p=> p.q);
+  if(!pairs.length) return null;
+  let correct = 0, wrong = 0;
+  pairs.forEach(p=>{ if(p.pick === p.q[6]) correct++; else if(p.pick >= 0) wrong++; });
+  const total = pairs.length, skipped = total - correct - wrong, score = Math.round((correct - wrong*0.25)*100)/100;
+  const type = s.kind === "free" ? "free" : (s.kind === "mock" || /^mock[123]$/.test(s.kind)) ? "mock" : "test";
+  const atts = Store.attempts();
+  const first = !atts.some(a=> a.phone === ME.phone && a.cat === s.cat && a.sub === s.kind && a.type === type && (s.win == null || a.win === s.win));
+  const rec = { phone:ME.phone, cat:s.cat, sub:s.kind, type, win:(s.win ?? null), score, total, correct, wrong, skipped, first, at:Date.now(), auto:true,
+                detail: pairs.map(p=>({ id:p.q[0], pick:p.pick, right:p.q[6] })) };
+  atts.push(rec); Store.saveAttempts(atts);
+  if(BACKEND_URL) api("submitAttempt", rec);
+  return rec;
+}
+function settleSavedTest(){
+  const rec = autoSubmitSavedTest();
+  if(rec) toast(LANG === "hi" ? "आपका अधूरा टेस्ट, छोड़े गए उत्तरों के साथ, स्वतः जमा कर दिया गया है।" : "Your unfinished test was auto-submitted with the answers you had marked.");
+  return rec;
+}
 function submitTest(){
-  if(!TEST) return; TEST.done = true;
+  if(!TEST) return; TEST.done = true; clearInTest();
   clearInterval(TEST.timer);
   let correct=0, wrong=0;
   TEST.qs.forEach((q,i)=>{ if(TEST.ans[i]===q[6]) correct++; else if(TEST.ans[i]>=0) wrong++; });
