@@ -1355,10 +1355,11 @@ function mockWindow(){ return Math.floor(Date.now() / (5*24*3600*1000)); }
 function mockRefreshIn(){ const end = (mockWindow()+1)*5*24*3600*1000 - Date.now(); const d = Math.floor(end/86400000), h = Math.floor(end%86400000/3600000); return LANG==="hi" ? `नया मॉक सेट ${d} दिन ${h} घंटे में` : `New mock set in ${d}d ${h}h`; }
 function seedFor(str){ let h = 2166136261; for(let i=0;i<str.length;i++){ h = Math.imul(h ^ str.charCodeAt(i), 16777619); } return h>>>0; }
 function seededShuffle(arr, seed){ let s = (seed>>>0) || 1; const rnd = ()=>{ s = (Math.imul(s, 1664525) + 1013904223)>>>0; return s/4294967296; }; const a = [...arr]; for(let i=a.length-1;i>0;i--){ const j = Math.floor(rnd()*(i+1)); const tmp = a[i]; a[i] = a[j]; a[j] = tmp; } return a; }
+function mockQKey(q){ const n = t => String(t || "").toLowerCase().replace(/[^a-z0-9\u0900-\u097f]+/g, " ").trim(); return n(q[3]) + "|" + q[5].map(o=>n(o[0])).sort().join("~"); }
 function assembleFullMockSet(cat){
   const cfg = FULLMOCK[cat]; const total = cfg.n;
   const pool = window.STUDY_QUESTIONS.filter(q=>q[1]===cat);
-  if(pool.length <= total) return seededShuffle(pool, seedFor(cat+"|full|"+mockWindow()));
+  if(pool.length <= total){ const seenK = new Set(); return seededShuffle(pool.filter(q=>{ const k = mockQKey(q); if(seenK.has(k)) return false; seenK.add(k); return true; }), seedFor(cat+"|full|"+mockWindow())); }
   const bySub = {}; pool.forEach(q=>{ (bySub[q[2]] = bySub[q[2]] || []).push(q); });
   const subs = Object.keys(bySub);
   const raw = subs.map(x=> total * bySub[x].length / pool.length);
@@ -1367,7 +1368,14 @@ function assembleFullMockSet(cat){
   for(const i of order){ if(rest<=0) break; take[i]++; rest--; }
   const out = [];
   subs.forEach((x,i)=>{ out.push(...seededShuffle(bySub[x], seedFor(cat+"|"+x+"|full|"+mockWindow())).slice(0, take[i])); });
-  return seededShuffle(out, seedFor(cat+"|full|"+mockWindow())).slice(0, total);
+  /* never let the same question (same text + same options) appear twice in one mock */
+  const usedIds = new Set(), usedKeys = new Set(), deduped = [];
+  out.forEach(q=>{ const k = mockQKey(q); if(usedKeys.has(k)) return; usedKeys.add(k); usedIds.add(q[0]); deduped.push(q); });
+  if(deduped.length < total){
+    const rest = seededShuffle(pool.filter(q=> !usedIds.has(q[0]) && !usedKeys.has(mockQKey(q))), seedFor(cat+"|topup|"+mockWindow()));
+    for(const q of rest){ if(deduped.length >= total) break; usedKeys.add(mockQKey(q)); deduped.push(q); }
+  }
+  return seededShuffle(deduped, seedFor(cat+"|full|"+mockWindow())).slice(0, total);
 }
 function assembleMixed(cat, total){
   const subs = CATS[cat].subjects.map(s=>s[0]);
