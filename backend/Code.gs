@@ -548,6 +548,10 @@ function tgPropose_(act, fromChatId){
 
 /* ----- update handling ----- */
 function tgHandle_(upd){
+  /* Dedupe: Telegram re-delivers an update until it is satisfied with the
+     webhook response, and Apps Script answers with a redirect — without this
+     guard every redelivery would re-run the command and re-send its reply. */
+  if(upd && upd.update_id != null){ const c = tgCache_(); if(c.get("upd"+upd.update_id)) return; c.put("upd"+upd.update_id, "1", 6*3600); }
   if(upd.callback_query) return tgHandleCb_(upd.callback_query);
   const msg = upd.message;
   if(!msg || !msg.chat || msg.chat.type!=="private" || !msg.text) return;
@@ -749,12 +753,34 @@ function tgStateStep_(chatId, role, st, text){
 
 /* ----- one-time setup helpers (run manually from the Apps Script editor) ----- */
 function tgSetWebhook(){
-  /* NOTE: ScriptApp.getService().getUrl() returns the /dev URL when run from
-     the editor, and Telegram cannot use /dev (it needs Google sign-in).
-     Always register the public /exec deployment URL instead. */
+  /* DO NOT USE as the live mechanism: Apps Script web apps answer every POST
+     with a 302 redirect, and Telegram rejects that ("Wrong response from the
+     webhook: 302 Found") — it then re-delivers the same update forever.
+     The bot therefore runs on 1-minute POLLING (tgPoll + tgSetupPolling)
+     instead of a webhook. Kept only for reference. */
   const url = "https://script.google.com/macros/s/AKfycbxRiO-cXu6nheMpQ7ah05CdSraBr7P7o0mNeJclcdPecrL-JeKdkZd4ydVzkDLHe_8E/exec";
   const r = tgApi_("setWebhook", { url:url, allowed_updates:["message","callback_query"] });
   Logger.log("setWebhook -> " + JSON.stringify(r));
+}
+function tgOff(){ Logger.log(JSON.stringify(tgApi_("deleteWebhook", {}))); }
+/* ----- polling transport (replaces the webhook) -----
+ * A clock trigger runs tgPoll every minute: it fetches queued Telegram
+ * updates with getUpdates and feeds each one to tgHandle_ exactly once
+ * (offset kept in Script Properties; tgHandle_ also dedupes by update_id). */
+function tgPoll(){
+  const off = +tgProp_("TG_OFFSET") || 0;
+  const r = tgApi_("getUpdates", { offset:off, timeout:0, allowed_updates:["message","callback_query"] });
+  if(!r || !r.ok || !r.result || !r.result.length) return;
+  let last = off;
+  r.result.forEach(u=>{ try{ tgHandle_(u); }catch(e){ Logger.log("tgPoll err: " + e); } if(u.update_id >= last) last = u.update_id + 1; });
+  PropertiesService.getScriptProperties().setProperty("TG_OFFSET", String(last));
+}
+function tgSetupPolling(){
+  tgOff(); /* make sure no webhook remains — getUpdates fails while one is set */
+  ScriptApp.getProjectTriggers().forEach(t=>{ if(t.getHandlerFunction()==="tgPoll") ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger("tgPoll").timeBased().everyMinutes(1).create();
+  tgPoll(); /* process anything already queued right away */
+  Logger.log("polling trigger ready");
 }
 function tgWebhookInfo(){
   Logger.log(JSON.stringify(tgApi_("getWebhookInfo", {})));
