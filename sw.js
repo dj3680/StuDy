@@ -2,7 +2,7 @@
    NOTE: true Web Push needs a push server (phase 2). This SW keeps the
    app installable and usable offline for already-loaded content. */
 const CACHE = "study-v2-39";
-const CORE = ["./", "./index.html", "./questions.js", "./manifest.webmanifest",
+const CORE = ["./", "./index.html", "./questions.js", "./questions2.js", "./questions3.js", "./manifest.webmanifest",
   ];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(()=>self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())); });
