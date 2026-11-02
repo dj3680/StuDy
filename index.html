@@ -584,7 +584,6 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,34,40,.
     <button class="tbtn m" id="t-mark" onclick="tMark()">Mark for Review</button>
     <button class="tbtn" id="t-clear" onclick="tClear()">Clear Response</button>
     <button class="tbtn n" id="t-next" onclick="tNav(1)">Next →</button>
-    <button class="tbtn n" id="t-nextsec" style="display:none" onclick="tNextSection()">Next Section →</button>
     <button class="tbtn s" onclick="tConfirmSubmit()">Submit Test</button>
   </div>
 </div>
@@ -1213,14 +1212,14 @@ function renderCategory(cat){
     const att = myAttempts.filter(a=>a.cat===cat && a.sub===sub+":"+n && a.type==="test");
     const first = att.find(a=>a.first);
     return `<div class="testrow"><div class="ti"><div class="tt">${LANG==="hi" ? "टेस्ट" : "Test"} ${n}</div>
-      <div class="ts">20 ${T("questions")} · 15 ${T("minutes")}${att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : ""}</div></div>
+      <div class="ts">${seriesQCount(cat)} ${T("questions")} · 15 ${T("minutes")}${att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : ""}</div></div>
       ${owned ? `<button class="btn sm" onclick="startSeries('${cat}','${sub}',${n})">${att.length ? reAtt : T("start")}</button>`
               : `<span class="price">₹${P.test}</span><button class="btn sm gold" onclick="buySeries('${cat}','${sub}',${n})">${T("buyStart")}</button>`}
     </div>`; };
   $("subject-list").innerHTML = c.subjects.map(([sub])=>{
     const exp = EXPANDED.has(cat + "_" + sub);
     return `<div class="testrow" style="cursor:pointer" onclick="toggleSeries('${cat}','${sub}')"><div class="ti"><div class="tt">${subName(cat,sub,LANG)}</div>
-      <div class="ts">${TESTS_PER_SUBJECT} ${LANG==="hi" ? "टेस्ट" : "Tests"} · 20 ${T("questions")} ${LANG==="hi" ? "प्रत्येक" : "each"}</div></div>
+      <div class="ts">${TESTS_PER_SUBJECT} ${LANG==="hi" ? "टेस्ट" : "Tests"} · ${seriesQCount(cat)} ${T("questions")} ${LANG==="hi" ? "प्रत्येक" : "each"}</div></div>
       <span style="color:#bbb;font-size:19px;padding:0 6px">${exp ? "▾" : "›"}</span></div>
       <div class="${exp ? "" : "hidden"}" style="padding-left:12px">${Array.from({length:TESTS_PER_SUBJECT}, (_,i)=> seriesRow(sub, i+1)).join("")}</div>`;
   }).join("");
@@ -1268,7 +1267,7 @@ function renderSchoolCategory(c, P){
 const FULLMOCK = {
   rpsc: { n:150, mins:180, title:{en:"RPSC RAS Complete Mock Test", hi:"RPSC RAS पूर्ण मॉक टेस्ट"}, pattern:{en:"Rajasthan GK · History · Geography · Polity · Science — RAS Prelims pattern · 200 marks", hi:"राजस्थान GK · इतिहास · भूगोल · राजनीति · विज्ञान — RAS प्रीलिम्स पैटर्न · 200 अंक"} },
   upsc: { n:100, mins:120, title:{en:"UPSC Prelims Complete Mock Test (GS-I)", hi:"UPSC प्रीलिम्स पूर्ण मॉक टेस्ट (GS-I)"}, pattern:{en:"History · Geography · Polity · Economy · Environment — UPSC Prelims GS-I pattern · 200 marks", hi:"इतिहास · भूगोल · राजनीति · अर्थशास्त्र · पर्यावरण — UPSC प्रीलिम्स GS-I पैटर्न · 200 अंक"} },
-  ssc: { n:100, mins:60, sectional:15, sections:[["eng"],["quant"],["reas"],["ga","ca"]], title:{en:"SSC CGL Complete Mock Test (Tier-I)", hi:"SSC CGL पूर्ण मॉक टेस्ट (Tier-I)"}, pattern:{en:"English · Quant · Reasoning · General Awareness — SSC CGL Tier-I pattern · 200 marks · 4 sections × 25 questions · 15 min per section", hi:"अंग्रेज़ी · गणित · तर्कशक्ति · सामान्य जागरूकता — SSC CGL Tier-I पैटर्न · 200 अंक · 4 सेक्शन × 25 प्रश्न · प्रति सेक्शन 15 मिनट"} },
+  ssc: { n:100, mins:60, title:{en:"SSC CGL Complete Mock Test (Tier-I)", hi:"SSC CGL पूर्ण मॉक टेस्ट (Tier-I)"}, pattern:{en:"English · Quant · Reasoning · General Awareness — SSC CGL Tier-I pattern · 200 marks", hi:"अंग्रेज़ी · गणित · तर्कशक्ति · सामान्य जागरूकता — SSC CGL Tier-I पैटर्न · 200 अंक"} },
   cuet: { n:60, mins:60, price:10, title:{en:"CUET UG Complete Mock Test (General Test)", hi:"CUET UG पूर्ण मॉक टेस्ट (सामान्य टेस्ट)"}, pattern:{en:"General Knowledge · Current Affairs · Reasoning · Numerical Ability — CUET-UG General Test pattern", hi:"सामान्य ज्ञान · समसामयिकी · तर्कशक्ति · संख्यात्मक क्षमता — CUET-UG सामान्य टेस्ट पैटर्न"} },
   reet: { n:150, mins:150, title:{en:"REET Complete Mock Test", hi:"REET \u092a\u0942\u0930\u094d\u0923 \u092e\u0949\u0915 \u091f\u0947\u0938\u094d\u091f"}, pattern:{en:"Child pedagogy \u00b7 Hindi \u00b7 English \u00b7 Maths \u00b7 EVS + Rajasthan GK", hi:"\u092c\u093e\u0932 \u0935\u093f\u0915\u093e\u0938, \u0939\u093f\u0902\u0926\u0940, \u0905\u0902\u0917\u094d\u0930\u0947\u091c\u093c\u0940, \u0917\u0923\u093f\u0924, EVS + \u0930\u093e\u091c\u0938\u094d\u0925\u093e\u0928 GK"} },
   neet: { n:180, mins:180, title:{en:"NEET Complete Mock Test", hi:"NEET \u092a\u0942\u0930\u094d\u0923 \u092e\u0949\u0915 \u091f\u0947\u0938\u094d\u091f"}, pattern:{en:"Physics 45 \u00b7 Chemistry 45 \u00b7 Botany 45 \u00b7 Zoology 45 \u2014 NEET-UG pattern \u00b7 720 marks", hi:"\u092d\u094c\u0924\u093f\u0915\u0940 45 \u00b7 \u0930\u0938\u093e\u092f\u0928 45 \u00b7 \u0935\u0928\u0938\u094d\u092a\u0924\u093f \u0935\u093f\u091c\u094d\u091e\u093e\u0928 45 \u00b7 \u092a\u094d\u0930\u093e\u0923\u0940 \u0935\u093f\u091c\u094d\u091e\u093e\u0928 45 \u2014 NEET-UG \u092a\u0948\u091f\u0930\u094d\u0928 \u00b7 720 \u0905\u0902\u0915"} },
@@ -1404,16 +1403,6 @@ function assembleFullMockSet(cat, win){
   const W = (win != null ? win : mockWindow());
   const pool = window.STUDY_QUESTIONS.filter(q=>q[1]===cat);
   if(pool.length <= total){ const seenK = new Set(); return seededShuffle(pool.filter(q=>{ const k = mockQKey(q); if(seenK.has(k)) return false; seenK.add(k); return true; }), seedFor(cat+"|full|"+W)); }
-  if(cfg.sectional && cfg.sections){
-    const per = Math.floor(total / cfg.sections.length);
-    const usedK = new Set(); const out = [];
-    cfg.sections.forEach((subs, si)=>{
-      const spool = pool.filter(q=> subs.includes(q[2]));
-      const picks = seededShuffle(spool, seedFor(cat+"|sec"+si+"|full|"+W)).filter(q=>{ const k = mockQKey(q); if(usedK.has(k)) return false; usedK.add(k); return true; }).slice(0, per);
-      out.push(...picks);
-    });
-    return out;
-  }
   const bySub = {}; pool.forEach(q=>{ (bySub[q[2]] = bySub[q[2]] || []).push(q); });
   const subs = Object.keys(bySub);
   const raw = subs.map(x=> total * bySub[x].length / pool.length);
@@ -1447,6 +1436,7 @@ function startTest(cat, kind){
   startTestWith(cat, kind, qs, true);
 }
 const TESTS_PER_SUBJECT = 10;
+function seriesQCount(cat){ return cat === "ssc" ? 25 : 20; }
 const EXPANDED = new Set();
 function hasSeries(cat, sub, n){ return isSubActive() || !!(ME && ME.purchases && ME.purchases.tests && ME.purchases.tests[cat + "_" + sub + "#" + n]); }
 function buySeries(cat, sub, n){
@@ -1474,8 +1464,8 @@ function startSeries(cat, sub, n){
   const attempted = Store.attempts().some(a=> ME && a.phone===ME.phone && a.cat===cat && a.sub===kind && a.type==="test");
   let ids = null;
   if(!attempted){ try{ ids = JSON.parse(localStorage.getItem(ck) || "null"); }catch(e){} }
-  if(!ids || !ids.length){
-    ids = drawFreshBatch(cat, sub, 20).map(q=>q[0]);
+  if(!ids || ids.length !== seriesQCount(cat)){
+    ids = drawFreshBatch(cat, sub, seriesQCount(cat)).map(q=>q[0]);
     try{ localStorage.setItem(ck, JSON.stringify(ids)); }catch(e){}
   }
   const byId = {}; window.STUDY_QUESTIONS.forEach(q=> byId[q[0]] = q);
@@ -1493,13 +1483,6 @@ function startTestWith(cat, kind, qs, markSeen, secs, winOv){
   TEST = { cat, kind, win: kind === "mock" ? (winOv != null ? winOv : mockWindow()) : null, qs, idx:0, ans:Array(qs.length).fill(-1), marked:Array(qs.length).fill(false),
            visited:Array(qs.length).fill(false), left: secs === -1 ? 0 : (secs || qs.length*60), noTimer: secs === -1, startedAt: Date.now(), timer:null, fs:false, done:false };
   TEST.visited[0]=true;
-  { const fmc = (kind === "mock") ? FULLMOCK[cat] : null;
-    if(fmc && fmc.sectional && fmc.sections){
-      const per = Math.floor(qs.length / fmc.sections.length);
-      TEST.sectional = fmc.sectional; TEST.curSec = 0;
-      TEST.sections = fmc.sections.map((subs, si)=>({ from: si*per, to: Math.min(qs.length, (si+1)*per) - 1, subs }));
-      TEST.left = fmc.sectional * 60;
-    } }
   if(markSeen && kind!=="mock"){ const baseSub = kind.split(":")[0]; addSeen(cat, baseSub, qs.map(q=>q[0])); }
   else if(markSeen){ const bySub={}; qs.forEach(q=>{ (bySub[q[2]]=bySub[q[2]]||[]).push(q[0]); }); Object.entries(bySub).forEach(([s,ids])=>addSeen(cat,s,ids)); }
   ["appheader","mainwrap","bnav"].forEach(id=>$(id).classList.add("hidden"));
@@ -1526,7 +1509,7 @@ function closeNegBanner(){
   const b = $("neg-banner"); if(b) b.style.display = "none";
   if(NEG_BANNER_TIMER){ clearTimeout(NEG_BANNER_TIMER); NEG_BANNER_TIMER = null; }
 }
-function startTimer(){ if(!TEST) return; clearInterval(TEST.timer); if(TEST.noTimer){ updTimer(); return; } TEST.timer = setInterval(()=>{ TEST.left--; if(TEST.left<=0){ if(TEST.sectional && TEST.curSec < TEST.sections.length-1){ toast(LANG==="hi" ? "सेक्शन का समय समाप्त — अगला सेक्शन शुरू हो गया है" : "Section time over — the next section has started"); advanceSection(); } else { clearInterval(TEST.timer); toast(T("timeUp")); submitTest(); } } updTimer(); }, 1000); }
+function startTimer(){ if(!TEST) return; clearInterval(TEST.timer); if(TEST.noTimer){ updTimer(); return; } TEST.timer = setInterval(()=>{ TEST.left--; if(TEST.left<=0){ clearInterval(TEST.timer); toast(T("timeUp")); submitTest(); } updTimer(); }, 1000); }
 if(document.addEventListener) document.addEventListener("fullscreenchange", ()=>{
   if(!TEST || TEST.done || !TEST.fs) return;
   if(document.fullscreenElement) return;
@@ -1538,41 +1521,23 @@ function resumeTest(){ closeModal(); const el = document.documentElement; if(el.
 function updTimer(){ if(!TEST) return; if(TEST.noTimer){ $("t-timer").textContent = "∞"; return; } const s=Math.max(0,TEST.left); $("t-timer").textContent = String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); }
 function renderQ(){
   const q = TEST.qs[TEST.idx]; const L = qLang(q);
-  $("t-qnum").textContent = TEST.sectional
-    ? (LANG==="hi"?"सेक्शन ":"Section ") + (TEST.curSec+1) + "/" + TEST.sections.length + ": " + subName(TEST.cat, TEST.sections[TEST.curSec].subs[0], LANG) + " \u00b7 " + (LANG==="hi"?"प्रश्न":"Question") + " " + (TEST.idx+1) + " / " + TEST.qs.length
-    : (LANG==="hi"?"प्रश्न":"Question")+" "+(TEST.idx+1)+" / "+TEST.qs.length;
-  { const ns = $("t-nextsec"); if(ns) ns.style.display = (TEST.sectional && TEST.curSec < TEST.sections.length-1) ? "" : "none"; }
+  $("t-qnum").textContent = (LANG==="hi"?"प्रश्न":"Question")+" "+(TEST.idx+1)+" / "+TEST.qs.length;
   $("t-qtxt").textContent = L==="hi" ? q[4] : q[3];
   const letters=["A","B","C","D"];
   $("t-opts").innerHTML = q[5].map((o,i)=>`<div class="opt ${TEST.ans[TEST.idx]===i?"sel":""}" onclick="tSelect(${i})"><div class="ol">${letters[i]}</div><div>${esc(L==="hi"?o[1]:o[0])}</div></div>`).join("");
-  { const pr = TEST.sectional ? TEST.sections[TEST.curSec] : { from:0, to:TEST.qs.length-1 };
   $("t-pal").innerHTML = TEST.qs.map((_,i)=>{
-    if(i < pr.from || i > pr.to) return "";
     let cls=""; if(TEST.ans[i]>=0 && TEST.marked[i]) cls="markans"; else if(TEST.ans[i]>=0) cls="ans"; else if(TEST.marked[i]) cls="mark"; else if(TEST.visited[i]) cls="notans";
     return `<button class="${cls} ${i===TEST.idx?"cur":""}" onclick="tJump(${i})">${i+1}</button>`;
-  }).join(""); }
+  }).join("");
   $("t-mark").textContent = TEST.marked[TEST.idx] ? (LANG==="hi"?"चिह्न हटाएँ":"Unmark") : (LANG==="hi"?"समीक्षा हेतु चिह्नित करें":"Mark for Review");
   $("t-palname").textContent = LANG==="hi" ? "प्रश्न पैलेट" : "Question Palette";
   saveInTest();
 }
 function tSelect(i){ TEST.ans[TEST.idx]=i; renderQ(); }
 function tClear(){ if(!TEST) return; TEST.ans[TEST.idx]=-1; renderQ(); }
-function tJump(i){ if(TEST.sectional){ const sec = TEST.sections[TEST.curSec]; if(i < sec.from || i > sec.to) return; } TEST.idx=i; TEST.visited[i]=true; renderQ(); }
-function tNav(d){ const n=TEST.idx+d; if(n<0||n>=TEST.qs.length) return; if(TEST.sectional){ const sec = TEST.sections[TEST.curSec]; if(n < sec.from || n > sec.to) return; } TEST.idx=n; TEST.visited[n]=true; renderQ(); }
+function tJump(i){ TEST.idx=i; TEST.visited[i]=true; renderQ(); }
+function tNav(d){ const n=TEST.idx+d; if(n<0||n>=TEST.qs.length) return; TEST.idx=n; TEST.visited[n]=true; renderQ(); }
 function tMark(){ TEST.marked[TEST.idx]=!TEST.marked[TEST.idx]; renderQ(); }
-function advanceSection(){
-  if(!TEST || !TEST.sectional || TEST.curSec >= TEST.sections.length-1) return;
-  TEST.curSec++;
-  const sec = TEST.sections[TEST.curSec];
-  TEST.idx = sec.from; TEST.visited[sec.from] = true;
-  TEST.left = TEST.sectional * 60;
-  renderQ(); updTimer();
-}
-function tNextSection(){
-  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG==="hi" ? "अगले सेक्शन पर जाएँ?" : "Move to the next section?"}</h3>
-  <p class="sub" style="margin-top:6px">${LANG==="hi" ? "आगे बढ़ने के बाद आप इस सेक्शन में वापस नहीं आ सकेंगे।" : "Once you move ahead, you cannot return to this section."}</p>
-  <div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal()">${LANG==="hi"?"रद्द करें":"Cancel"}</button><button class="btn" style="flex:1" onclick="closeModal();advanceSection()">${LANG==="hi"?"आगे बढ़ें":"Move Ahead"}</button></div>`);
-}
 function tConfirmSubmit(){ showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${T("submitConfirm")}</h3>
   <div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal()">${LANG==="hi"?"रद्द करें":"Cancel"}</button><button class="btn" style="flex:1" onclick="closeModal();submitTest()">${LANG==="hi"?"जमा करें":"Submit"}</button></div>`); }
 function exitTestUI(){
