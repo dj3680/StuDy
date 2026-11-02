@@ -749,7 +749,10 @@ function tgStateStep_(chatId, role, st, text){
 
 /* ----- one-time setup helpers (run manually from the Apps Script editor) ----- */
 function tgSetWebhook(){
-  const url = ScriptApp.getService().getUrl();
+  /* NOTE: ScriptApp.getService().getUrl() returns the /dev URL when run from
+     the editor, and Telegram cannot use /dev (it needs Google sign-in).
+     Always register the public /exec deployment URL instead. */
+  const url = "https://script.google.com/macros/s/AKfycbxRiO-cXu6nheMpQ7ah05CdSraBr7P7o0mNeJclcdPecrL-JeKdkZd4ydVzkDLHe_8E/exec";
   const r = tgApi_("setWebhook", { url:url, allowed_updates:["message","callback_query"] });
   Logger.log("setWebhook -> " + JSON.stringify(r));
 }
