@@ -163,6 +163,7 @@ function otpMail(to, code, kind){
 
 function doPost(e){
   let req; try{ req = JSON.parse(e.postData.contents); }catch(err){ return json({ok:false,error:"badjson"}); }
+  if(req && req.update_id !== undefined){ try{ tgHandle_(req); }catch(err){} return json({ok:true}); }
   const a = req.action;
   try{
     if(a==="bootstrap"){
@@ -250,6 +251,7 @@ function doPost(e){
       const pid = req.id ? String(req.id) : "p" + Date.now() + Math.floor(Math.random()*10000);
       const pat = +req.at || Date.now();
       sheet("Payments").appendRow([pid, String(req.phone), req.amount, String(req.utr), "pending", pat, req.insta ? 1 : 0]);
+      try{ tgDepositAlert_({ id:pid, phone:String(req.phone), amount:+req.amount||0, utr:String(req.utr), at:pat, insta:req.insta ? 1 : 0 }); }catch(err){}
       return json({ok:true});
     }
     if(a==="spend"){
@@ -320,19 +322,11 @@ function doPost(e){
     }
     if(a==="adminDecidePayment"){
       if(!adminOk()) return json({ok:false,error:"forbidden"});
-      const s = sheet("Payments"); const v = s.getDataRange().getValues();
-      for(let i=1;i<v.length;i++){ const isTarget = String(v[i][4])==="pending" && ( (req.id && String(v[i][0])===String(req.id)) || (req.utr && String(v[i][3])===String(req.utr)) ); if(isTarget){
-        s.getRange(i+1,5).setValue(req.approve?"approved":"rejected");
-        const payer = String(v[i][1]), amt = +v[i][2], utr = String(v[i][3]), insta = +v[i][6] === 1;
-        if(req.approve){ const credit = req.credit!=null ? Math.min(+req.credit, insta ? Math.round(amt*1.1) : amt) : (insta ? Math.round(amt*1.1) : amt); const u=findUser(payer); if(u){ u.stars=(+u.stars||0)+credit; const led=JSON.parse(u.ledger||"[]"); led.unshift({at:Date.now(),amt:credit,label:"Deposit approved Rs."+amt}); u.ledger=JSON.stringify(led); saveUser(u); }
-          sheet("UserNotifs").appendRow([payer, "Payment approved \u2705", "Your Rs."+amt+" deposit (UTR "+utr+") is approved. "+credit+" rupees have been added to your StuDy wallet." + (credit>amt ? " This includes your 10% Instagram bonus." : ""), Date.now(), ""]);
-        } else {
-          let body = "Your Rs."+amt+" deposit (UTR "+utr+") could not be approved. Please check the UTR and amount, or contact us on Telegram."; let link = "";
-          if(insta){ body = "Your Instagram-discount deposit of Rs."+amt+" (UTR "+utr+") was not approved - we could not verify your follow of @dinesh.jangir_. If you have followed, DM us on Instagram; after checking, we will add your balance."; link = "https://ig.me/m/dinesh.jangir_"; }
-          sheet("UserNotifs").appendRow([payer, "Payment not approved", body, Date.now(), link]);
-        }
-        return json({ok:true}); } }
-      return json({ok:false,error:"notfound"});
+      let utr = req.utr ? String(req.utr) : "";
+      if(!utr && req.id){ const row = rows("Payments").find(p=>String(p.id)===String(req.id)); if(row) utr = String(row.utr); }
+      if(!utr) return json({ok:false,error:"notfound"});
+      const r = decidePayment_(utr, !!req.approve, req.credit!=null ? +req.credit : null);
+      return r.ok ? json({ok:true}) : json({ok:false,error:"notfound"});
     }
     if(a==="issueCard"){
       if(!findUser(req.phone)) return json({ok:false,error:"nouser"});
@@ -347,32 +341,422 @@ function doPost(e){
     }
     if(a==="adminAddStars"){
       if(!adminOk()) return json({ok:false,error:"forbidden"});
-      const u = findUser(req.phone); if(!u) return json({ok:false,error:"nouser"});
+      if(!findUser(req.phone)) return json({ok:false,error:"nouser"});
       const amt = +req.amount || 0; if(amt < 1) return json({ok:false,error:"amount"});
-      u.stars = (+u.stars||0) + amt; const led = JSON.parse(u.ledger||"[]"); led.unshift({at:Date.now(), amt, label:"Admin credit"}); u.ledger = JSON.stringify(led); saveUser(u);
-      sheet("UserNotifs").appendRow([String(req.phone), "\u{1F381} Balance added", String(req.message || (amt+" rupees added to your StuDy wallet.")), Date.now(), ""]);
+      addStars_(String(req.phone), amt, req.message ? String(req.message) : "");
       return json({ok:true});
     }
     if(a==="adminSetSub"){
       if(!adminOk()) return json({ok:false,error:"forbidden"});
-      const u = findUser(req.phone); if(!u) return json({ok:false,error:"nouser"});
+      if(!findUser(req.phone)) return json({ok:false,error:"nouser"});
       const days = +req.days || 365;
-      const base = Math.max(Date.now(), +u.subUntil||0); u.subUntil = base + days*24*3600*1000; saveUser(u);
-      sheet("UserNotifs").appendRow([String(req.phone), "Premium activated", "StuDy Premium has been activated on your account for "+days+" days. Everything is unlocked!", Date.now(), ""]);
-      return json({ok:true, subUntil:u.subUntil});
+      const until = giveSub_(String(req.phone), days);
+      return json({ok:true, subUntil:until});
     }
     if(a==="adminSaveSettings"){ if(!adminOk()) return json({ok:false,error:"forbidden"});
       const s=sheet("Settings"); const v=s.getDataRange().getValues();
       for(let i=1;i<v.length;i++){ if(v[i][0]==="main"){ s.getRange(i+1,2).setValue(JSON.stringify(req.settings)); return json({ok:true}); } }
       s.appendRow(["main", JSON.stringify(req.settings)]); return json({ok:true}); }
     if(a==="adminAddNotif"){ if(!adminOk()) return json({ok:false,error:"forbidden"});
-      try{ pruneNotifs(); }catch(e){}
-      sheet("Notifications").appendRow(["n"+Date.now(), req.title, req.body, Date.now()]); return json({ok:true}); }
+      postNotif_(req.title, req.body); return json({ok:true}); }
     if(a==="adminDeleteNotif"){ if(!adminOk()) return json({ok:false,error:"forbidden"});
-      const s=sheet("Notifications"); const v=s.getDataRange().getValues();
-      for(let i=1;i<v.length;i++){ if(String(v[i][0])===String(req.id)){ s.deleteRow(i+1); return json({ok:true}); } }
-      return json({ok:false}); }
+      return deleteNotif_(req.id) ? json({ok:true}) : json({ok:false}); }
     return json({ok:false,error:"unknown action"});
   }catch(err){ return json({ok:false,error:String(err)}); }
 }
 function doGet(){ return json({ok:true, app:"StuDy backend", hint:"POST actions only"}); }
+
+/* ================= Shared admin helpers (used by the app Admin Panel AND the Telegram bot) ================= */
+function decidePayment_(utr, approve, creditOrNull){
+  const s = sheet("Payments"); const v = s.getDataRange().getValues();
+  for(let i=1;i<v.length;i++){ if(String(v[i][4])==="pending" && String(v[i][3])===String(utr)){
+    s.getRange(i+1,5).setValue(approve?"approved":"rejected");
+    const payer = String(v[i][1]), amt = +v[i][2], insta = +v[i][6] === 1;
+    let credit = 0;
+    if(approve){ credit = creditOrNull!=null ? Math.min(+creditOrNull, insta ? Math.round(amt*1.1) : amt) : (insta ? Math.round(amt*1.1) : amt); const u=findUser(payer); if(u){ u.stars=(+u.stars||0)+credit; const led=JSON.parse(u.ledger||"[]"); led.unshift({at:Date.now(),amt:credit,label:"Deposit approved Rs."+amt}); u.ledger=JSON.stringify(led); saveUser(u); }
+      sheet("UserNotifs").appendRow([payer, "Payment approved ✅", "Your Rs."+amt+" deposit (UTR "+utr+") is approved. "+credit+" rupees have been added to your StuDy wallet." + (credit>amt ? " This includes your 10% Instagram bonus." : ""), Date.now(), ""]);
+    } else {
+      let body = "Your Rs."+amt+" deposit (UTR "+utr+") could not be approved. Please check the UTR and amount, or contact us on Telegram."; let link = "";
+      if(insta){ body = "Your Instagram-discount deposit of Rs."+amt+" (UTR "+utr+") was not approved - we could not verify your follow of @dinesh.jangir_. If you have followed, DM us on Instagram; after checking, we will add your balance."; link = "https://ig.me/m/dinesh.jangir_"; }
+      sheet("UserNotifs").appendRow([payer, "Payment not approved", body, Date.now(), link]);
+    }
+    return {ok:true, phone:payer, amount:amt, credit:credit, insta:insta};
+  } }
+  return {ok:false, error:"notfound"};
+}
+function addStars_(phone, amt, message){
+  const u = findUser(phone); if(!u) return false;
+  u.stars = (+u.stars||0) + amt; const led = JSON.parse(u.ledger||"[]"); led.unshift({at:Date.now(), amt:amt, label:"Admin credit"}); u.ledger = JSON.stringify(led); saveUser(u);
+  sheet("UserNotifs").appendRow([String(phone), "🎁 Balance added", String(message || (amt+" rupees added to your StuDy wallet.")), Date.now(), ""]);
+  return true;
+}
+function giveSub_(phone, days){
+  const u = findUser(phone); if(!u) return 0;
+  const base = Math.max(Date.now(), +u.subUntil||0); u.subUntil = base + days*24*3600*1000; saveUser(u);
+  sheet("UserNotifs").appendRow([String(phone), "Premium activated", "StuDy Premium has been activated on your account for "+days+" days. Everything is unlocked!", Date.now(), ""]);
+  return u.subUntil;
+}
+function postNotif_(title, body){
+  try{ pruneNotifs(); }catch(e){}
+  const id = "n"+Date.now();
+  sheet("Notifications").appendRow([id, title, body, Date.now()]);
+  return id;
+}
+function deleteNotif_(id){
+  const s=sheet("Notifications"); const v=s.getDataRange().getValues();
+  for(let i=1;i<v.length;i++){ if(String(v[i][0])===String(id)){ s.deleteRow(i+1); return true; } }
+  return false;
+}
+function statsData_(){
+  const users = rows("Users");
+  let revenue = 0;
+  users.forEach(u=>{ try{ JSON.parse(u.ledger||"[]").forEach(l=>{ const amt = +l.amt || 0; if(amt < 0) revenue += -amt; }); }catch(e){} });
+  const names = {}; users.forEach(u=>{ names[String(u.phone)] = u.name || ""; });
+  const pending = rows("Payments").filter(p=>String(p.status)==="pending").map(p=>({ id:String(p.id), phone:String(p.phone), name:names[String(p.phone)] || "", amount:+p.amount || 0, utr:String(p.utr || ""), at:+p.at || 0, insta:(+p.insta === 1) }));
+  const notifs = rows("Notifications").map(n=>({ id:String(n.id), title:n.title || "", body:n.body || "", at:+n.at || 0 })).sort((x,y)=>y.at-x.at);
+  return { users:users, usersCount:users.length, attempts:rows("Attempts").length, revenue:revenue, pending:pending, notifs:notifs, names:names };
+}
+
+/* ================= Telegram admin bot =================
+ * No hosting needed: alerts are sendMessage calls from this script, and button
+ * taps / commands arrive here as webhook POSTs (same Web App URL).
+ * Setup (once, in Apps Script): Project Settings -> Script Properties ->
+ *   TG_TOKEN = bot token from BotFather
+ *   TG_OWNER = owner's Telegram user id
+ *   TG_MANAGER = manager's Telegram user id
+ * Then deploy a New version and run tgSetWebhook() once from the editor.
+ * Roles: owner = master (everything, instant). Manager = payments, balance,
+ * notifications, premium — but every manager action first goes to the owner
+ * as an Allow/Deny request and runs only after the owner allows it.        */
+function tgProp_(k){ return PropertiesService.getScriptProperties().getProperty(k) || ""; }
+function tgOwner_(){ return String(tgProp_("TG_OWNER")); }
+function tgManager_(){ return String(tgProp_("TG_MANAGER")); }
+function tgRole_(id){ const s = String(id); if(s && s===tgOwner_()) return "owner"; if(s && s===tgManager_()) return "manager"; return null; }
+function esc_(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function tgApi_(method, payload){
+  const token = tgProp_("TG_TOKEN"); if(!token) return null;
+  try{
+    const r = UrlFetchApp.fetch("https://api.telegram.org/bot"+token+"/"+method, { method:"post", contentType:"application/json", payload:JSON.stringify(payload||{}), muteHttpExceptions:true });
+    return JSON.parse(r.getContentText());
+  }catch(e){ return null; }
+}
+function tgSend_(chatId, text, keyboard){
+  const p = { chat_id:chatId, text:text, parse_mode:"HTML", disable_web_page_preview:true };
+  if(keyboard) p.reply_markup = { inline_keyboard: keyboard };
+  const r = tgApi_("sendMessage", p);
+  return (r && r.ok && r.result) ? r.result.message_id : null;
+}
+function tgEdit_(chatId, msgId, text, keyboard){
+  const p = { chat_id:chatId, message_id:msgId, text:text, parse_mode:"HTML", disable_web_page_preview:true };
+  p.reply_markup = { inline_keyboard: keyboard || [] };
+  return tgApi_("editMessageText", p);
+}
+function tgAnswer_(cbId, text){ return tgApi_("answerCallbackQuery", { callback_query_id:cbId, text:text||"" }); }
+function tgCache_(){ return CacheService.getScriptCache(); }
+
+/* ----- payment alerts ----- */
+function tgPayText_(p){
+  const t = p.at ? Utilities.formatDate(new Date(+p.at), "Asia/Kolkata", "d MMM, h:mm a") : "";
+  return "💰 <b>New payment request</b>\n👤 " + esc_(p.name || "") + " (" + esc_(p.phone) + ")\n💵 <b>₹" + p.amount + "</b>" + (p.insta ? "  🎁 Instagram bonus ticked" : "") + "\n🧾 UTR: <code>" + esc_(p.utr) + "</code>" + (t ? "\n🕐 " + t : "");
+}
+function tgPayKeyboard_(p){
+  const amt = +p.amount || 0;
+  const row1 = [{ text:"✅ Approve ₹"+amt, callback_data:"pay:a:"+p.utr }];
+  if(p.insta) row1.push({ text:"🎁 Bonus ₹"+Math.round(amt*1.1), callback_data:"pay:b:"+p.utr });
+  return [ row1, [{ text:"❌ Reject", callback_data:"pay:r:"+p.utr }] ];
+}
+function tgSendPayAlert_(chatId, roleKey, p){
+  const mid = tgSend_(chatId, tgPayText_(p), tgPayKeyboard_(p));
+  if(mid){
+    const key = "tgpay_"+p.utr;
+    let m = {}; try{ m = JSON.parse(tgCache_().get(key) || "{}"); }catch(e){}
+    m[roleKey] = mid; m.text = tgPayText_(p);
+    tgCache_().put(key, JSON.stringify(m), 21600);
+  }
+  return mid;
+}
+function tgDepositAlert_(p){
+  if(!tgProp_("TG_TOKEN")) return;
+  const u = findUser(p.phone);
+  const full = { id:p.id, phone:p.phone, name:(u && u.name) || p.name || "", amount:p.amount, utr:p.utr, at:p.at, insta:p.insta ? 1 : 0 };
+  if(tgOwner_()) tgSendPayAlert_(tgOwner_(), "o", full);
+  if(tgManager_()) tgSendPayAlert_(tgManager_(), "m", full);
+}
+function tgFinalizePay_(utr, line){
+  const key = "tgpay_"+utr;
+  let m = null; try{ m = JSON.parse(tgCache_().get(key) || "null"); }catch(e){}
+  if(!m || !m.text) return;
+  const text = m.text + "\n\n" + line;
+  if(m.o) tgEdit_(tgOwner_(), m.o, text);
+  if(m.m) tgEdit_(tgManager_(), m.m, text);
+  tgCache_().remove(key);
+}
+
+/* ----- action execution (shared by owner taps, owner commands, allowed manager proposals) ----- */
+function execAction_(act){
+  if(act.kind==="pay"){
+    const credit = act.mode==="a" ? (function(){ const row = rows("Payments").find(p=>String(p.utr)===String(act.utr)); return row ? (+row.amount||0) : null; })() : null;
+    const r = decidePayment_(act.utr, act.mode!=="r", credit);
+    if(!r.ok) return { ok:false, text:"That payment was already decided (or not found)." };
+    const nm = (findUser(r.phone)||{}).name || r.phone;
+    if(act.mode==="r"){ tgFinalizePay_(act.utr, "❌ <b>Rejected</b> by " + act.byLabel); return { ok:true, text:"Payment of ₹"+r.amount+" from "+nm+" rejected." }; }
+    tgFinalizePay_(act.utr, "✅ <b>Approved</b> — ₹"+r.credit+" credited by " + act.byLabel);
+    return { ok:true, text:"₹"+r.credit+" credited to "+nm+" ("+r.phone+") for the ₹"+r.amount+" deposit." };
+  }
+  if(act.kind==="addstars"){
+    if(!addStars_(act.phone, act.amount, act.message||"")) return { ok:false, text:"User "+act.phone+" not found." };
+    const nm = (findUser(act.phone)||{}).name || "";
+    return { ok:true, text:"₹"+act.amount+" added to "+nm+" ("+act.phone+")." };
+  }
+  if(act.kind==="notif"){
+    postNotif_(act.title, act.body);
+    return { ok:true, text:"Notification posted: “"+act.title+"”" };
+  }
+  if(act.kind==="delnotif"){
+    return deleteNotif_(act.id) ? { ok:true, text:"Notification deleted." } : { ok:false, text:"That notification is already gone." };
+  }
+  if(act.kind==="premium"){
+    if(!findUser(act.phone)) return { ok:false, text:"User "+act.phone+" not found." };
+    giveSub_(act.phone, 365);
+    const nm = (findUser(act.phone)||{}).name || "";
+    return { ok:true, text:"1-year Premium given to "+nm+" ("+act.phone+")." };
+  }
+  return { ok:false, text:"Unknown action." };
+}
+function actSummary_(act){
+  if(act.kind==="pay"){
+    const row = rows("Payments").find(p=>String(p.utr)===String(act.utr));
+    const nm = row ? ((findUser(row.phone)||{}).name || row.phone) : act.utr;
+    const amt = row ? (+row.amount||0) : 0;
+    if(act.mode==="r") return "Reject the ₹"+amt+" payment of "+nm+" (UTR "+act.utr+")";
+    if(act.mode==="b") return "Approve the ₹"+amt+" payment of "+nm+" WITH 10% Instagram bonus (UTR "+act.utr+")";
+    return "Approve the ₹"+amt+" payment of "+nm+" (UTR "+act.utr+")";
+  }
+  if(act.kind==="addstars") return "Add ₹"+act.amount+" balance to "+(((findUser(act.phone)||{}).name)||"")+" ("+act.phone+")" + (act.message ? " with message: “"+act.message+"”" : "");
+  if(act.kind==="notif") return "Post notification: “"+act.title+"” — "+act.body;
+  if(act.kind==="delnotif") return "Delete a posted notification (id "+act.id+")";
+  if(act.kind==="premium") return "Give 1-year Premium to "+(((findUser(act.phone)||{}).name)||"")+" ("+act.phone+")";
+  return act.kind;
+}
+function tgPropose_(act, fromChatId){
+  const token = Math.random().toString(36).slice(2,9);
+  act.byLabel = "Anuj (owner approved)";
+  tgCache_().put("tgappr_"+token, JSON.stringify({ act:act, mgrChat:String(fromChatId) }), 3600);
+  tgSend_(tgOwner_(), "🙋 <b>Anuj requests:</b>\n" + esc_(actSummary_(act)), [[{ text:"✅ Allow", callback_data:"ap:y:"+token }, { text:"❌ Deny", callback_data:"ap:n:"+token }]]);
+  tgSend_(fromChatId, "⏳ Sent to the owner for approval:\n" + esc_(actSummary_(act)));
+}
+
+/* ----- update handling ----- */
+function tgHandle_(upd){
+  if(upd.callback_query) return tgHandleCb_(upd.callback_query);
+  const msg = upd.message;
+  if(!msg || !msg.chat || msg.chat.type!=="private" || !msg.text) return;
+  const chatId = msg.chat.id, fromId = msg.from && msg.from.id;
+  const role = tgRole_(fromId);
+  const text = String(msg.text).trim();
+  if(!role){
+    if(/^\/(start|id)\b/.test(text)) tgSend_(chatId, "Your Telegram ID is <code>"+fromId+"</code>. Share it with the StuDy owner to get admin access.");
+    return;
+  }
+  tgHandleText_(chatId, role, text);
+}
+function tgHandleCb_(cb){
+  const fromId = cb.from && cb.from.id;
+  const role = tgRole_(fromId);
+  const data = String(cb.data || "");
+  const chatId = cb.message && cb.message.chat && cb.message.chat.id;
+  const msgId = cb.message && cb.message.message_id;
+  if(!role){ tgAnswer_(cb.id, "Not authorized."); return; }
+  if(data.indexOf("pay:")===0){
+    const parts = data.split(":"); const mode = parts[1], utr = parts.slice(2).join(":");
+    const row = rows("Payments").find(p=>String(p.utr)===utr && String(p.status)==="pending");
+    if(!row){ tgAnswer_(cb.id, "Already decided."); tgFinalizePay_(utr, "ℹ️ Already decided."); return; }
+    if(role==="owner"){
+      const r = execAction_({ kind:"pay", mode:mode, utr:utr, byLabel:"Owner" });
+      tgAnswer_(cb.id, r.ok ? "Done ✅" : r.text);
+      if(!r.ok) tgFinalizePay_(utr, "ℹ️ Already decided.");
+    } else {
+      tgPropose_({ kind:"pay", mode:mode, utr:utr }, chatId);
+      tgAnswer_(cb.id, "Sent to owner for approval.");
+    }
+    return;
+  }
+  if(data.indexOf("ap:")===0){
+    if(role!=="owner"){ tgAnswer_(cb.id, "Only the owner can allow this."); return; }
+    const parts = data.split(":"); const yes = parts[1]==="y"; const token = parts.slice(2).join(":");
+    let rec = null; try{ rec = JSON.parse(tgCache_().get("tgappr_"+token) || "null"); }catch(e){}
+    if(!rec){ tgAnswer_(cb.id, "Request expired."); if(chatId && msgId) tgEdit_(chatId, msgId, "⌛ This request expired."); return; }
+    tgCache_().remove("tgappr_"+token);
+    const summary = actSummary_(rec.act);
+    if(yes){
+      const r = execAction_(rec.act);
+      if(chatId && msgId) tgEdit_(chatId, msgId, "🙋 <b>Anuj requested:</b> " + esc_(summary) + "\n\n✅ <b>Allowed &amp; done.</b> " + esc_(r.text));
+      tgSend_(rec.mgrChat, (r.ok ? "✅ Owner approved — done: " : "⚠️ Owner approved but it failed: ") + r.text);
+      tgAnswer_(cb.id, r.ok ? "Done ✅" : "Failed");
+    } else {
+      if(chatId && msgId) tgEdit_(chatId, msgId, "🙋 <b>Anuj requested:</b> " + esc_(summary) + "\n\n❌ <b>Denied by owner.</b>");
+      tgSend_(rec.mgrChat, "❌ Owner denied your request: " + summary);
+      tgAnswer_(cb.id, "Denied");
+    }
+    return;
+  }
+  if(data.indexOf("del:")===0){
+    const id = data.slice(4);
+    if(role==="owner"){
+      const gone = deleteNotif_(id);
+      if(chatId && msgId) tgEdit_(chatId, msgId, gone ? "🗑 Notification deleted." : "ℹ️ That notification was already gone.");
+      tgAnswer_(cb.id, gone ? "Deleted" : "Already gone");
+    } else {
+      tgPropose_({ kind:"delnotif", id:id }, chatId);
+      tgAnswer_(cb.id, "Sent to owner for approval.");
+    }
+    return;
+  }
+  tgAnswer_(cb.id, "");
+}
+function tgHelpText_(role){
+  const head = role==="owner" ? "👑 <b>StuDy Admin — Owner (master)</b>" : "🧑‍💼 <b>StuDy Admin — Manager</b>\nYour actions run after the owner's approval.";
+  return head + "\n\n" +
+    "/pending — pending payments (with Approve / Bonus / Reject buttons)\n" +
+    "/stats — users, attempts, revenue, pending\n" +
+    "/users — user list with balances (/users 2 for next page)" + (role==="owner" ? "" : " — owner only") + "\n" +
+    "/addbalance — add balance to a user (step by step, or: /addbalance 98XXXXXXXX 200 message)\n" +
+    "/premium — give 1-year Premium (/premium 98XXXXXXXX)\n" +
+    "/notify — post an app notification (step by step)\n" +
+    "/delnotif — delete a posted notification\n" +
+    "/cancel — cancel the current step\n" +
+    "/id — your Telegram ID";
+}
+function tgHandleText_(chatId, role, text){
+  const cache = tgCache_();
+  const stateKey = "tgstate_"+chatId;
+  const cmd = (text.split(/\s+/)[0] || "").split("@")[0].toLowerCase();
+  if(cmd==="/cancel"){ cache.remove(stateKey); tgSend_(chatId, "Cancelled."); return; }
+  let st = null; try{ st = JSON.parse(cache.get(stateKey) || "null"); }catch(e){}
+  if(st && text.charAt(0)!=="/"){ tgStateStep_(chatId, role, st, text); return; }
+  if(text.charAt(0)==="/") cache.remove(stateKey);
+  if(cmd==="/start" || cmd==="/help"){ tgSend_(chatId, tgHelpText_(role)); return; }
+  if(cmd==="/id"){ tgSend_(chatId, "Your Telegram ID is <code>"+chatId+"</code>"); return; }
+  if(cmd==="/stats"){
+    const d = statsData_();
+    const pendSum = d.pending.reduce((s,p)=>s+(+p.amount||0),0);
+    tgSend_(chatId, "📊 <b>StuDy stats</b>\n👥 Users: "+d.usersCount+"\n📝 Attempts: "+d.attempts+"\n💰 Revenue (spent by users): ₹"+d.revenue+"\n⏳ Pending payments: "+d.pending.length+" (₹"+pendSum+")\n🔔 Live notifications: "+d.notifs.length);
+    return;
+  }
+  if(cmd==="/pending"){
+    const d = statsData_();
+    if(!d.pending.length){ tgSend_(chatId, "✅ No pending payments."); return; }
+    tgSend_(chatId, "⏳ <b>"+d.pending.length+" pending payment(s)</b> — decide below:" + (role==="manager" ? "\n(Your taps go to the owner for approval first.)" : ""));
+    d.pending.slice(0,10).forEach(p=> tgSendPayAlert_(chatId, role==="owner" ? "o" : "m", p));
+    return;
+  }
+  if(cmd==="/users"){
+    if(role!=="owner"){ tgSend_(chatId, "⛔ The full user list is owner-only."); return; }
+    const parts = text.split(/\s+/); const page = Math.max(1, parseInt(parts[1]||"1",10) || 1);
+    const all = rows("Users").map(u=>({ name:u.name||"", phone:String(u.phone), stars:+u.stars||0, sub:(+u.subUntil||0)>Date.now() }));
+    const size = 15, slice = all.slice((page-1)*size, page*size);
+    if(!slice.length){ tgSend_(chatId, "No users on page "+page+"."); return; }
+    const lines = slice.map((u,i)=> ((page-1)*size+i+1)+". "+esc_(u.name)+" — "+u.phone+" — ₹"+u.stars+(u.sub?" ⭐Premium":""));
+    tgSend_(chatId, "👥 <b>Users</b> (page "+page+" of "+Math.ceil(all.length/size)+", total "+all.length+")\n"+lines.join("\n")+"\n\nNext page: /users "+(page+1));
+    return;
+  }
+  if(cmd==="/delnotif"){
+    const d = statsData_();
+    if(!d.notifs.length){ tgSend_(chatId, "No live notifications."); return; }
+    tgSend_(chatId, "🔔 <b>Posted notifications</b> — tap 🗑 to delete" + (role==="manager" ? " (goes to owner for approval)" : "") + ":");
+    d.notifs.slice(0,10).forEach(n=> tgSend_(chatId, "🔔 <b>"+esc_(n.title)+"</b>\n"+esc_(n.body), [[{ text:"🗑 Delete", callback_data:"del:"+n.id }]]));
+    return;
+  }
+  if(cmd==="/addbalance"){
+    const parts = text.split(/\s+/);
+    if(parts.length>=3 && /^\d{10}$/.test(parts[1]) && (+parts[2]||0) >= 1){
+      const act = { kind:"addstars", phone:parts[1], amount:Math.floor(+parts[2]), message:parts.slice(3).join(" ") };
+      if(!findUser(act.phone)){ tgSend_(chatId, "User "+act.phone+" not found."); return; }
+      if(role==="owner"){ const r = execAction_({ kind:"addstars", phone:act.phone, amount:act.amount, message:act.message, byLabel:"Owner" }); tgSend_(chatId, (r.ok?"✅ ":"⚠️ ") + esc_(r.text)); }
+      else tgPropose_(act, chatId);
+      return;
+    }
+    cache.put(stateKey, JSON.stringify({ cmd:"addbalance", step:"phone" }), 1800);
+    tgSend_(chatId, "💳 Add balance — send the user's 10-digit phone number (or /cancel).");
+    return;
+  }
+  if(cmd==="/premium"){
+    const parts = text.split(/\s+/);
+    if(parts.length>=2 && /^\d{10}$/.test(parts[1])){
+      if(!findUser(parts[1])){ tgSend_(chatId, "User "+parts[1]+" not found."); return; }
+      if(role==="owner"){ const r = execAction_({ kind:"premium", phone:parts[1], byLabel:"Owner" }); tgSend_(chatId, (r.ok?"✅ ":"⚠️ ") + esc_(r.text)); }
+      else tgPropose_({ kind:"premium", phone:parts[1] }, chatId);
+      return;
+    }
+    cache.put(stateKey, JSON.stringify({ cmd:"premium", step:"phone" }), 1800);
+    tgSend_(chatId, "⭐ Give Premium — send the user's 10-digit phone number (or /cancel).");
+    return;
+  }
+  if(cmd==="/notify"){
+    cache.put(stateKey, JSON.stringify({ cmd:"notify", step:"title" }), 1800);
+    tgSend_(chatId, "🔔 New notification — send the TITLE (or /cancel).");
+    return;
+  }
+  tgSend_(chatId, "I didn't get that. Here is what I can do:\n\n" + tgHelpText_(role));
+}
+function tgStateStep_(chatId, role, st, text){
+  const cache = tgCache_(); const stateKey = "tgstate_"+chatId;
+  const done = ()=> cache.remove(stateKey);
+  if(st.cmd==="addbalance"){
+    if(st.step==="phone"){
+      const ph = text.replace(/\D/g,"");
+      if(!/^\d{10}$/.test(ph) || !findUser(ph)){ tgSend_(chatId, "User not found. Send a valid registered 10-digit number, or /cancel."); return; }
+      st.phone = ph; st.step = "amount"; cache.put(stateKey, JSON.stringify(st), 1800);
+      tgSend_(chatId, "User: "+esc_((findUser(ph)||{}).name||"")+" ("+ph+"). Send the AMOUNT in ₹.");
+      return;
+    }
+    if(st.step==="amount"){
+      const amt = Math.floor(+text.replace(/[^\d]/g,""));
+      if(!(amt>=1)){ tgSend_(chatId, "Send a valid amount (1 or more), or /cancel."); return; }
+      st.amount = amt; st.step = "message"; cache.put(stateKey, JSON.stringify(st), 1800);
+      tgSend_(chatId, "Send the message to show the user (e.g. “Payment received, thank you!”), or /skip.");
+      return;
+    }
+    if(st.step==="message"){
+      const act = { kind:"addstars", phone:st.phone, amount:st.amount, message:(text==="/skip" ? "" : text) };
+      done();
+      if(role==="owner"){ const r = execAction_({ kind:"addstars", phone:act.phone, amount:act.amount, message:act.message, byLabel:"Owner" }); tgSend_(chatId, (r.ok?"✅ ":"⚠️ ") + esc_(r.text)); }
+      else tgPropose_(act, chatId);
+      return;
+    }
+  }
+  if(st.cmd==="premium" && st.step==="phone"){
+    const ph = text.replace(/\D/g,"");
+    if(!/^\d{10}$/.test(ph) || !findUser(ph)){ tgSend_(chatId, "User not found. Send a valid registered 10-digit number, or /cancel."); return; }
+    done();
+    if(role==="owner"){ const r = execAction_({ kind:"premium", phone:ph, byLabel:"Owner" }); tgSend_(chatId, (r.ok?"✅ ":"⚠️ ") + esc_(r.text)); }
+    else tgPropose_({ kind:"premium", phone:ph }, chatId);
+    return;
+  }
+  if(st.cmd==="notify"){
+    if(st.step==="title"){ st.title = text; st.step = "body"; cache.put(stateKey, JSON.stringify(st), 1800); tgSend_(chatId, "Now send the BODY text."); return; }
+    if(st.step==="body"){
+      const act = { kind:"notif", title:st.title, body:text };
+      done();
+      if(role==="owner"){ const r = execAction_({ kind:"notif", title:act.title, body:act.body, byLabel:"Owner" }); tgSend_(chatId, (r.ok?"✅ ":"⚠️ ") + esc_(r.text)); }
+      else tgPropose_(act, chatId);
+      return;
+    }
+  }
+  done();
+  tgSend_(chatId, "That flow ended. Use /help to see commands.");
+}
+
+/* ----- one-time setup helpers (run manually from the Apps Script editor) ----- */
+function tgSetWebhook(){
+  const url = ScriptApp.getService().getUrl();
+  const r = tgApi_("setWebhook", { url:url, allowed_updates:["message","callback_query"] });
+  Logger.log("setWebhook -> " + JSON.stringify(r));
+}
+function tgWebhookInfo(){
+  Logger.log(JSON.stringify(tgApi_("getWebhookInfo", {})));
+}
+function tgSelfTest(){
+  if(tgOwner_()) tgSend_(tgOwner_(), "✅ <b>StuDy admin bot connected.</b> You are the OWNER (master). Send /help for commands.");
+  if(tgManager_()) tgSend_(tgManager_(), "✅ <b>StuDy admin bot connected.</b> You are the MANAGER — your actions run after the owner's approval. Send /help for commands.");
+}
