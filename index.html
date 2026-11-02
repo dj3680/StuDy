@@ -1184,11 +1184,11 @@ function renderHome(){
       </span>
       <span style="color:#bbb;font-size:20px">›</span>
     </button>`).join("");
-  $("freemocks").innerHTML = Object.entries(CATS).filter(([k])=>FREE_MOCK_CATS.includes(k)).map(([k,c])=>{ const cfg = FULLMOCK[k]; const elig = freeMockEligible(k); const owned = hasMock(k);
+  $("freemocks").innerHTML = Object.entries(CATS).filter(([k])=>FREE_MOCK_CATS.includes(k)).map(([k,c])=>{ const cfg = FULLMOCK[k]; const elig = freeMockEligible(k); const owned = hasMock(k); const usedFree = !elig && !owned;
     return `<div class="card" style="padding:12px 14px"><div style="display:flex;align-items:center;gap:12px">
       <img class="catlogo" src="${ASSET[k]}" alt="" style="width:42px;height:42px" onerror="this.style.display='none'">
-      <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14.5px">${c.name.en} — ${T("freeMocks")}</div><div class="sub">${T("freeMockSub")} · ${cfg.n} ${T("questions")} · ${cfg.mins} ${T("minutes")}</div></div>
-      ${elig ? `<button class="btn sm" onclick="startFullMock('${k}')">${T("start")} · ${T("free")}</button>` : owned ? `<button class="btn sm" onclick="startFullMock('${k}')">${T("start")}</button>` : `<span class="tag">${LANG==="hi" ? "✓ मुफ़्त मॉक उपयोग हो गया" : "✓ Free mock used"}</span><button class="btn sm" onclick="renderCategory('${k}');go('category')">${LANG==="hi" ? "खोलें" : "Open"}</button>`}
+      <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14.5px">${c.name.en} — ${T("freeMocks")}</div><div class="sub">${T("freeMockSub")} · ${cfg.n} ${T("questions")} · ${cfg.mins} ${T("minutes")}</div>${usedFree ? `<span style="display:block;margin-top:5px"><span class="tag">${LANG==="hi" ? "✓ मुफ़्त मॉक उपयोग हो गया" : "✓ Free mock used"}</span></span>` : ""}</div>
+      ${elig ? `<button class="btn sm" onclick="startFullMock('${k}')">${T("start")} · ${T("free")}</button>` : owned ? `<button class="btn sm" onclick="startFullMock('${k}')">${T("start")}</button>` : `<button class="btn sm" onclick="renderCategory('${k}');go('category')">${LANG==="hi" ? "खोलें" : "Open"}</button>`}
     </div></div>`; }).join("");
 }
 let CURCAT = "ssc";
