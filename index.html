@@ -329,8 +329,6 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,34,40,.
     <div class="card" id="subject-list" style="padding:4px 14px"></div>
     <h2 data-i18n="fullMock">Full mock test</h2>
     <div class="card" id="mock-card" style="padding:4px 14px"></div>
-    <h2 data-i18n="paidNotes">Paid notes (PDF)</h2>
-    <div class="card" id="notes-list" style="padding:4px 14px"></div>
   </section>
 
   <!-- ============ WALLET ============ -->
@@ -462,7 +460,7 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,34,40,.
   <!-- ============ NOTES ============ -->
   <section id="screen-notes" class="hidden">
     <h2 data-i18n="navNotes">Notes</h2>
-    <p class="sub" style="margin-bottom:10px">All StuDy notes in one place — the same notes as inside each exam, grouped by exam.</p>
+    <p class="sub" style="margin-bottom:10px">All StuDy notes in one place — grouped by exam.</p>
     <div id="notes-all"></div>
   </section>
   <!-- ============ PYQ (coming soon) ============ -->
@@ -931,7 +929,8 @@ const isSubActive = () => !!(ME && (+ME.subUntil||0) > Date.now());
 const subTillText = () => isSubActive() ? new Date(+ME.subUntil).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}) : "";
 const hasTest  = (cat,sub) => { if(isSubActive()) return true; if(!(ME && ME.purchases && ME.purchases.tests)) return false; if(ME.purchases.tests[cat+"_"+sub]) return true; if(cat==="school" && /_ch\d+$/.test(sub)) return !!ME.purchases.tests[cat+"_"+sub.replace(/_ch\d+$/, "")]; return false; };
 const hasMock  = cat => isSubActive() || !!(ME && ME.purchases && ME.purchases.mocks && ME.purchases.mocks[cat]);
-const hasNotes = key => isSubActive() || !!(ME && ME.purchases && ME.purchases.notes && ME.purchases.notes[key]);
+const GEO_TRIO_KEYS = ["rpsc_geo-world", "rpsc_geo-india", "rpsc_geo-rajasthan"];
+const hasNotes = key => isSubActive() || !!(ME && ME.purchases && ME.purchases.notes && (ME.purchases.notes[key] || (GEO_TRIO_KEYS.includes(key) && ME.purchases.notes["rpsc_geo"])));
 function spendStars(amount, label){
   if((ME.stars||0) < amount){ toast(T("insufficient")); go("wallet"); return false; }
   ME.stars -= amount;
@@ -954,8 +953,8 @@ function buyMock(cat){
   if(!BACKEND_URL) Store.updateMe(u=>u.purchases=ME.purchases); else api("buy",{phone:ME.phone, kind:"mock", key:cat});
   toast(T("purchased")); renderCategory(cat);
 }
-function buyNotes(cat, key, label){
-  const p = key==="bundle" ? getSettings().prices.bundle : getSettings().prices.notes;
+function buyNotes(cat, key, label, fixedPrice){
+  const p = (fixedPrice != null && !isNaN(fixedPrice)) ? fixedPrice : (key==="bundle" ? getSettings().prices.bundle : getSettings().prices.notes);
   if(!spendStars(p, "Notes: "+label)) return;
   ME.purchases.notes[cat+"_"+key] = Date.now();
   if(!BACKEND_URL) Store.updateMe(u=>u.purchases=ME.purchases); else api("buy",{phone:ME.phone, kind:"notes", key:cat+"_"+key});
@@ -966,20 +965,48 @@ function buyNotes(cat, key, label){
 
 const NOTES_TAGS = { raj:{en:"Rajasthan GK — districts, culture & state facts", hi:"राजस्थान GK — जिले, संस्कृति व राज्य तथ्य"}, hist:{en:"Ancient to modern — dates, events & key personalities", hi:"प्राचीन से आधुनिक — तिथियाँ, घटनाएँ व प्रमुख व्यक्तित्व"}, geo:{en:"Rivers, climate, maps & resources — the scoring facts", hi:"नदियाँ, जलवायु, मानचित्र व संसाधन — स्कोरिंग तथ्य"}, pol:{en:"Constitution, articles & governance — the essentials", hi:"संविधान, अनुच्छेद व शासन — ज़रूरी तथ्य"}, sci:{en:"Physics, Chemistry & Biology — concepts in simple words", hi:"भौतिकी, रसायन व जीव विज्ञान — आसान भाषा में अवधारणाएँ"}, eco:{en:"Concepts, budget & reports — explained simply", hi:"अवधारणाएँ, बजट व रिपोर्ट — सरल भाषा में"}, env:{en:"Ecology, wildlife & climate — key facts and lists", hi:"पारिस्थितिकी, वन्यजीव व जलवायु — मुख्य तथ्य व सूचियाँ"}, ca:{en:"Latest current affairs digest — exam-ready one-liners", hi:"ताज़ा करंट अफेयर्स डाइजेस्ट — परीक्षा-तैयार वन-लाइनर"}, eng:{en:"Grammar, vocabulary & comprehension essentials", hi:"व्याकरण, शब्दावली व comprehension के मूल तथ्य"}, quant:{en:"Formulas, shortcuts & solved examples", hi:"फ़ॉर्मूले, शॉर्टकट व हल किए गए उदाहरण"}, reas:{en:"Patterns, puzzles & practice tricks", hi:"पैटर्न, पहेलियाँ व अभ्यास ट्रिक्स"}, ga:{en:"GK, awards, sports & static facts", hi:"GK, पुरस्कार, खेल व स्थैतिक तथ्य"} };
 function notesTag(sub){ const t = NOTES_TAGS[sub]; return t ? (LANG === "hi" ? t.hi : t.en) : (LANG === "hi" ? "परीक्षा-केंद्रित नोट्स — मुख्य बिंदु व वन-लाइनर" : "Exam-focused notes — key points & one-liners"); }
+/* RPSC Geography trio (Round 29): three separate PDFs at a FIXED Rs.10 each,
+   immune to the admin notes price. Anyone owning the old single RPSC
+   Geography notes (key rpsc_geo) is grandfathered into all three - see
+   hasNotes. Downloads resolve via downloadNotes to notes/rpsc-geo-*.pdf. */
+const GEO_TRIO_PRICE = 10;
+const GEO_TRIO = [
+  { sub:"geo-world", en:"World Geography", hi:"\u0935\u093f\u0936\u094d\u0935 \u092d\u0942\u0917\u094b\u0932", tag:{ en:"Continents, oceans, climate & maps - world facts", hi:"\u092e\u0939\u093e\u0926\u094d\u0935\u0940\u092a, \u092e\u0939\u093e\u0938\u093e\u0917\u0930, \u091c\u0932\u0935\u093e\u092f\u0941 \u0935 \u092e\u093e\u0928\u091a\u093f\u0924\u094d\u0930 - \u0935\u093f\u0936\u094d\u0935 \u0924\u0925\u094d\u092f" } },
+  { sub:"geo-india", en:"Geography of India", hi:"\u092d\u093e\u0930\u0924 \u0915\u093e \u092d\u0942\u0917\u094b\u0932", tag:{ en:"Rivers, monsoon, soils & states - India facts", hi:"\u0928\u0926\u093f\u092f\u093e\u0901, \u092e\u093e\u0928\u0938\u0942\u0928, \u092e\u093f\u091f\u094d\u091f\u0940 \u0935 \u0930\u093e\u091c\u094d\u092f - \u092d\u093e\u0930\u0924 \u0924\u0925\u094d\u092f" } },
+  { sub:"geo-rajasthan", en:"Geography of Rajasthan", hi:"\u0930\u093e\u091c\u0938\u094d\u0925\u093e\u0928 \u0915\u093e \u092d\u0942\u0917\u094b\u0932", tag:{ en:"Districts, Aravalli, Thar & rivers - Rajasthan facts", hi:"\u091c\u093f\u0932\u0947, \u0905\u0930\u093e\u0935\u0932\u0940, \u0925\u093e\u0930 \u0935 \u0928\u0926\u093f\u092f\u093e\u0901 - \u0930\u093e\u091c\u0938\u094d\u0925\u093e\u0928 \u0924\u0925\u094d\u092f" } }
+];
+/* Sub-dropdown toggle for the Geography group: unlike toggleCollapse it
+   must NOT close the parent exam dropdown, so the sub-wrap id ends in
+   "-sub" (not "-wrap") and this toggle closes nothing else. */
+function toggleNotesSub(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); }
 function renderNotes(){
   const P = getSettings().prices;
+  const subjectRow = (cat, sub) => {
+    const key = cat + "_" + sub, owned = hasNotes(key);
+    return `<div class="testrow"><div class="ti"><div class="tt">${subName(cat, sub, LANG)} \u2014 Notes PDF</div><div class="ts">${notesTag(sub)}</div></div>
+      ${owned ? `<button class="btn sm" onclick="downloadNotes('${cat}','${sub}')">` + T("download") + `</button>`
+              : `<span class="price">\u20b9${P.notes}</span><button class="btn sm gold" onclick="buyNotes('${cat}','${sub}','${esc(subName(cat, sub, "en"))} notes')">${T("buyNotes")}</button>`}</div>`;
+  };
+  const bundleRow = (cat) => {
+    const c = CATS[cat];
+    return `<div class="testrow"><div class="ti"><div class="tt">${T("bundle")}</div><div class="ts">${T("bundleSub")}</div></div>
+      ${hasNotes(cat + "_bundle") ? `<button class="btn sm" onclick="downloadNotes('${cat}','bundle')">${T("download")}</button>`
+              : `<span class="price">\u20b9${P.bundle}</span><button class="btn sm gold" onclick="buyNotes('${cat}','bundle','${c.name.en} all-subject notes')">${T("buyNotes")}</button>`}</div>`;
+  };
+  const geoSubDropdown = () => {
+    const rows = GEO_TRIO.map(g => {
+      const key = "rpsc_" + g.sub, owned = hasNotes(key);
+      const title = LANG === "hi" ? g.hi : g.en;
+      return `<div class="testrow"><div class="ti"><div class="tt">${title} \u2014 Notes PDF</div><div class="ts">${LANG === "hi" ? g.tag.hi : g.tag.en}</div></div>
+      ${owned ? `<button class="btn sm" onclick="downloadNotes('rpsc','${g.sub}')">` + T("download") + `</button>`
+              : `<span class="price">\u20b9${GEO_TRIO_PRICE}</span><button class="btn sm gold" onclick="buyNotes('rpsc','${g.sub}','${g.en} notes',${GEO_TRIO_PRICE})">${T("buyNotes")}</button>`}</div>`;
+    }).join("");
+    return `<button class="collapse-h" style="margin:14px 0 6px;font-size:16px" onclick="toggleNotesSub('notes-rpsc-geo-sub',this)"><span>${LANG === "hi" ? "\u092d\u0942\u0917\u094b\u0932" : "Geography"} \u2014 Notes PDF</span><span class="car">\u25be</span></button><div id="notes-rpsc-geo-sub" class="hidden" style="padding-left:12px">${rows}</div>`;
+  };
   $("notes-all").innerHTML = ["rpsc","upsc","ssc"].map(cat=>{
     const c = CATS[cat]; if(!c) return "";
-    const rows = c.subjects.map(([sub])=>{
-      const key = cat + "_" + sub, owned = hasNotes(key);
-      return `<div class="testrow"><div class="ti"><div class="tt">${subName(cat, sub, LANG)} — Notes PDF</div><div class="ts">${notesTag(sub)}</div></div>
-      ${owned ? `<button class="btn sm" onclick="downloadNotes('${cat}','${sub}')">${T("download")}</button>`
-              : `<span class="price">₹${P.notes}</span><button class="btn sm gold" onclick="buyNotes('${cat}','${sub}','${esc(subName(cat, sub, "en"))} notes')">${T("buyNotes")}</button>`}</div>`;
-    }).join("") +
-    `<div class="testrow"><div class="ti"><div class="tt">${T("bundle")}</div><div class="ts">${T("bundleSub")}</div></div>
-      ${hasNotes(cat + "_bundle") ? `<button class="btn sm" onclick="downloadNotes('${cat}','bundle')">${T("download")}</button>`
-              : `<span class="price">₹${P.bundle}</span><button class="btn sm gold" onclick="buyNotes('${cat}','bundle','${c.name.en} all-subject notes')">${T("buyNotes")}</button>`}</div>`;
-    return `<h2 style="display:flex;align-items:center;gap:10px;margin-top:20px"><img src="${ASSET[cat] || ""}" alt="" style="height:30px" onerror="this.style.display='none'">${c.name[LANG] || c.name.en}</h2><div class="card" style="padding:6px 14px">${rows}</div>`;
+    const rows = c.subjects.map(([sub])=> sub === "geo" && cat === "rpsc" ? geoSubDropdown() : subjectRow(cat, sub)).join("") + bundleRow(cat);
+    return `<button class="collapse-h" onclick="toggleCollapse('notes-${cat}-wrap',this)"><span style="display:flex;align-items:center;gap:10px"><img src="${ASSET[cat] || ""}" alt="" style="height:30px" onerror="this.style.display='none'">${c.name[LANG] || c.name.en}</span><span class="car">\u25be</span></button><div id="notes-${cat}-wrap" class="hidden"><div class="card" style="padding:6px 14px">${rows}</div></div>`;
   }).join("");
 }
 /* ---------------- PYQ (Previous Year Papers) ----------------
@@ -1113,7 +1140,7 @@ function renderCACategory(c){
   const lg = $("cat-logo"); lg.style.display = ""; lg.style.height = "54px"; lg.src = ASSET.ca; lg.onerror = function(){ this.style.display = "none"; };
   $("cat-title").textContent = c.name[LANG] || c.name.en;
   $("cat-desc").textContent = c.desc[LANG] || c.desc.en;
-  ["mock-card","notes-list"].forEach(id=>{ const el = $(id); el.innerHTML = ""; el.classList.add("hidden"); const h = el.previousElementSibling; if(h && h.tagName === "H2") h.classList.add("hidden"); });
+  ["mock-card"].forEach(id=>{ const el = $(id); el.innerHTML = ""; el.classList.add("hidden"); const h = el.previousElementSibling; if(h && h.tagName === "H2") h.classList.add("hidden"); });
   { const h = $("subject-list").previousElementSibling; if(h && h.tagName === "H2") h.classList.add("hidden"); }
   const sets = caSets();
   const mine = Store.attempts().filter(a=> ME && a.phone === ME.phone && a.cat === "ca");
@@ -1231,7 +1258,7 @@ function renderHome(){
 }
 let CURCAT = "ssc";
 function resetCatSections(){
-  ["subject-list","mock-card","notes-list"].forEach(id=>{ const el = $(id); if(el){ el.classList.remove("hidden"); const h = el.previousElementSibling; if(h && h.tagName === "H2") h.classList.remove("hidden"); } });
+  ["subject-list","mock-card"].forEach(id=>{ const el = $(id); if(el){ el.classList.remove("hidden"); const h = el.previousElementSibling; if(h && h.tagName === "H2") h.classList.remove("hidden"); } });
 }
 function renderCategory(cat){
   if(cat === "pyq"){ go("pyq"); return; }
@@ -1262,16 +1289,6 @@ function renderCategory(cat){
       <div class="${exp ? "" : "hidden"}" style="padding-left:12px">${Array.from({length:TESTS_PER_SUBJECT}, (_,i)=> seriesRow(sub, i+1)).join("")}</div>`;
   }).join("");
   $("mock-card").innerHTML = mockSectionHTML(cat, c, P);
-  $("notes-list").innerHTML =
-    c.subjects.map(([sub])=>{
-      const key = cat+"_"+sub, owned = hasNotes(key);
-      return `<div class="testrow"><div class="ti"><div class="tt">${subName(cat,sub,LANG)} — Notes PDF</div><div class="ts">${notesTag(sub)}</div></div>
-      ${owned?`<button class="btn sm" onclick="downloadNotes('${cat}','${sub}')">${T("download")}</button>`
-             :`<span class="price">₹${P.notes}</span><button class="btn sm gold" onclick="buyNotes('${cat}','${sub}','${esc(subName(cat,sub,"en"))} notes')">${T("buyNotes")}</button>`}</div>`;
-    }).join("") +
-    `<div class="testrow"><div class="ti"><div class="tt">${T("bundle")}</div><div class="ts">${T("bundleSub")}</div></div>
-      ${hasNotes(cat+"_bundle")?`<button class="btn sm" onclick="downloadNotes('${cat}','bundle')">${T("download")}</button>`
-             :`<span class="price">₹${P.bundle}</span><button class="btn sm gold" onclick="buyNotes('${cat}','bundle','${c.name.en} all-subject notes')">${T("buyNotes")}</button>`}</div>`;
 }
 function renderSchoolCategory(c, P){
   const lg = $("cat-logo"); lg.style.display = ""; lg.style.height = "76px"; lg.src = ASSET.school || ASSET.logo; lg.onerror = function(){ this.style.display = "none"; };
@@ -1300,7 +1317,6 @@ function renderSchoolCategory(c, P){
               : `<span class="price">₹${schoolSubjectPrice(sub)}</span><button class="btn sm gold" onclick="buyTest('school','${sub}')">${T("buyStart")}</button>`}
     </div><div style="padding-left:12px">${chapters}</div>`; }).join("");
   $("mock-card").innerHTML = "";
-  $("notes-list").innerHTML = "";
 }
 const FULLMOCK = {
   rpsc: { n:150, mins:180, title:{en:"RPSC RAS Complete Mock Test", hi:"RPSC RAS पूर्ण मॉक टेस्ट"}, pattern:{en:"Rajasthan GK · History · Geography · Polity · Science — RAS Prelims pattern · 200 marks", hi:"राजस्थान GK · इतिहास · भूगोल · राजनीति · विज्ञान — RAS प्रीलिम्स पैटर्न · 200 अंक"} },
@@ -1379,7 +1395,7 @@ function renderFullMockCategory(cat, c, P){
   const lg = $("cat-logo"); lg.style.display = ""; lg.style.height = "54px"; lg.src = ASSET[cat] || ASSET.logo; lg.onerror = function(){ this.style.display = "none"; };
   $("cat-title").textContent = c.name[LANG]||c.name.en;
   $("cat-desc").textContent = c.desc[LANG]||c.desc.en;
-  ["mock-card","notes-list"].forEach(id=>{ const el = $(id); el.innerHTML = ""; el.classList.add("hidden"); const h = el.previousElementSibling; if(h && h.tagName === "H2") h.classList.add("hidden"); });
+  ["mock-card"].forEach(id=>{ const el = $(id); el.innerHTML = ""; el.classList.add("hidden"); const h = el.previousElementSibling; if(h && h.tagName === "H2") h.classList.add("hidden"); });
   const owned = hasMock(cat);
   const mine = Store.attempts().filter(a=>ME && a.phone===ME.phone && a.cat===cat && a.type==="mock");
   const first = mine.find(a=>a.first);
