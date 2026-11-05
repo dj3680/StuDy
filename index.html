@@ -930,7 +930,8 @@ const subTillText = () => isSubActive() ? new Date(+ME.subUntil).toLocaleDateStr
 const hasTest  = (cat,sub) => { if(isSubActive()) return true; if(!(ME && ME.purchases && ME.purchases.tests)) return false; if(ME.purchases.tests[cat+"_"+sub]) return true; if(cat==="school" && /_ch\d+$/.test(sub)) return !!ME.purchases.tests[cat+"_"+sub.replace(/_ch\d+$/, "")]; return false; };
 const hasMock  = cat => isSubActive() || !!(ME && ME.purchases && ME.purchases.mocks && ME.purchases.mocks[cat]);
 const GEO_TRIO_KEYS = ["rpsc_geo-world", "rpsc_geo-india", "rpsc_geo-rajasthan"];
-const hasNotes = key => isSubActive() || !!(ME && ME.purchases && ME.purchases.notes && (ME.purchases.notes[key] || (GEO_TRIO_KEYS.includes(key) && ME.purchases.notes["rpsc_geo"])));
+const POL_DUO_KEYS = ["rpsc_pol-india", "rpsc_pol-rajasthan"];
+const hasNotes = key => isSubActive() || !!(ME && ME.purchases && ME.purchases.notes && (ME.purchases.notes[key] || (GEO_TRIO_KEYS.includes(key) && ME.purchases.notes["rpsc_geo"]) || (POL_DUO_KEYS.includes(key) && ME.purchases.notes["rpsc_pol"])));
 function spendStars(amount, label){
   if((ME.stars||0) < amount){ toast(T("insufficient")); go("wallet"); return false; }
   ME.stars -= amount;
@@ -975,10 +976,25 @@ const GEO_TRIO = [
   { sub:"geo-india", en:"Geography of India", hi:"\u092d\u093e\u0930\u0924 \u0915\u093e \u092d\u0942\u0917\u094b\u0932", tag:{ en:"Rivers, monsoon, soils & states - India facts", hi:"\u0928\u0926\u093f\u092f\u093e\u0901, \u092e\u093e\u0928\u0938\u0942\u0928, \u092e\u093f\u091f\u094d\u091f\u0940 \u0935 \u0930\u093e\u091c\u094d\u092f - \u092d\u093e\u0930\u0924 \u0924\u0925\u094d\u092f" } },
   { sub:"geo-rajasthan", en:"Geography of Rajasthan", hi:"\u0930\u093e\u091c\u0938\u094d\u0925\u093e\u0928 \u0915\u093e \u092d\u0942\u0917\u094b\u0932", tag:{ en:"Districts, Aravalli, Thar & rivers - Rajasthan facts", hi:"\u091c\u093f\u0932\u0947, \u0905\u0930\u093e\u0935\u0932\u0940, \u0925\u093e\u0930 \u0935 \u0928\u0926\u093f\u092f\u093e\u0901 - \u0930\u093e\u091c\u0938\u094d\u0925\u093e\u0928 \u0924\u0925\u094d\u092f" } }
 ];
-/* Sub-dropdown toggle for the Geography group: unlike toggleCollapse it
+/* RPSC Polity duo (Round 30): two separate PDFs at a FIXED Rs.10 each,
+   immune to the admin notes price. Anyone owning the old single RPSC
+   Polity notes (key rpsc_pol) is grandfathered into both - see hasNotes.
+   Downloads resolve via downloadNotes to notes/rpsc-pol-*.pdf. */
+const POL_DUO_PRICE = 10;
+const POL_DUO = [
+  { sub:"pol-india", en:"Indian Polity & Governance", hi:"\u092d\u093e\u0930\u0924\u0940\u092f \u0930\u093e\u091c\u0935\u094d\u092f\u0935\u0938\u094d\u0925\u093e \u0935 \u0936\u093e\u0938\u0928", tag:{ en:"Constitution, rights, Parliament, judiciary & bodies - India facts", hi:"\u0938\u0902\u0935\u093f\u0927\u093e\u0928, \u0905\u0927\u093f\u0915\u093e\u0930, \u0938\u0902\u0938\u0926, \u0928\u094d\u092f\u093e\u092f\u092a\u093e\u0932\u093f\u0915\u093e \u0935 \u0928\u093f\u0915\u093e\u092f - \u092d\u093e\u0930\u0924 \u0924\u0925\u094d\u092f" } },
+  { sub:"pol-rajasthan", en:"Rajasthan Polity & Administration", hi:"\u0930\u093e\u091c\u0938\u094d\u0925\u093e\u0928 \u0930\u093e\u091c\u0935\u094d\u092f\u0935\u0938\u094d\u0925\u093e \u0935 \u092a\u094d\u0930\u0936\u093e\u0938\u0928", tag:{ en:"Governor, Assembly, RPSC, Lokayukt & Panchayati Raj - state facts", hi:"\u0930\u093e\u091c\u094d\u092f\u092a\u093e\u0932, \u0935\u093f\u0927\u093e\u0928\u0938\u092d\u093e, RPSC, \u0932\u094b\u0915\u093e\u092f\u0941\u0915\u094d\u0924 \u0935 \u092a\u0902\u091a\u093e\u092f\u0924\u0940 \u0930\u093e\u091c - \u0930\u093e\u091c\u094d\u092f \u0924\u0925\u094d\u092f" } }
+];
+/* Notes open-state (Round 30 fix): renderNotes() rebuilds the whole Notes
+   screen after a purchase, which used to collapse every dropdown the user
+   had open. These record which exam wrap and sub-dropdowns are open so a
+   re-render restores them exactly as the user left them. */
+let NOTES_OPEN_CAT = null;
+const NOTES_SUB_OPEN = {};
+/* Sub-dropdown toggle for the notes groups: unlike toggleCollapse it
    must NOT close the parent exam dropdown, so the sub-wrap id ends in
    "-sub" (not "-wrap") and this toggle closes nothing else. */
-function toggleNotesSub(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); }
+function toggleNotesSub(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); NOTES_SUB_OPEN[id] = opening; }
 function renderNotes(){
   const P = getSettings().prices;
   const subjectRow = (cat, sub) => {
@@ -1001,12 +1017,22 @@ function renderNotes(){
       ${owned ? `<button class="btn sm" onclick="downloadNotes('rpsc','${g.sub}')">` + T("download") + `</button>`
               : `<span class="price">\u20b9${GEO_TRIO_PRICE}</span><button class="btn sm gold" onclick="buyNotes('rpsc','${g.sub}','${g.en} notes',${GEO_TRIO_PRICE})">${T("buyNotes")}</button>`}</div>`;
     }).join("");
-    return `<button class="collapse-h" style="margin:14px 0 6px;font-size:16px" onclick="toggleNotesSub('notes-rpsc-geo-sub',this)"><span>${LANG === "hi" ? "\u092d\u0942\u0917\u094b\u0932" : "Geography"} \u2014 Notes PDF</span><span class="car">\u25be</span></button><div id="notes-rpsc-geo-sub" class="hidden" style="padding-left:12px">${rows}</div>`;
+    return `<button class="collapse-h${NOTES_SUB_OPEN["notes-rpsc-geo-sub"] ? " open" : ""}" style="margin:14px 0 6px;font-size:16px" onclick="toggleNotesSub('notes-rpsc-geo-sub',this)"><span>${LANG === "hi" ? "\u092d\u0942\u0917\u094b\u0932" : "Geography"} \u2014 Notes PDF</span><span class="car">\u25be</span></button><div id="notes-rpsc-geo-sub" class="${NOTES_SUB_OPEN["notes-rpsc-geo-sub"] ? "" : "hidden"}" style="padding-left:12px">${rows}</div>`;
+  };
+  const polSubDropdown = () => {
+    const rows = POL_DUO.map(g => {
+      const key = "rpsc_" + g.sub, owned = hasNotes(key);
+      const title = LANG === "hi" ? g.hi : g.en;
+      return `<div class="testrow"><div class="ti"><div class="tt">${title} \u2014 Notes PDF</div><div class="ts">${LANG === "hi" ? g.tag.hi : g.tag.en}</div></div>
+      ${owned ? `<button class="btn sm" onclick="downloadNotes('rpsc','${g.sub}')">` + T("download") + `</button>`
+              : `<span class="price">\u20b9${POL_DUO_PRICE}</span><button class="btn sm gold" onclick="buyNotes('rpsc','${g.sub}','${g.en} notes',${POL_DUO_PRICE})">${T("buyNotes")}</button>`}</div>`;
+    }).join("");
+    return `<button class="collapse-h${NOTES_SUB_OPEN["notes-rpsc-pol-sub"] ? " open" : ""}" style="margin:14px 0 6px;font-size:16px" onclick="toggleNotesSub('notes-rpsc-pol-sub',this)"><span>${LANG === "hi" ? "\u0930\u093e\u091c\u0928\u0940\u0924\u093f \u0935\u093f\u091c\u094d\u091e\u093e\u0928" : "Polity"} \u2014 Notes PDF</span><span class="car">\u25be</span></button><div id="notes-rpsc-pol-sub" class="${NOTES_SUB_OPEN["notes-rpsc-pol-sub"] ? "" : "hidden"}" style="padding-left:12px">${rows}</div>`;
   };
   $("notes-all").innerHTML = ["rpsc","upsc","ssc"].map(cat=>{
     const c = CATS[cat]; if(!c) return "";
-    const rows = c.subjects.map(([sub])=> sub === "geo" && cat === "rpsc" ? geoSubDropdown() : subjectRow(cat, sub)).join("") + bundleRow(cat);
-    return `<button class="collapse-h" onclick="toggleCollapse('notes-${cat}-wrap',this)"><span style="display:flex;align-items:center;gap:10px"><img src="${ASSET[cat] || ""}" alt="" style="height:30px" onerror="this.style.display='none'">${c.name[LANG] || c.name.en}</span><span class="car">\u25be</span></button><div id="notes-${cat}-wrap" class="hidden"><div class="card" style="padding:6px 14px">${rows}</div></div>`;
+    const rows = c.subjects.map(([sub])=> cat === "rpsc" && sub === "geo" ? geoSubDropdown() : cat === "rpsc" && sub === "pol" ? polSubDropdown() : subjectRow(cat, sub)).join("") + bundleRow(cat);
+    return `<button class="collapse-h${NOTES_OPEN_CAT === cat ? " open" : ""}" onclick="toggleCollapse('notes-${cat}-wrap',this)"><span style="display:flex;align-items:center;gap:10px"><img src="${ASSET[cat] || ""}" alt="" style="height:30px" onerror="this.style.display='none'">${c.name[LANG] || c.name.en}</span><span class="car">\u25be</span></button><div id="notes-${cat}-wrap" class="${NOTES_OPEN_CAT === cat ? "" : "hidden"}"><div class="card" style="padding:6px 14px">${rows}</div></div>`;
   }).join("");
 }
 /* ---------------- PYQ (Previous Year Papers) ----------------
@@ -1219,7 +1245,7 @@ function playPromo(){
   _promoTimers.push(setTimeout(()=>{ if(dl && !dl.classList.contains("hidden")) dl.classList.add("promo"); }, 1000));
   _promoTimers.push(setTimeout(()=>{ if(dl) dl.classList.remove("promo"); }, 3800));
 }
-function toggleCollapse(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); if(opening){ document.querySelectorAll('[id$="-wrap"]').forEach(o=>{ if(o.id !== id && !o.classList.contains("hidden")){ o.classList.add("hidden"); const b = o.previousElementSibling; if(b && b.classList) b.classList.remove("open"); } }); } el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); }
+function toggleCollapse(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); if(opening){ document.querySelectorAll('[id$="-wrap"]').forEach(o=>{ if(o.id !== id && !o.classList.contains("hidden")){ o.classList.add("hidden"); const b = o.previousElementSibling; if(b && b.classList) b.classList.remove("open"); } }); } el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); if(id.indexOf("notes-") === 0 && id.slice(-5) === "-wrap"){ NOTES_OPEN_CAT = opening ? id.slice(6, -5) : null; } }
 function hidePremiumStrip(){
   try{ localStorage.setItem("study_phide_"+(ME?ME.phone:""), isSubActive() ? String((ME&&ME.subUntil)||"") : "promo"); }catch(e){}
   const el = $("home-premium"); if(el) el.innerHTML = "";
