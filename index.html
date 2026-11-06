@@ -410,6 +410,17 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,34,40,.
       <div class="card stat"><div class="n" id="st-avg">0%</div><div class="l" data-i18n="avgScore">Average score</div></div>
       <div class="card stat"><div class="n" id="st-acc">0%</div><div class="l" data-i18n="accuracy">Accuracy</div></div>
     </div>
+    <div class="card" style="margin-top:10px">
+      <div style="font-size:16px;font-weight:800;text-align:center" data-i18n="reportCard">My Report Card</div>
+      <div class="sc-legend" id="rc-legend"></div>
+      <div class="sub" id="rc-cap" style="text-align:center;margin-top:10px;font-weight:700">Overall Score</div>
+      <div class="sc-ringwrap">
+        <svg class="sc-ring" width="172" height="172" viewBox="0 0 172 172"><circle cx="86" cy="86" r="52" fill="none" stroke="var(--line2)" stroke-width="11"/><circle id="rc-arc" cx="86" cy="86" r="52" fill="none" stroke="#2fb3c9" stroke-width="11" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" style="transition:stroke-dashoffset .8s ease,stroke .3s"/></svg>
+        <div class="sc-center"><div style="font-size:30px;font-weight:900" id="rc-pct">0%</div><div class="sc-tier" id="rc-tier"></div></div>
+      </div>
+      <p class="sub" id="rc-note" style="text-align:center;margin-top:8px"></p>
+      <div id="rc-cats"></div>
+    </div>
     <h2 data-i18n="settings">Settings</h2>
     <div class="card" style="padding:4px 14px">
       <div class="fld" style="margin-top:10px"><label data-i18n="appLang">App language / ऐप भाषा</label>
@@ -1898,6 +1909,27 @@ function renderProfile(){
   $("st-avg").textContent = firsts.length ? Math.round(100*firsts.reduce((s,a)=>s+a.score/a.total,0)/firsts.length)+"%" : "0%";
   const corr = mine.reduce((s,a)=>s+a.correct,0), att = mine.reduce((s,a)=>s+a.correct+a.wrong,0);
   $("st-acc").textContent = att ? Math.round(100*corr/att)+"%" : "0%";
+  /* Round 33: Report Card dashboard - overall ring + category-wise
+     percentages, marks-weighted over FIRST attempts (official scores),
+     same Poor/Average/Good/Excellent tiers as the result Score Report. */
+  const RC_TIER = p => p >= 75 ? 3 : p >= 60 ? 2 : p >= 40 ? 1 : 0;
+  const RC_COL = ["#ef5350", "#f2b01e", "#43a047", "#2fb3c9"];
+  const RC_NAME = LANG === "hi" ? ["कमज़ोर", "औसत", "अच्छा", "उत्कृष्ट"] : ["Poor", "Average", "Good", "Excellent"];
+  const rcTot = firsts.reduce((s,a)=>s+(a.total||0),0), rcScr = firsts.reduce((s,a)=>s+(a.score||0),0);
+  const rcPct = rcTot ? Math.max(0, Math.round(1000 * rcScr / rcTot) / 10) : 0;
+  const rcTi = RC_TIER(rcPct), rcCirc = 2 * Math.PI * 52, rcArc = $("rc-arc");
+  rcArc.style.stroke = RC_COL[rcTi]; rcArc.style.strokeDasharray = rcCirc; rcArc.style.strokeDashoffset = rcCirc * (1 - rcPct / 100);
+  $("rc-pct").textContent = rcPct + "%";
+  $("rc-tier").textContent = firsts.length ? RC_NAME[rcTi] : "—"; $("rc-tier").style.color = RC_COL[rcTi];
+  $("rc-legend").innerHTML = RC_NAME.map((n, i) => `<span><span class="sc-dot" style="background:${RC_COL[i]}"></span>${n}</span>`).join("");
+  $("rc-cap").textContent = LANG === "hi" ? "समग्र स्कोर" : "Overall Score";
+  $("rc-note").textContent = firsts.length
+    ? (LANG === "hi" ? `${firsts.length} टेस्ट के पहले प्रयासों पर आधारित` : `Based on first attempts in ${firsts.length} test${firsts.length > 1 ? "s" : ""}`)
+    : (LANG === "hi" ? "अभी कोई टेस्ट नहीं दिया — पहला टेस्ट देते ही रिपोर्ट कार्ड यहाँ बनेगा" : "No tests yet — your report card appears here after your first test");
+  const RC_ORDER = ["rpsc", "upsc", "ssc", "neet", "jee", "reet", "cuet", "ca", "pyq", "school"];
+  const rcByCat = {};
+  firsts.forEach(a => { const b = rcByCat[a.cat] || (rcByCat[a.cat] = { n:0, s:0, t:0 }); b.n++; b.s += a.score || 0; b.t += a.total || 0; });
+  $("rc-cats").innerHTML = RC_ORDER.filter(c => rcByCat[c]).map(c => { const b = rcByCat[c]; const p = b.t ? Math.max(0, Math.round(1000 * b.s / b.t) / 10) : 0; const t = RC_TIER(p); const nm = (CATS[c] && CATS[c].name[LANG]) || c.toUpperCase(); return `<div class="sc-row"><div class="sc-name">${esc(nm)}<br><span style="color:var(--mut);font-weight:600;font-size:11px">${b.n} ${LANG === "hi" ? "टेस्ट" : "test" + (b.n > 1 ? "s" : "")}</span></div><div class="sc-track"><div class="sc-fill" style="width:${p}%;background:${RC_COL[t]}"></div></div><div class="sc-val">${p}% — ${RC_NAME[t]}</div></div>`; }).join("");
   const xp = firsts.reduce((s,a)=>s+a.correct*10,0);
   const lvl = 1+Math.floor(xp/200), into = xp%200;
   $("pf-level").textContent = T("level")+" "+lvl+" · "+xp+" XP";
