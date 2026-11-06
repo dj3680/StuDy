@@ -161,6 +161,20 @@ html,body{touch-action:manipulation}
 /* Result */
 .resbig{text-align:center;padding:6px 0}
 .resbig .score{font-size:38px;font-weight:900}
+/* Score report (Round 32): tier ring + legend + sectional bars */
+.sc-legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:11.5px;color:var(--mut);margin-top:4px}
+.sc-dot{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:5px}
+.sc-ringwrap{position:relative;width:172px;height:172px;margin:8px auto 0}
+.sc-ring{transform:rotate(-90deg)}
+.sc-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.sc-center .score{font-size:27px;font-weight:900}
+.sc-tier{font-size:13.5px;font-weight:800}
+.sc-h{font-size:15px;font-weight:800;margin:16px 0 4px;text-align:left}
+.sc-row{display:flex;align-items:center;gap:10px;margin:9px 0;text-align:left}
+.sc-name{flex:0 0 34%;font-size:13px;font-weight:600;line-height:1.25}
+.sc-track{flex:1;height:9px;border-radius:99px;background:var(--line2);overflow:hidden}
+.sc-fill{height:100%;border-radius:99px;transition:width .8s ease}
+.sc-val{flex:0 0 auto;font-size:12.5px;font-weight:700;white-space:nowrap}
 .solq{border-bottom:1px solid var(--line2);padding:12px 0}
 .solq:last-child{border-bottom:none}
 .solopt{font-size:13.5px;padding:6px 10px;border-radius:8px;margin-top:5px;background:var(--bg2);border:1px solid var(--line2)}
@@ -436,9 +450,14 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,34,40,.
     <div class="card" style="margin-top:14px">
       <div class="resbig">
         <div class="sub" id="res-title"></div>
-        <div class="score" id="res-score"></div>
-        <div class="sub" id="res-sub"></div>
+        <div class="sc-legend" id="res-legend"></div>
+        <div class="sub" id="res-sub" style="margin-top:10px;font-weight:700"></div>
+        <div class="sc-ringwrap">
+          <svg class="sc-ring" width="172" height="172" viewBox="0 0 172 172"><circle cx="86" cy="86" r="52" fill="none" stroke="var(--line2)" stroke-width="11"/><circle id="res-arc" cx="86" cy="86" r="52" fill="none" stroke="#2fb3c9" stroke-width="11" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" style="transition:stroke-dashoffset .8s ease,stroke .3s"/></svg>
+          <div class="sc-center"><div class="score" id="res-score"></div><div class="sc-tier" id="res-tier"></div></div>
+        </div>
       </div>
+      <div id="res-sections" class="hidden"></div>
       <div class="grid g3" style="margin-top:6px">
         <div class="stat"><div class="n" id="res-rank">–</div><div class="l" data-i18n="rank">Rank</div></div>
         <div class="stat"><div class="n" id="res-perc">–</div><div class="l" data-i18n="percentile">Percentile</div></div>
@@ -1729,13 +1748,42 @@ function renderResult(rec){
   const acc = (rec.correct+rec.wrong) ? Math.round(100*rec.correct/(rec.correct+rec.wrong)) : 0;
   $("res-title").textContent = rec.cat === "pyq" ? ((PYQ_TESTS.find(x=>x.id===rec.sub)||{}).title?.en || "PYQ") : CATS[rec.cat].name.en + " · " + (rec.type==="test" ? subName(rec.cat, rec.sub, "en") : rec.type==="mock" ? "Full Mock" : "Free Mock");
   $("res-score").textContent = rec.score + " / " + rec.total;
-  $("res-sub").textContent = LANG==="hi" ? "आपका स्कोर" : "Your score";
+  $("res-sub").textContent = LANG==="hi" ? "कुल स्कोर" : "Total Score";
   $("res-rank").textContent = rec.first ? "#"+rank : "—";
   $("res-perc").textContent = rec.first ? perc+"%" : "—";
   $("res-acc").textContent = acc+"%"; $("res-right").textContent = rec.correct; $("res-wrong").textContent = rec.wrong; $("res-skip").textContent = rec.skipped;
   $("res-note").textContent = rec.first ? T("firstAttemptNote") : T("practiceNote");
   $("res-reattempt").onclick = ()=>{ if(rec.cat === "pyq"){ startPYQ(rec.sub); return; } if(rec.cat === "ca"){ startCADaily(rec.sub); return; } if(FULLMOCK[rec.cat]){ startFullMock(rec.cat); return; } const sm = /^(.+):(\d+)$/.exec(rec.sub); if(sm) startSeries(rec.cat, sm[1], +sm[2]); else startTest(rec.cat, rec.sub); };
   const byId = {}; window.STUDY_QUESTIONS.forEach(q=>byId[q[0]]=q);
+  /* Round 32: professional score report - performance tiers match the
+     reference card: Poor <40, Average 40-59, Good 60-74, Excellent 75+. */
+  const SC_TIER = p => p >= 75 ? 3 : p >= 60 ? 2 : p >= 40 ? 1 : 0;
+  const SC_COL = ["#ef5350", "#f2b01e", "#43a047", "#2fb3c9"];
+  const SC_NAME = LANG === "hi" ? ["कमज़ोर", "औसत", "अच्छा", "उत्कृष्ट"] : ["Poor", "Average", "Good", "Excellent"];
+  const scPct = Math.max(0, Math.min(100, rec.total ? 100 * rec.score / rec.total : 0));
+  const scTi = SC_TIER(scPct);
+  const scCirc = 2 * Math.PI * 52, scArc = $("res-arc");
+  scArc.style.stroke = SC_COL[scTi]; scArc.style.strokeDasharray = scCirc; scArc.style.strokeDashoffset = scCirc;
+  const scGo = () => { scArc.style.strokeDashoffset = scCirc * (1 - scPct / 100); };
+  if(window.requestAnimationFrame) requestAnimationFrame(scGo); else setTimeout(scGo, 30);
+  $("res-tier").textContent = SC_NAME[scTi]; $("res-tier").style.color = SC_COL[scTi];
+  $("res-legend").innerHTML = SC_NAME.map((n, i) => `<span><span class="sc-dot" style="background:${SC_COL[i]}"></span>${n}</span>`).join("");
+  /* Sectional scores: group the attempt's questions by subject (for CA,
+     by the Rajasthan / India split in the question id). Shown only when
+     the test genuinely spans 2+ sections. */
+  const scWrap = $("res-sections");
+  const SC_OK = ["rpsc", "upsc", "ssc", "neet", "jee", "reet", "cuet", "ca"].includes(rec.cat);
+  if(scWrap && SC_OK){
+    const secOf = d => { if(rec.cat === "ca") return /-rj-\d+$/.test(d.id) ? "rj" : /-in-\d+$/.test(d.id) ? "in" : null; const q = byId[d.id]; return q ? q[2] : null; };
+    const secs = {};
+    rec.detail.forEach(d => { const k = secOf(d); if(!k) return; const s = secs[k] || (secs[k] = { n:0, c:0, w:0 }); s.n++; if(d.pick === d.right) s.c++; else if(d.pick >= 0) s.w++; });
+    const keys = Object.keys(secs);
+    if(keys.length >= 2){
+      const label = k => rec.cat === "ca" ? (k === "rj" ? (LANG === "hi" ? "राजस्थान" : "Rajasthan") : (LANG === "hi" ? "भारत" : "India")) : subName(rec.cat, k, LANG);
+      scWrap.innerHTML = `<div class="sc-h">${LANG === "hi" ? "खंडवार स्कोर" : "Sectional Scores"}</div>` + keys.map(k => { const s = secs[k]; const ss = Math.round((s.c - s.w * 0.25) * 100) / 100; const p = Math.max(0, Math.min(100, 100 * ss / s.n)); const t = SC_TIER(p); return `<div class="sc-row"><div class="sc-name">${esc(label(k))}</div><div class="sc-track"><div class="sc-fill" style="width:${p}%;background:${SC_COL[t]}"></div></div><div class="sc-val">${ss} \u2014 ${SC_NAME[t]}</div></div>`; }).join("");
+      scWrap.classList.remove("hidden");
+    } else { scWrap.innerHTML = ""; scWrap.classList.add("hidden"); }
+  } else if(scWrap){ scWrap.innerHTML = ""; scWrap.classList.add("hidden"); }
   $("res-solutions").innerHTML = rec.detail.map((d,i)=>{
     const q = byId[d.id]; if(!q) return ""; const L = qLang(q);
     const letters=["A","B","C","D"];
