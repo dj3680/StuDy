@@ -248,6 +248,25 @@ html[data-theme="dark"] .modal{background:linear-gradient(180deg,rgba(40,40,47,.
 html[data-theme="dark"] .iconbtn{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));border-color:rgba(255,255,255,.15);box-shadow:0 2px 8px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.14)}
 html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,34,40,.92),rgba(25,25,30,.86))}
 
+/* Round 34: CA day master cards + whole-app professional polish */
+.ca-day{margin-top:12px}
+.ca-day-h{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:800;font-size:15px;margin-bottom:10px}
+.ca-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ca-pair .ca-mini:only-child{grid-column:1/-1}
+.ca-mini{background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:12px;display:flex;flex-direction:column}
+.ca-mini-t{font-weight:800;font-size:14.5px;line-height:1.3}
+.ca-mini .ts{margin-top:3px;flex:1}
+.ca-mini .btn{width:100%;margin-top:10px}
+.card{border-radius:16px;box-shadow:0 1px 3px rgba(16,24,40,.05),0 10px 26px -14px rgba(16,24,40,.16)}
+header{box-shadow:0 1px 14px rgba(16,24,40,.07)}
+h2{position:relative;padding-left:11px}
+h2::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:2px;background:linear-gradient(180deg,#f2c14e,#cf9205)}
+.catrow{border-radius:16px;box-shadow:0 1px 3px rgba(16,24,40,.05),0 10px 26px -14px rgba(16,24,40,.16)}
+.catrow:hover{box-shadow:0 6px 18px rgba(16,24,40,.12)}
+.catlogo{border-radius:12px}
+.btn{border-radius:14px}
+html[data-theme="dark"] .ca-mini{background:#232329;border-color:var(--line)}
+html[data-theme="dark"] .card{box-shadow:0 1px 3px rgba(0,0,0,.4),0 10px 26px -14px rgba(0,0,0,.6)}
 </style>
 </head>
 <body>
@@ -1239,17 +1258,18 @@ function renderCACategory(c){
   { const h = $("subject-list").previousElementSibling; if(h && h.tagName === "H2") h.classList.add("hidden"); }
   const sets = caSets();
   const mine = Store.attempts().filter(a=> ME && a.phone === ME.phone && a.cat === "ca");
-  const caRow = (title, subline, qs, owned, att, startSub, buyArgs)=>{
+  const caMini = (label, qs, owned, att, startSub, buyArgs, price)=>{
     const btn = owned
       ? `<button class="btn sm" onclick="startCADaily('${startSub}')">${att ? (LANG === "hi" ? "पुनः प्रयास" : "Re-Attempt") : (LANG === "hi" ? "शुरू करें" : "Start")}</button>`
-      : `<button class="btn sm gold" onclick="buyCA(${buyArgs})">${LANG === "hi" ? "₹" + (buyArgs.includes(", 'rj'") || buyArgs.includes(", 'in'") ? "3" : "5") + " में खरीदें और शुरू करें" : "Buy ₹" + (buyArgs.includes(", 'rj'") || buyArgs.includes(", 'in'") ? "3" : "5") + " & Start"}</button>`;
-    return `<div class="testrow"><div class="ti"><div class="tt">${title}</div><div class="ts">${qs.length} ${T("questions")} · ${LANG === "hi" ? "कोई समय सीमा नहीं" : "No time limit"} · ${LANG === "hi" ? "उच्च कठिनाई" : "High difficulty"}${att ? ` · ${LANG === "hi" ? "स्कोर" : "Score"}: ${att.score}/${att.total}` : ""}</div></div>${btn}</div>`;
+      : `<button class="btn sm gold" onclick="buyCA(${buyArgs})">${LANG === "hi" ? "₹" + price + " में खरीदें और शुरू करें" : "Buy ₹" + price + " & Start"}</button>`;
+    return `<div class="ca-mini"><div class="ca-mini-t">${label}</div><div class="ts">${qs.length} ${T("questions")} · ${LANG === "hi" ? "कोई समय सीमा नहीं" : "No time limit"} · ${LANG === "hi" ? "उच्च कठिनाई" : "High difficulty"}${att ? `<br>${LANG === "hi" ? "स्कोर" : "Score"}: ${att.score}/${att.total}` : ""}</div>${btn}</div>`;
   };
+  const caDay = (date, tag, minis)=>`<div class="card ca-day"><div class="ca-day-h"><span>🗓️ ${caDateLabel(date)}</span><span class="tag">${tag}</span></div><div class="ca-pair">${minis}</div></div>`;
   $("subject-list").innerHTML =
     `<div class="card" style="border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff)"><b>📰 ${LANG === "hi" ? "रोज़ नई करंट अफेयर्स टेस्ट" : "Daily new Current Affairs test"}</b><div class="sub" style="margin-top:4px">${LANG === "hi" ? "हर दिन दो नई टेस्ट — राजस्थान (RAS स्तर, 25 प्रश्न) और भारत (UPSC स्तर, 25 प्रश्न) · ₹3 प्रति टेस्ट · कोई समय सीमा नहीं" : "Two fresh tests every day — Rajasthan (RAS level, 25 questions) and India (UPSC level, 25 questions) · ₹3 per test · No time limit"}</div></div>` +
     (sets.length ? sets.map(s=>{
       if(caIsSplit(s.date)){
-        return ["rj", "in"].map(part=>{
+        const minis = ["rj", "in"].map(part=>{
           const qs = caPartQs(s.date, part);
           if(!qs.length) return "";
           const owned = caOwned(s.date, part);
@@ -1258,12 +1278,14 @@ function renderCACategory(c){
           const label = part === "rj"
             ? (LANG === "hi" ? "राजस्थान करंट अफेयर्स · RAS स्तर" : "Rajasthan CA · RAS level")
             : (LANG === "hi" ? "भारत करंट अफेयर्स · UPSC स्तर" : "India CA · UPSC level");
-          return caRow(caDateLabel(s.date) + " · " + label, "", qs, owned, att, sub, `'${s.date}', this, '${part}'`);
+          return caMini(label, qs, owned, att, sub, `'${s.date}', this, '${part}'`, CA_PART_PRICE);
         }).join("");
+        return caDay(s.date, `2 ${LANG === "hi" ? "टेस्ट" : "tests"} · ₹${CA_PART_PRICE} ${LANG === "hi" ? "प्रत्येक" : "each"}`, minis);
       }
       const owned = caOwned(s.date);
       const att = mine.find(a=> a.sub === s.date && a.first);
-      return caRow(caDateLabel(s.date), "", s.qs, owned, att, s.date, `'${s.date}', this`);
+      const label = LANG === "hi" ? "करंट अफेयर्स · संयुक्त टेस्ट" : "Current Affairs · Combined test";
+      return caDay(s.date, `${s.qs.length} ${T("questions")}`, caMini(label, s.qs, owned, att, s.date, `'${s.date}', this`, CA_PRICE));
     }).join("") : `<div class="card"><p class="sub">${LANG === "hi" ? "आज की टेस्ट जल्द आ रही है।" : "Today's test is coming soon."}</p></div>`);
 }
 function buyCA(date, btn, part){
