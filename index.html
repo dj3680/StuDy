@@ -465,6 +465,16 @@ html[data-theme="dark"] .db-del{background:#3d2326;border-color:#6e3438;color:#f
 .db-rimg-prev{display:flex;align-items:center;gap:8px;margin-top:9px}
 .db-rimg-prev img{width:42px;height:42px;object-fit:cover;border-radius:9px}
 .db-rimg-prev .db-del{margin-left:0}
+
+/* ===== Round 39: share button + shared-link install banner ===== */
+#sharefloat{position:static;width:40px;height:40px;border-radius:50%;background:linear-gradient(180deg,#1447c8,#0b2a5b);border:1.5px solid #0b2a5b;color:#fff;box-shadow:0 4px 14px rgba(11,42,91,.30);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;font-family:inherit}
+#sharefloat:active{transform:scale(.93)}
+#sharefloat svg{width:20px;height:20px}
+#sharefloat.labeled{width:auto!important;height:auto;min-height:44px;border-radius:999px!important;padding:9px 16px!important;gap:7px}
+#sharefloat.labeled .promo-label{max-width:210px;opacity:1}
+html[data-theme="dark"] #sharefloat{background:linear-gradient(180deg,#2a5cff,#1447c8);border-color:#2a5cff}
+#auth-cta{margin-top:14px}
+#auth-cta:empty{display:none;margin:0}
 </style>
 </head>
 <body>
@@ -507,6 +517,7 @@ html[data-theme="dark"] .db-del{background:#3d2326;border-color:#6e3438;color:#f
       <div class="logobig"><img data-a="logo" alt="StuDy logo"></div>
       <div class="apptitle">Stu<span class="gold">Dy</span></div>
       <div class="tagline" data-i18n="tagline">Tests • Mocks • Notes — UPSC · RPSC · SSC</div>
+      <div id="auth-cta"></div>
       <div class="authtabs">
         <button id="tab-login" class="on" onclick="authTab('login')" data-i18n="login">Login</button>
         <button id="tab-register" onclick="authTab('register')" data-i18n="register">Register</button>
@@ -812,6 +823,9 @@ html[data-theme="dark"] .db-del{background:#3d2326;border-color:#6e3438;color:#f
 <!-- Floating Install -->
 <button id="installfloat" class="hidden" onclick="promptInstall(true)" aria-label="Install StuDy app" title="Install StuDy app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10.5"/><path d="m6.8 10 5.2 5.2L17.2 10"/><path d="M4.5 20h15"/></svg><span class="promo-label">Download app</span></button>
 
+<!-- Floating Share -->
+<button id="sharefloat" onclick="shareApp()" aria-label="Share StuDy" title="Share StuDy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="m8.3 10.8 7.4-3.6M8.3 13.2l7.4 3.6"/></svg><span class="promo-label">Share app</span></button>
+
 <button id="totop" class="hidden" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
 <nav class="bnav hidden" id="bnav">
   <button id="bn-home" class="on" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span data-i18n="navHome">Home</span><span class="ndot"></span></button>
@@ -878,6 +892,8 @@ const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxRiO-cXu6nheMpQ7ah
 const ADMIN_PHONES = ["9588293680","9628187101"];  // silent admins: owner + partner (verified on server in live mode)
 const UPI_ID = "dineshjangirdjsp-1@oksbi";
 const INSTAGRAM_URL = "https://www.instagram.com/dinesh.jangir_/";
+const SHARE_URL = "https://dj3680.github.io/StuDy/?install=1";
+const SHARE_INSTALL = /[?&]install=1(?:&|$)/.test(location.search) || location.hash === "#install";
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1076,7 +1092,7 @@ function go(screen){
   $("appheader").classList.toggle("hidden", screen==="auth");
   $("bnav").classList.toggle("hidden", screen==="auth");
   ["home","pyq","notes","profile","doubts"].forEach(s=>{ const b=$("bn-"+s); if(b) b.classList.toggle("on", s===screen); });
-  if(screen==="auth") placeSocialBtns("auth");
+  if(screen==="auth"){ placeSocialBtns("auth"); paintAuthCTA(); }
   if(screen==="home") renderHome();
   if(screen==="wallet") renderWallet();
   if(screen==="profile") renderProfile();
@@ -1593,15 +1609,15 @@ function startCADaily(date, part){
    on the login screen they sit labelled, side by side, below the language
    line (#auth-actions); on Home they sit in the "Choose your exam" row. */
 function placeSocialBtns(where){
-  const ig = $("igfloat"), dl = $("installfloat"); if(!ig || !dl) return;
+  const ig = $("igfloat"), dl = $("installfloat"), sh = $("sharefloat"); if(!ig || !dl) return;
   if(where === "auth"){
     const box = $("auth-actions"); if(!box) return;
-    dl.classList.add("labeled"); ig.classList.add("labeled");
-    box.appendChild(dl); box.appendChild(ig);
+    dl.classList.add("labeled"); ig.classList.add("labeled"); if(sh) sh.classList.add("labeled");
+    box.appendChild(dl); box.appendChild(ig); if(sh) box.appendChild(sh);
   } else {
     const ea = $("exam-actions"); if(!ea) return;
-    dl.classList.remove("labeled"); ig.classList.remove("labeled");
-    ea.appendChild(dl); ea.appendChild(ig);
+    dl.classList.remove("labeled"); ig.classList.remove("labeled"); if(sh) sh.classList.remove("labeled");
+    ea.appendChild(dl); ea.appendChild(ig); if(sh) ea.appendChild(sh);
   }
 }
 /* Promo animation plays EVERY time the Home page opens (user request). */
@@ -1625,9 +1641,13 @@ function renderHome(){
   placeSocialBtns("home");
   refreshInstallFloat();
   playPromo();
-  const n = globalNotifs()[0];
+  const _gN = globalNotifs()[0];
+  const _rN = personalNotifs().filter(x=> x.link === "doubts")[0];
+  const n = (_rN && (!_gN || (_rN.at||0) >= (_gN.at||0))) ? _rN : _gN;
+  const nkey = n ? String(n.id || ("u" + (n.at||0))) : "";
   const dismissed = localStorage.getItem("study_banner_x");
-  $("home-banner").innerHTML = (n && dismissed !== String(n.id)) ? `<div class="banner"><div style="font-size:17px">📢</div><div style="flex:1;min-width:0"><div class="bt">${esc(n.title)}</div><div class="bs">${esc(n.body)}</div></div><button onclick="dismissBanner('${n.id}')" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0">✕</button></div>` : "";
+  $("home-banner").innerHTML = (n && dismissed !== nkey) ? `<div class="banner"${n.link === "doubts" ? ` onclick="go('doubts')" style="cursor:pointer"` : ""}><div style="font-size:17px">${n.link === "doubts" ? "💬" : "📢"}</div><div style="flex:1;min-width:0"><div class="bt">${esc(n.title)}</div><div class="bs">${esc(n.body)}</div></div><button onclick="event.stopPropagation();dismissBanner('${nkey}')" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0">✕</button></div>` : "";
+  const _cta = installCTAHTML(); if(_cta) $("home-banner").insertAdjacentHTML("afterbegin", _cta);
   let phide = ""; try{ phide = localStorage.getItem("study_phide_"+(ME?ME.phone:"")) || ""; }catch(e){}
   const stripKey = isSubActive() ? String((ME&&ME.subUntil)||"") : "promo";
   $("home-premium").innerHTML = (phide === stripKey) ? ""
@@ -2790,6 +2810,22 @@ async function doVerify(){
 }
 
 /* ---------------- Install (PWA) ---------------- */
+function installCTAHTML(force){
+  if(!(SHARE_INSTALL || force) || isStandalone) return "";
+  try{ if(sessionStorage.getItem("study_cta_x")) return ""; }catch(e){}
+  return `<div class="card" style="margin-bottom:14px;border-color:#ecd28a;background:linear-gradient(90deg,#fff8e1,#fff);display:flex;align-items:center;gap:11px"><img src="${ASSET.logo}" style="height:42px;width:42px;object-fit:contain" alt=""><div style="flex:1;min-width:0"><b style="font-size:14.5px">${LANG==="hi" ? "StuDy ऐप इंस्टॉल करें" : "Install the StuDy app"}</b><div class="sub" style="font-size:12px">${LANG==="hi" ? "तेज़ एक्सेस और ऑफ़लाइन उपयोग के लिए" : "For quick access & offline use"}</div></div><button class="btn sm" onclick="promptInstall(true)">${LANG==="hi" ? "इंस्टॉल करें" : "Install"}</button><button onclick="dismissInstallCTA()" aria-label="Close" style="color:var(--mut);font-size:15px;padding:4px 6px;flex-shrink:0;background:none;border:none;cursor:pointer">✕</button></div>`;
+}
+function paintAuthCTA(){ const a = $("auth-cta"); if(a) a.innerHTML = installCTAHTML(); }
+function dismissInstallCTA(){ try{ sessionStorage.setItem("study_cta_x","1"); }catch(e){} paintAuthCTA(); if(CURSCREEN === "home") renderHome(); }
+async function shareApp(){
+  const data = { title:"StuDy", text: LANG==="hi" ? "StuDy — UPSC · RPSC · SSC के टेस्ट, मॉक टेस्ट और नोट्स। ऐप इंस्टॉल करें 👇" : "StuDy — tests, full mocks & notes for UPSC · RPSC · SSC. Install the app 👇", url: SHARE_URL };
+  if(navigator.share){ try{ await navigator.share(data); }catch(e){} return; }
+  let copied = false;
+  try{ await navigator.clipboard.writeText(SHARE_URL); copied = true; }catch(e){}
+  if(copied){ toast(LANG==="hi" ? "लिंक कॉपी हो गया ✓ — कहीं भी भेज दें" : "Link copied ✓ — send it anywhere"); return; }
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">🔗 ${LANG==="hi" ? "StuDy शेयर करें" : "Share StuDy"}</h3><p class="sub" style="margin:10px 0;word-break:break-all">${SHARE_URL}</p><button class="btn" style="width:100%" onclick="copyShareLink()">${LANG==="hi" ? "लिंक कॉपी करें" : "Copy link"}</button>`);
+}
+async function copyShareLink(){ try{ await navigator.clipboard.writeText(SHARE_URL); toast(LANG==="hi" ? "लिंक कॉपी हो गया ✓" : "Link copied ✓"); closeModal(); }catch(e){ toast(LANG==="hi" ? "लिंक को दबाकर कॉपी करें" : "Long-press the link to copy it"); } }
 let _installPrompt = null;
 window.addEventListener("beforeinstallprompt", e=>{ e.preventDefault(); _installPrompt = e; refreshInstallFloat(); });
 window.addEventListener("appinstalled", ()=>{ _installPrompt = null; const b = $("installfloat"); if(b) b.classList.add("hidden"); toast(LANG==="hi" ? "StuDy इंस्टॉल हो गया ✓" : "StuDy installed ✓"); });
@@ -2848,7 +2884,7 @@ document.addEventListener("visibilitychange", async ()=>{
   if(Date.now() - _lastSessCheck < 30000) return; _lastSessCheck = Date.now();
   const r = await api("me", {phone: ME.phone, session: mySess()});
   if(!r.ok && r.error === "session"){ doLogout(); const e = $("li-err"); if(e) e.textContent = LANG==="hi" ? "यह खाता किसी अन्य डिवाइस पर लॉगिन हुआ, इसलिए आप यहाँ लॉगआउट हो गए।" : "This account was signed in on another device, so you were logged out here."; }
-  else if(r.ok){ if(r.user.photo) ME.photo = r.user.photo; healPhoto(); ME.stars = r.user.stars; ME.purchases = r.user.purchases; ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger; refreshHeader(); checkDoubtBadge(); }
+  else if(r.ok){ if(r.user.photo) ME.photo = r.user.photo; healPhoto(); ME.stars = r.user.stars; ME.purchases = r.user.purchases; ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger; if(r.user._unotifs) ME._unotifs = r.user._unotifs; refreshHeader(); checkDoubtBadge(); if(CURSCREEN === "home") renderHome(); }
 });
 window.addEventListener("scroll", ()=>{ const b = $("totop"); if(b) b.classList.toggle("hidden", window.scrollY < 300 || (typeof TEST !== "undefined" && TEST && !TEST.done)); }, {passive:true});
 window.addEventListener("load", async ()=>{
