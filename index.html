@@ -66,12 +66,13 @@ header{position:sticky;top:0;z-index:50;background:var(--hdr);-webkit-backdrop-f
 .havatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy2),var(--navy));color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;box-shadow:0 3px 9px rgba(11,42,91,.35)}
 
 /* ---------- Bottom nav: floating pill ---------- */
-.bnav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;max-width:560px;margin:0 auto;background:var(--hdr);-webkit-backdrop-filter:blur(22px) saturate(1.8);backdrop-filter:blur(22px) saturate(1.8);border:1px solid rgba(11,32,77,.09);border-radius:26px;display:flex;justify-content:space-around;padding:7px 6px;box-shadow:0 18px 40px -12px rgba(11,32,77,.35),inset 0 1px 0 rgba(255,255,255,.8)}
-.bnav button{color:#8b96ad;font-size:10.5px;display:flex;flex-direction:column;align-items:center;gap:2.5px;padding:6px 14px;font-weight:700;border-radius:18px;transition:color .15s ease,background .15s ease,transform .12s ease}
+.bnav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;max-width:600px;margin:0 auto;background:rgba(16,20,30,.93);-webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);border:1px solid rgba(255,255,255,.12);border-radius:28px;display:flex;justify-content:space-around;padding:7px 6px;box-shadow:0 18px 40px -10px rgba(5,10,25,.55),inset 0 1px 0 rgba(255,255,255,.14)}
+.bnav button{color:#9aa7bd;font-size:10.5px;display:flex;flex-direction:column;align-items:center;gap:2.5px;padding:6px 11px;font-weight:700;border-radius:19px;transition:color .15s ease,background .15s ease,transform .12s ease}
 .bnav button:active{transform:scale(.94)}
 .bnav button svg{width:22px;height:22px}
-.bnav button.on{color:var(--navy);background:var(--goldsoft)}
+.bnav button.on{color:#fff;background:rgba(255,255,255,.14)}
 .bnav button.on .ndot{width:4px;height:4px;border-radius:50%;background:var(--goldb)}
+.bnav button.on svg{color:#ffd968}
 .bnav .ndot{width:4px;height:4px}
 
 /* ---------- Floating buttons (login screen) ---------- */
@@ -295,9 +296,9 @@ html[data-theme="dark"] header{border-bottom-color:rgba(255,255,255,.07);box-sha
 html[data-theme="dark"] .wordmark{color:#eef1f8}
 html[data-theme="dark"] h1,html[data-theme="dark"] .collapse-h,html[data-theme="dark"] .thead,html[data-theme="dark"] .timer,html[data-theme="dark"] .ca-day-h,html[data-theme="dark"] .sc-h,html[data-theme="dark"] .stat .n{color:#eef1f8}
 html[data-theme="dark"] .resbig .score,html[data-theme="dark"] .sc-center .score{color:#eef1f8}
-html[data-theme="dark"] .bnav{border-color:rgba(255,255,255,.09);box-shadow:0 18px 40px -12px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.08)}
-html[data-theme="dark"] .bnav button{color:#7d879c}
-html[data-theme="dark"] .bnav button.on{color:#ffd968;background:#2b2513}
+html[data-theme="dark"] .bnav{background:rgba(38,41,52,.94);border-color:rgba(255,255,255,.14);box-shadow:0 18px 40px -10px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.1)}
+html[data-theme="dark"] .bnav button{color:#9aa7bd}
+html[data-theme="dark"] .bnav button.on{color:#fff;background:rgba(255,255,255,.13)}
 html[data-theme="dark"] .card,html[data-theme="dark"] .catrow,html[data-theme="dark"] .modal{background:var(--card)}
 html[data-theme="dark"] .catlogo{background:#fff}
 html[data-theme="dark"] .catletter,html[data-theme="dark"] .avatar,html[data-theme="dark"] .havatar{background:linear-gradient(135deg,#2f5fd0,#173a7d)}
@@ -330,7 +331,9 @@ html[data-theme="dark"] .toast{background:rgba(238,241,248,.92);color:#10131b}
 /* ---------- Round 35b: home exam tiles + dark glass ---------- */
 #catgrid{grid-template-columns:repeat(2,1fr);gap:12px}
 @media(min-width:641px){#catgrid{grid-template-columns:repeat(3,1fr);gap:14px}}
-#catgrid .catrow{flex-direction:column;align-items:flex-start;gap:11px;padding:16px;border-radius:22px}
+#catgrid .catrow{flex-direction:column;align-items:center;text-align:center;gap:10px;padding:18px 14px;border-radius:22px;height:100%}
+#catgrid .catrow>span{flex:none!important;width:100%;display:flex;flex-direction:column;align-items:center}
+#catgrid .catrow .tag{max-width:100%;white-space:normal;line-height:1.35;text-align:center}
 #catgrid .catrow>span:last-child{display:none}
 #catgrid .catlogo{width:60px;height:60px;border-radius:17px;padding:8px;border:none;box-shadow:inset 0 0 0 1px rgba(11,32,77,.05)}
 #catgrid .catletter{width:60px;height:60px;border-radius:17px;font-size:25px}
@@ -351,6 +354,51 @@ html[data-theme="dark"] header,html[data-theme="dark"] #appheader{background:lin
 html[data-theme="dark"] .bnav{background:linear-gradient(180deg,rgba(34,36,46,.78),rgba(20,22,30,.6));-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6)}
 html[data-theme="dark"] .modal{background:linear-gradient(180deg,rgba(38,42,56,.92),rgba(24,27,38,.9));-webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8)}
 html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,36,46,.92),rgba(22,25,34,.88));-webkit-backdrop-filter:blur(16px) saturate(1.7);backdrop-filter:blur(16px) saturate(1.7)}
+
+/* ---------- Round 36: leaderboard podium, doubts, profile photo, PYQ/Notes polish ---------- */
+.avatar{position:relative;overflow:hidden;flex:none}
+.avatar img,.db-av img,.lb-av img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
+#pf-avatar{cursor:pointer;overflow:visible}
+#pf-avatar::after{content:"📷";position:absolute;right:-2px;bottom:-2px;font-size:11px;background:var(--card);border:1px solid var(--line2);border-radius:50%;width:19px;height:19px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(11,32,77,.25)}
+#pf-avatar:has(img)::after{content:"✎"}
+.db-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--navy2),var(--navy));color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;flex:none;overflow:hidden}
+/* Leaderboard podium */
+.lb-podium{background:linear-gradient(160deg,#1a56db,#0b2a5b 75%);border-radius:20px;padding:20px 14px 16px;margin-bottom:14px;box-shadow:0 16px 34px -14px rgba(11,42,91,.55)}
+.lb-top{display:flex;align-items:flex-end;justify-content:center;gap:16px}
+.lb-p{display:flex;flex-direction:column;align-items:center;text-align:center;width:31%}
+.lb-crown{font-size:19px;line-height:1;margin-bottom:3px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))}
+.lb-av{border-radius:50%;background:linear-gradient(135deg,#5b84e8,#274b9f);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;overflow:hidden;border:3px solid rgba(255,255,255,.55)}
+.lb-p.first .lb-av{width:84px;height:84px;font-size:30px;border-color:#ffc93c;box-shadow:0 0 0 4px rgba(255,201,60,.35),0 10px 22px -6px rgba(0,0,0,.45)}
+.lb-p.second .lb-av,.lb-p.third .lb-av{width:62px;height:62px;font-size:22px}
+.lb-p.second .lb-av{border-color:#dfe6f2}
+.lb-p.third .lb-av{border-color:#eda55e}
+.lb-name{color:#fff;font-weight:800;font-size:13.5px;margin-top:8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-p.first .lb-name{font-size:15px}
+.lb-score{color:#ffd968;font-weight:800;font-size:12.5px;margin-top:1px}
+.lb-row-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--navy2),var(--navy));color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;flex:none;overflow:hidden}
+.lb-row-av img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
+.lb-rankno{width:24px;text-align:center;font-weight:900;color:var(--mut);font-size:14px;flex:none}
+/* Doubts feed */
+.db-card{background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 8px 22px -14px rgba(11,32,77,.18)}
+.db-head{display:flex;gap:10px;align-items:center}
+.db-name{font-weight:800;font-size:14.5px}
+.db-time{font-size:11.5px;color:var(--mut)}
+.db-text{margin-top:9px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.db-img{width:100%;border-radius:13px;margin-top:10px;display:block}
+.db-replies{margin-top:11px;border-top:1px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:9px}
+.db-reply{display:flex;gap:8px;align-items:flex-start}
+.db-reply .db-av{width:30px;height:30px;font-size:12px}
+.db-reply-body{flex:1;min-width:0;background:var(--bg2);border-radius:12px;padding:8px 11px}
+.db-reply-body .db-name{font-size:12.5px}
+.db-reply-tx{font-size:13.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.db-replybox{display:flex;gap:8px;margin-top:11px}
+.db-replybox input{flex:1;border:1.5px solid var(--line);border-radius:999px;padding:9px 14px;font:inherit;font-size:13.5px;background:var(--card);color:var(--ink);min-width:0}
+/* PYQ + Notes enhancement */
+#screen-pyq .card>div:first-child{background:linear-gradient(90deg,var(--goldsoft),transparent 75%);border-bottom:1px solid var(--line)}
+#screen-pyq .testrow{padding:13px 2px}
+#screen-notes .testrow{background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:12px 12px;margin:0 0 8px}
+#screen-notes .collapse-h{border-radius:16px}
+@media(min-width:641px){.lb-p.first .lb-av{width:96px;height:96px}}
 </style>
 </head>
 <body>
@@ -487,7 +535,8 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,36,46,.
     <h1 data-i18n="profile">Profile</h1>
     <div class="card" style="margin-top:14px">
       <div style="display:flex;gap:13px;align-items:center">
-        <div class="avatar" id="pf-avatar">S</div>
+        <div class="avatar" id="pf-avatar" onclick="showPhotoMenu()" title="Profile photo">S</div>
+        <input type="file" id="pf-photo-in" accept="image/*" class="hidden" onchange="pickPhoto(this)">
         <div style="min-width:0;flex:1">
           <div style="font-size:17px;font-weight:800" id="pf-name"></div>
           <span class="tag" id="pf-level" style="margin-top:4px"></span>
@@ -590,6 +639,29 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,36,46,.
     <div class="card" id="res-solutions"></div>
   </section>
 
+  <!-- ============ DOUBTS ============ -->
+  <section id="screen-doubts" class="hidden">
+    <h1 style="margin-top:6px">Doubts</h1>
+    <p class="sub" style="margin-top:5px">Post your study doubt — other students can reply and help. Posts disappear after 3 days.</p>
+    <div class="card" style="margin-top:14px">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div class="db-av" id="db-me-av">S</div>
+        <div style="flex:1;min-width:0">
+          <textarea id="db-text" rows="3" placeholder="Type your doubt here..." style="width:100%;border:1.5px solid var(--line);border-radius:13px;padding:10px 12px;font:inherit;font-size:14px;background:var(--card);color:var(--ink);resize:vertical"></textarea>
+          <div id="db-img-prev" class="hidden" style="margin-top:8px;position:relative">
+            <img id="db-img-el" alt="" style="width:100%;border-radius:13px;display:block">
+            <button class="btn sm danger" style="position:absolute;top:8px;right:8px" onclick="dbClearImg()">✕ Remove photo</button>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn sm ghost" onclick="document.getElementById('db-file').click()">📷 Add photo</button>
+            <button class="btn sm" id="db-post-btn" onclick="postDoubt(this)" style="margin-left:auto">Post doubt</button>
+          </div>
+          <input type="file" id="db-file" accept="image/*" class="hidden" onchange="dbPickImg(this)">
+        </div>
+      </div>
+    </div>
+    <div id="doubts-list" style="margin-top:14px"></div>
+  </section>
   <!-- ============ NOTES ============ -->
   <section id="screen-notes" class="hidden">
     <h2 data-i18n="navNotes">Notes</h2>
@@ -677,6 +749,7 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,36,46,.
 <nav class="bnav hidden" id="bnav">
   <button id="bn-home" class="on" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span data-i18n="navHome">Home</span><span class="ndot"></span></button>
   <button id="bn-pyq" onclick="go('pyq')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9.4 13.1a2.7 2.7 0 1 1 3.5 2.6c-.8.3-.9 1-.9 1.8"/><line x1="12" y1="20.4" x2="12.01" y2="20.4"/></svg><span data-i18n="navPyq">PYQ</span><span class="ndot"></span></button>
+  <button id="bn-doubts" onclick="go('doubts')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M9.2 9.1a2.9 2.9 0 1 1 4.3 2.6c-1 .5-1.3 1-1.3 2"/><line x1="12" y1="16.8" x2="12.01" y2="16.8"/></svg><span>Doubts</span><span class="ndot"></span></button>
   <button id="bn-notes" onclick="go('notes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span data-i18n="navNotes">Notes</span><span class="ndot"></span></button>
   <button id="bn-profile" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-3.6 4.5-5.4 8-5.4s6.5 1.8 8 5.4"/></svg><span data-i18n="navProfile">Profile</span><span class="ndot"></span></button>
 </nav>
@@ -743,6 +816,48 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const shuffle = a => { a = [...a]; for (let i = a.length-1; i>0; i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
 const initialOf = u => { const n = (u && u.name || "").trim(); return n ? n[0].toUpperCase() : ((u && u.phone || "S")[0]); };
+function safePhoto(p){ return (typeof p === "string" && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=\s]+$/.test(p) && p.length < 400000) ? p : ""; }
+function avInner(u){ const p = safePhoto(u && u.photo); return p ? `<img src="${p}" alt="">` : esc(initialOf(u || {})); }
+function compressImg(file, maxDim, q, square){
+  return new Promise(res=>{
+    const url = URL.createObjectURL(file); const img = new Image();
+    img.onload = ()=>{ URL.revokeObjectURL(url);
+      const c = document.createElement("canvas"); const ctx = c.getContext("2d");
+      if(square){ const side = Math.min(img.width, img.height); c.width = c.height = Math.min(maxDim, side); ctx.drawImage(img, (img.width-side)/2, (img.height-side)/2, side, side, 0, 0, c.width, c.height); }
+      else { const sc = Math.min(1, maxDim / Math.max(img.width, img.height)); c.width = Math.max(1, Math.round(img.width*sc)); c.height = Math.max(1, Math.round(img.height*sc)); ctx.drawImage(img, 0, 0, c.width, c.height); }
+      res(c.toDataURL("image/jpeg", q)); };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); res(""); };
+    img.src = url;
+  });
+}
+function showPhotoMenu(){
+  if(!ME) return;
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG==="hi" ? "प्रोफ़ाइल फ़ोटो" : "Profile photo"}</h3>
+  <div style="display:flex;justify-content:center;margin:16px 0 6px"><div class="avatar" style="width:94px;height:94px;font-size:37px">${avInner(ME)}</div></div>
+  <p class="sub" style="text-align:center;margin-bottom:14px">${LANG==="hi" ? "फ़ोटो न हो तो आपके नाम का पहला अक्षर दिखेगा।" : "No photo? Your name's first letter shows instead."}</p>
+  <button class="btn" style="width:100%" onclick="closeModal();document.getElementById('pf-photo-in').click()">${LANG==="hi" ? "📷 नई फ़ोटो लगाएँ" : "📷 Upload new photo"}</button>
+  ${safePhoto(ME.photo) ? `<button class="btn danger" style="width:100%;margin-top:9px" onclick="removePhoto()">${LANG==="hi" ? "फ़ोटो हटाएँ" : "Remove photo"}</button>` : ""}`);
+}
+async function fitPhoto(file, maxDim, square, cap){
+  let q = 0.85, d = await compressImg(file, maxDim, q, square);
+  while(d && d.length > cap && q > 0.42){ q -= 0.14; d = await compressImg(file, maxDim, q, square); }
+  return d;
+}
+async function pickPhoto(inp){
+  const f = inp.files && inp.files[0]; inp.value = ""; if(!f || !ME) return;
+  const d = await fitPhoto(f, 256, true, 47000); if(!d) return;
+  ME.photo = d;
+  if(!BACKEND_URL) Store.updateMe(u=>{ u.photo = d; });
+  else { const r = await api("setPhoto", {phone: ME.phone, session: mySess(), photo: d}); if(!r.ok) toast(LANG==="hi" ? "फ़ोटो इस डिवाइस पर सेव हुई (सर्वर बाद में)" : "Photo saved on this device"); }
+  renderProfile(); toast(LANG==="hi" ? "✅ प्रोफ़ाइल फ़ोटो लग गई" : "✅ Profile photo updated");
+}
+async function removePhoto(){
+  if(!ME) return;
+  ME.photo = "";
+  if(!BACKEND_URL) Store.updateMe(u=>{ u.photo = ""; });
+  else await api("removePhoto", {phone: ME.phone, session: mySess()});
+  closeModal(); renderProfile(); toast(LANG==="hi" ? "फ़ोटो हटा दी गई" : "Photo removed");
+}
 function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.remove("hidden"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.add("hidden"),2600); }
 
 /* ---------------- Catalog ---------------- */
@@ -880,10 +995,10 @@ let CURSCREEN = "auth";
 function go(screen){
   if(!NAVBACK && CURSCREEN && CURSCREEN !== screen && CURSCREEN !== "auth") NAVHIST = [CURSCREEN];
   CURSCREEN = screen;
-  ["auth","home","category","wallet","profile","notifications","result","admin","notes","pyq"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
+  ["auth","home","category","wallet","profile","notifications","result","admin","notes","pyq","doubts"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
   $("appheader").classList.toggle("hidden", screen==="auth");
   $("bnav").classList.toggle("hidden", screen==="auth");
-  ["home","pyq","notes","profile"].forEach(s=>{ const b=$("bn-"+s); if(b) b.classList.toggle("on", s===screen); });
+  ["home","pyq","notes","profile","doubts"].forEach(s=>{ const b=$("bn-"+s); if(b) b.classList.toggle("on", s===screen); });
   if(screen==="auth") placeSocialBtns("auth");
   if(screen==="home") renderHome();
   if(screen==="wallet") renderWallet();
@@ -891,6 +1006,7 @@ function go(screen){
   if(screen==="notifications") renderNotifs();
   if(screen==="notes") renderNotes();
   if(screen==="pyq") renderPYQ();
+  if(screen==="doubts") renderDoubts();
   if(screen==="admin") renderAdmin();
   refreshHeader(); window.scrollTo(0,0);
 }
@@ -2004,7 +2120,7 @@ async function saveDob(btn){
 }
 function renderProfile(){
   $("pf-name").textContent = ME.name || ME.phone;
-  $("pf-avatar").textContent = initialOf(ME);
+  $("pf-avatar").innerHTML = avInner(ME);
   $("pf-phone").textContent = "📱 " + ME.phone;
   $("pf-gmail").textContent = "✉️ " + ME.gmail;
   $("pf-dob").textContent = fmtDob(ME.dob);
@@ -2257,8 +2373,13 @@ async function showRewards(){
   else { rows = topRankers(); if(ME){ const all = allRankers(); const i = all.findIndex(r=>r.phone===ME.phone); if(i>=0) meRank = {rank:i+1, score:all[i].score, tests:all[i].tests}; } }
   const box = $("rank-body"); if(!box) return;
   const medals = ["🥇","🥈","🥉"];
-  const rowHtml = (r, i, mine) => `<div class="testrow"${mine ? ' style="background:#fffbf0;border:1px solid #ecd28a;border-radius:10px;padding-left:8px;padding-right:8px"' : ""}><div class="ti"><div class="tt">${medals[i] || "#"+(i+1)} ${esc(r.name)}${mine ? ' <span class="tag">You</span>' : ""}</div><div class="ts">${r.tests} ${T("testsTaken").toLowerCase()}${r.phone ? " · " + maskPhone(r.phone) : ""}</div></div><b>${r.score} pts</b></div>`;
-  let body = rows.length ? rows.slice(0,10).map((r,i)=> rowHtml(r, i, !!(meRank && meRank.rank===i+1))).join("") : `<p class="sub" style="padding:10px 0">${LANG==="hi" ? "अभी कोई रैंकिंग नहीं है — पहले टॉपर बनें!" : "No rankings yet — be the first topper!"}</p>`;
+  const rowHtml = (r, i, mine) => `<div class="testrow"${mine ? ' style="background:#fffbf0;border:1px solid #ecd28a;border-radius:10px;padding-left:8px;padding-right:8px"' : ""}><span class="lb-rankno">${i+1}</span><div class="lb-row-av">${avInner(r)}</div><div class="ti"><div class="tt">${esc(r.name)}${mine ? ' <span class="tag">You</span>' : ""}</div><div class="ts">${r.tests} ${T("testsTaken").toLowerCase()}${r.phone ? " · " + maskPhone(r.phone) : ""}</div></div><b>${r.score} pts</b></div>`;
+  const podHtml = (r, i, cls) => r ? `<div class="lb-p ${cls}"><div class="lb-crown">👑</div><div class="lb-av">${avInner(r)}</div><div class="lb-name">${esc(r.name)}${(meRank && meRank.rank===i+1) ? ' <span class="tag">You</span>' : ""}</div><div class="lb-score">${r.score} pts</div></div>` : `<div class="lb-p ${cls}"></div>`;
+  let body = "";
+  if(rows.length){
+    body += `<div class="lb-podium"><div style="text-align:center;color:#fff;font-weight:900;font-size:16.5px;margin-bottom:13px">🏆 ${LANG==="hi" ? "लीडरबोर्ड" : "Leaderboard"}</div><div class="lb-top">${podHtml(rows[1],1,"second")}${podHtml(rows[0],0,"first")}${podHtml(rows[2],2,"third")}</div></div>`;
+    body += rows.slice(3,10).map((r,j)=> rowHtml(r, j+3, !!(meRank && meRank.rank===j+4))).join("");
+  } else body = `<p class="sub" style="padding:10px 0">${LANG==="hi" ? "अभी कोई रैंकिंग नहीं है — पहले टॉपर बनें!" : "No rankings yet — be the first topper!"}</p>`;;
   if(ME && meRank && meRank.rank > 10) body += `<div style="border-top:1px dashed var(--line);margin-top:8px;padding-top:8px">${rowHtml({name: ME.name || "", phone: ME.phone, score: meRank.score, tests: meRank.tests}, meRank.rank-1, true)}</div>`;
   else if(ME && !meRank) body += `<p class="sub" style="margin-top:8px">${LANG==="hi" ? "आपकी अभी कोई रैंक नहीं है — पहला टेस्ट दें और रैंक पाएँ!" : "You are not ranked yet — take your first test to get a rank!"}</p>`;
   box.innerHTML = body;
@@ -2270,6 +2391,83 @@ async function showRewards(){
                     : (LANG==="hi" ? "इस सप्ताह अभी कोई रैंकिंग नहीं है।" : "No weekly ranking yet.");
     wb.innerHTML = `<div style="padding:10px 12px;margin-bottom:10px;background:#fffbf0;border:1px solid #ecd28a;border-radius:10px"><div style="font-weight:700;font-size:13px">🏆 ${LANG==="hi" ? "साप्ताहिक #1 इनाम — ₹100 अपने-आप" : "Weekly #1 Prize — ₹100 auto-credit"}</div><div class="sub" style="margin-top:3px">${line}</div></div>` + wb.innerHTML;
   }
+}
+
+
+/* ---------------- Doubts (3-day community board) ---------------- */
+let DB_IMG = "";
+const DOUBT_KEEP_MS = 3*24*3600*1000;
+function timeAgo(at){
+  const m = Math.floor((Date.now() - (at||0)) / 60000);
+  if(m < 1) return LANG==="hi" ? "अभी-अभी" : "just now";
+  if(m < 60) return m + (LANG==="hi" ? " मि. पहले" : "m ago");
+  const h = Math.floor(m/60); if(h < 24) return h + (LANG==="hi" ? " घं. पहले" : "h ago");
+  return Math.floor(h/24) + (LANG==="hi" ? " दिन पहले" : "d ago");
+}
+function demoDoubts(){ try{ return (JSON.parse(localStorage.getItem("study_doubts") || "[]")).filter(p=> Date.now() - (p.at||0) < DOUBT_KEEP_MS); }catch(e){ return []; } }
+function saveDemoDoubts(d){ try{ localStorage.setItem("study_doubts", JSON.stringify(d)); }catch(e){} }
+async function renderDoubts(){
+  if(ME) $("db-me-av").innerHTML = avInner(ME);
+  const box = $("doubts-list"); if(!box) return;
+  box.innerHTML = `<p class="sub" style="text-align:center;padding:14px">${LANG==="hi" ? "लोड हो रहा है…" : "Loading doubts…"}</p>`;
+  let posts = [];
+  if(BACKEND_URL){ const r = await api("doubtList", {}); if(r.ok) posts = r.posts || []; }
+  else posts = demoDoubts();
+  paintDoubts(posts);
+}
+function paintDoubts(posts){
+  const box = $("doubts-list"); if(!box) return;
+  posts = (posts || []).filter(p=> Date.now() - (p.at||0) < DOUBT_KEEP_MS).sort((a,b)=> (b.at||0) - (a.at||0));
+  if(!posts.length){ box.innerHTML = `<div class="card" style="text-align:center;padding:26px 16px"><div style="font-size:30px">💬</div><p class="sub" style="margin-top:8px">${LANG==="hi" ? "अभी कोई डाउट नहीं है — सबसे पहले अपना डाउट पोस्ट करें!" : "No doubts yet — be the first to post one!"}</p></div>`; return; }
+  box.innerHTML = posts.map(p=>{
+    const reps = (p.replies || []).map(rp=> `<div class="db-reply"><div class="db-av">${avInner(rp)}</div><div class="db-reply-body"><span class="db-name">${esc(rp.name || "")}</span> <span class="db-time">· ${timeAgo(rp.at)}</span><div class="db-reply-tx">${esc(rp.text || "")}</div></div></div>`).join("");
+    return `<div class="db-card">
+      <div class="db-head"><div class="db-av">${avInner(p)}</div><div style="min-width:0"><div class="db-name">${esc(p.name || "")}</div><div class="db-time">${timeAgo(p.at)}</div></div></div>
+      ${p.text ? `<div class="db-text">${esc(p.text)}</div>` : ""}
+      ${safePhoto(p.image) ? `<img class="db-img" src="${safePhoto(p.image)}" alt="">` : ""}
+      ${reps ? `<div class="db-replies">${reps}</div>` : ""}
+      <div class="db-replybox"><input id="dbr-${p.id}" placeholder="${LANG==="hi" ? "जवाब लिखें…" : "Write a reply…"}" onkeydown="if(event.key==='Enter')replyDoubt('${p.id}')"><button class="btn sm" onclick="replyDoubt('${p.id}')">${LANG==="hi" ? "जवाब" : "Reply"}</button></div>
+    </div>`;
+  }).join("");
+}
+async function dbPickImg(inp){
+  const f = inp.files && inp.files[0]; inp.value = ""; if(!f) return;
+  DB_IMG = await fitPhoto(f, 560, false, 47000);
+  if(DB_IMG){ $("db-img-el").src = DB_IMG; $("db-img-prev").classList.remove("hidden"); }
+}
+function dbClearImg(){ DB_IMG = ""; $("db-img-prev").classList.add("hidden"); $("db-img-el").removeAttribute("src"); }
+async function postDoubt(btn){
+  if(!ME) return;
+  const text = $("db-text").value.trim();
+  if(!text && !DB_IMG){ toast(LANG==="hi" ? "डाउट लिखें या फ़ोटो जोड़ें" : "Type your doubt or add a photo first"); return; }
+  setBtnLoading(btn, true);
+  if(BACKEND_URL){
+    const r = await api("doubtPost", {phone: ME.phone, session: mySess(), text, image: DB_IMG});
+    setBtnLoading(btn, false);
+    if(!r.ok){ toast(LANG==="hi" ? "पोस्ट नहीं हुआ — फिर कोशिश करें" : "Could not post — please try again"); return; }
+  } else {
+    const d = demoDoubts();
+    d.unshift({id: "d" + Date.now().toString(36), phone: ME.phone, name: ME.name || "", photo: ME.photo || "", text, image: DB_IMG, at: Date.now(), replies: []});
+    saveDemoDoubts(d);
+    setBtnLoading(btn, false);
+  }
+  $("db-text").value = ""; dbClearImg();
+  toast(LANG==="hi" ? "✅ डाउट पोस्ट हो गया" : "✅ Doubt posted");
+  renderDoubts();
+}
+async function replyDoubt(id){
+  if(!ME) return;
+  const inp = $("dbr-" + id); if(!inp) return;
+  const text = inp.value.trim(); if(!text) return;
+  if(BACKEND_URL){
+    const r = await api("doubtReply", {phone: ME.phone, session: mySess(), id, text});
+    if(!r.ok){ toast(LANG==="hi" ? "जवाब नहीं गया — फिर कोशिश करें" : "Reply failed — try again"); return; }
+  } else {
+    const d = demoDoubts(); const p = d.find(x=> x.id === id); if(!p) return;
+    (p.replies = p.replies || []).push({name: ME.name || "", photo: ME.photo || "", text, at: Date.now()});
+    saveDemoDoubts(d);
+  }
+  renderDoubts();
 }
 
 
