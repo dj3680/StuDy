@@ -850,6 +850,14 @@ const shuffle = a => { a = [...a]; for (let i = a.length-1; i>0; i--){ const j =
 const initialOf = u => { const n = (u && u.name || "").trim(); return n ? n[0].toUpperCase() : ((u && u.phone || "S")[0]); };
 function safePhoto(p){ return (typeof p === "string" && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=\s]+$/.test(p) && p.length < 400000) ? p : ""; }
 function avInner(u){ const p = safePhoto(u && u.photo); return p ? `<img src="${p}" alt="">` : esc(initialOf(u || {})); }
+function healPhoto(){
+  if(!ME) return;
+  const key = "study_photo_" + ME.phone;
+  if(safePhoto(ME.photo)){ try{ localStorage.setItem(key, ME.photo); }catch(e){} return; }
+  if(ME.photo) return; /* a set-but-invalid value stays unrendered, never replaced */
+  let lp = ""; try{ lp = localStorage.getItem(key) || ""; }catch(e){}
+  if(safePhoto(lp)){ ME.photo = lp; if(BACKEND_URL) api("setPhoto", {phone: ME.phone, session: mySess(), photo: lp}); }
+}
 function compressImg(file, maxDim, q, square){
   return new Promise(res=>{
     const url = URL.createObjectURL(file); const img = new Image();
@@ -879,6 +887,7 @@ async function pickPhoto(inp){
   const f = inp.files && inp.files[0]; inp.value = ""; if(!f || !ME) return;
   const d = await fitPhoto(f, 256, true, 47000); if(!d) return;
   ME.photo = d;
+  try{ localStorage.setItem("study_photo_" + ME.phone, d); }catch(e){}
   if(!BACKEND_URL) Store.updateMe(u=>{ u.photo = d; });
   else { const r = await api("setPhoto", {phone: ME.phone, session: mySess(), photo: d}); if(!r.ok) toast(LANG==="hi" ? "फ़ोटो इस डिवाइस पर सेव हुई (सर्वर बाद में)" : "Photo saved on this device"); }
   renderProfile(); toast(LANG==="hi" ? "✅ प्रोफ़ाइल फ़ोटो लग गई" : "✅ Profile photo updated");
@@ -886,6 +895,7 @@ async function pickPhoto(inp){
 async function removePhoto(){
   if(!ME) return;
   ME.photo = "";
+  try{ localStorage.removeItem("study_photo_" + ME.phone); }catch(e){}
   if(!BACKEND_URL) Store.updateMe(u=>{ u.photo = ""; });
   else await api("removePhoto", {phone: ME.phone, session: mySess()});
   closeModal(); renderProfile(); toast(LANG==="hi" ? "फ़ोटो हटा दी गई" : "Photo removed");
@@ -1173,7 +1183,7 @@ function applyTheme(th, save){
 }
 function setTheme(th){ applyTheme(th, true); }
 function finishLogin(user){
-  ME = user; localStorage.setItem("study_session", user.phone); setSessionCookie(user.phone);
+  ME = user; localStorage.setItem("study_session", user.phone); setSessionCookie(user.phone); healPhoto();
   if(user.session){ try{ localStorage.setItem("study_devsess", user.session); }catch(e){} }
   if(user.lang){ LANG = user.lang; localStorage.setItem("study_lang", LANG); }
   TLANG = localStorage.getItem("study_tlang") || LANG;
@@ -2104,7 +2114,7 @@ async function buySubWithBalance(btn){
   if((ME.stars||0) < subPrice()){ toast(T("insufficient")); return; }
   if(BACKEND_URL){ setBtnLoading(btn, true); const r = await api("buySub", {phone:ME.phone, session:mySess()}); setBtnLoading(btn, false);
     if(!r.ok){ toast(r.error === "funds" ? T("insufficient") : "Failed — try again."); return; }
-    ME.stars = r.user.stars; ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger;
+    if(r.user.photo) ME.photo = r.user.photo; healPhoto(); ME.stars = r.user.stars; ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger;
   } else {
     if(!spendStars(subPrice(), "StuDy Premium (1 year)")) return;
     ME.subUntil = Date.now() + 365*24*3600*1000; Store.updateMe(u=>u.subUntil = ME.subUntil);
@@ -2152,6 +2162,7 @@ async function saveDob(btn){
   ME.dob = v; closeModal(); renderProfile(); toast(LANG==="hi" ? "जन्म तिथि अपडेट हो गई ✓" : "Date of birth updated ✓");
 }
 function renderProfile(){
+  healPhoto();
   $("pf-name").textContent = ME.name || ME.phone;
   $("pf-avatar").innerHTML = avInner(ME);
   $("pf-phone").textContent = "📱 " + ME.phone;
@@ -2413,7 +2424,7 @@ async function showRewards(){
     body += `<div class="lb-podium"><div style="text-align:center;color:#fff;font-weight:900;font-size:16.5px;margin-bottom:13px">🏆 ${LANG==="hi" ? "लीडरबोर्ड" : "Leaderboard"}</div><div class="lb-top">${podHtml(rows[1],1,"second")}${podHtml(rows[0],0,"first")}${podHtml(rows[2],2,"third")}</div></div>`;
     body += rows.slice(3,10).map((r,j)=> rowHtml(r, j+3, !!(meRank && meRank.rank===j+4))).join("");
   } else body = `<p class="sub" style="padding:10px 0">${LANG==="hi" ? "अभी कोई रैंकिंग नहीं है — पहले टॉपर बनें!" : "No rankings yet — be the first topper!"}</p>`;;
-  if(ME && meRank && meRank.rank > 10) body += `<div style="border-top:1px dashed var(--line);margin-top:8px;padding-top:8px">${rowHtml({name: ME.name || "", phone: ME.phone, score: meRank.score, tests: meRank.tests}, meRank.rank-1, true)}</div>`;
+  if(ME && meRank && meRank.rank > 10) body += `<div style="border-top:1px dashed var(--line);margin-top:8px;padding-top:8px">${rowHtml({name: ME.name || "", phone: ME.phone, photo: ME.photo || "", score: meRank.score, tests: meRank.tests}, meRank.rank-1, true)}</div>`;
   else if(ME && !meRank) body += `<p class="sub" style="margin-top:8px">${LANG==="hi" ? "आपकी अभी कोई रैंक नहीं है — पहला टेस्ट दें और रैंक पाएँ!" : "You are not ranked yet — take your first test to get a rank!"}</p>`;
   box.innerHTML = body;
   if(BACKEND_URL){
@@ -2751,7 +2762,7 @@ document.addEventListener("visibilitychange", async ()=>{
   if(Date.now() - _lastSessCheck < 30000) return; _lastSessCheck = Date.now();
   const r = await api("me", {phone: ME.phone, session: mySess()});
   if(!r.ok && r.error === "session"){ doLogout(); const e = $("li-err"); if(e) e.textContent = LANG==="hi" ? "यह खाता किसी अन्य डिवाइस पर लॉगिन हुआ, इसलिए आप यहाँ लॉगआउट हो गए।" : "This account was signed in on another device, so you were logged out here."; }
-  else if(r.ok){ ME.stars = r.user.stars; ME.purchases = r.user.purchases; ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger; refreshHeader(); }
+  else if(r.ok){ if(r.user.photo) ME.photo = r.user.photo; healPhoto(); ME.stars = r.user.stars; ME.purchases = r.user.purchases; ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger; refreshHeader(); }
 });
 window.addEventListener("scroll", ()=>{ const b = $("totop"); if(b) b.classList.toggle("hidden", window.scrollY < 300 || (typeof TEST !== "undefined" && TEST && !TEST.done)); }, {passive:true});
 window.addEventListener("load", async ()=>{
