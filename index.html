@@ -66,11 +66,11 @@ header{position:sticky;top:0;z-index:50;background:var(--hdr);-webkit-backdrop-f
 .havatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--navy2),var(--navy));color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;box-shadow:0 3px 9px rgba(11,42,91,.35)}
 
 /* ---------- Bottom nav: floating pill ---------- */
-.bnav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;max-width:600px;margin:0 auto;background:rgba(16,20,30,.93);-webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);border:1px solid rgba(255,255,255,.12);border-radius:28px;display:flex;justify-content:space-around;padding:7px 6px;box-shadow:0 18px 40px -10px rgba(5,10,25,.55),inset 0 1px 0 rgba(255,255,255,.14)}
-.bnav button{color:#9aa7bd;font-size:10.5px;display:flex;flex-direction:column;align-items:center;gap:2.5px;padding:6px 11px;font-weight:700;border-radius:19px;transition:color .15s ease,background .15s ease,transform .12s ease}
+.bnav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;max-width:600px;margin:0 auto;background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(22px) saturate(1.7);backdrop-filter:blur(22px) saturate(1.7);border:1px solid rgba(11,32,77,.09);border-radius:28px;display:flex;justify-content:space-around;padding:7px 6px;box-shadow:0 16px 36px -12px rgba(11,32,77,.28),inset 0 1px 0 rgba(255,255,255,.9)}
+.bnav button{color:#7e8aa0;font-size:10.5px;display:flex;flex-direction:column;align-items:center;gap:2.5px;padding:6px 11px;font-weight:700;border-radius:19px;transition:color .15s ease,background .15s ease,transform .12s ease}
 .bnav button:active{transform:scale(.94)}
 .bnav button svg{width:22px;height:22px}
-.bnav button.on{color:#fff;background:rgba(255,255,255,.14)}
+.bnav button.on{color:#fff;background:linear-gradient(135deg,var(--navy2),var(--navy));box-shadow:0 8px 18px -8px rgba(11,32,77,.55)}
 .bnav button.on .ndot{width:4px;height:4px;border-radius:50%;background:var(--goldb)}
 .bnav button.on svg{color:#ffd968}
 .bnav .ndot{width:4px;height:4px}
@@ -296,9 +296,9 @@ html[data-theme="dark"] header{border-bottom-color:rgba(255,255,255,.07);box-sha
 html[data-theme="dark"] .wordmark{color:#eef1f8}
 html[data-theme="dark"] h1,html[data-theme="dark"] .collapse-h,html[data-theme="dark"] .thead,html[data-theme="dark"] .timer,html[data-theme="dark"] .ca-day-h,html[data-theme="dark"] .sc-h,html[data-theme="dark"] .stat .n{color:#eef1f8}
 html[data-theme="dark"] .resbig .score,html[data-theme="dark"] .sc-center .score{color:#eef1f8}
-html[data-theme="dark"] .bnav{background:rgba(38,41,52,.94);border-color:rgba(255,255,255,.14);box-shadow:0 18px 40px -10px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.1)}
-html[data-theme="dark"] .bnav button{color:#9aa7bd}
-html[data-theme="dark"] .bnav button.on{color:#fff;background:rgba(255,255,255,.13)}
+html[data-theme="dark"] .bnav{background:rgba(52,57,72,.88);border-color:rgba(255,255,255,.13);box-shadow:0 16px 36px -12px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.12)}
+html[data-theme="dark"] .bnav button{color:#a7b1c4}
+html[data-theme="dark"] .bnav button.on{color:#fff;background:linear-gradient(135deg,#2f5fd0,#173a75)}
 html[data-theme="dark"] .card,html[data-theme="dark"] .catrow,html[data-theme="dark"] .modal{background:var(--card)}
 html[data-theme="dark"] .catlogo{background:#fff}
 html[data-theme="dark"] .catletter,html[data-theme="dark"] .avatar,html[data-theme="dark"] .havatar{background:linear-gradient(135deg,#2f5fd0,#173a7d)}
@@ -399,6 +399,38 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,36,46,.
 #screen-notes .testrow{background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:12px 12px;margin:0 0 8px}
 #screen-notes .collapse-h{border-radius:16px}
 @media(min-width:641px){.lb-p.first .lb-av{width:96px;height:96px}}
+
+/* ---------- Round 37: inner pages redesign ---------- */
+.btn.sm{border-radius:999px}
+/* Category: hero header + roomy subject/mock rows */
+#screen-category>div:first-of-type{background:linear-gradient(120deg,var(--goldsoft),var(--card) 70%);border:1px solid var(--line2);border-radius:22px;padding:16px;box-shadow:0 12px 26px -16px rgba(11,32,77,.25)}
+#screen-category #cat-logo{width:60px!important;height:60px!important;border-radius:18px;background:#fff;box-shadow:0 6px 16px -6px rgba(11,32,77,.3)}
+#subject-list .testrow,#mock-card .testrow{padding:14px 6px;border-radius:12px}
+#subject-list .testrow:hover,#mock-card .testrow:hover{background:var(--bg2)}
+#subject-list .tt,#mock-card .tt{font-size:15.5px}
+/* Wallet: navy balance hero */
+#screen-wallet>div:nth-of-type(1){background:linear-gradient(150deg,#1a56db,#0b2a5b 80%);color:#fff;border:none;box-shadow:0 20px 38px -16px rgba(11,42,91,.55)}
+#screen-wallet>div:nth-of-type(1) .sub{color:rgba(255,255,255,.78)}
+#screen-wallet .amtchips button{border-radius:999px}
+#wallet-history .testrow{padding:12px 4px}
+/* Notifications: gold-accent cards */
+#notif-list{gap:10px}
+#notif-list .card{border-left:4px solid var(--gold);border-radius:14px}
+/* Profile: bigger Insta-style avatar */
+#pf-avatar{width:74px;height:74px;font-size:29px}
+/* PYQ: paper rows as soft cards */
+#screen-pyq .testrow{background:var(--bg2);border:1px solid var(--line2);border-radius:13px;padding:12px;margin-bottom:8px}
+#screen-pyq .testrow:last-child{margin-bottom:4px}
+/* Auth: richer welcome card */
+.authwrap{border-radius:26px;box-shadow:0 30px 60px -25px rgba(11,32,77,.35);border:1px solid var(--line2)}
+.logobig{filter:drop-shadow(0 10px 22px rgba(11,32,77,.28))}
+.apptitle{background:linear-gradient(120deg,var(--navy),var(--navy2));-webkit-background-clip:text;background-clip:text;color:transparent}
+/* Result hero */
+.resbig{background:linear-gradient(150deg,#1a56db,#0b2a5b 85%);color:#fff;border:none;box-shadow:0 20px 38px -16px rgba(11,42,91,.5);border-radius:20px;padding:24px 14px}
+.resbig .sub,.resbig .score{color:#fff}
+.resbig .sub{opacity:.8}
+/* Test screen: deeper question card */
+.qcard{box-shadow:0 22px 44px -20px rgba(11,32,77,.35)}
 </style>
 </head>
 <body>
@@ -1008,6 +1040,7 @@ function go(screen){
   if(screen==="pyq") renderPYQ();
   if(screen==="doubts") renderDoubts();
   if(screen==="admin") renderAdmin();
+  if(screen !== "home") armBack();
   refreshHeader(); window.scrollTo(0,0);
 }
 const NOTIF_KEEP_MS = 5*24*3600*1000;
@@ -2411,7 +2444,7 @@ async function renderDoubts(){
   const box = $("doubts-list"); if(!box) return;
   box.innerHTML = `<p class="sub" style="text-align:center;padding:14px">${LANG==="hi" ? "लोड हो रहा है…" : "Loading doubts…"}</p>`;
   let posts = [];
-  if(BACKEND_URL){ const r = await api("doubtList", {}); if(r.ok) posts = r.posts || []; }
+  if(BACKEND_URL){ const r = await api("doubtList", {phone: ME ? ME.phone : ""}); if(r.ok) posts = r.posts || []; }
   else posts = demoDoubts();
   paintDoubts(posts);
 }
@@ -2422,7 +2455,7 @@ function paintDoubts(posts){
   box.innerHTML = posts.map(p=>{
     const reps = (p.replies || []).map(rp=> `<div class="db-reply"><div class="db-av">${avInner(rp)}</div><div class="db-reply-body"><span class="db-name">${esc(rp.name || "")}</span> <span class="db-time">· ${timeAgo(rp.at)}</span><div class="db-reply-tx">${esc(rp.text || "")}</div></div></div>`).join("");
     return `<div class="db-card">
-      <div class="db-head"><div class="db-av">${avInner(p)}</div><div style="min-width:0"><div class="db-name">${esc(p.name || "")}</div><div class="db-time">${timeAgo(p.at)}</div></div></div>
+      <div class="db-head"><div class="db-av">${avInner(p)}</div><div style="min-width:0"><div class="db-name">${esc(p.name || "")}</div><div class="db-time">${timeAgo(p.at)}</div></div>${(ME && (p.mine || p.phone === ME.phone)) ? `<button class="btn sm danger" style="margin-left:auto;flex:none" onclick="deleteDoubt('${p.id}')">🗑 ${LANG==="hi" ? "हटाएँ" : "Delete"}</button>` : ""}</div>
       ${p.text ? `<div class="db-text">${esc(p.text)}</div>` : ""}
       ${safePhoto(p.image) ? `<img class="db-img" src="${safePhoto(p.image)}" alt="">` : ""}
       ${reps ? `<div class="db-replies">${reps}</div>` : ""}
@@ -2453,6 +2486,21 @@ async function postDoubt(btn){
   }
   $("db-text").value = ""; dbClearImg();
   toast(LANG==="hi" ? "✅ डाउट पोस्ट हो गया" : "✅ Doubt posted");
+  renderDoubts();
+}
+function deleteDoubt(id){
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG==="hi" ? "डाउट हटाएँ?" : "Delete this doubt?"}</h3>
+  <p class="sub" style="margin:10px 0 14px">${LANG==="hi" ? "यह डाउट और उसके सारे जवाब हमेशा के लिए हट जाएँगे।" : "The doubt and all its replies will be removed for good."}</p>
+  <button class="btn danger" style="width:100%" onclick="doDeleteDoubt('${id}')">${LANG==="hi" ? "हाँ, हटाएँ" : "Yes, delete"}</button>
+  <button class="btn ghost" style="width:100%;margin-top:8px" onclick="closeModal()">${LANG==="hi" ? "रद्द करें" : "Cancel"}</button>`);
+}
+async function doDeleteDoubt(id){
+  closeModal(); if(!ME) return;
+  if(BACKEND_URL){
+    const r = await api("doubtDelete", {phone: ME.phone, session: mySess(), id});
+    if(!r.ok){ toast(LANG==="hi" ? "हटाया नहीं गया — फिर कोशिश करें" : "Could not delete — try again"); return; }
+  } else saveDemoDoubts(demoDoubts().filter(p=> p.id !== id));
+  toast(LANG==="hi" ? "🗑 डाउट हटा दिया गया" : "🗑 Doubt deleted");
   renderDoubts();
 }
 async function replyDoubt(id){
@@ -2678,8 +2726,8 @@ function scheduleInstallPrompt(){
 
 /* ---------------- Init ---------------- */
 /* Back button: go to the previous screen first, then Home. No exit confirmation. */
-let NAVHIST = [], NAVBACK = false;
-function armBack(){ try{ history.pushState({study:1}, ""); }catch(e){} }
+let NAVHIST = [], NAVBACK = false, BACKARMED = false;
+function armBack(){ if(BACKARMED) return; BACKARMED = true; try{ history.pushState({study:1}, ""); }catch(e){} }
 function showBackLoad(){
   let el = $("backload");
   if(!el){ el = document.createElement("div"); el.id = "backload";
@@ -2690,11 +2738,12 @@ function showBackLoad(){
   setTimeout(()=>{ el.style.display = "none"; }, 550);
 }
 window.addEventListener("popstate", ()=>{
+  BACKARMED = false; /* this pop consumed the one armed entry */
   if($("modal-root") && $("modal-root").innerHTML){ closeModal(); armBack(); return; }
   if(TEST && !TEST.done){ armBack(); return; }
   if(CURSCREEN === "auth"){ armBack(); return; }
-  if(CURSCREEN !== "home"){ showBackLoad(); NAVBACK = true; go("home"); NAVBACK = false; armBack(); return; }
-  /* at Home with nothing behind: let the browser do its default */
+  if(CURSCREEN !== "home"){ showBackLoad(); NAVBACK = true; go("home"); NAVBACK = false; return; } /* no re-arm: the next back exits */
+  history.back(); /* already on Home: back means exit the app */
 });
 let _lastSessCheck = 0;
 document.addEventListener("visibilitychange", async ()=>{
