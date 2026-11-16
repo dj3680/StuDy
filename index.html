@@ -521,6 +521,34 @@ html[data-theme="dark"] .pf-qab{color:#e8ecf6}
 .pf-link-ic{font-size:17px;width:22px;text-align:center;flex:none}
 .pf-chev{margin-left:auto;color:var(--mut);font-size:18px}
 html[data-theme="dark"] .pf-link{color:#e8ecf6}
+
+/* ===== Round 42: thin nav, header group, group cards, confirm-buy, scroll reveal, page back ===== */
+.bnav{padding:4px}
+.bnav button{padding:4px 9px;gap:1px}
+.bnav button:not(.on) svg{width:18px;height:18px}
+.bnav button.on svg{width:26px;height:26px}
+#totop{bottom:calc(88px + env(safe-area-inset-bottom))}
+#pageback{position:fixed;left:16px;bottom:calc(88px + env(safe-area-inset-bottom));width:46px;height:46px;border-radius:50%;background:linear-gradient(180deg,#1750d6,#0b2a5b);color:#fff;border:1px solid rgba(255,255,255,.25);box-shadow:0 10px 24px rgba(11,32,77,.4);z-index:70;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#pageback:active{transform:scale(.93)}
+.hgroup{display:flex;align-items:center;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 4px 14px rgba(11,32,77,.08)}
+.hgroup .iconbtn{border:none;background:transparent;box-shadow:none;width:34px;height:34px}
+.hgroup .iconbtn:active{transform:scale(.92)}
+.grp-card{display:flex;align-items:center;gap:12px;padding:15px 14px;margin-top:12px;cursor:pointer}
+.grp-card img{height:38px;width:38px;object-fit:contain;flex:none}
+.grp-card-tx{flex:1;min-width:0}
+.grp-card-t{font-weight:800;font-size:16px;color:var(--navy)}
+html[data-theme="dark"] .grp-card-t{color:#e8ecf6}
+.grp-chev{font-size:22px;color:var(--goldb);font-weight:900}
+.notes-sec-h{font-size:16px;font-weight:800;color:var(--navy);margin:16px 0 7px}
+html[data-theme="dark"] .notes-sec-h{color:#e8ecf6}
+#screen-pyqgroup .testrow{background:var(--bg2);border:1px solid var(--line2);border-radius:13px;padding:12px;margin-bottom:8px}
+#screen-notesgroup .testrow{background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:12px;margin:0 0 8px}
+.cb-rows{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:4px 12px}
+.cb-rows>div{display:flex;justify-content:space-between;padding:7px 0;font-size:13.5px}
+.cb-rows>div + div{border-top:1px solid var(--line)}
+.cb-rows span{color:var(--mut)}
+.rv{opacity:0}
+.rv.in{animation:socIn .65s cubic-bezier(.22,1.35,.36,1) both}
 </style>
 </head>
 <body>
@@ -536,13 +564,11 @@ html[data-theme="dark"] .pf-link{color:#e8ecf6}
     <div class="wordmark" onclick="go('home')">Stu<img class="wmD" data-a="logo" alt="D">y</div>
     <div class="hspace"></div>
     <button class="chip" onclick="go('wallet')"><span class="st">₹</span><span id="hstars">0</span></button>
-    <button class="iconbtn" onclick="go('notifications')" aria-label="Alerts" title="Alerts" style="position:relative">
+    <div class="hgroup">
+      <button class="iconbtn" onclick="go('notifications')" aria-label="Alerts" title="Alerts" style="position:relative">
       <span class="dot hidden" id="notifdot" style="position:absolute;top:1px;right:1px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid #fff"></span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
     </button>
-    <a class="iconbtn" href="https://t.me/Study_anuj?text=Hi.%20I%27m%20a%20user%20of%20StuDy%20App%2C%20I%20need%20some%20help." target="_blank" rel="noopener" aria-label="Telegram" title="Telegram — chat with us">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
-    </a>
     <button class="iconbtn" onclick="showHelp()" aria-label="Help" title="Help">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     </button>
@@ -552,6 +578,7 @@ html[data-theme="dark"] .pf-link{color:#e8ecf6}
     <button class="iconbtn" id="hdr-search" onclick="showSearch()" aria-label="Search" title="Search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
     </button>
+      </div>
   </div>
 </header>
 
@@ -801,6 +828,12 @@ html[data-theme="dark"] .pf-link{color:#e8ecf6}
   <section id="screen-pyq" class="hidden">
     <div id="pyq-body"></div>
   </section>
+  <section id="screen-pyqgroup" class="hidden">
+    <div id="pyqgroup-body"></div>
+  </section>
+  <section id="screen-notesgroup" class="hidden">
+    <div id="notesgroup-body"></div>
+  </section>
   <!-- ============ ADMIN ============ -->
   <section id="screen-admin" class="hidden">
     <h1>Admin Panel</h1>
@@ -882,6 +915,7 @@ html[data-theme="dark"] .pf-link{color:#e8ecf6}
 <button id="sharefloat" onclick="shareApp()" aria-label="Share StuDy" title="Share StuDy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="m8.3 10.8 7.4-3.6M8.3 13.2l7.4 3.6"/></svg><span class="promo-label">Share app</span></button>
 
 <button id="totop" class="hidden" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+<button id="pageback" class="hidden" onclick="pageBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M15 5l-7 7 7 7"/></svg></button>
 <nav class="bnav hidden" id="bnav">
   <button id="bn-home" class="on" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span data-i18n="navHome">Home</span><span class="ndot"></span></button>
   <button id="bn-pyq" onclick="go('pyq')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9.4 13.1a2.7 2.7 0 1 1 3.5 2.6c-.8.3-.9 1-.9 1.8"/><line x1="12" y1="20.4" x2="12.01" y2="20.4"/></svg><span data-i18n="navPyq">PYQ</span><span class="ndot"></span></button>
@@ -1143,22 +1177,28 @@ let CURSCREEN = "auth";
 function go(screen){
   if(!NAVBACK && CURSCREEN && CURSCREEN !== screen && CURSCREEN !== "auth") NAVHIST = [CURSCREEN];
   CURSCREEN = screen;
-  ["auth","home","category","wallet","profile","notifications","result","admin","notes","pyq","doubts"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
+  ["auth","home","category","wallet","profile","notifications","result","admin","notes","pyq","doubts","pyqgroup","notesgroup"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
   $("appheader").classList.toggle("hidden", screen==="auth");
   $("bnav").classList.toggle("hidden", screen==="auth");
   ["home","pyq","notes","profile","doubts"].forEach(s=>{ const b=$("bn-"+s); if(b) b.classList.toggle("on", s===screen); });
+  if(screen==="pyqgroup"){ const b=$("bn-pyq"); if(b) b.classList.add("on"); }
+  if(screen==="notesgroup"){ const b=$("bn-notes"); if(b) b.classList.add("on"); }
   if(screen==="auth"){ placeSocialBtns("auth"); paintAuthCTA(); }
   if(screen==="home") renderHome();
   if(screen==="wallet") renderWallet();
   if(screen==="profile") renderProfile();
   if(screen==="notifications") renderNotifs();
   if(screen==="notes") renderNotes();
+  if(screen==="notesgroup") renderNotesExam();
   if(screen==="pyq") renderPYQ();
+  if(screen==="pyqgroup") renderPYQGroup();
   if(screen==="doubts") renderDoubts();
   if(screen==="admin") renderAdmin();
   if(screen !== "home") armBack();
   refreshHeader(); window.scrollTo(0,0);
   if(screen !== "doubts") checkDoubtBadge();
+  const pb = $("pageback"); if(pb) pb.classList.toggle("hidden", !(screen === "pyqgroup" || screen === "notesgroup"));
+  initReveal();
 }
 const NOTIF_KEEP_MS = 5*24*3600*1000;
 function freshNotifs(list){ const cut = Date.now() - NOTIF_KEEP_MS; return (list||[]).filter(n=> (n.at||0) >= cut).sort((a,b)=> (b.at||0)-(a.at||0)); }
@@ -1339,26 +1379,40 @@ function spendStars(amount, label){
   else api("spend", {phone:ME.phone, amount, label});
   return true;
 }
-function buyTest(cat, sub){
+let CB_RES = null;
+function confirmBuy(amount, label){
+  return new Promise(res=>{
+    const bal = (ME && ME.stars) || 0;
+    if(bal < amount){ toast(T("insufficient")); go("wallet"); res(false); return; }
+    CB_RES = res;
+    showModal(`<button class="x" onclick="closeModal()">✕</button><div style="text-align:center;font-size:34px">🛒</div><h3 style="text-align:center;margin-top:4px">${LANG === "hi" ? "खरीद की पुष्टि करें" : "Confirm purchase"}</h3><p class="sub" style="text-align:center;margin-top:6px">${esc(label)}</p><div class="cb-rows"><div><span>${LANG === "hi" ? "कीमत" : "Price"}</span><b>₹${amount}</b></div><div><span>${LANG === "hi" ? "आपका बैलेंस" : "Your balance"}</span><b>₹${bal}</b></div><div><span>${LANG === "hi" ? "खरीद के बाद बैलेंस" : "Balance after"}</span><b>₹${bal - amount}</b></div></div><div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" id="cb-no">${LANG === "hi" ? "रद्द करें" : "Cancel"}</button><button class="btn" style="flex:1" id="cb-yes">✅ ${LANG === "hi" ? "खरीदें" : "Buy"} · ₹${amount}</button></div>`);
+    $("cb-yes").onclick = ()=>{ CB_RES = null; closeModal(); res(true); };
+    $("cb-no").onclick = ()=>{ CB_RES = null; closeModal(); res(false); };
+  });
+}
+async function buyTest(cat, sub){
   const p = cat==="school" ? schoolSubjectPrice(sub) : getSettings().prices.test;
+  if(!await confirmBuy(p, "Test: "+CATS[cat].name.en+" "+subName(cat,sub,"en"))) return;
   if(!spendStars(p, "Test: "+CATS[cat].name.en+" "+subName(cat,sub,"en"))) return;
   ME.purchases.tests[cat+"_"+sub] = Date.now();
   if(!BACKEND_URL) Store.updateMe(u=>u.purchases=ME.purchases); else api("buy",{phone:ME.phone, kind:"test", key:cat+"_"+sub});
   toast(T("purchased")); renderCategory(cat);
 }
-function buyMock(cat){
+async function buyMock(cat){
   const p = mockPrice(cat);
+  if(!await confirmBuy(p, "Full mock: "+CATS[cat].name.en)) return;
   if(!spendStars(p, "Full mock: "+CATS[cat].name.en)) return;
   ME.purchases.mocks[cat] = Date.now();
   if(!BACKEND_URL) Store.updateMe(u=>u.purchases=ME.purchases); else api("buy",{phone:ME.phone, kind:"mock", key:cat});
   toast(T("purchased")); renderCategory(cat);
 }
-function buyNotes(cat, key, label, fixedPrice){
+async function buyNotes(cat, key, label, fixedPrice){
   const p = (fixedPrice != null && !isNaN(fixedPrice)) ? fixedPrice : (key==="bundle" ? getSettings().prices.bundle : getSettings().prices.notes);
+  if(!await confirmBuy(p, "Notes: "+(label || (cat + " notes")))) return;
   if(!spendStars(p, "Notes: "+label)) return;
   ME.purchases.notes[cat+"_"+key] = Date.now();
   if(!BACKEND_URL) Store.updateMe(u=>u.purchases=ME.purchases); else api("buy",{phone:ME.phone, kind:"notes", key:cat+"_"+key});
-  toast(T("purchased")); renderCategory(cat); if(CURSCREEN === "notes") renderNotes();
+  toast(T("purchased")); renderCategory(cat); if(CURSCREEN === "notes") renderNotes(); if(CURSCREEN === "notesgroup") renderNotesExam();
 }
 
 
@@ -1413,7 +1467,7 @@ const NOTES_SUB_OPEN = {};
    must NOT close the parent exam dropdown, so the sub-wrap id ends in
    "-sub" (not "-wrap") and this toggle closes nothing else. */
 function toggleNotesSub(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); NOTES_SUB_OPEN[id] = opening; }
-function renderNotes(){
+function notesExamHTML(cat){
   const P = getSettings().prices;
   const subjectRow = (cat, sub) => {
     const key = cat + "_" + sub, owned = hasNotes(key);
@@ -1435,7 +1489,7 @@ function renderNotes(){
       ${owned ? `<button class="btn sm" onclick="downloadNotes('rpsc','${g.sub}')">` + T("download") + `</button>`
               : `<span class="price">\u20b9${GEO_TRIO_PRICE}</span><button class="btn sm gold" onclick="buyNotes('rpsc','${g.sub}','${g.en} notes',${GEO_TRIO_PRICE})">${T("buyNotes")}</button>`}</div>`;
     }).join("");
-    return `<button class="collapse-h${NOTES_SUB_OPEN["notes-rpsc-geo-sub"] ? " open" : ""}" style="margin:14px 0 6px;font-size:16px" onclick="toggleNotesSub('notes-rpsc-geo-sub',this)"><span>${LANG === "hi" ? "\u092d\u0942\u0917\u094b\u0932" : "Geography"} \u2014 Notes PDF</span><span class="car">\u25be</span></button><div id="notes-rpsc-geo-sub" class="${NOTES_SUB_OPEN["notes-rpsc-geo-sub"] ? "" : "hidden"}" style="padding-left:12px">${rows}</div>`;
+    return `<div class="notes-sec-h"><span>${LANG === "hi" ? "\u092d\u0942\u0917\u094b\u0932" : "Geography"} \u2014 Notes PDF</span></div><div style="padding-left:12px">${rows}</div>`;
   };
   const polSubDropdown = () => {
     const rows = POL_DUO.map(g => {
@@ -1445,7 +1499,7 @@ function renderNotes(){
       ${owned ? `<button class="btn sm" onclick="downloadNotes('rpsc','${g.sub}')">` + T("download") + `</button>`
               : `<span class="price">\u20b9${POL_DUO_PRICE}</span><button class="btn sm gold" onclick="buyNotes('rpsc','${g.sub}','${g.en} notes',${POL_DUO_PRICE})">${T("buyNotes")}</button>`}</div>`;
     }).join("");
-    return `<button class="collapse-h${NOTES_SUB_OPEN["notes-rpsc-pol-sub"] ? " open" : ""}" style="margin:14px 0 6px;font-size:16px" onclick="toggleNotesSub('notes-rpsc-pol-sub',this)"><span>${LANG === "hi" ? "\u0930\u093e\u091c\u0928\u0940\u0924\u093f \u0935\u093f\u091c\u094d\u091e\u093e\u0928" : "Polity"} \u2014 Notes PDF</span><span class="car">\u25be</span></button><div id="notes-rpsc-pol-sub" class="${NOTES_SUB_OPEN["notes-rpsc-pol-sub"] ? "" : "hidden"}" style="padding-left:12px">${rows}</div>`;
+    return `<div class="notes-sec-h"><span>${LANG === "hi" ? "\u0930\u093e\u091c\u0928\u0940\u0924\u093f \u0935\u093f\u091c\u094d\u091e\u093e\u0928" : "Polity"} \u2014 Notes PDF</span></div><div style="padding-left:12px">${rows}</div>`;
   };
   const noteBookRow = (g, price) => {
     const key = "rpsc_" + g.sub, owned = hasNotes(key);
@@ -1456,21 +1510,36 @@ function renderNotes(){
   };
   const histSubDropdown = () => {
     const rows = HIST_TRIO.map(g => noteBookRow(g, HIST_TRIO_PRICE)).join("");
-    return `<button class="collapse-h${NOTES_SUB_OPEN["notes-rpsc-hist-sub"] ? " open" : ""}" style="margin:14px 0 6px;font-size:16px" onclick="toggleNotesSub('notes-rpsc-hist-sub',this)"><span>${LANG === "hi" ? "\u0907\u0924\u093f\u0939\u093e\u0938" : "History"} \u2014 Notes PDF</span><span class="car">\u25be</span></button><div id="notes-rpsc-hist-sub" class="${NOTES_SUB_OPEN["notes-rpsc-hist-sub"] ? "" : "hidden"}" style="padding-left:12px">${rows}</div>`;
+    return `<div class="notes-sec-h"><span>${LANG === "hi" ? "\u0907\u0924\u093f\u0939\u093e\u0938" : "History"} \u2014 Notes PDF</span></div><div style="padding-left:12px">${rows}</div>`;
   };
   const ecoSubDropdown = () => {
     const rows = ECO_DUO.map(g => noteBookRow(g, ECO_DUO_PRICE)).join("");
-    return `<button class="collapse-h${NOTES_SUB_OPEN["notes-rpsc-eco-sub"] ? " open" : ""}" style="margin:14px 0 6px;font-size:16px" onclick="toggleNotesSub('notes-rpsc-eco-sub',this)"><span>${LANG === "hi" ? "\u0905\u0930\u094d\u0925\u0936\u093e\u0938\u094d\u0924\u094d\u0930" : "Economy"} \u2014 Notes PDF</span><span class="car">\u25be</span></button><div id="notes-rpsc-eco-sub" class="${NOTES_SUB_OPEN["notes-rpsc-eco-sub"] ? "" : "hidden"}" style="padding-left:12px">${rows}</div>`;
+    return `<div class="notes-sec-h"><span>${LANG === "hi" ? "\u0905\u0930\u094d\u0925\u0936\u093e\u0938\u094d\u0924\u094d\u0930" : "Economy"} \u2014 Notes PDF</span></div><div style="padding-left:12px">${rows}</div>`;
   };
-  $("notes-all").innerHTML = ["rpsc","upsc","ssc"].map(cat=>{
-    const c = CATS[cat]; if(!c) return "";
+  const c = CATS[cat]; if(!c) return "";
     let rows;
     if(cat === "rpsc"){
       rows = [subjectRow(cat, "raj"), histSubDropdown(), geoSubDropdown(), polSubDropdown(), ecoSubDropdown(), noteBookRow(SCI_BOOK, SCI_BOOK_PRICE), noteBookRow(REAS_BOOK, REAS_BOOK_PRICE), subjectRow(cat, "ca")].join("") + bundleRow(cat);
     } else {
       rows = c.subjects.map(([sub])=> subjectRow(cat, sub)).join("") + bundleRow(cat);
     }
-    return `<button class="collapse-h${NOTES_OPEN_CAT === cat ? " open" : ""}" onclick="toggleCollapse('notes-${cat}-wrap',this)"><span style="display:flex;align-items:center;gap:10px"><img src="${ASSET[cat] || ""}" alt="" style="height:30px" onerror="this.style.display='none'">${c.name[LANG] || c.name.en}</span><span class="car">\u25be</span></button><div id="notes-${cat}-wrap" class="${NOTES_OPEN_CAT === cat ? "" : "hidden"}"><div class="card" style="padding:6px 14px">${rows}</div></div>`;
+  return `<div class="card" style="padding:6px 14px">${rows}</div>`;
+}
+let NOTES_EXAM = "rpsc";
+function openNotesExam(cat){ NOTES_EXAM = cat; go("notesgroup"); }
+function notesExamCount(cat){
+  if(cat === "rpsc") return GEO_TRIO.length + POL_DUO.length + HIST_TRIO.length + ECO_DUO.length + 4;
+  const c = CATS[cat]; return c ? c.subjects.length + 1 : 0;
+}
+function renderNotesExam(){
+  const c = CATS[NOTES_EXAM];
+  $("notesgroup-body").innerHTML = `<h1 style="margin-top:6px;display:flex;align-items:center;gap:10px"><img src="${ASSET[NOTES_EXAM] || ""}" alt="" style="height:34px" onerror="this.style.display='none'">${c ? (c.name[LANG] || c.name.en) : ""} — ${T("navNotes")}</h1>` + notesExamHTML(NOTES_EXAM);
+  initReveal();
+}
+function renderNotes(){
+  $("notes-all").innerHTML = ["rpsc","upsc","ssc"].map(cat=>{
+    const c = CATS[cat]; if(!c) return "";
+    return `<div class="card grp-card" onclick="openNotesExam('${cat}')"><img src="${ASSET[cat] || ""}" alt="" onerror="this.style.display='none'}"><div class="grp-card-tx"><div class="grp-card-t">${c.name[LANG] || c.name.en}</div><div class="sub">${notesExamCount(cat)} ${LANG === "hi" ? "नोट्स PDF" : "notes PDFs"}</div></div><span class="grp-chev">›</span></div>`;
   }).join("");
 }
 /* ---------------- PYQ (Previous Year Papers) ----------------
@@ -1524,16 +1593,16 @@ const PYQ_GROUPS = [
   { exam:"RPSC", logo:"rpsc", name:{ en:"RPSC — RAS Prelims", hi:"RPSC — RAS प्रीलिम्स" } },
   { exam:"UPSC", logo:"upsc", name:{ en:"UPSC — Civil Services Prelims", hi:"UPSC — सिविल सेवा प्रीलिम्स" } }
 ];
-const PYQ_OPEN = { RPSC:false, UPSC:false };
-function togglePYQGroup(exam){ const willOpen = !PYQ_OPEN[exam]; Object.keys(PYQ_OPEN).forEach(k=>{ PYQ_OPEN[k] = false; }); PYQ_OPEN[exam] = willOpen; renderPYQ(); }
+function pageBack(){ if(CURSCREEN === "pyqgroup") go("pyq"); else if(CURSCREEN === "notesgroup") go("notes"); }
 function pyqQuestions(id){ return (window.STUDY_QUESTIONS || []).filter(q=> q[1] === "pyq" && q[2] === id); }
 function pyqOwned(id){ return isSubActive() || !!(ME && ME.purchases && ME.purchases.tests && ME.purchases.tests["pyq_" + id]); }
-function buyPYQ(id, btn){
+async function buyPYQ(id, btn){
   const t = PYQ_TESTS.find(x=>x.id === id); if(!t) return;
+  if(!await confirmBuy(PYQ_PRICE, "PYQ: " + (t.title[LANG] || t.title.en))) return;
   if(!spendStars(PYQ_PRICE, "PYQ test: " + t.title.en)) return;
   ME.purchases.tests["pyq_" + id] = Date.now();
   if(!BACKEND_URL) Store.updateMe(u=>u.purchases = ME.purchases); else api("buy", {phone:ME.phone, kind:"test", key:"pyq_" + id});
-  toast(T("purchased")); renderPYQ();
+  toast(T("purchased")); if(CURSCREEN === "pyqgroup") renderPYQGroup(); else renderPYQ();
 }
 function startPYQ(id){
   const qs = pyqQuestions(id);
@@ -1558,18 +1627,27 @@ function renderPYQ(){
     ${PYQ_GROUPS.map(g=>{
       const tests = PYQ_TESTS.filter(t=> t.exam === g.exam);
       if(!tests.length) return "";
-      const open = !!PYQ_OPEN[g.exam];
-      return `<div class="card" style="padding:0;overflow:hidden;margin-top:14px">
-        <div onclick="togglePYQGroup('${g.exam}')" style="display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer">
-          <img src="${ASSET[g.logo] || ""}" alt="" style="height:30px" onerror="this.style.display='none'">
-          <div style="flex:1;font-weight:800;font-size:15.5px">${esc(g.name[LANG] || g.name.en)}</div>
-          <span class="sub">${tests.length} ${LANG === "hi" ? "पेपर" : "papers"}</span>
-          <span style="font-size:15px;color:var(--gold)">${open ? "▾" : "▸"}</span>
-        </div>
-        ${open ? `<div style="padding:2px 14px 8px;border-top:1px solid var(--line)">${tests.map(rowFor).join("")}</div>` : ""}
-      </div>`;
+      return `<div class="card grp-card" onclick="openPYQGroup('${g.exam}')"><img src="${ASSET[g.logo] || ""}" alt="" onerror="this.style.display='none'"><div class="grp-card-tx"><div class="grp-card-t">${esc(g.name[LANG] || g.name.en)}</div><div class="sub">${tests.length} ${LANG === "hi" ? "पेपर" : "papers"} · ₹${PYQ_PRICE} ${LANG === "hi" ? "प्रति पेपर" : "per paper"}</div></div><span class="grp-chev">›</span></div>`;
     }).join("")}
     <p class="sub" style="margin-top:14px;text-align:center">${LANG === "hi" ? "और पेपर (SSC · NEET · JEE · REET) जल्द आ रहे हैं।" : "More papers (SSC · NEET · JEE · REET) coming soon."}</p>`;
+}
+let PYQ_GROUP = "RPSC";
+function openPYQGroup(exam){ PYQ_GROUP = exam; go("pyqgroup"); }
+function renderPYQGroup(){
+  const g = PYQ_GROUPS.find(x=> x.exam === PYQ_GROUP) || PYQ_GROUPS[0];
+  const mine = Store.attempts().filter(a=> ME && a.phone === ME.phone && a.cat === "pyq");
+  const rowFor = t=>{
+    const owned = pyqOwned(t.id);
+    const att = mine.filter(a=> a.sub === t.id);
+    const first = att.find(a=>a.first);
+    const btn = owned
+      ? `<button class="btn sm" onclick="startPYQ('${t.id}')">${att.length ? (LANG === "hi" ? "पुनः प्रयास" : "Re-Attempt") : (LANG === "hi" ? "शुरू करें" : "Start")}</button>`
+      : `<span class="price">₹${PYQ_PRICE}</span><button class="btn sm gold" onclick="buyPYQ('${t.id}', this)">${LANG === "hi" ? "₹3 में खरीदें और शुरू करें" : "Buy ₹3 & Start"}</button>`;
+    return `<div class="testrow"><div class="ti"><div class="tt">${esc(t.title[LANG] || t.title.en)}</div><div class="ts">${esc(t.meta[LANG] || t.meta.en)}</div><div class="ts">${t.n} ${T("questions")} · ${t.mins} ${T("minutes")}${first ? ` · ${LANG === "hi" ? "पहला स्कोर" : "First score"}: ${first.score}/${first.total}` : ""}${att.length > 1 ? ` · ${att.length} ${T("attempts")}` : ""}</div></div>${btn}</div>`;
+  };
+  const tests = PYQ_TESTS.filter(t=> t.exam === g.exam);
+  $("pyqgroup-body").innerHTML = `<h1 style="margin-top:6px">${esc(g.name[LANG] || g.name.en)}</h1><p class="sub" style="margin-top:5px">${tests.length} ${LANG === "hi" ? "पेपर" : "papers"} · ₹${PYQ_PRICE} ${LANG === "hi" ? "प्रति पेपर · प्रीमियम शामिल" : "per paper · Premium included"}</p><div class="card" style="padding:6px 14px;margin-top:12px">${tests.map(rowFor).join("")}</div>`;
+  initReveal();
 }
 
 /* ---------------- Daily Current Affairs ---------------- */
@@ -1638,11 +1716,12 @@ function renderCACategory(c){
       return caDay(s.date, `${s.qs.length} ${T("questions")}`, caMini(label, s.qs, owned, att, s.date, `'${s.date}', this`, CA_PRICE));
     }).join("") : `<div class="card"><p class="sub">${LANG === "hi" ? "आज की टेस्ट जल्द आ रही है।" : "Today's test is coming soon."}</p></div>`);
 }
-function buyCA(date, btn, part){
+async function buyCA(date, btn, part){
   if(typeof btn === "string" && !part){ part = btn; btn = null; }
   const split = part && caIsSplit(date);
   const price = split ? CA_PART_PRICE : CA_PRICE;
   const key = split ? "ca_" + date + "_" + part : "ca_" + date;
+  if(!await confirmBuy(price, "Current Affairs: " + (split ? date + " · " + (part === "rj" ? "Rajasthan" : "India") : date))) return;
   if(!spendStars(price, "Daily Current Affairs: " + (split ? date + " " + part : date))) return;
   ME.purchases.tests[key] = Date.now();
   if(!BACKEND_URL) Store.updateMe(u=>u.purchases = ME.purchases); else api("buy", {phone:ME.phone, kind:"test", key});
@@ -1682,6 +1761,14 @@ function playPromo(){
   wrap.classList.remove("cluster-in");
   void wrap.offsetWidth;
   wrap.classList.add("cluster-in");
+}
+let RVO = null;
+function initReveal(){
+  const els = document.querySelectorAll(".card:not(.rv), .tile:not(.rv)");
+  if(!els.length) return;
+  if(!("IntersectionObserver" in window)){ els.forEach(el=>{ el.classList.add("rv", "in"); }); return; }
+  if(!RVO) RVO = new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); RVO.unobserve(e.target); } }); }, {threshold:.06, rootMargin:"0px 0px -3% 0px"});
+  els.forEach(el=>{ el.classList.add("rv"); RVO.observe(el); });
 }
 function toggleCollapse(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); if(opening){ document.querySelectorAll('[id$="-wrap"]').forEach(o=>{ if(o.id !== id && !o.classList.contains("hidden")){ o.classList.add("hidden"); const b = o.previousElementSibling; if(b && b.classList) b.classList.remove("open"); } }); } el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); if(id.indexOf("notes-") === 0 && id.slice(-5) === "-wrap"){ NOTES_OPEN_CAT = opening ? id.slice(6, -5) : null; } }
 function hidePremiumStrip(){
@@ -1831,8 +1918,9 @@ const MOCK_LIB_BASE = 4151;
 function libMockCount(){ return Math.max(1, mockWindow() - MOCK_LIB_BASE + 1); }
 function libMockWin(n){ return MOCK_LIB_BASE + n - 1; }
 function hasLibMock(cat, n){ if(isSubActive()) return true; if(!(ME && ME.purchases && ME.purchases.mocks)) return false; if(ME.purchases.mocks[cat+"_"+n]) return true; if(n===1 && ME.purchases.mocks[cat]) return true; return false; }
-function buyLibMock(cat, n){
+async function buyLibMock(cat, n){
   const p = mockPrice(cat);
+  if(!await confirmBuy(p, "Full mock "+n+": "+CATS[cat].name.en)) return;
   if(!spendStars(p, "Full mock "+n+": "+CATS[cat].name.en)) return;
   ME.purchases.mocks[cat+"_"+n] = Date.now();
   if(!BACKEND_URL) Store.updateMe(u=>u.purchases=ME.purchases); else api("buy",{phone:ME.phone, kind:"mock", key:cat+"_"+n});
@@ -1961,8 +2049,9 @@ const TESTS_PER_SUBJECT = 10;
 function seriesQCount(cat){ return cat === "ssc" ? 25 : 20; }
 const EXPANDED = new Set();
 function hasSeries(cat, sub, n){ return isSubActive() || !!(ME && ME.purchases && ME.purchases.tests && ME.purchases.tests[cat + "_" + sub + "#" + n]); }
-function buySeries(cat, sub, n){
+async function buySeries(cat, sub, n){
   const p = getSettings().prices.test;
+  if(!await confirmBuy(p, "Test " + n + ": " + CATS[cat].name.en + " " + subName(cat, sub, "en"))) return;
   if(!spendStars(p, "Test " + n + ": " + CATS[cat].name.en + " " + subName(cat, sub, "en"))) return;
   ME.purchases.tests[cat + "_" + sub + "#" + n] = Date.now();
   if(!BACKEND_URL) Store.updateMe(u=>u.purchases=ME.purchases); else api("buy",{phone:ME.phone, kind:"test", key:cat + "_" + sub + "#" + n});
@@ -2219,6 +2308,7 @@ function renderWallet(){
 }
 async function buySubWithBalance(btn){
   if(isSubActive()){ toast(LANG==="hi" ? "प्रीमियम पहले से सक्रिय है।" : "Premium is already active."); return; }
+  if(!await confirmBuy(subPrice(), "StuDy Premium (1 year)")) return;
   if((ME.stars||0) < subPrice()){ toast(T("insufficient")); return; }
   if(BACKEND_URL){ setBtnLoading(btn, true); const r = await api("buySub", {phone:ME.phone, session:mySess()}); setBtnLoading(btn, false);
     if(!r.ok){ toast(r.error === "funds" ? T("insufficient") : "Failed — try again."); return; }
@@ -2714,7 +2804,7 @@ function navSwipe(dir){
 
 /* ---------------- Help / Contact / Modals ---------------- */
 function showModal(html, cls){ $("modal-root").innerHTML = `<div class="mback${cls ? " " + cls : ""}" onclick="if(event.target===this)closeModal()"><div class="modal">${html}</div></div>`; document.body.style.overflow = "hidden"; }
-function closeModal(){ $("modal-root").innerHTML=""; document.body.style.overflow = ""; setSearchIcon(false); }
+function closeModal(){ $("modal-root").innerHTML=""; document.body.style.overflow = ""; setSearchIcon(false); if(CB_RES){ const r = CB_RES; CB_RES = null; r(false); } }
 function showLoading(msg){ showModal(`<div style="text-align:center;padding:26px 6px"><div class="spin" style="margin:0 auto"></div><p class="sub" style="margin-top:12px">${msg || (LANG==="hi" ? "लोड हो रहा है…" : "Loading…")}</p></div>`); }
 function setBtnLoading(btn, on){
   if(!btn) return;
