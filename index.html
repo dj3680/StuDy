@@ -475,6 +475,22 @@ html[data-theme="dark"] .db-del{background:#3d2326;border-color:#6e3438;color:#f
 html[data-theme="dark"] #sharefloat{background:linear-gradient(180deg,#2a5cff,#1447c8);border-color:#2a5cff}
 #auth-cta{margin-top:14px}
 #auth-cta:empty{display:none;margin:0}
+
+/* ===== Round 40: podium ranks, reply feedback, dock nav ===== */
+.lb-ranknum{margin-top:-12px;position:relative;z-index:2;min-width:23px;height:23px;padding:0 6px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:900;border:2px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.28)}
+.lb-p.first .lb-ranknum{background:linear-gradient(180deg,#ffd968,#f5a623);color:#5b3b00}
+.lb-p.second .lb-ranknum{background:linear-gradient(180deg,#f4f7fc,#c3cede);color:#44506a}
+.lb-p.third .lb-ranknum{background:linear-gradient(180deg,#f6c48a,#dd9046);color:#5f3410}
+@keyframes dbNewIn{0%{opacity:0;transform:translateY(10px);background:#fff3cf}55%{opacity:1}100%{opacity:1;transform:translateY(0);background:transparent}}
+.db-reply.new{animation:dbNewIn 1.6s ease;border-radius:10px}
+.bnav button{transition:transform .38s cubic-bezier(.34,1.45,.64,1),font-size .3s ease,color .3s ease,background .3s ease,box-shadow .3s ease}
+.bnav button svg{transition:width .38s cubic-bezier(.34,1.45,.64,1),height .38s cubic-bezier(.34,1.45,.64,1),opacity .3s ease}
+.bnav button:not(.on){transform:translateY(3px)}
+.bnav button:not(.on) svg{width:19px;height:19px;opacity:.7}
+.bnav button.on{transform:translateY(-3px)}
+.bnav button.on svg{width:31px;height:31px}
+.bnav button svg+span{transition:opacity .3s ease}
+.bnav button:not(.on) svg+span{opacity:.55}
 </style>
 </head>
 <body>
@@ -2474,7 +2490,7 @@ async function showRewards(){
   const box = $("rank-body"); if(!box) return;
   const medals = ["🥇","🥈","🥉"];
   const rowHtml = (r, i, mine) => `<div class="testrow"${mine ? ' style="background:#fffbf0;border:1px solid #ecd28a;border-radius:10px;padding-left:8px;padding-right:8px"' : ""}><span class="lb-rankno">${i+1}</span><div class="lb-row-av">${avInner(r)}</div><div class="ti"><div class="tt">${esc(r.name)}${mine ? ' <span class="tag">You</span>' : ""}</div><div class="ts">${r.tests} ${T("testsTaken").toLowerCase()}${r.phone ? " · " + maskPhone(r.phone) : ""}</div></div><b>${r.score} pts</b></div>`;
-  const podHtml = (r, i, cls) => r ? `<div class="lb-p ${cls}"><div class="lb-crown">👑</div><div class="lb-av">${avInner(r)}</div><div class="lb-name">${esc(r.name)}${(meRank && meRank.rank===i+1) ? ' <span class="tag">You</span>' : ""}</div><div class="lb-score">${r.score} pts</div></div>` : `<div class="lb-p ${cls}"></div>`;
+  const podHtml = (r, i, cls) => r ? `<div class="lb-p ${cls}"><div class="lb-crown">👑</div><div class="lb-av">${avInner(r)}</div><div class="lb-ranknum">${i+1}</div><div class="lb-name">${esc(r.name)}${(meRank && meRank.rank===i+1) ? ' <span class="tag">You</span>' : ""}</div><div class="lb-score">${r.score} pts</div></div>` : `<div class="lb-p ${cls}"></div>`;
   let body = "";
   if(rows.length){
     body += `<div class="lb-podium"><div style="text-align:center;color:#fff;font-weight:900;font-size:16.5px;margin-bottom:13px">🏆 ${LANG==="hi" ? "लीडरबोर्ड" : "Leaderboard"}</div><div class="lb-top">${podHtml(rows[1],1,"second")}${podHtml(rows[0],0,"first")}${podHtml(rows[2],2,"third")}</div></div>`;
@@ -2516,14 +2532,19 @@ async function renderDoubts(){
   else posts = demoDoubts();
   paintDoubts(posts); dbMarkSeen();
 }
+function dbReplyHTML(rp, isNew){
+  const rimg = safePhoto(rp.image);
+  const rb = rimg ? `<img class="db-reply-img" src="${rimg}" alt="">${rp.text ? `<div class="db-reply-tx">${esc(rp.text)}</div>` : ""}` : `<div class="db-reply-tx">${esc(rp.text || "")}</div>`;
+  return `<div class="db-reply${isNew ? " new" : ""}"><div class="db-av">${avInner(rp)}</div><div class="db-reply-body"><span class="db-name">${esc(rp.name || "")}</span> <span class="db-time">· ${timeAgo(rp.at)}</span>${rb}</div></div>`;
+}
 function paintDoubts(posts){
   const box = $("doubts-list"); if(!box) return;
   posts = (posts || []).filter(p=> Date.now() - (p.at||0) < DOUBT_KEEP_MS).sort((a,b)=> (b.at||0) - (a.at||0));
   posts.forEach(p=>{ DB_LATEST = Math.max(DB_LATEST, p.at||0); (p.replies||[]).forEach(r=>{ DB_LATEST = Math.max(DB_LATEST, r.at||0); }); });
   if(!posts.length){ box.innerHTML = `<div class="card" style="text-align:center;padding:26px 16px"><div style="font-size:30px">💬</div><p class="sub" style="margin-top:8px">${LANG==="hi" ? "अभी कोई डाउट नहीं है — सबसे पहले अपना डाउट पोस्ट करें!" : "No doubts yet — be the first to post one!"}</p></div>`; return; }
   box.innerHTML = posts.map(p=>{
-    const reps = (p.replies || []).map(rp=>{ const rimg = safePhoto(rp.image); const rb = rimg ? `<img class="db-reply-img" src="${rimg}" alt="">${rp.text ? `<div class="db-reply-tx">${esc(rp.text)}</div>` : ""}` : `<div class="db-reply-tx">${esc(rp.text || "")}</div>`; return `<div class="db-reply"><div class="db-av">${avInner(rp)}</div><div class="db-reply-body"><span class="db-name">${esc(rp.name || "")}</span> <span class="db-time">· ${timeAgo(rp.at)}</span>${rb}</div></div>`; }).join("");
-    return `<div class="db-card">
+    const reps = (p.replies || []).map(rp=> dbReplyHTML(rp)).join("");
+    return `<div class="db-card" data-dbid="${p.id}">
       <div class="db-head"><div class="db-av">${avInner(p)}</div><div style="min-width:0"><div class="db-name">${esc(p.name || "")}</div><div class="db-time">${timeAgo(p.at)}</div></div>${(ME && (p.mine || p.phone === ME.phone)) ? `<button class="db-del" onclick="deleteDoubt('${p.id}')">🗑 ${LANG==="hi" ? "हटाएँ" : "Delete"}</button>` : ""}</div>
       ${safePhoto(p.image) ? `<img class="db-img" src="${safePhoto(p.image)}" alt="">${p.text ? `<div class="db-cap">${esc(p.text)}</div>` : ""}` : (p.text ? `<div class="db-text">${esc(p.text)}</div>` : "")}
       ${reps ? `<div class="db-replies">${reps}</div>` : ""}
@@ -2572,21 +2593,39 @@ async function doDeleteDoubt(id){
   toast(LANG==="hi" ? "🗑 डाउट हटा दिया गया" : "🗑 Doubt deleted");
   renderDoubts();
 }
+let DB_REPLYING = {};
+function dbAppendReply(id, rp){
+  const card = document.querySelector(`.db-card[data-dbid="${id}"]`); if(!card) return null;
+  let wrap = card.querySelector(".db-replies");
+  if(!wrap){ wrap = document.createElement("div"); wrap.className = "db-replies"; const rb = card.querySelector(".db-replybox"); card.insertBefore(wrap, rb); }
+  const tmp = document.createElement("div"); tmp.innerHTML = dbReplyHTML(rp, true);
+  const el = tmp.firstElementChild; wrap.appendChild(el);
+  return ()=>{ el.remove(); if(!wrap.children.length && !wrap.dataset.keep) wrap.remove(); };
+}
 async function replyDoubt(id){
-  if(!ME) return;
+  if(!ME || DB_REPLYING[id]) return;
   const inp = $("dbr-" + id); if(!inp) return;
   const text = inp.value.trim(); const image = DB_RIMG[id] || "";
   if(!text && !image) return;
+  const box = inp.closest(".db-replybox"); const btn = box ? box.querySelector(".btn") : null;
+  const card = document.querySelector(`.db-card[data-dbid="${id}"]`);
+  DB_REPLYING[id] = true; setBtnLoading(btn, true);
+  inp.value = ""; delete DB_RIMG[id];
+  const pv = card ? card.querySelector(".db-rimg-prev") : null; if(pv) pv.remove();
+  const mine = {name: ME.name || "", photo: ME.photo || "", text, image, at: Date.now()};
+  const undo = dbAppendReply(id, mine);
+  let okSend = true;
   if(BACKEND_URL){
     const r = await api("doubtReply", {phone: ME.phone, session: mySess(), id, text, image});
-    if(!r.ok){ toast(LANG==="hi" ? "जवाब नहीं गया — फिर कोशिश करें" : "Reply failed — try again"); return; }
+    okSend = !!r.ok;
   } else {
-    const d = demoDoubts(); const p = d.find(x=> x.id === id); if(!p) return;
-    (p.replies = p.replies || []).push({name: ME.name || "", phone: ME.phone, photo: ME.photo || "", text, image, at: Date.now()});
-    saveDemoDoubts(d);
+    const d = demoDoubts(); const p = d.find(x=> x.id === id);
+    if(!p) okSend = false;
+    else { (p.replies = p.replies || []).push({name: mine.name, phone: ME.phone, photo: mine.photo, text, image, at: mine.at}); saveDemoDoubts(d); }
   }
-  delete DB_RIMG[id];
-  renderDoubts();
+  DB_REPLYING[id] = false; setBtnLoading(btn, false);
+  if(okSend){ toast(LANG==="hi" ? "✅ जवाब पोस्ट हो गया" : "✅ Reply posted"); }
+  else { if(undo) undo(); inp.value = text; if(image) DB_RIMG[id] = image; toast(LANG==="hi" ? "जवाब नहीं गया — फिर कोशिश करें" : "Reply failed — try again"); }
 }
 function dbReplyPick(id){ DB_RFOR = id; const f = $("db-rfile"); if(f) f.click(); }
 async function dbReplyImgChosen(inp){
