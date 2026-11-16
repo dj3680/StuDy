@@ -85,8 +85,6 @@ header{position:sticky;top:0;z-index:50;background:var(--hdr);-webkit-backdrop-f
 #igfloat.labeled,#installfloat.labeled{width:auto!important;height:auto;min-height:44px;border-radius:999px!important;padding:9px 16px!important;gap:7px}
 #igfloat.labeled .promo-label,#installfloat.labeled .promo-label{max-width:210px;opacity:1}
 .promo-label{max-width:0;opacity:0;overflow:hidden;white-space:nowrap;font-size:12.5px;font-weight:700;transition:max-width .5s ease,opacity .4s ease,margin .5s ease}
-#igfloat.promo,#installfloat.promo{width:auto!important;border-radius:999px!important;padding:0 13px!important;gap:7px}
-#igfloat.promo .promo-label,#installfloat.promo .promo-label{max-width:210px;opacity:1}
 
 /* ---------- Type + layout ---------- */
 h1{font-size:21px;font-weight:800;letter-spacing:-.3px;color:var(--navy)}
@@ -491,6 +489,38 @@ html[data-theme="dark"] #sharefloat{background:linear-gradient(180deg,#2a5cff,#1
 .bnav button.on svg{width:31px;height:31px}
 .bnav button svg+span{transition:opacity .3s ease}
 .bnav button:not(.on) svg+span{opacity:.55}
+
+/* ===== Round 41: equal social cluster + entrance, totop fix, profile redesign ===== */
+#igfloat,#installfloat,#sharefloat,#tgfloat{position:static;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);box-shadow:0 4px 14px rgba(11,32,77,.14);display:flex;align-items:center;justify-content:center;color:var(--navy);cursor:pointer;flex:none;font-family:inherit;transition:transform .15s ease}
+#igfloat:active,#installfloat:active,#sharefloat:active,#tgfloat:active{transform:scale(.93)}
+#igfloat svg,#installfloat svg,#sharefloat svg,#tgfloat svg{width:21px;height:21px}
+#igfloat.labeled,#installfloat.labeled,#sharefloat.labeled,#tgfloat.labeled{width:auto!important;height:auto;min-height:44px;border-radius:999px!important;padding:9px 16px!important;gap:7px}
+#igfloat.labeled .promo-label,#installfloat.labeled .promo-label,#sharefloat.labeled .promo-label,#tgfloat.labeled .promo-label{max-width:210px;opacity:1}
+@keyframes socIn{0%{opacity:0;transform:scale(.25) translateY(16px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+#exam-actions.cluster-in>*{animation:socIn .7s cubic-bezier(.22,1.35,.36,1) both}
+#exam-actions.cluster-in>*:nth-child(2){animation-delay:.09s}
+#exam-actions.cluster-in>*:nth-child(3){animation-delay:.18s}
+#exam-actions.cluster-in>*:nth-child(4){animation-delay:.27s}
+#totop{bottom:calc(100px + env(safe-area-inset-bottom));z-index:70}
+#screen-profile>.card:first-of-type{background:linear-gradient(160deg,#1a56db,#0b2a5b 78%);border:none;color:#fff;border-radius:22px;box-shadow:0 18px 36px -14px rgba(11,42,91,.5);padding:18px 16px}
+#screen-profile>.card:first-of-type .sub{color:rgba(255,255,255,.8)}
+#screen-profile>.card:first-of-type #pf-avatar{width:76px;height:76px;font-size:29px;border:3px solid rgba(255,201,60,.9);box-shadow:0 8px 20px -6px rgba(0,0,0,.5)}
+#screen-profile>.card:first-of-type #pf-name{color:#fff}
+#screen-profile>.card:first-of-type .bar{background:rgba(255,255,255,.22)}
+#screen-profile>.card:first-of-type .bar i{background:linear-gradient(90deg,#ffd968,#f5a623)}
+#screen-profile>.card:first-of-type .btn:not(.ghost){background:linear-gradient(180deg,#ffd968,#f0ad1f);color:#4a2f00;border:none}
+#pf-premium{background:rgba(255,255,255,.16);color:#ffe9a8;border:1px solid rgba(255,255,255,.35);cursor:pointer}
+.pf-qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.pf-qab{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--navy);cursor:pointer;box-shadow:0 4px 12px rgba(11,32,77,.06);transition:transform .15s ease;font-family:inherit}
+.pf-qab:active{transform:scale(.95)}
+.pf-qa-ic{font-size:21px;line-height:1}
+html[data-theme="dark"] .pf-qab{color:#e8ecf6}
+.pf-links{padding:4px 14px;margin-top:10px}
+.pf-link{display:flex;align-items:center;gap:11px;padding:13px 2px;cursor:pointer;font-weight:700;font-size:14px;color:var(--navy)}
+.pf-link + .pf-link{border-top:1px solid var(--line)}
+.pf-link-ic{font-size:17px;width:22px;text-align:center;flex:none}
+.pf-chev{margin-left:auto;color:var(--mut);font-size:18px}
+html[data-theme="dark"] .pf-link{color:#e8ecf6}
 </style>
 </head>
 <body>
@@ -632,7 +662,7 @@ html[data-theme="dark"] #sharefloat{background:linear-gradient(180deg,#2a5cff,#1
         <input type="file" id="pf-photo-in" accept="image/*" class="hidden" onchange="pickPhoto(this)">
         <div style="min-width:0;flex:1">
           <div style="font-size:17px;font-weight:800" id="pf-name"></div>
-          <span class="tag" id="pf-level" style="margin-top:4px"></span>
+          <span class="tag" id="pf-level" style="margin-top:4px"></span> <span class="tag" id="pf-premium" style="margin-top:4px" onclick="go('wallet')"></span>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div class="sub" data-i18n="yourBalance">Your balance</div>
@@ -685,11 +715,16 @@ html[data-theme="dark"] #sharefloat{background:linear-gradient(180deg,#2a5cff,#1
     <button class="collapse-h" onclick="toggleCollapse('pf-attempts-wrap',this)"><span data-i18n="myAttempts">My attempts</span><span class="car">▾</span></button>
     <div id="pf-attempts-wrap" class="hidden"><div class="card" id="pf-attempts" style="padding:4px 14px"></div></div>
     <div id="admin-entry" class="hidden" style="margin-top:16px"><button class="btn" style="width:100%" onclick="go('admin')">Admin Panel</button></div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:16px">
-      <button class="btn gold" style="width:100%" onclick="showReportCard()">📄 <span data-i18n="reportCard">My Report Card</span></button>
-      <button class="btn" style="width:100%" onclick="showVerifier()">🔎 <span data-i18n="verifyCard">Verify Report Card</span></button>
-      <button class="btn ghost" style="width:100%" onclick="showHelp()" data-i18n="helpLink">Help / FAQ</button>
-      <button class="btn ghost" style="width:100%" onclick="showContact()" data-i18n="contactLink">Contact Us</button>
+    <div class="pf-qa">
+      <button class="pf-qab" onclick="go('wallet')"><span class="pf-qa-ic">💰</span><span>Wallet</span></button>
+      <button class="pf-qab" onclick="shareApp()"><span class="pf-qa-ic">🔗</span><span>Share App</span></button>
+      <button class="pf-qab" onclick="showRewards()"><span class="pf-qa-ic">🏆</span><span>Ranks</span></button>
+      <button class="pf-qab" onclick="showReportCard()"><span class="pf-qa-ic">📄</span><span data-i18n="reportCard">My Report Card</span></button>
+    </div>
+    <div class="card pf-links">
+      <div class="pf-link" onclick="showVerifier()"><span class="pf-link-ic">🔎</span><span data-i18n="verifyCard">Verify Report Card</span><span class="pf-chev">›</span></div>
+      <div class="pf-link" onclick="showHelp()"><span class="pf-link-ic">❓</span><span data-i18n="helpLink">Help / FAQ</span><span class="pf-chev">›</span></div>
+      <div class="pf-link" onclick="showContact()"><span class="pf-link-ic">✉️</span><span data-i18n="contactLink">Contact Us</span><span class="pf-chev">›</span></div>
     </div>
     <button class="btn red" style="width:100%;margin-top:14px" onclick="doLogout()">⏻ <span data-i18n="logout">Logout</span></button>
   </section>
@@ -835,6 +870,10 @@ html[data-theme="dark"] #sharefloat{background:linear-gradient(180deg,#2a5cff,#1
 <a id="igfloat" href="https://www.instagram.com/dinesh.jangir_/" target="_blank" rel="noopener" aria-label="Instagram — dinesh.jangir_">
   <svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igg" x1="0" y1="24" x2="24" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".65" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="url(#igg)" stroke-width="2"/><circle cx="12" cy="12" r="4.4" stroke="url(#igg)" stroke-width="2"/><circle cx="17.6" cy="6.4" r="1.4" fill="url(#igg)"/></svg><span class="promo-label">Follow on Instagram</span>
 </a>
+      <a id="tgfloat" href="https://t.me/Study_anuj?text=Hi.%20I%27m%20a%20user%20of%20StuDy%20App%2C%20I%20need%20some%20help." target="_blank" rel="noopener" aria-label="Telegram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+        <span class="promo-label">Telegram</span>
+      </a>
 
 <!-- Floating Install -->
 <button id="installfloat" class="hidden" onclick="promptInstall(true)" aria-label="Install StuDy app" title="Install StuDy app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10.5"/><path d="m6.8 10 5.2 5.2L17.2 10"/><path d="M4.5 20h15"/></svg><span class="promo-label">Download app</span></button>
@@ -1029,7 +1068,7 @@ const subName = (cat, sub, lang) => { const hi = lang==="hi";
 
 /* ---------------- i18n ---------------- */
 const STR = {
-en:{tagline:"Tests • Mocks • Notes — UPSC · RPSC · SSC",login:"Login",register:"Register",name:"Student name",phone:"Phone number",password:"Password",gmail:"Gmail",dob:"Date of birth",otp:"OTP (sent to your Gmail)",spamNote:"If you don't find the OTP in your inbox, please check the Spam folder.",loginBtn:"Login",forgot:"Forgot password?",sendOtp:"Send OTP & Register",verifyBtn:"Verify OTP & Create Account",helpLink:"Help / FAQ",contactLink:"Contact Us",langNote:"Language can be changed anytime in your Profile.",chooseCat:"Choose your exam",freeMocks:"Free mock tests",whyUs:"Why StuDy?",why1t:"StuDy wallet",why1:"Top up once (min ₹100), then buy any test or notes instantly with your balance.",why2t:"No repeated questions",why2:"A question once shown to you is never repeated in your account.",why3t:"Detailed results & solutions",why3:"Score, rank, percentile, accuracy and full solutions.",why4t:"Top rankers win ₹100",why4:"Hold Rank #1 on the leaderboard continuously for a full week (7 days) and win a ₹100 bonus — credited automatically to your account. Every week is a new race!",back:"Back",subjectTests:"Subject-wise tests",fullMock:"Full mock test",paidNotes:"Paid notes (PDF)",wallet:"StuDy Wallet",yourBalance:"Your balance",starsUse:"Stars buy tests, mocks and notes",addStars:"Add money",addStarsBtn:"Add money",minDep:"Or pay by UPI QR — packs of ₹100, ₹200, ₹500 or ₹1,000.",scanPay:"Scan the QR with any UPI app (GPay / PhonePe / Paytm) and pay.",utr:"UPI Transaction / UTR number (12 digits)",paidBtn:"I have paid — submit for approval",approveNote:"Stars are credited after a quick approval, usually within a few hours.",history:"History",profile:"Profile",levelProgress:"Progress to next level",testsTaken:"Tests taken",avgScore:"Average score",accuracy:"Accuracy",settings:"Settings",appLang:"App language / ऐप भाषा",notifT:"Notifications",notifD:"Get alerts for new tests and current affairs",enable:"Enable",installT:"Install app",installD:"Add StuDy to your home screen",install:"Install",myPurchases:"My purchases",myAttempts:"My attempts",logout:"Logout",notifications:"Notifications",result:"Result",rank:"Rank",percentile:"Percentile",correct:"Correct",wrong:"Wrong",skipped:"Skipped",goHome:"Go home",reattempt:"Re-attempt (practice)",solutions:"Solutions",navHome:"Home",navWallet:"Wallet",navNotif:"Alerts",navProfile:"Profile",navNotes:"Notes",navPyq:"PYQ",lgAns:"Answered",lgNot:"Not answered",lgMark:"Marked for review",lgNotVis:"Not visited",
+en:{tagline:"Tests • Mocks • Notes — UPSC · RPSC · SSC",login:"Login",register:"Register",name:"Student name",phone:"Phone number",password:"Password",gmail:"Gmail",dob:"Date of birth",otp:"OTP (sent to your Gmail)",spamNote:"If you don't find the OTP in your inbox, please check the Spam folder.",loginBtn:"Login",forgot:"Forgot password?",sendOtp:"Send OTP & Register",verifyBtn:"Verify OTP & Create Account",helpLink:"Help / FAQ",contactLink:"Contact Us",langNote:"Language can be changed anytime in your Profile.",chooseCat:"Choose your exam",freeMocks:"Free mock tests",whyUs:"Why StuDy?",why1t:"StuDy wallet",why1:"Top up once (min ₹100), then buy any test or notes instantly with your balance.",why2t:"No repeated questions",why2:"A question once shown to you is never repeated in your account.",why3t:"Detailed results & solutions",why3:"Score, rank, percentile, accuracy and full solutions.",why4t:"Top rankers win ₹100",why4:"Hold Rank #1 on the leaderboard continuously for a full week (7 days) and win a ₹100 bonus — credited automatically to your account. Every week is a new race!",back:"Back",subjectTests:"Subject-wise tests",fullMock:"Full mock test",paidNotes:"Paid notes (PDF)",wallet:"StuDy Wallet",yourBalance:"Your balance",starsUse:"Your balance buys tests, mocks and notes",addStars:"Add money",addStarsBtn:"Add money",minDep:"Or pay by UPI QR — packs of ₹100, ₹200, ₹500 or ₹1,000.",scanPay:"Scan the QR with any UPI app (GPay / PhonePe / Paytm) and pay.",utr:"UPI Transaction / UTR number (12 digits)",paidBtn:"I have paid — submit for approval",approveNote:"Money is credited after a quick approval, usually within a few hours.",history:"History",profile:"Profile",levelProgress:"Progress to next level",testsTaken:"Tests taken",avgScore:"Average score",accuracy:"Accuracy",settings:"Settings",appLang:"App language / ऐप भाषा",notifT:"Notifications",notifD:"Get alerts for new tests and current affairs",enable:"Enable",installT:"Install app",installD:"Add StuDy to your home screen",install:"Install",myPurchases:"My purchases",myAttempts:"My attempts",logout:"Logout",notifications:"Notifications",result:"Result",rank:"Rank",percentile:"Percentile",correct:"Correct",wrong:"Wrong",skipped:"Skipped",goHome:"Go home",reattempt:"Re-attempt (practice)",solutions:"Solutions",navHome:"Home",navWallet:"Wallet",navNotif:"Alerts",navProfile:"Profile",navNotes:"Notes",navPyq:"PYQ",lgAns:"Answered",lgNot:"Not answered",lgMark:"Marked for review",lgNotVis:"Not visited",
 free:"FREE",start:"Start",buyStart:"Buy & Start",owned:"Owned",questions:"questions",minutes:"min",attempts:"attempts",bestScore:"Best (1st attempt)",download:"Download",buyNotes:"Buy notes",bundle:"All subjects — one PDF",bundleSub:"Every subject of this exam in a single PDF",mockSub:"Mixed questions from all subjects",freeMockSub:"One FREE full mock for this exam",firstCounts:"Only your first attempt's marks count. Re-attempts are free practice.",depositPending:"Deposit submitted — waiting for approval.",noHistory:"Nothing here yet.",noNotif:"No notifications yet.",noPurchases:"No purchases yet.",noAttempts:"No attempts yet — take your first test!",errName:"Please enter the student's full name.",errPhone:"Enter a valid 10-digit phone number.",errPass:"Password must be at least 6 characters.",errGmail:"Enter a valid Gmail address.",errDob:"Select your date of birth.",errOtp:"Enter the 6-digit OTP.",errExists:"This phone number is already registered. Please login.",errNoUser:"Account not found. Please register first.",errBadPass:"Wrong password. Please try again.",errBadOtp:"Incorrect or expired OTP.",otpSent:"OTP sent to your Gmail. If you don't find it, check the Spam folder.",welcome:"Welcome to StuDy!",insufficient:"Not enough balance. Add money to your StuDy wallet first.",purchased:"Unlocked!",depErrUtr:"Enter the 12-digit UTR / transaction number.",depDup:"This UTR is already submitted.",submitConfirm:"Submit the test? You cannot change answers after submitting.",timeUp:"Time is over — your test was auto-submitted.",firstAttemptNote:"This score is from your first attempt and is final.",practiceNote:"Practice attempt — your first-attempt score remains the official one.",level:"Level",reportCard:"My Report Card",verifyCard:"Verify Report Card",telegram:"Chat on Telegram",telegramSub:"Fastest support — replies within a few hours"},
 hi:{tagline:"टेस्ट • मॉक • नोट्स — UPSC · RPSC · SSC",login:"लॉगिन",register:"रजिस्टर",name:"छात्र का नाम",phone:"फ़ोन नंबर",password:"पासवर्ड",gmail:"Gmail",dob:"जन्म तिथि",otp:"OTP (आपके Gmail पर भेजा गया)",spamNote:"यदि OTP इनबॉक्स में न मिले, तो कृपया Spam फ़ोल्डर देखें।",loginBtn:"लॉगिन करें",forgot:"पासवर्ड भूल गए?",sendOtp:"OTP भेजें और रजिस्टर करें",verifyBtn:"OTP सत्यापित करें और खाता बनाएँ",helpLink:"सहायता / FAQ",contactLink:"संपर्क करें",langNote:"भाषा कभी भी प्रोफ़ाइल में बदली जा सकती है।",chooseCat:"अपनी परीक्षा चुनें",freeMocks:"निःशुल्क मॉक टेस्ट",whyUs:"StuDy ही क्यों",why1t:"StuDy वॉलेट",why1:"एक बार टॉप-अप करें (न्यूनतम ₹100), फिर बैलेंस से कोई भी टेस्ट या नोट्स तुरंत खरीदें।",why2t:"कोई प्रश्न दोहराया नहीं",why2:"जो प्रश्न आपको एक बार दिखा, वह आपके खाते में दोबारा नहीं आएगा।",why3t:"विस्तृत परिणाम और हल",why3:"स्कोर, रैंक, प्रतिशतक, सटीकता और पूर्ण हल।",why4t:"टॉप रैंकर्स जीतें ₹100",why4:"लीडरबोर्ड पर लगातार पूरे एक सप्ताह (7 दिन) Rank #1 बनाए रखें और ₹100 बोनस जीतें — आपके खाते में अपने-आप क्रेडिट होंगे। हर सप्ताह एक नई दौड़ है!",back:"वापस",subjectTests:"विषयवार टेस्ट",fullMock:"पूर्ण मॉक टेस्ट",paidNotes:"सशुल्क नोट्स (PDF)",wallet:"StuDy वॉलेट",yourBalance:"आपका बैलेंस",starsUse:"बैलेंस से टेस्ट, मॉक और नोट्स खरीदें",addStars:"पैसे जोड़ें",addStarsBtn:"पैसे जोड़ें",minDep:"या UPI QR से जोड़ें — ₹100, ₹200, ₹500 या ₹1,000 के पैक।",scanPay:"किसी भी UPI ऐप (GPay / PhonePe / Paytm) से QR स्कैन कर भुगतान करें।",utr:"UPI लेनदेन / UTR नंबर (12 अंक)",paidBtn:"मैंने भुगतान कर दिया — स्वीकृति हेतु भेजें",approveNote:"त्वरित स्वीकृति के बाद पैसे जुड़ जाते हैं, प्रायः कुछ घंटों में।",history:"इतिहास",profile:"प्रोफ़ाइल",levelProgress:"अगले स्तर की प्रगति",testsTaken:"दिए गए टेस्ट",avgScore:"औसत स्कोर",accuracy:"सटीकता",settings:"सेटिंग्स",appLang:"ऐप भाषा / App language",notifT:"सूचनाएँ",notifD:"नए टेस्ट और समसामयिकी की सूचना पाएँ",enable:"चालू करें",installT:"ऐप इंस्टॉल करें",installD:"StuDy को होम स्क्रीन पर जोड़ें",install:"इंस्टॉल",myPurchases:"मेरी खरीद",myAttempts:"मेरे प्रयास",logout:"लॉगआउट",notifications:"सूचनाएँ",result:"परिणाम",rank:"रैंक",percentile:"प्रतिशतक",correct:"सही",wrong:"गलत",skipped:"छोड़े गए",goHome:"होम पर जाएँ",reattempt:"पुनः प्रयास (अभ्यास)",solutions:"हल",navHome:"होम",navWallet:"वॉलेट",navNotif:"सूचनाएँ",navProfile:"प्रोफ़ाइल",navNotes:"नोट्स",navPyq:"PYQ",lgAns:"उत्तर दिया",lgNot:"उत्तर नहीं दिया",lgMark:"समीक्षा हेतु चिह्नित",lgNotVis:"देखा नहीं",
 free:"निःशुल्क",start:"प्रारंभ करें",buyStart:"खरीदें और प्रारंभ करें",owned:"खरीदा हुआ",questions:"प्रश्न",minutes:"मिनट",attempts:"प्रयास",bestScore:"सर्वश्रेष्ठ (पहला प्रयास)",download:"डाउनलोड",buyNotes:"नोट्स खरीदें",bundle:"सभी विषय — एक PDF",bundleSub:"इस परीक्षा के सभी विषय एक ही PDF में",mockSub:"सभी विषयों के मिश्रित प्रश्न",freeMockSub:"इस परीक्षा का एक निःशुल्क पूर्ण मॉक",firstCounts:"केवल आपके पहले प्रयास के अंक मान्य हैं। पुनः प्रयास निःशुल्क अभ्यास है।",depositPending:"जमा अनुरोध भेजा गया — स्वीकृति की प्रतीक्षा है।",noHistory:"अभी यहाँ कुछ नहीं है।",noNotif:"अभी कोई सूचना नहीं है।",noPurchases:"अभी कोई खरीद नहीं है।",noAttempts:"अभी कोई प्रयास नहीं — अपना पहला टेस्ट दें!",errName:"कृपया छात्र का पूरा नाम डालें।",errPhone:"सही 10-अंकों का फ़ोन नंबर डालें।",errPass:"पासवर्ड कम से कम 6 अक्षरों का हो।",errGmail:"सही Gmail पता डालें।",errDob:"अपनी जन्म तिथि चुनें।",errOtp:"6-अंकों का OTP डालें।",errExists:"यह फ़ोन नंबर पहले से रजिस्टर्ड है। कृपया लॉगिन करें।",errNoUser:"खाता नहीं मिला। कृपया पहले रजिस्टर करें।",errBadPass:"गलत पासवर्ड। पुनः प्रयास करें।",errBadOtp:"गलत या समाप्त OTP।",otpSent:"OTP आपके Gmail पर भेजा गया। न मिले तो Spam फ़ोल्डर देखें।",welcome:"StuDy में आपका स्वागत है!",insufficient:"बैलेंस पर्याप्त नहीं है। पहले StuDy वॉलेट में पैसे जोड़ें।",purchased:"अनलॉक हो गया!",depErrUtr:"12-अंकों का UTR / लेनदेन नंबर डालें।",depDup:"यह UTR पहले से भेजा जा चुका है।",submitConfirm:"टेस्ट जमा करें? जमा करने के बाद उत्तर नहीं बदले जा सकेंगे।",timeUp:"समय समाप्त — आपका टेस्ट स्वतः जमा हो गया।",firstAttemptNote:"यह स्कोर आपके पहले प्रयास का है और अंतिम है।",practiceNote:"अभ्यास प्रयास — आपका पहला-प्रयास स्कोर ही आधिकारिक रहेगा।",level:"स्तर",reportCard:"मेरी रिपोर्ट कार्ड",verifyCard:"रिपोर्ट कार्ड सत्यापित करें",telegram:"Telegram पर चैट करें",telegramSub:"सबसे तेज़ सहायता — कुछ घंटों में जवाब"}
@@ -1050,8 +1089,8 @@ const DB = {
 };
 const DEFAULT_SETTINGS = {
   prices:{ test:5, mock:10, notes:30, bundle:50, sub:1000 },
-  help:{ en:"How to use StuDy\n\n1. Register with your name, phone number and Gmail.\n2. Add money to your StuDy wallet using UPI (minimum ₹100, then multiples of ₹50).\n3. Buy any subject test (₹__T__), full mock (₹__M__) or notes (₹__N__) — once bought, it stays unlocked in your account forever.\n4. Your first attempt's marks are final; re-attempts are free practice with fresh questions.\n5. A question once shown to you will not repeat in your account (except a few very important ones).\n\nPayments are approved manually, usually within a few hours. If your stars don't arrive, contact us with your UTR number.",
-         hi:"StuDy का उपयोग कैसे करें\n\n1. अपने नाम, फ़ोन नंबर और Gmail से रजिस्टर करें।\n2. UPI से StuDy वॉलेट में पैसे जोड़ें (न्यूनतम ₹100, फिर ₹50 के गुणज)।\n3. कोई भी विषय टेस्ट (₹__T__), पूर्ण मॉक (₹__M__) या नोट्स (₹__N__) खरीदें — एक बार खरीदा, हमेशा अनलॉक रहेगा।\n4. पहले प्रयास के अंक अंतिम हैं; पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ।\n5. जो प्रश्न एक बार दिखा, वह दोबारा नहीं आएगा (कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर)।\n\nभुगतान मैन्युअली स्वीकृत होते हैं, प्रायः कुछ घंटों में। स्टार्स न आएँ तो UTR नंबर के साथ संपर्क करें।" },
+  help:{ en:"How to use StuDy\n\n1. Register with your name, phone number and Gmail.\n2. Add money to your StuDy wallet using UPI (minimum ₹100, then multiples of ₹50).\n3. Buy any subject test (₹__T__), full mock (₹__M__) or notes (₹__N__) — once bought, it stays unlocked in your account forever.\n4. Your first attempt's marks are final; re-attempts are free practice with fresh questions.\n5. A question once shown to you will not repeat in your account (except a few very important ones).\n\nPayments are approved manually, usually within a few hours. If your money doesn't arrive, contact us with your UTR number.",
+         hi:"StuDy का उपयोग कैसे करें\n\n1. अपने नाम, फ़ोन नंबर और Gmail से रजिस्टर करें।\n2. UPI से StuDy वॉलेट में पैसे जोड़ें (न्यूनतम ₹100, फिर ₹50 के गुणज)।\n3. कोई भी विषय टेस्ट (₹__T__), पूर्ण मॉक (₹__M__) या नोट्स (₹__N__) खरीदें — एक बार खरीदा, हमेशा अनलॉक रहेगा।\n4. पहले प्रयास के अंक अंतिम हैं; पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ।\n5. जो प्रश्न एक बार दिखा, वह दोबारा नहीं आएगा (कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर)।\n\nभुगतान मैन्युअली स्वीकृत होते हैं, प्रायः कुछ घंटों में। पैसे न आएँ तो UTR नंबर के साथ संपर्क करें।" },
   contact:{ en:"StuDy Support\nTelegram: @Study_anuj\n(Please mention your registered phone number and UTR for payment queries.)", hi:"StuDy सहायता\nTelegram: @Study_anuj\n(भुगतान संबंधी प्रश्नों हेतु अपना रजिस्टर्ड फ़ोन नंबर और UTR अवश्य लिखें।)" }
 };
 function getSettings(){ if(!BACKEND_URL) return DB.read("settings", null) || structuredClone(DEFAULT_SETTINGS); return window._settings || structuredClone(DEFAULT_SETTINGS); }
@@ -1625,27 +1664,24 @@ function startCADaily(date, part){
    on the login screen they sit labelled, side by side, below the language
    line (#auth-actions); on Home they sit in the "Choose your exam" row. */
 function placeSocialBtns(where){
-  const ig = $("igfloat"), dl = $("installfloat"), sh = $("sharefloat"); if(!ig || !dl) return;
+  const ig = $("igfloat"), dl = $("installfloat"), sh = $("sharefloat"), tg = $("tgfloat"); if(!ig || !dl) return;
   if(where === "auth"){
     const box = $("auth-actions"); if(!box) return;
-    dl.classList.add("labeled"); ig.classList.add("labeled"); if(sh) sh.classList.add("labeled");
-    box.appendChild(dl); box.appendChild(ig); if(sh) box.appendChild(sh);
+    dl.classList.add("labeled"); ig.classList.add("labeled"); if(tg) tg.classList.add("labeled"); if(sh) sh.classList.add("labeled");
+    box.appendChild(dl); box.appendChild(ig); if(tg) box.appendChild(tg); if(sh) box.appendChild(sh);
   } else {
     const ea = $("exam-actions"); if(!ea) return;
-    dl.classList.remove("labeled"); ig.classList.remove("labeled"); if(sh) sh.classList.remove("labeled");
-    ea.appendChild(dl); ea.appendChild(ig); if(sh) ea.appendChild(sh);
+    dl.classList.remove("labeled"); ig.classList.remove("labeled"); if(tg) tg.classList.remove("labeled"); if(sh) sh.classList.remove("labeled");
+    ea.appendChild(dl); ea.appendChild(ig); if(tg) ea.appendChild(tg); if(sh) ea.appendChild(sh);
   }
 }
 /* Promo animation plays EVERY time the Home page opens (user request). */
 let _promoTimers = [];
 function playPromo(){
-  const ig = $("igfloat"), dl = $("installfloat"); if(!ig) return;
-  _promoTimers.forEach(clearTimeout); _promoTimers = [];
-  ig.classList.remove("promo"); if(dl) dl.classList.remove("promo");
-  _promoTimers.push(setTimeout(()=>{ ig.classList.add("promo"); }, 350));
-  _promoTimers.push(setTimeout(()=>{ ig.classList.remove("promo"); }, 3150));
-  _promoTimers.push(setTimeout(()=>{ if(dl && !dl.classList.contains("hidden")) dl.classList.add("promo"); }, 1000));
-  _promoTimers.push(setTimeout(()=>{ if(dl) dl.classList.remove("promo"); }, 3800));
+  const wrap = $("exam-actions"); if(!wrap) return;
+  wrap.classList.remove("cluster-in");
+  void wrap.offsetWidth;
+  wrap.classList.add("cluster-in");
 }
 function toggleCollapse(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); if(opening){ document.querySelectorAll('[id$="-wrap"]').forEach(o=>{ if(o.id !== id && !o.classList.contains("hidden")){ o.classList.add("hidden"); const b = o.previousElementSibling; if(b && b.classList) b.classList.remove("open"); } }); } el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); if(id.indexOf("notes-") === 0 && id.slice(-5) === "-wrap"){ NOTES_OPEN_CAT = opening ? id.slice(6, -5) : null; } }
 function hidePremiumStrip(){
@@ -2271,6 +2307,7 @@ function renderProfile(){
   const xp = firsts.reduce((s,a)=>s+a.correct*10,0);
   const lvl = 1+Math.floor(xp/200), into = xp%200;
   $("pf-level").textContent = T("level")+" "+lvl+" · "+xp+" XP";
+  $("pf-premium").textContent = isSubActive() ? "👑 Premium" : "Free plan";
   $("pf-xp").style.width = Math.round(100*into/200)+"%";
   $("pf-xp-txt").textContent = into+" / 200 XP";
   const P = getSettings().prices;
@@ -2684,16 +2721,16 @@ function setBtnLoading(btn, on){
   if(on){ if(btn.dataset._old === undefined) btn.dataset._old = btn.innerHTML; btn.disabled = true; btn.innerHTML = "⏳ " + (LANG==="hi" ? "कृपया प्रतीक्षा करें…" : "Please wait…"); }
   else { btn.disabled = false; if(btn.dataset._old !== undefined){ btn.innerHTML = btn.dataset._old; delete btn.dataset._old; } }
 }
-const HOWTO_TEXT = { en:"How to use StuDy\n\n1. Register with your name, phone number and Gmail.\n2. Add money to your StuDy wallet using UPI (minimum \u20B9100, then multiples of \u20B950).\n3. Buy any subject test (5\u2605), full mock (10\u2605) or notes (30\u2605) \u2014 once bought, it stays unlocked in your account forever.\n4. Your first attempt's marks are final; re-attempts are free practice with fresh questions.\n5. A question once shown to you will not repeat in your account (except a few very important ones).\n\nPayments are approved manually, usually within a few hours. If your stars don't arrive, contact us with your UTR number.", hi:"StuDy का उपयोग कैसे करें\n\n1. अपने नाम, फ़ोन नंबर और Gmail से रजिस्टर करें।\n2. UPI से StuDy वॉलेट में पैसे जोड़ें (न्यूनतम \u20B9100, फिर \u20B950 के गुणज)।\n3. कोई भी विषय टेस्ट (5\u2605), पूर्ण मॉक (10\u2605) या नोट्स (30\u2605) खरीदें \u2014 एक बार खरीदा, हमेशा अनलॉक रहेगा।\n4. पहले प्रयास के अंक अंतिम हैं; पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ।\n5. जो प्रश्न एक बार दिखा, वह दोबारा नहीं आएगा (कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर)।\n\nभुगतान मैन्युअली स्वीकृत होते हैं, प्रायः कुछ घंटों में। स्टार्स न आएँ तो UTR नंबर के साथ संपर्क करें।" };
+const HOWTO_TEXT = { en:"How to use StuDy\n\n1. Register with your name, phone number and Gmail.\n2. Add money to your StuDy wallet using UPI (minimum \u20B9100, then multiples of \u20B950).\n3. Buy any subject test, full mock or notes \u2014 once bought, it stays unlocked in your account forever.\n4. Your first attempt's marks are final; re-attempts are free practice with fresh questions.\n5. A question once shown to you will not repeat in your account (except a few very important ones).\n\nPayments are approved manually, usually within a few hours. If your money doesn't arrive, contact us with your UTR number.", hi:"StuDy का उपयोग कैसे करें\n\n1. अपने नाम, फ़ोन नंबर और Gmail से रजिस्टर करें।\n2. UPI से StuDy वॉलेट में पैसे जोड़ें (न्यूनतम \u20B9100, फिर \u20B950 के गुणज)।\n3. कोई भी विषय टेस्ट, पूर्ण मॉक या नोट्स खरीदें \u2014 एक बार खरीदा, हमेशा अनलॉक रहेगा।\n4. पहले प्रयास के अंक अंतिम हैं; पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ।\n5. जो प्रश्न एक बार दिखा, वह दोबारा नहीं आएगा (कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर)।\n\nभुगतान मैन्युअली स्वीकृत होते हैं, प्रायः कुछ घंटों में। पैसे न आएँ तो UTR नंबर के साथ संपर्क करें।" };
 const FAQ_TEXT = { en:`Frequently Asked Questions (FAQ)
 
-Q. How do I add stars to my wallet?
-A. Go to Wallet → Add money. Pay on the UPI QR (minimum Rs.100, then multiples of Rs.50), enter the 12-digit UTR number and tap "I have paid". Stars are credited after a quick manual approval, usually within a few hours.
+Q. How do I add money to my wallet?
+A. Go to Wallet → Add money. Pay on the UPI QR (minimum Rs.100, then multiples of Rs.50), enter the 12-digit UTR number and tap "I have paid". Your money is credited after a quick manual approval, usually within a few hours.
 
 Q. What is the Instagram bonus?
-A. Tick "Follow the owner on Instagram" while submitting your payment and you get 10% EXTRA stars on approval - for example, Rs.200 becomes 220 stars. Your follow may be checked before approval.
+A. Tick "Follow the owner on Instagram" while submitting your payment and you get 10% EXTRA balance on approval - for example, Rs.200 becomes ₹220. Your follow may be checked before approval.
 
-Q. I paid but my stars have not arrived. What should I do?
+Q. I paid but my balance has not arrived. What should I do?
 A. Approvals are manual, so please allow a few hours. If they still don't arrive, message us on Telegram (@Study_anuj) with your registered phone number and UTR number.
 
 Q. Can I re-attempt a test?
@@ -2720,13 +2757,13 @@ A. Android (Chrome): tap "Install" in your Profile. iPhone (Safari): tap the Sha
 Q. How do I change the app language?
 A. Profile - App language: switch between English and Hindi anytime.`, hi:`अक्सर पूछे जाने वाले प्रश्न (FAQ)
 
-प्र. वॉलेट में स्टार्स कैसे जोड़ें?
-उ. Wallet - Add stars पर जाएँ। UPI QR से भुगतान करें (न्यूनतम ₹100, फिर ₹50 के गुणज में), 12 अंकों का UTR नंबर डालें और "I have paid" दबाएँ। स्टार्स मैन्युअल स्वीकृति के बाद जुड़ते हैं, प्रायः कुछ घंटों में।
+प्र. वॉलेट में पैसे कैसे जोड़ें?
+उ. Wallet - Add money पर जाएँ। UPI QR से भुगतान करें (न्यूनतम ₹100, फिर ₹50 के गुणज में), 12 अंकों का UTR नंबर डालें और "I have paid" दबाएँ। पैसे मैन्युअल स्वीकृति के बाद जुड़ते हैं, प्रायः कुछ घंटों में।
 
 प्र. Instagram बोनस क्या है?
-उ. भुगतान भेजते समय "Follow the owner on Instagram" टिक करें - स्वीकृति पर 10% अतिरिक्त स्टार्स मिलते हैं, जैसे ₹200 पर 220 स्टार्स। स्वीकृति से पहले आपका फ़ॉलो जाँचा जा सकता है।
+उ. भुगतान भेजते समय "Follow the owner on Instagram" टिक करें - स्वीकृति पर 10% अतिरिक्त बैलेंस मिलता है, जैसे ₹200 पर ₹220। स्वीकृति से पहले आपका फ़ॉलो जाँचा जा सकता है।
 
-प्र. भुगतान किया, पर स्टार्स नहीं आए। क्या करूँ?
+प्र. भुगतान किया, पर बैलेंस नहीं आया। क्या करूँ?
 उ. स्वीकृति मैन्युअल होती है, कृपया कुछ घंटे प्रतीक्षा करें। फिर भी न आएँ तो Telegram (@Study_anuj) पर अपना रजिस्टर्ड फ़ोन नंबर और UTR भेजें।
 
 प्र. क्या मैं टेस्ट दोबारा दे सकता हूँ?
@@ -2742,7 +2779,7 @@ A. Profile - App language: switch between English and Hindi anytime.`, hi:`अ�
 उ. Login स्क्रीन पर "पासवर्ड भूल गए?" दबाएँ, रजिस्टर्ड फ़ोन नंबर डालें - OTP आपके रजिस्टर्ड Gmail पर आएगा। OTP डालकर नया पासवर्ड बनाएँ।
 
 प्र. रैंक कैसे तय होती है?
-उ. सभी टेस्टों के पहले प्रयासों के कुल अंकों से। टॉप रैंकर्स को वॉलेट में सीधे स्टार्स रिवार्ड मिलता है।
+उ. सभी टेस्टों के पहले प्रयासों के कुल अंकों से। टॉप रैंकर्स को वॉलेट में सीधे ₹ रिवार्ड मिलता है।
 
 प्र. रिपोर्ट कार्ड क्या है?
 उ. Profile से सत्यापित StuDy रिपोर्ट कार्ड (PDF) डाउनलोड कर सकते हैं - पूर्ण प्रयास रिकॉर्ड और सत्यापन कोड सहित। इसकी असलियत Profile - Verify Report Card से जाँची जा सकती है।
