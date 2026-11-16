@@ -565,6 +565,29 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
 .focus-cd-days b{display:block;font-size:27px;color:var(--gold);line-height:1}
 .focus-cd-days span{font-size:11px;opacity:.85}
 .focus-st{display:flex;align-items:center;gap:11px;margin-top:10px}
+
+/* ===== Round 44: solutions bookmark, closable focus cards, category countdown, refer, coupons ===== */
+.tq-head{display:flex;align-items:center;gap:8px}
+.sol-bmk{flex:none;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 10px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.sol-bmk.on{background:#9333ea;border-color:#9333ea;color:#fff}
+.focus-cd{position:relative}
+.focus-st{position:relative}
+.focus-x{position:absolute;top:7px;right:9px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(127,127,127,.18);color:inherit;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.focus-cd .focus-x{background:rgba(255,255,255,.18);color:#fff}
+.cat-cd{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 13px;border-radius:13px;background:linear-gradient(120deg,#1447c8,#0b2a5b);color:#fff;font-size:13.5px}
+.cat-cd b{color:var(--gold);white-space:nowrap}
+.ref-step{display:flex;gap:11px;padding:9px 0}
+.ref-step + .ref-step{border-top:1px solid var(--line2)}
+.ref-ic{font-size:19px;flex:none}
+.ref-locked{margin-top:12px;text-align:center;padding:24px 16px}
+.ref-link{margin-top:6px;padding:10px 12px;border:1.5px dashed var(--gold);border-radius:11px;background:var(--goldsoft);font-size:12.5px;word-break:break-all;font-weight:600}
+.ref-stat{flex:1;text-align:center;background:var(--bg2);border:1px solid var(--line2);border-radius:13px;padding:11px 6px}
+.ref-stat .n{font-size:21px;font-weight:900}
+.ref-stat .l{font-size:11.5px;color:var(--mut)}
+.ref-row{display:flex;gap:11px;align-items:center;margin-top:9px;padding:12px 14px}
+.ref-chip{flex:none;font-size:11px;font-weight:700;padding:5px 9px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);color:var(--mut);max-width:46%;text-align:center}
+.ref-chip.ok{background:#e9f9ee;border-color:#16a34a;color:#15803d}
+html[data-theme="dark"] .ref-chip.ok{background:#14301d;color:#4ade80}
 </style>
 </head>
 <body>
@@ -620,6 +643,7 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
         <p class="sub" style="margin-top:12px;text-align:center"><a href="#" onclick="showHelp();return false" data-i18n="helpLink">Help / FAQ</a> · <a href="#" onclick="showContact();return false" data-i18n="contactLink">Contact Us</a></p>
       </div>
       <div class="pf-link" onclick="go('bookmarks')"><span class="pf-link-ic">🔖</span><span>Bookmarked Questions</span><span class="pf-chev">›</span></div>
+      <div class="pf-link" onclick="go('refer')"><span class="pf-link-ic">🎁</span><span>Refer &amp; Win</span><span class="pf-chev">›</span></div>
       <div id="form-register" class="hidden">
         <div class="fld"><label data-i18n="name">Student name</label><input id="rg-name" type="text" placeholder="Your full name" autocomplete="name"></div>
         <div class="fld"><label data-i18n="phone">Phone number</label><input id="rg-phone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"></div>
@@ -657,6 +681,7 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
     <div style="display:flex;align-items:center;gap:12px;margin-top:14px">
       <img id="cat-logo" class="catlogo" src="" alt="" style="width:54px;height:54px">
       <div><h1 id="cat-title"></h1><p class="sub" id="cat-desc"></p></div>
+      <div id="cat-cd"></div>
     </div>
     <h2 data-i18n="subjectTests">Subject-wise tests</h2>
     <div class="card" id="subject-list" style="padding:4px 14px"></div>
@@ -693,6 +718,20 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
       <button class="btn gold" id="dep-btn" style="width:100%" onclick="submitDeposit(this)" data-i18n="paidBtn">I have paid — submit for approval</button>
       <p class="sub" style="margin-top:8px" data-i18n="approveNote">Money is credited after a quick approval, usually within a few hours.</p>
       <p class="sub" style="margin-top:6px">Payment issue? <a href="https://t.me/Study_anuj" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700">Message us on Telegram</a> — we will fix it.</p>
+    </div>
+    <h2>🎟️ <span data-i18n="couponTitle">Coupon code</span></h2>
+    <div class="card">
+      <p class="sub" style="margin-bottom:10px"><span data-i18n="couponHint">Have a coupon code? Enter it to get free wallet balance.</span></p>
+      <div style="display:flex;gap:8px">
+        <input id="cpn-code" placeholder="e.g. STUDY50" style="flex:1;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:14px;text-transform:uppercase;background:var(--card);color:var(--ink)">
+        <button class="btn gold" onclick="redeemCoupon(this)" data-i18n="couponBtn">Redeem</button>
+      </div>
+      <div class="err" id="cpn-err"></div><div class="okmsg" id="cpn-ok"></div>
+    </div>
+    <div class="card" style="margin-top:14px;display:flex;gap:12px;align-items:center;cursor:pointer" onclick="go('refer')">
+      <span style="font-size:26px">🎁</span>
+      <div style="flex:1;min-width:0"><b>Refer &amp; Win</b><div class="sub" id="w-refer-sub">Invite friends — you both get ₹5.</div></div>
+      <span style="color:#bbb;font-size:19px">›</span>
     </div>
     <h2 data-i18n="history">History</h2>
     <div class="card" id="wallet-history" style="padding:4px 14px"></div>
@@ -858,6 +897,10 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
   <section id="screen-bookmarks" class="hidden">
     <div id="bm-body"></div>
   </section>
+  <section id="screen-refer" class="hidden">
+    <h1 style="margin-top:6px">🎁 <span data-i18n="referTitle">Refer &amp; Win</span></h1>
+    <div id="refer-body"></div>
+  </section>
   <!-- ============ ADMIN ============ -->
   <section id="screen-admin" class="hidden">
     <h1>Admin Panel</h1>
@@ -871,6 +914,17 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
       <button class="btn sm ghost" id="ad-refresh" onclick="refreshAdminData()">↻ Refresh</button>
     </div>
     <div class="card" id="ad-payments"></div>
+    <h2>🎟️ Coupon codes</h2>
+    <div class="card">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div class="fld" style="flex:2;min-width:130px;margin:0"><label>Code</label><input id="ad-cpn-code" placeholder="e.g. STUDY50" style="text-transform:uppercase"></div>
+        <div class="fld" style="flex:1;min-width:90px;margin:0"><label>Amount (₹)</label><input id="ad-cpn-amt" type="number" placeholder="50"></div>
+        <div class="fld" style="flex:1;min-width:110px;margin:0"><label>Max uses (0 = unlimited)</label><input id="ad-cpn-max" type="number" placeholder="0"></div>
+      </div>
+      <button class="btn gold" style="width:100%;margin-top:10px" onclick="adminCouponAdd(this)">Create coupon</button>
+      <div class="err" id="ad-cpn-err"></div><div class="okmsg" id="ad-cpn-ok"></div>
+      <div id="ad-coupons" style="margin-top:8px"></div>
+    </div>
     <h2>Add balance to a user (no payment needed)</h2>
     <div class="card">
       <div class="grid g2">
@@ -962,7 +1016,7 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
   <div class="rotatehint">कृपया फ़ोन को घुमाकर landscape करें — Please rotate your phone for the best test view</div>
   <div class="tbody">
     <div class="tmain">
-      <div class="qnum" id="t-qnum">Question 1</div>
+      <div class="tq-head"><div class="qnum" id="t-qnum" style="flex:1">Question 1</div><button class="tbtn" id="t-bmk" onclick="tBookmark()">🔖 Save</button></div>
       <div class="qtxt" id="t-qtxt"></div>
       <div id="t-opts"></div>
     </div>
@@ -980,7 +1034,6 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
   <div class="tfoot">
     <button class="tbtn" id="t-prev" onclick="tNav(-1)">← Previous</button>
     <button class="tbtn m" id="t-mark" onclick="tMark()">Mark for Review</button>
-    <button class="tbtn" id="t-bmk" onclick="tBookmark()">🔖 Save</button>
     <button class="tbtn" id="t-clear" onclick="tClear()">Clear Response</button>
     <button class="tbtn n" id="t-next" onclick="tNav(1)">Next →</button>
     <button class="tbtn s" onclick="tConfirmSubmit()">Submit Test</button>
@@ -1007,6 +1060,10 @@ const ADMIN_PHONES = ["9588293680","9628187101"];  // silent admins: owner + par
 const UPI_ID = "dineshjangirdjsp-1@oksbi";
 const INSTAGRAM_URL = "https://www.instagram.com/dinesh.jangir_/";
 const SHARE_URL = "https://dj3680.github.io/StuDy/?install=1";
+try{ const _rp = new URLSearchParams(location.search).get("ref"); if(_rp && /^\d{10}$/.test(_rp)) localStorage.setItem("study_ref", _rp); }catch(e){}
+function pendingRef(){ try{ return localStorage.getItem("study_ref") || ""; }catch(e){ return ""; } }
+const REF_REWARD = 5, REF_MIN_DEP = 100;
+function myRefLink(){ return (ME && ME.firstDep) ? "https://dj3680.github.io/StuDy/?install=1&ref=" + ME.phone : SHARE_URL; }
 const SHARE_INSTALL = /[?&]install=1(?:&|$)/.test(location.search) || location.hash === "#install";
 
 const $ = id => document.getElementById(id);
@@ -1202,7 +1259,7 @@ let CURSCREEN = "auth";
 function go(screen){
   if(!NAVBACK && CURSCREEN && CURSCREEN !== screen && CURSCREEN !== "auth") NAVHIST = [CURSCREEN];
   CURSCREEN = screen;
-  ["auth","home","category","wallet","profile","notifications","result","admin","notes","pyq","doubts","pyqgroup","notesgroup","bookmarks"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
+  ["auth","home","category","wallet","profile","notifications","result","admin","notes","pyq","doubts","pyqgroup","notesgroup","bookmarks","refer"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
   $("appheader").classList.toggle("hidden", screen==="auth");
   $("bnav").classList.toggle("hidden", screen==="auth");
   ["home","pyq","notes","profile","doubts"].forEach(s=>{ const b=$("bn-"+s); if(b) b.classList.toggle("on", s===screen); });
@@ -1216,10 +1273,11 @@ function go(screen){
   if(screen==="notes") renderNotes();
   if(screen==="notesgroup") renderNotesExam();
   if(screen==="bookmarks") renderBookmarks();
+  if(screen==="refer") renderRefer();
   if(screen==="pyq") renderPYQ();
   if(screen==="pyqgroup") renderPYQGroup();
   if(screen==="doubts") renderDoubts();
-  if(screen==="admin") renderAdmin();
+  if(screen==="admin"){ renderAdmin(); loadAdminCoupons(); }
   if(screen !== "home") armBack();
   refreshHeader(); window.scrollTo(0,0);
   if(screen !== "doubts") checkDoubtBadge();
@@ -1271,15 +1329,16 @@ async function doRegister(){
   if(!/^\d{6}$/.test(code)) return err.textContent=T("errOtp");
   if(BACKEND_URL){
     setBtnLoading($("rg-btn"), true);
-    const r = await api("register", {..._otpFlow, code});
+    const r = await api("register", {..._otpFlow, code, ref: pendingRef()});
     setBtnLoading($("rg-btn"), false);
     if(!r.ok) return err.textContent = r.error==="exists" ? T("errExists") : T("errBadOtp");
     if(ADMIN_PHONES.includes(_otpFlow.phone)) _adminPass = _otpFlow.pass;
     finishLogin(r.user); return;
   }
   if(code!==_otpFlow.code || Date.now()>_otpFlow.exp) return err.textContent=T("errBadOtp");
+  const _ref = pendingRef(); const _refOk = _ref && /^\d{10}$/.test(_ref) && _ref !== _otpFlow.phone && Store.users().some(u=> u.phone === _ref);
   const user = { name:_otpFlow.name, phone:_otpFlow.phone, gmail:_otpFlow.gmail, dob:_otpFlow.dob, pass:_otpFlow.pass, stars:0, lang:LANG,
-                 purchases:{tests:{}, mocks:{}, notes:{}}, ledger:[], createdAt:Date.now(), seenNotif:0 };
+                 purchases:{tests:{}, mocks:{}, notes:{}}, ledger:[], createdAt:Date.now(), seenNotif:0, referredBy: _refOk ? _ref : "", firstDep:0, refRewarded:0 };
   const us = Store.users(); us.push(user); Store.saveUsers(us);
   finishLogin(user);
 }
@@ -1793,7 +1852,7 @@ function initReveal(){
   const els = document.querySelectorAll(".card:not(.rv), .tile:not(.rv)");
   if(!els.length) return;
   if(!("IntersectionObserver" in window)){ els.forEach(el=>{ el.classList.add("rv", "in"); }); return; }
-  if(!RVO) RVO = new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); RVO.unobserve(e.target); } }); }, {threshold:.06, rootMargin:"0px 0px -3% 0px"});
+  if(!RVO) RVO = new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); RVO.unobserve(e.target); } }); }, {threshold:0, rootMargin:"0px 0px -6% 0px"});
   els.forEach(el=>{ el.classList.add("rv"); RVO.observe(el); });
 }
 function toggleCollapse(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); if(opening){ document.querySelectorAll('[id$="-wrap"]').forEach(o=>{ if(o.id !== id && !o.classList.contains("hidden")){ o.classList.add("hidden"); const b = o.previousElementSibling; if(b && b.classList) b.classList.remove("open"); } }); } el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); if(id.indexOf("notes-") === 0 && id.slice(-5) === "-wrap"){ NOTES_OPEN_CAT = opening ? id.slice(6, -5) : null; } }
@@ -1820,6 +1879,11 @@ function tBookmark(){
   toast(on ? (LANG === "hi" ? "प्रश्न सेव हो गया — Profile → Bookmarks में मिलेगा" : "Saved — find it in Profile → Bookmarks") : (LANG === "hi" ? "सेव हटाया गया" : "Removed from bookmarks"));
 }
 function removeBookmark(id){ toggleBookmark(id); renderBookmarks(); }
+function solBookmark(btn, id){
+  const on = toggleBookmark(id);
+  if(btn){ btn.classList.toggle("on", on); btn.textContent = on ? "🔖 Saved" : "🔖 Save"; }
+  toast(on ? (LANG === "hi" ? "प्रश्न सेव हो गया — Profile → Bookmarks में मिलेगा" : "Saved — find it in Profile → Bookmarks") : (LANG === "hi" ? "सेव हटाया गया" : "Removed from bookmarks"));
+}
 function renderBookmarks(){
   const bm = getBookmarks();
   const byId = {}; (window.STUDY_QUESTIONS || []).forEach(q=>{ byId[q[0]] = q; });
@@ -1869,7 +1933,20 @@ function studyStreak(){
   while(days.has(d.toDateString())){ streak++; d.setDate(d.getDate() - 1); }
   return { streak, todayDone };
 }
-const EXAM_DATES = [ { name:{ en:"RAS Prelims 2026", hi:"RAS प्रीलिम्स 2026" }, date:"2026-12-06" } ];
+const EXAM_DATES = [ { cat:"rpsc", name:{ en:"RAS Prelims 2026", hi:"RAS प्रीलिम्स 2026" }, date:"2026-12-06" } ];
+function fxKey(kind){ return "study_fx_" + (ME ? ME.phone : "guest") + "_" + kind; }
+function fxClosed(kind){ try{ return localStorage.getItem(fxKey(kind)) === new Date().toDateString(); }catch(e){ return false; } }
+function closeFocus(kind){ try{ localStorage.setItem(fxKey(kind), new Date().toDateString()); }catch(e){} renderHomeFocus(); }
+function catCountdownHTML(cat){
+  const now = new Date(); const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  for(const e of EXAM_DATES){
+    if(e.cat !== cat) continue;
+    const days = Math.round((new Date(e.date + "T00:00:00") - today0) / 86400000);
+    if(days < 0) return "";
+    return `<div class="cat-cd">🎯 <span style="flex:1">${esc(e.name[LANG] || e.name.en)} · ${new Date(e.date + "T00:00:00").toLocaleDateString(LANG === "hi" ? "hi-IN" : "en-IN", { day:"numeric", month:"short", year:"numeric" })}</span><b>${days === 0 ? (LANG === "hi" ? "आज ही है!" : "Today!") : days + " " + (LANG === "hi" ? "दिन बाकी" : "days to go")}</b></div>`;
+  }
+  return "";
+}
 function renderHomeFocus(){
   const el = $("home-focus"); if(!el) return;
   if(!ME){ el.innerHTML = ""; return; }
@@ -1878,12 +1955,162 @@ function renderHomeFocus(){
   for(const e of EXAM_DATES){
     const days = Math.round((new Date(e.date + "T00:00:00") - today0) / 86400000);
     if(days < 0) continue;
-    cd = `<div class="card focus-cd"><div style="flex:1;min-width:0"><div class="focus-cd-name">🎯 ${esc(e.name[LANG] || e.name.en)}</div><div class="focus-cd-date">${new Date(e.date + "T00:00:00").toLocaleDateString(LANG === "hi" ? "hi-IN" : "en-IN", { day:"numeric", month:"short", year:"numeric" })}</div></div><div class="focus-cd-days"><b>${days}</b><span>${days === 0 ? (LANG === "hi" ? "आज ही है!" : "is today!") : (LANG === "hi" ? "दिन बाकी" : "days to go")}</span></div></div>`;
+    if(fxClosed("cd")){ cd = ""; break; }
+    cd = `<div class="card focus-cd"><div style="flex:1;min-width:0"><div class="focus-cd-name">🎯 ${esc(e.name[LANG] || e.name.en)}</div><div class="focus-cd-date">${new Date(e.date + "T00:00:00").toLocaleDateString(LANG === "hi" ? "hi-IN" : "en-IN", { day:"numeric", month:"short", year:"numeric" })}</div></div><div class="focus-cd-days"><b>${days}</b><span>${days === 0 ? (LANG === "hi" ? "आज ही है!" : "is today!") : (LANG === "hi" ? "दिन बाकी" : "days to go")}</span></div><button class="focus-x" onclick="closeFocus('cd')" aria-label="Close">✕</button></div>`;
     break;
   }
   const st = studyStreak();
-  const streakHtml = `<div class="card focus-st"><span style="font-size:22px">${st.streak > 0 || st.todayDone ? "🔥" : "🎯"}</span><div style="flex:1;min-width:0"><b>${st.streak} ${LANG === "hi" ? "दिन की स्ट्रीक" : "day streak"}</b><div class="sub">${st.todayDone ? (LANG === "hi" ? "आज का लक्ष्य पूरा ✓ — बढ़िया!" : "Today's goal done ✓ — great going!") : (LANG === "hi" ? "आज का लक्ष्य: 1 टेस्ट दें और स्ट्रीक जारी रखें" : "Today's goal: attempt 1 test to keep it going")}</div></div></div>`;
+  const streakHtml = fxClosed("st") ? "" : `<div class="card focus-st"><span style="font-size:22px">${st.streak > 0 || st.todayDone ? "🔥" : "🎯"}</span><div style="flex:1;min-width:0;padding-right:24px"><b>${st.streak} ${LANG === "hi" ? "दिन की स्ट्रीक" : "day streak"}</b><div class="sub">${st.todayDone ? (LANG === "hi" ? "आज का लक्ष्य पूरा ✓ — बढ़िया!" : "Today's goal done ✓ — great going!") : (LANG === "hi" ? "आज का लक्ष्य: 1 टेस्ट दें और स्ट्रीक जारी रखें" : "Today's goal: attempt 1 test to keep it going")}</div></div><button class="focus-x" onclick="closeFocus('st')" aria-label="Close">✕</button></div>`;
   el.innerHTML = cd + streakHtml;
+}
+
+/* ---------------- Round 44: Refer & Win + coupons ---------------- */
+function demoRefOnDeposit(phone, amount){
+  const us = Store.users(); const u = us.find(x=> x.phone === phone); if(!u || u.firstDep) return;
+  u.firstDep = amount;
+  const ref = u.referredBy;
+  if(ref && ref !== phone && !u.refRewarded && amount >= REF_MIN_DEP){
+    const r = us.find(x=> x.phone === ref);
+    if(r){
+      u.refRewarded = 1;
+      u.stars = (u.stars || 0) + REF_REWARD; u.ledger.unshift({at: Date.now(), amt: REF_REWARD, label: "Referral reward 🎁"});
+      r.stars = (r.stars || 0) + REF_REWARD; r.ledger.unshift({at: Date.now(), amt: REF_REWARD, label: "Referral reward 🎁"});
+      pushUnotif(ref, { title: "🎁 Referral reward", body: "Your friend " + (u.name || "") + " made their first deposit of ₹" + amount + " — you earned ₹" + REF_REWARD + ". Your friend also got ₹" + REF_REWARD + ".", link: "refer" });
+      pushUnotif(phone, { title: "🎁 Referral reward", body: "You earned ₹" + REF_REWARD + " referral reward — the friend who invited you also got ₹" + REF_REWARD + ".", link: "refer" });
+    }
+  }
+  Store.saveUsers(us);
+  if(ME && (ME.phone === phone || ME.phone === ref)){ const m = us.find(x=> x.phone === ME.phone); if(m){ ME.stars = m.stars; ME.ledger = m.ledger; ME.firstDep = m.firstDep; ME.refRewarded = m.refRewarded; } }
+}
+async function referData(){
+  if(BACKEND_URL){
+    const r = await api("referInfo", { phone: ME.phone, session: mySess() });
+    if(r && r.ok) return r;
+    return { ok:true, firstDep: ME.firstDep || 0, count: 0, earned: 0, list: [] };
+  }
+  const mine = Store.users().filter(x=> x.referredBy === ME.phone);
+  let earned = 0;
+  const list = mine.map(x=>{ const rw = x.refRewarded ? 1 : 0; earned += rw * REF_REWARD; return { name: x.name || "", at: x.createdAt || 0, dep: x.firstDep || 0, rewarded: rw }; }).sort((a, b)=> b.at - a.at);
+  return { ok:true, firstDep: ME.firstDep || 0, count: mine.length, earned, list };
+}
+async function shareRefer(){
+  const link = myRefLink();
+  const data = { title: "StuDy", text: LANG === "hi" ? "StuDy — UPSC · RPSC · SSC के टेस्ट, मॉक और नोट्स। मेरे लिंक से जुड़ें 👇" : "StuDy — tests, full mocks & notes for UPSC · RPSC · SSC. Join with my link 👇", url: link };
+  if(navigator.share){ try{ await navigator.share(data); }catch(e){} return; }
+  try{ await navigator.clipboard.writeText(link); toast(LANG === "hi" ? "इनवाइट लिंक कॉपी हो गया ✓" : "Invite link copied ✓"); }
+  catch(e){ showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">🔗 ${LANG === "hi" ? "आपका इनवाइट लिंक" : "Your invite link"}</h3><p class="sub" style="margin-top:8px;word-break:break-all">${esc(link)}</p>`); }
+}
+function copyRefer(){ const link = myRefLink(); if(navigator.clipboard) navigator.clipboard.writeText(link).then(()=> toast(LANG === "hi" ? "इनवाइट लिंक कॉपी हो गया ✓" : "Invite link copied ✓")).catch(()=>{}); }
+async function renderRefer(){
+  const box = $("refer-body"); if(!box || !ME) return;
+  box.innerHTML = `<div class="card" style="margin-top:14px;text-align:center;padding:22px"><span class="sub">${LANG === "hi" ? "लोड हो रहा है…" : "Loading…"}</span></div>`;
+  const d = await referData();
+  const unlocked = !!d.firstDep;
+  const steps = `<div class="card" style="margin-top:14px">
+    <div class="ref-step"><span class="ref-ic">1️⃣</span><div><b>${LANG === "hi" ? "पहले अपना पहला डिपॉज़िट करें" : "Make your first deposit"}</b><div class="sub">${LANG === "hi" ? "₹100 या अधिक का डिपॉज़िट अप्रूव होते ही आपका इनवाइट लिंक खुल जाएगा।" : "Deposit ₹100 or more — once approved, your invite link unlocks."}</div></div></div>
+    <div class="ref-step"><span class="ref-ic">2️⃣</span><div><b>${LANG === "hi" ? "दोस्तों को अपना लिंक भेजें" : "Share your invite link"}</b><div class="sub">${LANG === "hi" ? "जो भी आपके लिंक से रजिस्टर करेगा, वह आपकी रेफ़रल सूची में जुड़ेगा।" : "Anyone who registers from your link joins your referral list."}</div></div></div>
+    <div class="ref-step"><span class="ref-ic">3️⃣</span><div><b>${LANG === "hi" ? "दोनों को ₹" : "You both get ₹"}${REF_REWARD}${LANG === "hi" ? " मिलेंगे" : ""}</b><div class="sub">${LANG === "hi" ? "जब आपका दोस्त अपना पहला ₹100+ डिपॉज़िट करेगा, आपको और उसे — दोनों को ₹" + REF_REWARD + " वॉलेट में मिलेंगे।" : "When your friend makes their first deposit of ₹100+, you and your friend both get ₹" + REF_REWARD + " in your wallets."}</div></div></div>
+  </div>`;
+  const listHtml = `<h2 style="margin-top:18px">${LANG === "hi" ? "मेरी रेफ़रल सूची" : "My referrals"}</h2>` + (d.list.length ? d.list.map(x=> `<div class="card ref-row"><span class="avatar" style="width:38px;height:38px;font-size:15px">${esc((x.name || "?").slice(0, 1).toUpperCase())}</span><div style="flex:1;min-width:0"><b>${esc(x.name || "Student")}</b><div class="sub">${x.at ? new Date(x.at).toLocaleDateString(LANG === "hi" ? "hi-IN" : "en-IN", { day:"numeric", month:"short", year:"numeric" }) : ""}</div></div>${x.rewarded ? `<span class="ref-chip ok">✓ ₹${REF_REWARD} ${LANG === "hi" ? "मिला" : "earned"}</span>` : x.dep ? `<span class="ref-chip">${LANG === "hi" ? "₹" + x.dep + " डिपॉज़िट — ₹100 पर इनाम" : "Deposited ₹" + x.dep + " — reward at ₹100"}</span>` : `<span class="ref-chip">${LANG === "hi" ? "पहले डिपॉज़िट का इंतज़ार" : "Waiting for first deposit"}</span>`}</div>`).join("") : `<div class="card" style="text-align:center;padding:22px 14px"><p class="sub">${LANG === "hi" ? "अभी कोई दोस्त नहीं जुड़ा है। अपना लिंक शेयर करें!" : "No friends yet. Share your link to get started!"}</p></div>`);
+  let main = "";
+  if(!unlocked){
+    main = `<div class="card ref-locked"><div style="font-size:32px">🔒</div><b style="display:block;margin-top:6px">${LANG === "hi" ? "आपका इनवाइट लिंक अभी लॉक है" : "Your invite link is locked"}</div><p class="sub" style="margin-top:6px">${LANG === "hi" ? "अपना पहला डिपॉज़िट (₹100 या अधिक) करें और अप्रूवल के बाद लिंक अपने आप खुल जाएगा।" : "Make your first deposit (₹100 or more) — the link unlocks automatically once it's approved."}</p><button class="btn gold" style="margin-top:12px" onclick="go('wallet')">${LANG === "hi" ? "वॉलेट में जाएँ" : "Go to Wallet"}</button></div>`;
+  } else {
+    const link = myRefLink();
+    main = `<div class="card" style="margin-top:12px">
+      <div class="sub">${LANG === "hi" ? "आपका इनवाइट लिंक" : "Your invite link"}</div>
+      <div class="ref-link">${esc(link)}</div>
+      <div style="display:flex;gap:8px;margin-top:10px"><button class="btn" style="flex:1" onclick="shareRefer()">📤 ${LANG === "hi" ? "शेयर करें" : "Share"}</button><button class="btn ghost" style="flex:1" onclick="copyRefer()">📋 ${LANG === "hi" ? "कॉपी करें" : "Copy link"}</button></div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <div class="ref-stat"><div class="n">${d.count}</div><div class="l">${LANG === "hi" ? "दोस्त जुड़े" : "Friends joined"}</div></div>
+        <div class="ref-stat"><div class="n">₹${d.earned}</div><div class="l">${LANG === "hi" ? "कुल इनाम" : "Rewards earned"}</div></div>
+      </div>
+    </div>
+    `;
+  }
+  box.innerHTML = steps + main + listHtml;
+  initReveal();
+}
+function couponErrText(e){
+  const M = { badcode: ["Invalid coupon code.", "गलत कूपन कोड है।"], inactive: ["This coupon is no longer active.", "यह कूपन अब चालू नहीं है।"], expired: ["This coupon has expired.", "इस कूपन की समय-सीमा खत्म हो गई है।"], exhausted: ["This coupon's usage limit is over.", "इस कूपन की सीमा खत्म हो गई है।"], used: ["You have already used this coupon.", "आप इस कूपन का उपयोग पहले ही कर चुके हैं।"], nouser: ["Please login again.", "कृपया फिर से लॉगिन करें।"], session: ["Please login again.", "कृपया फिर से लॉगिन करें।"] };
+  const m = M[e] || ["Something went wrong — please try again.", "कुछ गड़बड़ हुई — कृपया फिर कोशिश करें।"];
+  return LANG === "hi" ? m[1] : m[0];
+}
+async function redeemCoupon(btn){
+  const code = ($("cpn-code").value || "").trim().toUpperCase();
+  const err = $("cpn-err"), ok = $("cpn-ok"); err.textContent = ""; ok.textContent = "";
+  if(!code) return err.textContent = LANG === "hi" ? "कूपन कोड लिखें" : "Enter a coupon code";
+  setBtnLoading(btn, true);
+  if(BACKEND_URL){
+    const r = await api("redeemCoupon", { phone: ME.phone, session: mySess(), code });
+    setBtnLoading(btn, false);
+    if(!r.ok){ err.textContent = couponErrText(r.error); return; }
+    ME = r.user; refreshHeader(); renderWallet();
+    ok.textContent = "🎉 ₹" + r.amount + (LANG === "hi" ? " आपके वॉलेट में जुड़ गए!" : " added to your wallet!");
+    toast("🎟️ +₹" + r.amount);
+    return;
+  }
+  const list = DB.read("coupons", []); const c = list.find(x=> String(x.code).toUpperCase() === code);
+  if(!c){ setBtnLoading(btn, false); return err.textContent = couponErrText("badcode"); }
+  if(String(c.active) === "0"){ setBtnLoading(btn, false); return err.textContent = couponErrText("inactive"); }
+  if(c.expiresAt && +c.expiresAt < Date.now()){ setBtnLoading(btn, false); return err.textContent = couponErrText("expired"); }
+  if(+c.maxUses && (+c.usedCount || 0) >= +c.maxUses){ setBtnLoading(btn, false); return err.textContent = couponErrText("exhausted"); }
+  const uses = DB.read("couponUses", []);
+  if(uses.some(u=> String(u.code).toUpperCase() === code && u.phone === ME.phone)){ setBtnLoading(btn, false); return err.textContent = couponErrText("used"); }
+  c.usedCount = (+c.usedCount || 0) + 1; DB.write("coupons", list);
+  uses.unshift({ code, phone: ME.phone, at: Date.now() }); DB.write("couponUses", uses);
+  Store.updateMe(u=>{ u.stars = (u.stars || 0) + (+c.amount || 0); u.ledger.unshift({at: Date.now(), amt: +c.amount || 0, label: "Coupon " + code}); });
+  const m2 = Store.me(); if(m2){ ME.stars = m2.stars; ME.ledger = m2.ledger; }
+  setBtnLoading(btn, false);
+  refreshHeader(); renderWallet();
+  ok.textContent = "🎉 ₹" + c.amount + (LANG === "hi" ? " आपके वॉलेट में जुड़ गए!" : " added to your wallet!");
+  toast("🎟️ +₹" + c.amount);
+}
+function paintAdminCoupons(list){
+  const box = $("ad-coupons"); if(!box) return;
+  box.innerHTML = list.length ? list.map(c=> `<div class="testrow"><div class="ti"><div class="tt" style="font-family:monospace">${esc(String(c.code))}</div><div class="ts">₹${c.amount} · ${c.usedCount || 0}${+c.maxUses ? "/" + c.maxUses : ""} used${String(c.active) === "0" ? " · inactive" : ""}</div></div><button class="btn sm red" onclick="adminCouponDel('${esc(String(c.code))}')">Delete</button></div>`).join("") : `<p class="sub" style="padding:6px 0">No coupons yet.</p>`;
+}
+async function loadAdminCoupons(){
+  const box = $("ad-coupons"); if(!box) return;
+  if(BACKEND_URL){
+    if(!_adminPass){ box.innerHTML = `<button class="btn sm ghost" onclick="loadAdminCoupons()">Load coupons</button>`; return; }
+    const r = await api("adminCoupons", { adminPhone: ME.phone, adminPass: _adminPass });
+    if(!r.ok){ box.innerHTML = `<p class="sub">Could not load coupons — the backend update (v22) may still be pending.</p>`; return; }
+    paintAdminCoupons(r.coupons || []);
+  } else paintAdminCoupons(DB.read("coupons", []));
+}
+async function adminCouponAdd(btn){
+  const code = ($("ad-cpn-code").value || "").trim().toUpperCase(), amt = Math.round(+$("ad-cpn-amt").value || 0), maxUses = Math.max(0, Math.round(+$("ad-cpn-max").value || 0));
+  const err = $("ad-cpn-err"), ok = $("ad-cpn-ok"); err.textContent = ""; ok.textContent = "";
+  if(!code) return err.textContent = "Enter a coupon code.";
+  if(!amt || amt < 1) return err.textContent = "Enter an amount (₹).";
+  setBtnLoading(btn, true);
+  if(BACKEND_URL){
+    if(!(await ensureAdminPass())){ setBtnLoading(btn, false); return err.textContent = "Admin password required."; }
+    const r = await api("adminCouponAdd", { adminPhone: ME.phone, adminPass: _adminPass, code, amount: amt, maxUses });
+    setBtnLoading(btn, false);
+    if(!r.ok) return err.textContent = r.error === "exists" ? "This code already exists." : r.error === "forbidden" ? "Wrong admin password." : "Failed — the backend update (v22) may still be pending.";
+  } else {
+    const list = DB.read("coupons", []);
+    if(list.some(x=> String(x.code).toUpperCase() === code)){ setBtnLoading(btn, false); return err.textContent = "This code already exists."; }
+    list.unshift({ code, amount: amt, maxUses, usedCount: 0, expiresAt: 0, active: 1 });
+    DB.write("coupons", list);
+    setBtnLoading(btn, false);
+  }
+  ok.textContent = "Coupon " + code + " created ✓";
+  $("ad-cpn-code").value = ""; $("ad-cpn-amt").value = ""; $("ad-cpn-max").value = "";
+  loadAdminCoupons();
+}
+async function adminCouponDel(code){
+  if(!confirm("Delete coupon " + code + "?")) return;
+  if(BACKEND_URL){
+    if(!(await ensureAdminPass())) return;
+    const r = await api("adminCouponDel", { adminPhone: ME.phone, adminPass: _adminPass, code });
+    if(!r.ok){ alert("Failed: " + (r.error || "")); return; }
+  } else {
+    DB.write("coupons", DB.read("coupons", []).filter(x=> String(x.code).toUpperCase() !== String(code).toUpperCase()));
+  }
+  loadAdminCoupons();
 }
 function renderHome(){
   placeSocialBtns("home");
@@ -1928,6 +2155,7 @@ function resetCatSections(){
 function renderCategory(cat){
   if(cat === "pyq"){ go("pyq"); return; }
   CURCAT = cat; const c = CATS[cat]; const P = getSettings().prices;
+  const _ccd = $("cat-cd"); if(_ccd) _ccd.innerHTML = catCountdownHTML(cat);
   resetCatSections();
   if(FULLMOCK[cat] && !c.subjects.length){ renderFullMockCategory(cat, c, P); return; }
   if(cat === "ca"){ renderCACategory(c); return; }
@@ -2371,7 +2599,7 @@ function renderResult(rec){
   $("res-solutions").innerHTML = rec.detail.map((d,i)=>{
     const q = byId[d.id]; if(!q) return ""; const L = qLang(q);
     const letters=["A","B","C","D"];
-    return `<div class="solq"><div style="font-weight:700;font-size:14px">Q${i+1}. ${esc(L==="hi"?q[4]:q[3])}</div>
+    return `<div class="solq"><div style="display:flex;gap:8px;align-items:flex-start"><div style="font-weight:700;font-size:14px;flex:1">Q${i+1}. ${esc(L==="hi"?q[4]:q[3])}</div><button class="sol-bmk${isBookmarked(q[0]) ? " on" : ""}" onclick="solBookmark(this,'${q[0]}')">${isBookmarked(q[0]) ? "🔖 Saved" : "🔖 Save"}</button></div>
       ${q[5].map((o,j)=>`<div class="solopt ${j===d.right?"right":(j===d.pick?"wrong":"")}">${letters[j]}. ${esc(L==="hi"?o[1]:o[0])}${j===d.right?" ✓":(j===d.pick?" ✗ — "+(LANG==="hi"?"आपका उत्तर":"your answer"):"")}</div>`).join("")}
       ${d.pick<0?`<div class="exp">${LANG==="hi"?"आपने यह प्रश्न छोड़ा।":"You skipped this question."}</div>`:""}
       <div class="exp">${esc(L==="hi"?q[8]:q[7])}</div></div>`;
@@ -2398,6 +2626,7 @@ function copyUPI(){
 }
 function toggleWh(btn){ const m = $("wh-more"); if(!m) return; const open = m.classList.toggle("hidden") === false; btn.textContent = open ? (LANG==="hi" ? "कम दिखाएँ ▴" : "Show less ▴") : (LANG==="hi" ? "पूरा इतिहास दिखाएँ ▾" : "Show full history ▾"); }
 function renderWallet(){
+  const _wr = $("w-refer-sub"); if(_wr && ME){ _wr.textContent = ME.firstDep ? (LANG === "hi" ? "आपका इनवाइट लिंक चालू है — दोस्तों की सूची और इनाम देखें ›" : "Your invite link is active — see your friends & rewards ›") : (LANG === "hi" ? "🔒 पहला डिपॉज़िट (₹100+) करके अपना इनवाइट लिंक खोलें" : "🔒 Deposit your first ₹100+ to unlock your invite link"); }
   $("wstars").textContent = ME.stars||0;
   const sc = $("sub-card");
   if(sc){ sc.innerHTML = isSubActive()
@@ -2623,6 +2852,7 @@ async function adminDecide(id, approve, credit, btn){
     const creditAmt = (credit!=null ? credit : (p.insta ? Math.round(p.amount*1.1) : p.amount));
     const us = Store.users(); const u = us.find(x=>x.phone===p.phone);
     if(u){ u.stars=(u.stars||0)+creditAmt; u.ledger.unshift({at:Date.now(), amt:creditAmt, label:"Wallet top-up ₹"+p.amount+(creditAmt<p.amount?" (paid-amount approval)":"")}); Store.saveUsers(us); if(ME.phone===p.phone){ ME.stars=u.stars; ME.ledger=u.ledger; } }
+    demoRefOnDeposit(p.phone, p.amount);
     pushUnotif(p.phone, { title:"Payment approved ✅", body:"Your ₹"+p.amount+" deposit (UTR "+p.utr+") is approved. "+creditAmt+" has been added to your StuDy wallet." + (creditAmt>p.amount ? " This includes your Instagram bonus of ₹"+(creditAmt-p.amount)+"." : "") });
   } else {
     const n = { title:"Payment not approved", body:"Your ₹"+p.amount+" deposit (UTR "+p.utr+") could not be approved. Please check the UTR number and amount, then submit again, or contact us on Telegram." };
@@ -3101,14 +3331,14 @@ function installCTAHTML(force){
 function paintAuthCTA(){ const a = $("auth-cta"); if(a) a.innerHTML = installCTAHTML(); }
 function dismissInstallCTA(){ try{ sessionStorage.setItem("study_cta_x","1"); }catch(e){} paintAuthCTA(); if(CURSCREEN === "home") renderHome(); }
 async function shareApp(){
-  const data = { title:"StuDy", text: LANG==="hi" ? "StuDy — UPSC · RPSC · SSC के टेस्ट, मॉक टेस्ट और नोट्स। ऐप इंस्टॉल करें 👇" : "StuDy — tests, full mocks & notes for UPSC · RPSC · SSC. Install the app 👇", url: SHARE_URL };
+  const data = { title:"StuDy", text: LANG==="hi" ? "StuDy — UPSC · RPSC · SSC के टेस्ट, मॉक टेस्ट और नोट्स। ऐप इंस्टॉल करें 👇" : "StuDy — tests, full mocks & notes for UPSC · RPSC · SSC. Install the app 👇", url: myRefLink() };
   if(navigator.share){ try{ await navigator.share(data); }catch(e){} return; }
   let copied = false;
-  try{ await navigator.clipboard.writeText(SHARE_URL); copied = true; }catch(e){}
+  try{ await navigator.clipboard.writeText(myRefLink()); copied = true; }catch(e){}
   if(copied){ toast(LANG==="hi" ? "लिंक कॉपी हो गया ✓ — कहीं भी भेज दें" : "Link copied ✓ — send it anywhere"); return; }
   showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">🔗 ${LANG==="hi" ? "StuDy शेयर करें" : "Share StuDy"}</h3><p class="sub" style="margin:10px 0;word-break:break-all">${SHARE_URL}</p><button class="btn" style="width:100%" onclick="copyShareLink()">${LANG==="hi" ? "लिंक कॉपी करें" : "Copy link"}</button>`);
 }
-async function copyShareLink(){ try{ await navigator.clipboard.writeText(SHARE_URL); toast(LANG==="hi" ? "लिंक कॉपी हो गया ✓" : "Link copied ✓"); closeModal(); }catch(e){ toast(LANG==="hi" ? "लिंक को दबाकर कॉपी करें" : "Long-press the link to copy it"); } }
+async function copyShareLink(){ try{ await navigator.clipboard.writeText(myRefLink()); toast(LANG==="hi" ? "लिंक कॉपी हो गया ✓" : "Link copied ✓"); closeModal(); }catch(e){ toast(LANG==="hi" ? "लिंक को दबाकर कॉपी करें" : "Long-press the link to copy it"); } }
 let _installPrompt = null;
 window.addEventListener("beforeinstallprompt", e=>{ e.preventDefault(); _installPrompt = e; refreshInstallFloat(); });
 window.addEventListener("appinstalled", ()=>{ _installPrompt = null; const b = $("installfloat"); if(b) b.classList.add("hidden"); toast(LANG==="hi" ? "StuDy इंस्टॉल हो गया ✓" : "StuDy installed ✓"); });
