@@ -549,6 +549,22 @@ html[data-theme="dark"] .notes-sec-h{color:#e8ecf6}
 .cb-rows span{color:var(--mut)}
 .rv{opacity:0}
 .rv.in{animation:socIn .65s cubic-bezier(.22,1.35,.36,1) both}
+
+/* ===== Round 43: bookmarks, subject analytics, streak + countdown, doubts search ===== */
+#t-bmk.m{background:#9333ea;color:#fff;border-color:#9333ea}
+.bm-opt{padding:8px 11px;border:1px solid var(--line);border-radius:10px;margin-top:7px;font-size:13.5px}
+.bm-opt.right{background:#e9f9ee;border-color:#16a34a;font-weight:700}
+html[data-theme="dark"] .bm-opt.right{background:#14301d;border-color:#16a34a}
+#pf-streak{background:#fff3d6;color:#8a5a00}
+html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
+.rc-trend{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;padding:10px 12px;background:var(--goldsoft);border:1px solid var(--line);border-radius:12px;font-size:13px}
+.focus-cd{display:flex;align-items:center;gap:12px;margin-top:14px;background:linear-gradient(120deg,#1447c8,#0b2a5b);color:#fff;border:none}
+.focus-cd-name{font-weight:800;font-size:15.5px}
+.focus-cd-date{opacity:.82;font-size:12.5px;margin-top:2px}
+.focus-cd-days{text-align:center;flex:none}
+.focus-cd-days b{display:block;font-size:27px;color:var(--gold);line-height:1}
+.focus-cd-days span{font-size:11px;opacity:.85}
+.focus-st{display:flex;align-items:center;gap:11px;margin-top:10px}
 </style>
 </head>
 <body>
@@ -603,6 +619,7 @@ html[data-theme="dark"] .notes-sec-h{color:#e8ecf6}
         <p style="margin-top:10px;text-align:center"><a href="#" onclick="fpOpen(event)" data-i18n="forgot" style="color:var(--goldb);font-size:13.5px;font-weight:600">Forgot password?</a></p>
         <p class="sub" style="margin-top:12px;text-align:center"><a href="#" onclick="showHelp();return false" data-i18n="helpLink">Help / FAQ</a> · <a href="#" onclick="showContact();return false" data-i18n="contactLink">Contact Us</a></p>
       </div>
+      <div class="pf-link" onclick="go('bookmarks')"><span class="pf-link-ic">🔖</span><span>Bookmarked Questions</span><span class="pf-chev">›</span></div>
       <div id="form-register" class="hidden">
         <div class="fld"><label data-i18n="name">Student name</label><input id="rg-name" type="text" placeholder="Your full name" autocomplete="name"></div>
         <div class="fld"><label data-i18n="phone">Phone number</label><input id="rg-phone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"></div>
@@ -625,6 +642,7 @@ html[data-theme="dark"] .notes-sec-h{color:#e8ecf6}
   <section id="screen-home" class="hidden">
     <div id="home-banner"></div>
     <div id="home-premium"></div>
+    <div id="home-focus"></div>
     <div style="display:flex;align-items:center;gap:8px;margin:22px 0 10px">
       <h2 data-i18n="chooseCat" style="margin:0;flex:1">Choose your exam</h2>
       <span id="exam-actions" style="display:flex;gap:8px;align-items:center"></span>
@@ -689,7 +707,7 @@ html[data-theme="dark"] .notes-sec-h{color:#e8ecf6}
         <input type="file" id="pf-photo-in" accept="image/*" class="hidden" onchange="pickPhoto(this)">
         <div style="min-width:0;flex:1">
           <div style="font-size:17px;font-weight:800" id="pf-name"></div>
-          <span class="tag" id="pf-level" style="margin-top:4px"></span> <span class="tag" id="pf-premium" style="margin-top:4px" onclick="go('wallet')"></span>
+          <span class="tag" id="pf-level" style="margin-top:4px"></span> <span class="tag" id="pf-premium" style="margin-top:4px" onclick="go('wallet')"></span> <span class="tag hidden" id="pf-streak" style="margin-top:4px"></span>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div class="sub" data-i18n="yourBalance">Your balance</div>
@@ -722,6 +740,8 @@ html[data-theme="dark"] .notes-sec-h{color:#e8ecf6}
       </div>
       <p class="sub" id="rc-note" style="text-align:center;margin-top:8px"></p>
       <div id="rc-cats"></div>
+      <div id="rc-trend"></div>
+      <div id="rc-subs"></div>
     </div>
     <h2 data-i18n="settings">Settings</h2>
     <div class="card" style="padding:4px 14px">
@@ -816,7 +836,8 @@ html[data-theme="dark"] .notes-sec-h{color:#e8ecf6}
         </div>
       </div>
     </div>
-    <div id="doubts-list" style="margin-top:14px"></div>
+    <div style="margin-top:14px"><input id="db-search" type="search" placeholder="🔍 Search doubts..." oninput="dbSearch(this.value)" style="width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:13.5px;background:var(--card);color:var(--ink)"></div>
+    <div id="doubts-list" style="margin-top:12px"></div>
   </section>
   <!-- ============ NOTES ============ -->
   <section id="screen-notes" class="hidden">
@@ -833,6 +854,9 @@ html[data-theme="dark"] .notes-sec-h{color:#e8ecf6}
   </section>
   <section id="screen-notesgroup" class="hidden">
     <div id="notesgroup-body"></div>
+  </section>
+  <section id="screen-bookmarks" class="hidden">
+    <div id="bm-body"></div>
   </section>
   <!-- ============ ADMIN ============ -->
   <section id="screen-admin" class="hidden">
@@ -956,6 +980,7 @@ html[data-theme="dark"] .notes-sec-h{color:#e8ecf6}
   <div class="tfoot">
     <button class="tbtn" id="t-prev" onclick="tNav(-1)">← Previous</button>
     <button class="tbtn m" id="t-mark" onclick="tMark()">Mark for Review</button>
+    <button class="tbtn" id="t-bmk" onclick="tBookmark()">🔖 Save</button>
     <button class="tbtn" id="t-clear" onclick="tClear()">Clear Response</button>
     <button class="tbtn n" id="t-next" onclick="tNav(1)">Next →</button>
     <button class="tbtn s" onclick="tConfirmSubmit()">Submit Test</button>
@@ -1177,7 +1202,7 @@ let CURSCREEN = "auth";
 function go(screen){
   if(!NAVBACK && CURSCREEN && CURSCREEN !== screen && CURSCREEN !== "auth") NAVHIST = [CURSCREEN];
   CURSCREEN = screen;
-  ["auth","home","category","wallet","profile","notifications","result","admin","notes","pyq","doubts","pyqgroup","notesgroup"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
+  ["auth","home","category","wallet","profile","notifications","result","admin","notes","pyq","doubts","pyqgroup","notesgroup","bookmarks"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
   $("appheader").classList.toggle("hidden", screen==="auth");
   $("bnav").classList.toggle("hidden", screen==="auth");
   ["home","pyq","notes","profile","doubts"].forEach(s=>{ const b=$("bn-"+s); if(b) b.classList.toggle("on", s===screen); });
@@ -1190,6 +1215,7 @@ function go(screen){
   if(screen==="notifications") renderNotifs();
   if(screen==="notes") renderNotes();
   if(screen==="notesgroup") renderNotesExam();
+  if(screen==="bookmarks") renderBookmarks();
   if(screen==="pyq") renderPYQ();
   if(screen==="pyqgroup") renderPYQGroup();
   if(screen==="doubts") renderDoubts();
@@ -1776,6 +1802,89 @@ function hidePremiumStrip(){
   const el = $("home-premium"); if(el) el.innerHTML = "";
 }
 function dismissBanner(id){ localStorage.setItem("study_banner_x", String(id)); renderHome(); }
+
+/* ---------------- Round 43: bookmarks, subject analytics, streak, countdown ---------------- */
+function bmKey(){ return "study_bm_" + (ME ? ME.phone : "guest"); }
+function getBookmarks(){ try{ return JSON.parse(localStorage.getItem(bmKey()) || "[]"); }catch(e){ return []; } }
+function isBookmarked(id){ return getBookmarks().indexOf(id) >= 0; }
+function toggleBookmark(id){
+  let bm = getBookmarks();
+  if(bm.indexOf(id) >= 0) bm = bm.filter(x=> x !== id); else bm.unshift(id);
+  try{ localStorage.setItem(bmKey(), JSON.stringify(bm.slice(0, 300))); }catch(e){}
+  return bm.indexOf(id) >= 0;
+}
+function tBookmark(){
+  if(!TEST || !TEST.qs[TEST.idx]) return;
+  const on = toggleBookmark(TEST.qs[TEST.idx][0]);
+  const bb = $("t-bmk"); if(bb){ bb.classList.toggle("m", on); bb.innerHTML = on ? "🔖 Saved" : "🔖 Save"; }
+  toast(on ? (LANG === "hi" ? "प्रश्न सेव हो गया — Profile → Bookmarks में मिलेगा" : "Saved — find it in Profile → Bookmarks") : (LANG === "hi" ? "सेव हटाया गया" : "Removed from bookmarks"));
+}
+function removeBookmark(id){ toggleBookmark(id); renderBookmarks(); }
+function renderBookmarks(){
+  const bm = getBookmarks();
+  const byId = {}; (window.STUDY_QUESTIONS || []).forEach(q=>{ byId[q[0]] = q; });
+  const qs = bm.map(id=> byId[id]).filter(Boolean);
+  const li = LANG === "hi" ? 1 : 0;
+  $("bm-body").innerHTML = `<h1 style="margin-top:6px">🔖 ${LANG === "hi" ? "सेव किए गए प्रश्न" : "Bookmarked Questions"}</h1><p class="sub" style="margin-top:5px">${qs.length} ${LANG === "hi" ? "प्रश्न सेव हैं — कठिन प्रश्नों को यहाँ दोहराएँ।" : "saved questions — revise the tough ones here."}</p>` +
+    (qs.length ? qs.map(q=>{
+      const catName = CATS[q[1]] ? CATS[q[1]].name[LANG] : q[1];
+      const subLabel = CATS[q[1]] ? subName(q[1], q[2], LANG) : q[2];
+      return `<div class="card" style="margin-top:12px"><div style="display:flex;gap:8px;align-items:center"><span class="chip" style="font-size:11px">${esc(catName + " · " + subLabel)}</span><span style="flex:1"></span><button class="btn sm ghost" onclick="removeBookmark('${q[0]}')">✕ ${LANG === "hi" ? "हटाएँ" : "Remove"}</button></div><div style="font-weight:700;margin-top:9px">${esc(q[3 + li])}</div>${q[5].map((o, i)=> `<div class="bm-opt${i === q[6] ? " right" : ""}">${"ABCD"[i]}. ${esc(o[li])}${i === q[6] ? " ✓" : ""}</div>`).join("")}${(q[7 + li] || "") ? `<div class="sub" style="margin-top:8px">💡 ${esc(q[7 + li])}</div>` : ""}</div>`;
+    }).join("") : `<div class="card" style="text-align:center;padding:26px 16px;margin-top:12px"><div style="font-size:30px">🔖</div><p class="sub" style="margin-top:8px">${LANG === "hi" ? "अभी कोई प्रश्न सेव नहीं है। टेस्ट में 🔖 Save दबाकर प्रश्न सेव करें।" : "No saved questions yet. Tap 🔖 Save during any test to bookmark a question."}</p></div>`);
+  initReveal();
+}
+function subjectStats(){
+  const byId = {}; (window.STUDY_QUESTIONS || []).forEach(q=>{ byId[q[0]] = q; });
+  const mine = Store.attempts().filter(a=> ME && a.phone === ME.phone && a.first && a.detail && a.detail.length && a.cat !== "ca" && a.cat !== "pyq");
+  const agg = {};
+  mine.forEach(a=>{ (a.detail || []).forEach(d=>{ const q = byId[d.id]; if(!q) return; const k = a.cat + "|" + q[2]; const g = agg[k] || (agg[k] = { n:0, c:0, w:0 }); g.n++; if(d.pick === d.right) g.c++; else if(d.pick >= 0) g.w++; }); });
+  return Object.keys(agg).map(k=>{ const parts = k.split("|"); const g = agg[k]; const marks = g.c - g.w * 0.25; const pct = g.n ? Math.max(0, Math.round(100 * marks / g.n)) : 0; return { cat: parts[0], sub: parts[1], n: g.n, pct }; }).filter(x=> x.n >= 5).sort((a, b)=> a.pct - b.pct);
+}
+function renderAnalytics(){
+  const trendEl = $("rc-trend"), subsEl = $("rc-subs"); if(!trendEl || !subsEl || !ME) return;
+  const mine = Store.attempts().filter(a=> a.phone === ME.phone && a.first);
+  const scored = mine.filter(a=> a.total).slice().sort((a, b)=> a.at - b.at);
+  if(scored.length >= 4){
+    const half = Math.floor(scored.length / 2);
+    const avg = arr => 100 * arr.reduce((x, a)=> x + a.score, 0) / Math.max(1, arr.reduce((x, a)=> x + a.total, 0));
+    const d = Math.round(avg(scored.slice(half)) - avg(scored.slice(0, half)));
+    const word = d > 2 ? "📈 " + (LANG === "hi" ? "सुधर रही है" : "Improving") + " (+" + d + "%)" : d < -2 ? "📉 " + (LANG === "hi" ? "गिर रही है" : "Dropping") + " (" + d + "%)" : "➡️ " + (LANG === "hi" ? "स्थिर है" : "Steady");
+    trendEl.innerHTML = `<div class="rc-trend"><span>${LANG === "hi" ? "प्रगति का रुझान" : "Progress trend"}: <b>${word}</b></span><span class="sub">${LANG === "hi" ? "पहले आधे बनाम हाल के टेस्ट" : "earlier vs recent tests"}</span></div>`;
+  } else trendEl.innerHTML = "";
+  const stats = subjectStats();
+  if(!stats.length){ subsEl.innerHTML = ""; return; }
+  const COLS = ["#ef5350", "#f2b01e", "#43a047", "#2fb3c9"];
+  const tier = p => p >= 75 ? 3 : p >= 60 ? 2 : p >= 40 ? 1 : 0;
+  const weak = stats.filter(x=> x.pct < 60);
+  subsEl.innerHTML = `<div class="sc-h" style="margin-top:16px">${LANG === "hi" ? "विषयवार मज़बूती" : "Subject Strength"}</div>` +
+    stats.slice(0, 6).map(x=> `<div class="sc-row"><div class="sc-name">${esc(CATS[x.cat] ? subName(x.cat, x.sub, LANG) : x.sub)}<br><span style="color:var(--mut);font-weight:600;font-size:11px">${esc(CATS[x.cat] ? CATS[x.cat].name.en : x.cat)} · ${x.n} ${LANG === "hi" ? "प्रश्न" : "questions"}</span></div><div class="sc-track"><div class="sc-fill" style="width:${x.pct}%;background:${COLS[tier(x.pct)]}"></div></div><div class="sc-val">${x.pct}%</div></div>`).join("") +
+    (weak.length ? `<p class="sub" style="margin-top:9px">⚠️ ${LANG === "hi" ? "कमज़ोर विषय" : "Needs work"}: <b>${esc(CATS[weak[0].cat] ? subName(weak[0].cat, weak[0].sub, LANG) : weak[0].sub)}</b> — ${LANG === "hi" ? "इस विषय के और टेस्ट दें।" : "attempt more tests in this subject."}</p>` : "");
+}
+function studyStreak(){
+  if(!ME) return { streak:0, todayDone:false };
+  const days = new Set(Store.attempts().filter(a=> a.phone === ME.phone).map(a=> new Date(a.at).toDateString()));
+  const todayDone = days.has(new Date().toDateString());
+  let streak = 0; const d = new Date();
+  if(!todayDone) d.setDate(d.getDate() - 1);
+  while(days.has(d.toDateString())){ streak++; d.setDate(d.getDate() - 1); }
+  return { streak, todayDone };
+}
+const EXAM_DATES = [ { name:{ en:"RAS Prelims 2026", hi:"RAS प्रीलिम्स 2026" }, date:"2026-12-06" } ];
+function renderHomeFocus(){
+  const el = $("home-focus"); if(!el) return;
+  if(!ME){ el.innerHTML = ""; return; }
+  const now = new Date(); const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let cd = "";
+  for(const e of EXAM_DATES){
+    const days = Math.round((new Date(e.date + "T00:00:00") - today0) / 86400000);
+    if(days < 0) continue;
+    cd = `<div class="card focus-cd"><div style="flex:1;min-width:0"><div class="focus-cd-name">🎯 ${esc(e.name[LANG] || e.name.en)}</div><div class="focus-cd-date">${new Date(e.date + "T00:00:00").toLocaleDateString(LANG === "hi" ? "hi-IN" : "en-IN", { day:"numeric", month:"short", year:"numeric" })}</div></div><div class="focus-cd-days"><b>${days}</b><span>${days === 0 ? (LANG === "hi" ? "आज ही है!" : "is today!") : (LANG === "hi" ? "दिन बाकी" : "days to go")}</span></div></div>`;
+    break;
+  }
+  const st = studyStreak();
+  const streakHtml = `<div class="card focus-st"><span style="font-size:22px">${st.streak > 0 || st.todayDone ? "🔥" : "🎯"}</span><div style="flex:1;min-width:0"><b>${st.streak} ${LANG === "hi" ? "दिन की स्ट्रीक" : "day streak"}</b><div class="sub">${st.todayDone ? (LANG === "hi" ? "आज का लक्ष्य पूरा ✓ — बढ़िया!" : "Today's goal done ✓ — great going!") : (LANG === "hi" ? "आज का लक्ष्य: 1 टेस्ट दें और स्ट्रीक जारी रखें" : "Today's goal: attempt 1 test to keep it going")}</div></div></div>`;
+  el.innerHTML = cd + streakHtml;
+}
 function renderHome(){
   placeSocialBtns("home");
   refreshInstallFloat();
@@ -1785,6 +1894,7 @@ function renderHome(){
   const n = (_rN && (!_gN || (_rN.at||0) >= (_gN.at||0))) ? _rN : _gN;
   const nkey = n ? String(n.id || ("u" + (n.at||0))) : "";
   const dismissed = localStorage.getItem("study_banner_x");
+  renderHomeFocus();
   $("home-banner").innerHTML = (n && dismissed !== nkey) ? `<div class="banner"${n.link === "doubts" ? ` onclick="go('doubts')" style="cursor:pointer"` : ""}><div style="font-size:17px">${n.link === "doubts" ? "💬" : "📢"}</div><div style="flex:1;min-width:0"><div class="bt">${esc(n.title)}</div><div class="bs">${esc(n.body)}</div></div><button onclick="event.stopPropagation();dismissBanner('${nkey}')" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0">✕</button></div>` : "";
   const _cta = installCTAHTML(); if(_cta) $("home-banner").insertAdjacentHTML("afterbegin", _cta);
   let phide = ""; try{ phide = localStorage.getItem("study_phide_"+(ME?ME.phone:"")) || ""; }catch(e){}
@@ -2133,6 +2243,7 @@ function updTimer(){ if(!TEST) return; if(TEST.noTimer){ $("t-timer").textConten
 function renderQ(){
   const q = TEST.qs[TEST.idx]; const L = qLang(q);
   $("t-qnum").textContent = (LANG==="hi"?"प्रश्न":"Question")+" "+(TEST.idx+1)+" / "+TEST.qs.length;
+  const bb = $("t-bmk"); if(bb && TEST.qs[TEST.idx]){ const on = isBookmarked(TEST.qs[TEST.idx][0]); bb.classList.toggle("m", on); bb.innerHTML = on ? "🔖 Saved" : "🔖 Save"; }
   $("t-qtxt").textContent = L==="hi" ? q[4] : q[3];
   const letters=["A","B","C","D"];
   $("t-opts").innerHTML = q[5].map((o,i)=>`<div class="opt ${TEST.ans[TEST.idx]===i?"sel":""}" onclick="tSelect(${i})"><div class="ol">${letters[i]}</div><div>${esc(L==="hi"?o[1]:o[0])}</div></div>`).join("");
@@ -2393,11 +2504,13 @@ function renderProfile(){
   const RC_ORDER = ["rpsc", "upsc", "ssc", "neet", "jee", "reet", "cuet", "ca", "pyq", "school"];
   const rcByCat = {};
   firsts.forEach(a => { const b = rcByCat[a.cat] || (rcByCat[a.cat] = { n:0, s:0, t:0 }); b.n++; b.s += a.score || 0; b.t += a.total || 0; });
+  renderAnalytics();
   $("rc-cats").innerHTML = RC_ORDER.filter(c => rcByCat[c]).map(c => { const b = rcByCat[c]; const p = b.t ? Math.max(0, Math.round(1000 * b.s / b.t) / 10) : 0; const t = RC_TIER(p); const nm = (CATS[c] && CATS[c].name[LANG]) || c.toUpperCase(); return `<div class="sc-row"><div class="sc-name">${esc(nm)}<br><span style="color:var(--mut);font-weight:600;font-size:11px">${b.n} ${LANG === "hi" ? "टेस्ट" : "test" + (b.n > 1 ? "s" : "")}</span></div><div class="sc-track"><div class="sc-fill" style="width:${p}%;background:${RC_COL[t]}"></div></div><div class="sc-val">${p}% — ${RC_NAME[t]}</div></div>`; }).join("");
   const xp = firsts.reduce((s,a)=>s+a.correct*10,0);
   const lvl = 1+Math.floor(xp/200), into = xp%200;
   $("pf-level").textContent = T("level")+" "+lvl+" · "+xp+" XP";
   $("pf-premium").textContent = isSubActive() ? "👑 Premium" : "Free plan";
+  const _stk = studyStreak(); const _pfs = $("pf-streak"); if(_pfs){ _pfs.textContent = _stk.streak > 0 ? "🔥 " + _stk.streak + " day streak" : ""; _pfs.classList.toggle("hidden", _stk.streak <= 0); }
   $("pf-xp").style.width = Math.round(100*into/200)+"%";
   $("pf-xp-txt").textContent = into+" / 200 XP";
   const P = getSettings().prices;
@@ -2663,6 +2776,10 @@ function dbReplyHTML(rp, isNew){
   const rimg = safePhoto(rp.image);
   const rb = rimg ? `<img class="db-reply-img" src="${rimg}" alt="">${rp.text ? `<div class="db-reply-tx">${esc(rp.text)}</div>` : ""}` : `<div class="db-reply-tx">${esc(rp.text || "")}</div>`;
   return `<div class="db-reply${isNew ? " new" : ""}"><div class="db-av">${avInner(rp)}</div><div class="db-reply-body"><span class="db-name">${esc(rp.name || "")}</span> <span class="db-time">· ${timeAgo(rp.at)}</span>${rb}</div></div>`;
+}
+function dbSearch(v){
+  const q = (v || "").trim().toLowerCase();
+  document.querySelectorAll("#doubts-list .db-card").forEach(c=>{ c.style.display = (!q || c.textContent.toLowerCase().includes(q)) ? "" : "none"; });
 }
 function paintDoubts(posts){
   const box = $("doubts-list"); if(!box) return;
