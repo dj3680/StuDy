@@ -565,6 +565,7 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
 .focus-cd-days b{display:block;font-size:27px;color:var(--gold);line-height:1}
 .focus-cd-days span{font-size:11px;opacity:.85}
 .focus-st{display:flex;align-items:center;gap:11px;margin-top:10px}
+.focus-bm{display:flex;align-items:center;gap:11px;margin-top:10px;cursor:pointer}
 
 /* ===== Round 44: solutions bookmark, closable focus cards, category countdown, refer, coupons ===== */
 .tq-head{display:flex;align-items:center;gap:8px}
@@ -574,7 +575,8 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
 .focus-st{position:relative}
 .focus-x{position:absolute;top:7px;right:9px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(127,127,127,.18);color:inherit;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .focus-cd .focus-x{background:rgba(255,255,255,.18);color:#fff}
-.cat-cd{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 13px;border-radius:13px;background:linear-gradient(120deg,#1447c8,#0b2a5b);color:#fff;font-size:13.5px}
+.cat-cd{display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 13px;border-radius:11px;background:linear-gradient(120deg,#1447c8,#0b2a5b);color:#fff;font-size:13px}
+.cat-cd span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cat-cd b{color:var(--gold);white-space:nowrap}
 .ref-step{display:flex;gap:11px;padding:9px 0}
 .ref-step + .ref-step{border-top:1px solid var(--line2)}
@@ -681,8 +683,8 @@ html[data-theme="dark"] .ref-chip.ok{background:#14301d;color:#4ade80}
     <div style="display:flex;align-items:center;gap:12px;margin-top:14px">
       <img id="cat-logo" class="catlogo" src="" alt="" style="width:54px;height:54px">
       <div><h1 id="cat-title"></h1><p class="sub" id="cat-desc"></p></div>
-      <div id="cat-cd"></div>
     </div>
+    <div id="cat-cd"></div>
     <h2 data-i18n="subjectTests">Subject-wise tests</h2>
     <div class="card" id="subject-list" style="padding:4px 14px"></div>
     <h2 data-i18n="fullMock">Full mock test</h2>
@@ -1961,7 +1963,9 @@ function renderHomeFocus(){
   }
   const st = studyStreak();
   const streakHtml = fxClosed("st") ? "" : `<div class="card focus-st"><span style="font-size:22px">${st.streak > 0 || st.todayDone ? "🔥" : "🎯"}</span><div style="flex:1;min-width:0;padding-right:24px"><b>${st.streak} ${LANG === "hi" ? "दिन की स्ट्रीक" : "day streak"}</b><div class="sub">${st.todayDone ? (LANG === "hi" ? "आज का लक्ष्य पूरा ✓ — बढ़िया!" : "Today's goal done ✓ — great going!") : (LANG === "hi" ? "आज का लक्ष्य: 1 टेस्ट दें और स्ट्रीक जारी रखें" : "Today's goal: attempt 1 test to keep it going")}</div></div><button class="focus-x" onclick="closeFocus('st')" aria-label="Close">✕</button></div>`;
-  el.innerHTML = cd + streakHtml;
+  const bmN = getBookmarks().length;
+  const bmHtml = `<div class="card focus-bm" onclick="go('bookmarks')"><span style="font-size:20px">🔖</span><div style="flex:1;min-width:0"><b>${LANG === "hi" ? "सेव किए गए प्रश्न" : "Bookmarked Questions"}</b><div class="sub">${bmN} ${LANG === "hi" ? "प्रश्न सेव हैं — दोहराने के लिए टैप करें" : "saved questions — tap to revise"}</div></div><span style="color:#bbb;font-size:19px">›</span></div>`;
+  el.innerHTML = cd + streakHtml + bmHtml;
 }
 
 /* ---------------- Round 44: Refer & Win + coupons ---------------- */
