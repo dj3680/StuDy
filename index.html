@@ -3586,7 +3586,9 @@ async function bootApp(){
   if(BACKEND_URL){
     api("bootstrap", {}).then(b=>{ if(b && b.ok){ window._settings = b.settings; if(b.notifs) localStorage.setItem("study_notifs_cache", JSON.stringify(b.notifs)); } }).catch(()=>{});
     const ph = getSessionPhone();
-    if(ph){ const r = await api("me", {phone: ph, session: mySess()}); if(r.ok){ finishLogin(r.user); return; }
+    if(ph){ let r = await api("me", {phone: ph, session: mySess()});
+      if(!r.ok && r.error === "network"){ await new Promise(res=>setTimeout(res, 1500)); r = await api("me", {phone: ph, session: mySess()}); }
+      if(r.ok){ finishLogin(r.user); return; }
       if(r.error === "session"){ const e = $("li-err"); if(e) e.textContent = LANG==="hi" ? "यह खाता किसी अन्य डिवाइस पर लॉगिन हुआ, इसलिए आप यहाँ लॉगआउट हो गए।" : "This account was signed in on another device, so you were logged out here."; } }
     go("auth"); hideSplash(); return;
   }
