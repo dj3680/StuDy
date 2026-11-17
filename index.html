@@ -177,7 +177,7 @@ h3{font-size:15.5px;font-weight:700}
 @media(min-width:640px){.mback{align-items:center;padding:16px}}
 .modal{background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);border-radius:22px 22px 0 0;width:100%;max-width:460px;max-height:86vh;overflow-y:auto;padding:20px;box-shadow:var(--sh-pop)}
 @media(min-width:640px){.modal{border-radius:22px}}
-.modal .x{float:right;color:var(--mut);font-size:20px;line-height:1}
+.modal .x{float:right;width:38px;height:38px;border-radius:50%;background:var(--line);color:var(--ink);font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin:-4px -4px 0 0;padding:0}
 .mback.top{align-items:flex-start;padding:10px 10px 0}
 .mback.top .modal{border-radius:20px;max-height:82dvh}
 #srch-res{max-height:42dvh;overflow-y:auto;-webkit-overflow-scrolling:touch}
@@ -668,6 +668,11 @@ html[data-theme="dark"] .wk-box{background:#2a2416}
 .lb-row{padding:8px 10px}
 .lb-pts{background:#fff7e0;color:#8a5a00;font-weight:900;font-size:13px;padding:4px 9px;border-radius:999px;white-space:nowrap}
 html[data-theme="dark"] .lb-pts{background:#3a2f14;color:#ffd968}
+/* Round 51: thin prize banner; no overscroll bounce at page edges */
+.lb-prize{display:flex;gap:8px;align-items:center;background:linear-gradient(120deg,var(--navy),var(--navy2));color:#fff;border-radius:12px;padding:9px 12px;font-size:12.8px;line-height:1.45}
+.lb-prize b{color:var(--goldb);font-size:14.5px;white-space:nowrap}
+html,body{overscroll-behavior:none}
+#rank-body{overscroll-behavior:none}
 /* Round 46: top category slider + video-style bottom nav */
 #cat-slider{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:14px 6px 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,#fdf6e7,#fcefd8);border-radius:22px;margin-top:12px}
 #cat-slider::-webkit-scrollbar{display:none}
@@ -1335,7 +1340,10 @@ function subPrice(){ const p = +((getSettings().prices||{}).sub); return p > 0 ?
 function saveSettings(s){ if(!BACKEND_URL){ DB.write("settings", s); } else { ensureAdminPass().then(ok=>{ if(ok) api("adminSaveSettings", {settings:s, adminPhone:(ME&&ME.phone), adminPass:_adminPass}); }); window._settings = s; } }
 async function api(action, payload){
   try{
-    const r = await fetch(BACKEND_URL, { method:"POST", headers:{"Content-Type":"text/plain"}, body: JSON.stringify({action, ...payload}) });
+    const ctl = ("AbortController" in window) ? new AbortController() : null;
+    const to = ctl ? setTimeout(()=>{ try{ ctl.abort(); }catch(e){} }, 12000) : null;
+    const r = await fetch(BACKEND_URL, { method:"POST", headers:{"Content-Type":"text/plain"}, body: JSON.stringify({action, ...payload}), signal: ctl ? ctl.signal : undefined });
+    if(to) clearTimeout(to);
     return await r.json();
   }catch(e){ return {ok:false, error:"network"}; }
 }
@@ -2093,17 +2101,7 @@ function renderHomeFocus(){
   const bmHtml = `<div class="card focus-bm" onclick="go('bookmarks')"><span style="font-size:20px">🔖</span><div style="flex:1;min-width:0"><b>${LANG === "hi" ? "सेव किए गए प्रश्न" : "Bookmarked Questions"}</b><div class="sub">${bmN} ${LANG === "hi" ? "प्रश्न सेव हैं — दोहराने के लिए टैप करें" : "saved questions — tap to revise"}</div></div><span style="color:#bbb;font-size:19px">›</span></div>`;
   const gn = globalNotifs();
   const ntHtml = gn.length ? `<div class="card focus-nt" onclick="go('notifications')"><span class="focus-nt-ic">🔔</span><div style="flex:1;min-width:0"><div class="focus-nt-t">${esc(gn[0].title || "")}</div><div class="sub focus-nt-b">${esc(gn[0].body || "")}</div></div><span class="focus-nt-when">${timeAgo(gn[0].at)}</span></div>` : "";
-  const qaHtml = `<div class="card qa-card"><div class="qa-row"><button class="qa-it" onclick="go('pyq')"><span>📚</span>PYQ</button><button class="qa-it" onclick="go('notes')"><span>📝</span>${LANG === "hi" ? "नोट्स" : "Notes"}</button><button class="qa-it" onclick="go('doubts')"><span>💬</span>${LANG === "hi" ? "डाउट्स" : "Doubts"}</button><button class="qa-it" onclick="go('wallet')"><span>👛</span>${LANG === "hi" ? "वॉलेट" : "Wallet"}</button><button class="qa-it" onclick="go('refer')"><span>🎁</span>${LANG === "hi" ? "रेफ़र" : "Refer"}</button></div></div>`;
-  const mine = Store.attempts().filter(a=> ME && a.phone === ME.phone && a.first);
-  let hpHtml = "";
-  if(mine.length){
-    let sm = 0, stt = 0, cc = 0, ww = 0;
-    mine.forEach(a=>{ sm += (+a.score || 0); stt += (+a.total || 0); cc += (+a.correct || 0); ww += (+a.wrong || 0); });
-    const pct = stt ? Math.max(0, Math.round(100 * sm / stt)) : 0;
-    const acc = (cc + ww) ? Math.round(100 * cc / (cc + ww)) : 0;
-    hpHtml = `<div class="card hp-card" onclick="go('profile')"><div class="hp-top"><span style="font-size:19px">📈</span><b style="flex:1">${LANG === "hi" ? "आपकी प्रगति" : "Your progress"}</b><span style="color:#bbb;font-size:19px">›</span></div><div class="hp-bar"><i style="width:${pct}%"></i></div><div class="hp-stats"><div><b>${mine.length}</b>${LANG === "hi" ? "टेस्ट" : "Tests"}</div><div><b>${pct}%</b>${LANG === "hi" ? "औसत स्कोर" : "Avg score"}</div><div><b>${acc}%</b>${LANG === "hi" ? "सटीकता" : "Accuracy"}</div></div></div>`;
-  }
-  el.innerHTML = ntHtml + cd + streakHtml + bmHtml + qaHtml + hpHtml;
+  el.innerHTML = ntHtml + cd + streakHtml + bmHtml;
 }
 
 /* ---------------- Round 44: Refer & Win + coupons ---------------- */
@@ -3132,21 +3130,11 @@ function allRankers(){
 }
 function topRankers(){ return allRankers().slice(0,10); }
 async function showRewards(){
-  const wkFill = tp => { const wb = $("wk-box"); if(!wb) return;
-    wb.classList.remove("wk-load");
-    const left = `<div class="wk2-left"><div class="wk2-amt">₹100</div><div class="wk2-cond"><b>${LANG === "hi" ? "साप्ताहिक #1 इनाम" : "Weekly #1 Prize"}</b><span>${LANG === "hi" ? "लगातार 7 दिन रैंक #1 बनाए रखें — #1 बने रहने के लिए रोज़ टेस्ट दें।" : "Hold Rank #1 for 7 straight days — give tests daily to stay at #1."}</span></div></div>`;
-    const right = tp
-      ? `<div class="wk2-right"><div class="wk2-t">${LANG === "hi" ? "इस सप्ताह के #1" : "This week's #1"}</div><div class="wk2-name"><b>${esc(tp.name || "")}</b> · ${tp.score} ${LANG === "hi" ? "अंक" : "pts"}</div><div class="wk2-streak">${wkDots(tp.streak)}<span><b>${tp.streak || 0}/7</b> ${LANG === "hi" ? "दिन" : "days"}</span></div></div>`
-      : `<div class="wk2-right"><div class="wk2-t">${LANG === "hi" ? "इस सप्ताह के #1" : "This week's #1"}</div><div class="wk2-name">${LANG === "hi" ? "अभी कोई रैंकिंग नहीं — पहले #1 बनें!" : "No ranking yet — be the first #1!"}</div></div>`;
-    wb.innerHTML = `<div class="wk2-main">${left}<div class="wk2-div"></div>${right}</div>`;
-  };
   showModal(`<button class="x" onclick="closeModal()">✕</button>
   <div class="lb-hero"><div class="lb-hero-t">🏆 ${LANG === "hi" ? "रिवार्ड्स और टॉप रैंकर्स" : "Rewards & Top Rankers"}</div>
-  <div id="wk-box" class="wk2 wk-load"><div class="spin"></div><span>${LANG === "hi" ? "इस सप्ताह की रेस लोड हो रही है…" : "Loading this week's race…"}</span></div></div>
+  <div class="lb-prize">🏆 <span>${LANG === "hi" ? "लगातार 7 दिन रैंक #1 बनाए रखें और" : "Hold Rank #1 for 7 straight days and win"} <b>₹100</b>${LANG === "hi" ? " जीतें — #1 बने रहने के लिए रोज़ टेस्ट दें।" : " — give tests daily to stay at #1."}</span></div></div>
   <div id="lb-fixed"><div style="text-align:center;padding:16px 6px"><div class="spin" style="margin:0 auto"></div></div></div>
   <div id="rank-body"></div>`, "lbfix");
-  if(BACKEND_URL){ api("weeklyTop", {}).then(w => wkFill(w && w.ok ? w.top : null)).catch(() => wkFill(null)); }
-  else wkFill(null);
   let rows = [], meRank = null;
   if(BACKEND_URL){ const r = await api("leaderboard", {phone: ME ? ME.phone : ""}); if(r.ok){ rows = r.rows || []; meRank = r.me || null; } }
   else { rows = topRankers(); if(ME){ const all = allRankers(); const i = all.findIndex(r=>r.phone===ME.phone); if(i>=0) meRank = {rank:i+1, score:all[i].score, tests:all[i].tests}; } }
@@ -3583,7 +3571,9 @@ document.addEventListener("visibilitychange", async ()=>{
   else if(r.ok){ if(r.user.photo) ME.photo = r.user.photo; healPhoto(); ME.stars = r.user.stars; ME.purchases = r.user.purchases; ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger; if(r.user._unotifs) ME._unotifs = r.user._unotifs; refreshHeader(); checkDoubtBadge(); if(CURSCREEN === "home") renderHome(); }
 });
 window.addEventListener("scroll", ()=>{ const b = $("totop"); if(b) b.classList.toggle("hidden", window.scrollY < 300 || (typeof TEST !== "undefined" && TEST && !TEST.done)); const nb = $("bnav"); if(nb) nb.classList.toggle("mini", window.scrollY > 140); }, {passive:true});
-window.addEventListener("load", async ()=>{
+let _booted = false;
+async function bootApp(){
+  if(_booted) return; _booted = true;
   armBack();
   applyTheme(localStorage.getItem("study_theme") || "light", false);
   document.addEventListener("gesturestart", e=>e.preventDefault());
@@ -3594,7 +3584,7 @@ window.addEventListener("load", async ()=>{
   scheduleInstallPrompt();
   refreshInstallFloat();
   if(BACKEND_URL){
-    try{ const b = await api("bootstrap", {}); if(b.ok){ window._settings = b.settings; if(b.notifs) localStorage.setItem("study_notifs_cache", JSON.stringify(b.notifs)); } }catch(e){}
+    api("bootstrap", {}).then(b=>{ if(b && b.ok){ window._settings = b.settings; if(b.notifs) localStorage.setItem("study_notifs_cache", JSON.stringify(b.notifs)); } }).catch(()=>{});
     const ph = getSessionPhone();
     if(ph){ const r = await api("me", {phone: ph, session: mySess()}); if(r.ok){ finishLogin(r.user); return; }
       if(r.error === "session"){ const e = $("li-err"); if(e) e.textContent = LANG==="hi" ? "यह खाता किसी अन्य डिवाइस पर लॉगिन हुआ, इसलिए आप यहाँ लॉगआउट हो गए।" : "This account was signed in on another device, so you were logged out here."; } }
@@ -3603,7 +3593,10 @@ window.addEventListener("load", async ()=>{
   const ph = getSessionPhone();
   if(ph){ const u = Store.users().find(x=>x.phone===ph); if(u){ finishLogin(u); return; } }
   go("auth"); hideSplash();
-});
+}
+if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bootApp);
+else bootApp();
+window.addEventListener("load", bootApp);
 </script>
 </body>
 </html>
