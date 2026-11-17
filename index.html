@@ -628,6 +628,46 @@ html[data-theme="dark"] .wk-box{background:#2a2416}
 .wk2-streak{display:flex;align-items:center;gap:7px;font-size:11.5px}
 .wk2 .wk-dots i{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.35)}
 .wk2 .wk-dots i.on{background:var(--goldb);border-color:var(--goldb)}
+/* Round 49: Home notification card, quick actions, progress snapshot */
+.focus-nt{display:flex;gap:10px;align-items:center;cursor:pointer;border-left:4px solid var(--goldb)}
+.focus-nt-ic{font-size:20px;flex:none}
+.focus-nt-t{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.focus-nt-b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.focus-nt-when{font-size:11px;color:var(--mut);flex:none}
+.qa-card{padding:10px 8px}
+.qa-row{display:flex;justify-content:space-between}
+.qa-it{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11.5px;font-weight:700;color:var(--ink);cursor:pointer;padding:4px 2px;font-family:inherit}
+.qa-it span{font-size:21px;line-height:1}
+.qa-it:active{transform:scale(.94)}
+.hp-card{cursor:pointer}
+.hp-top{display:flex;align-items:center;gap:8px}
+.hp-bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:9px}
+.hp-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--navy2),var(--goldb));border-radius:99px}
+.hp-stats{display:flex;gap:16px;margin-top:8px}
+.hp-stats div{font-size:11.5px;color:var(--mut)}
+.hp-stats b{display:block;font-size:15px;color:var(--ink)}
+/* Round 49: leaderboard — compact, professional, modern */
+.lb-hero-t{font-size:16px;margin:0 0 8px}
+.lb-podium{padding:14px 12px 12px;border-radius:18px;margin-bottom:10px}
+.lb-podium>div:first-child{font-size:15px!important;margin-bottom:10px!important}
+.lb-top{gap:10px}
+.lb-crown{font-size:15px;margin-bottom:2px}
+.lb-p.first .lb-av{width:64px;height:64px;font-size:24px}
+.lb-p.second .lb-av,.lb-p.third .lb-av{width:50px;height:50px;font-size:19px}
+.lb-name{font-size:12.5px;margin-top:6px}
+.lb-p.first .lb-name{font-size:13.5px}
+.lb-score{font-size:12px}
+.lb-ranknum{min-width:20px;height:20px;font-size:11.5px;margin-top:-10px}
+.lb-ped{width:58%;border-radius:7px 7px 0 0;margin-top:7px}
+.lb-p.first .lb-ped{height:13px;background:linear-gradient(180deg,#ffd968,#f5a623)}
+.lb-p.second .lb-ped{height:9px;background:linear-gradient(180deg,#eef2f9,#c3cede)}
+.lb-p.third .lb-ped{height:7px;background:linear-gradient(180deg,#f6c48a,#dd9046)}
+@media(min-width:641px){.lb-p.first .lb-av{width:72px;height:72px}}
+.lb-row-av{width:34px;height:34px;font-size:14px}
+.lb-rankno{width:20px;font-size:13px}
+.lb-row{padding:8px 10px}
+.lb-pts{background:#fff7e0;color:#8a5a00;font-weight:900;font-size:13px;padding:4px 9px;border-radius:999px;white-space:nowrap}
+html[data-theme="dark"] .lb-pts{background:#3a2f14;color:#ffd968}
 /* Round 46: top category slider + video-style bottom nav */
 #cat-slider{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:14px 6px 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,#fdf6e7,#fcefd8);border-radius:22px;margin-top:12px}
 #cat-slider::-webkit-scrollbar{display:none}
@@ -684,9 +724,6 @@ OneSignalDeferred.push(async function(OneSignal){
       <button class="iconbtn" onclick="go('notifications')" aria-label="Alerts" title="Alerts" style="position:relative">
       <span class="dot hidden" id="notifdot" style="position:absolute;top:1px;right:1px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid #fff"></span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-    </button>
-    <button class="iconbtn" onclick="showHelp()" aria-label="Help" title="Help">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     </button>
     <button class="iconbtn" onclick="showRewards()" aria-label="Rank" title="Rank — Top Rankers">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H4a2 2 0 0 0 0 4h3M17 6h3a2 2 0 0 1 0 4h-3"/></svg>
@@ -1134,6 +1171,9 @@ OneSignalDeferred.push(async function(OneSignal){
    MODE: BACKEND_URL empty -> DEMO (localStorage). Paste your
    Apps Script Web App URL to go LIVE with Google Sheets.
 ================================================================ */
+/* Splash logo paints immediately: set its src as soon as this script
+   runs instead of waiting for window load (which waits for the banks). */
+try{ const _spl = document.querySelector("#splash img[data-a='logo']"); if(_spl && window.ASSET && ASSET.logo) _spl.src = ASSET.logo; }catch(e){}
 const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxOPLOxMTwa6uLnvYVp7XKFh96k4_epe9EgFvHFpixS5-Nr2DNoWHx7qZAd-ifjmnLZ/exec";
 const ADMIN_PHONES = ["9588293680","9628187101"];  // silent admins: owner + partner (verified on server in live mode)
 const UPI_ID = "dineshjangirdjsp-1@oksbi";
@@ -2051,7 +2091,19 @@ function renderHomeFocus(){
   const streakHtml = fxClosed("st") ? "" : `<div class="card focus-st"><span style="font-size:22px">${st.streak > 0 || st.todayDone ? "🔥" : "🎯"}</span><div style="flex:1;min-width:0;padding-right:24px"><b>${st.streak} ${LANG === "hi" ? "दिन की स्ट्रीक" : "day streak"}</b><div class="sub">${st.todayDone ? (LANG === "hi" ? "आज का लक्ष्य पूरा ✓ — बढ़िया!" : "Today's goal done ✓ — great going!") : (LANG === "hi" ? "आज का लक्ष्य: 1 टेस्ट दें और स्ट्रीक जारी रखें" : "Today's goal: attempt 1 test to keep it going")}</div></div><button class="focus-x" onclick="closeFocus('st')" aria-label="Close">✕</button></div>`;
   const bmN = getBookmarks().length;
   const bmHtml = `<div class="card focus-bm" onclick="go('bookmarks')"><span style="font-size:20px">🔖</span><div style="flex:1;min-width:0"><b>${LANG === "hi" ? "सेव किए गए प्रश्न" : "Bookmarked Questions"}</b><div class="sub">${bmN} ${LANG === "hi" ? "प्रश्न सेव हैं — दोहराने के लिए टैप करें" : "saved questions — tap to revise"}</div></div><span style="color:#bbb;font-size:19px">›</span></div>`;
-  el.innerHTML = cd + streakHtml + bmHtml;
+  const gn = globalNotifs();
+  const ntHtml = gn.length ? `<div class="card focus-nt" onclick="go('notifications')"><span class="focus-nt-ic">🔔</span><div style="flex:1;min-width:0"><div class="focus-nt-t">${esc(gn[0].title || "")}</div><div class="sub focus-nt-b">${esc(gn[0].body || "")}</div></div><span class="focus-nt-when">${timeAgo(gn[0].at)}</span></div>` : "";
+  const qaHtml = `<div class="card qa-card"><div class="qa-row"><button class="qa-it" onclick="go('pyq')"><span>📚</span>PYQ</button><button class="qa-it" onclick="go('notes')"><span>📝</span>${LANG === "hi" ? "नोट्स" : "Notes"}</button><button class="qa-it" onclick="go('doubts')"><span>💬</span>${LANG === "hi" ? "डाउट्स" : "Doubts"}</button><button class="qa-it" onclick="go('wallet')"><span>👛</span>${LANG === "hi" ? "वॉलेट" : "Wallet"}</button><button class="qa-it" onclick="go('refer')"><span>🎁</span>${LANG === "hi" ? "रेफ़र" : "Refer"}</button></div></div>`;
+  const mine = Store.attempts().filter(a=> ME && a.phone === ME.phone && a.first);
+  let hpHtml = "";
+  if(mine.length){
+    let sm = 0, stt = 0, cc = 0, ww = 0;
+    mine.forEach(a=>{ sm += (+a.score || 0); stt += (+a.total || 0); cc += (+a.correct || 0); ww += (+a.wrong || 0); });
+    const pct = stt ? Math.max(0, Math.round(100 * sm / stt)) : 0;
+    const acc = (cc + ww) ? Math.round(100 * cc / (cc + ww)) : 0;
+    hpHtml = `<div class="card hp-card" onclick="go('profile')"><div class="hp-top"><span style="font-size:19px">📈</span><b style="flex:1">${LANG === "hi" ? "आपकी प्रगति" : "Your progress"}</b><span style="color:#bbb;font-size:19px">›</span></div><div class="hp-bar"><i style="width:${pct}%"></i></div><div class="hp-stats"><div><b>${mine.length}</b>${LANG === "hi" ? "टेस्ट" : "Tests"}</div><div><b>${pct}%</b>${LANG === "hi" ? "औसत स्कोर" : "Avg score"}</div><div><b>${acc}%</b>${LANG === "hi" ? "सटीकता" : "Accuracy"}</div></div></div>`;
+  }
+  el.innerHTML = ntHtml + cd + streakHtml + bmHtml + qaHtml + hpHtml;
 }
 
 /* ---------------- Round 44: Refer & Win + coupons ---------------- */
@@ -3099,8 +3151,8 @@ async function showRewards(){
   if(BACKEND_URL){ const r = await api("leaderboard", {phone: ME ? ME.phone : ""}); if(r.ok){ rows = r.rows || []; meRank = r.me || null; } }
   else { rows = topRankers(); if(ME){ const all = allRankers(); const i = all.findIndex(r=>r.phone===ME.phone); if(i>=0) meRank = {rank:i+1, score:all[i].score, tests:all[i].tests}; } }
   const fx = $("lb-fixed"), box = $("rank-body"); if(!box) return;
-  const rowHtml = (r, i, mine) => `<div class="testrow"${mine ? ' style="background:#fffbf0;border:1px solid #ecd28a;border-radius:10px;padding-left:8px;padding-right:8px"' : ""}><span class="lb-rankno">${i+1}</span><div class="lb-row-av">${avInner(r)}</div><div class="ti"><div class="tt">${esc(r.name)}${mine ? ' <span class="tag">You</span>' : ""}</div><div class="ts">${r.tests} ${T("testsTaken").toLowerCase()}${r.phone ? " · " + maskPhone(r.phone) : ""}</div></div><b>${r.score} pts</b></div>`;
-  const podHtml = (r, i, cls) => r ? `<div class="lb-p ${cls}"><div class="lb-crown">👑</div><div class="lb-av">${avInner(r)}</div><div class="lb-ranknum">${i+1}</div><div class="lb-name">${esc(r.name)}${(meRank && meRank.rank===i+1) ? ' <span class="tag">You</span>' : ""}</div><div class="lb-score">${r.score} pts</div></div>` : `<div class="lb-p ${cls}"></div>`;
+  const rowHtml = (r, i, mine) => `<div class="testrow lb-row"${mine ? ' style="background:#fffbf0;border:1px solid #ecd28a;border-radius:10px;padding-left:8px;padding-right:8px"' : ""}><span class="lb-rankno">${i+1}</span><div class="lb-row-av">${avInner(r)}</div><div class="ti"><div class="tt">${esc(r.name)}${mine ? ' <span class="tag">You</span>' : ""}</div><div class="ts">${r.tests} ${T("testsTaken").toLowerCase()}${r.phone ? " · " + maskPhone(r.phone) : ""}</div></div><span class="lb-pts">${r.score} pts</span></div>`;
+  const podHtml = (r, i, cls) => r ? `<div class="lb-p ${cls}"><div class="lb-crown">👑</div><div class="lb-av">${avInner(r)}</div><div class="lb-ranknum">${i+1}</div><div class="lb-name">${esc(r.name)}${(meRank && meRank.rank===i+1) ? ' <span class="tag">You</span>' : ""}</div><div class="lb-score">${r.score} pts</div><div class="lb-ped"></div></div>` : `<div class="lb-p ${cls}"></div>`;
   if(fx) fx.innerHTML = rows.length ? `<div class="lb-podium"><div style="text-align:center;color:#fff;font-weight:900;font-size:16.5px;margin-bottom:13px">🏆 ${LANG === "hi" ? "लीडरबोर्ड" : "Leaderboard"}</div><div class="lb-top">${podHtml(rows[1],1,"second")}${podHtml(rows[0],0,"first")}${podHtml(rows[2],2,"third")}</div></div>` : "";
   let body = "";
   if(rows.length) body += rows.slice(3,10).map((r,j)=> rowHtml(r, j+3, !!(meRank && meRank.rank===j+4))).join("");
