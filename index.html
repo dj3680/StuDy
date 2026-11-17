@@ -401,8 +401,8 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,36,46,.
 /* ---------- Round 37: inner pages redesign ---------- */
 .btn.sm{border-radius:999px}
 /* Category: hero header + roomy subject/mock rows */
-#screen-category>div:first-of-type{background:linear-gradient(120deg,var(--goldsoft),var(--card) 70%);border:1px solid var(--line2);border-radius:22px;padding:16px;box-shadow:0 12px 26px -16px rgba(11,32,77,.25)}
-#screen-category #cat-logo{width:60px!important;height:60px!important;border-radius:18px;background:#fff;box-shadow:0 6px 16px -6px rgba(11,32,77,.3)}
+#home-cat>div:first-of-type{background:linear-gradient(120deg,var(--goldsoft),var(--card) 70%);border:1px solid var(--line2);border-radius:22px;padding:16px;box-shadow:0 12px 26px -16px rgba(11,32,77,.25)}
+#home-cat #cat-logo{width:60px!important;height:60px!important;border-radius:18px;background:#fff;box-shadow:0 6px 16px -6px rgba(11,32,77,.3)}
 #subject-list .testrow,#mock-card .testrow{padding:14px 6px;border-radius:12px}
 #subject-list .testrow:hover,#mock-card .testrow:hover{background:var(--bg2)}
 #subject-list .tt,#mock-card .tt{font-size:15.5px}
@@ -590,6 +590,27 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
 .ref-chip{flex:none;font-size:11px;font-weight:700;padding:5px 9px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);color:var(--mut);max-width:46%;text-align:center}
 .ref-chip.ok{background:#e9f9ee;border-color:#16a34a;color:#15803d}
 html[data-theme="dark"] .ref-chip.ok{background:#14301d;color:#4ade80}
+/* Round 46: top category slider + video-style bottom nav */
+#cat-slider{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:16px calc(50% - 52px) 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#cat-slider::-webkit-scrollbar{display:none}
+.cscard{scroll-snap-align:center;flex:0 0 98px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 6px 10px;border-radius:19px;background:var(--card);border:2px solid transparent;opacity:.5;transform:scale(.92);transition:opacity .25s ease,transform .25s ease,border-color .25s ease,box-shadow .25s ease;cursor:pointer}
+.cscard img{width:52px;height:52px;object-fit:contain;border-radius:12px;pointer-events:none}
+.cscard .cs-name{font-size:12px;font-weight:800;text-align:center;line-height:1.25;color:var(--ink)}
+.cscard.on{opacity:1;transform:scale(1.06);border-color:var(--gold);background:#fff;box-shadow:0 14px 26px -12px rgba(11,32,77,.35)}
+html[data-theme="dark"] .cscard.on{background:#22242e}
+#home-cat:not(.hidden),#home-master:not(.hidden){animation:viewIn .3s ease}
+@keyframes viewIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.bnav{transition:transform .35s ease,padding .35s ease;transform-origin:center bottom}
+.bnav button{transition:background .25s ease,color .25s ease,font-size .25s ease,padding .25s ease}
+.bnav button svg{width:22px;height:22px;transition:width .25s ease,height .25s ease}
+.bnav button.on{background:#e8ebef;color:var(--navy);box-shadow:0 3px 9px rgba(11,32,77,.16),inset 0 1px 0 #fff;transform:none}
+.bnav button.on svg{width:22px;height:22px;color:var(--navy)}
+.bnav button.on .ndot{display:none}
+html[data-theme="dark"] .bnav button.on{background:#3a3f4d;color:#fff}
+html[data-theme="dark"] .bnav button.on svg{color:#fff}
+.bnav.mini{transform:scale(.8);padding:3px}
+.bnav.mini button{font-size:0;gap:0;padding:7px 12px}
+.bnav.mini .ndot{display:none}
 </style>
 </head>
 <body>
@@ -665,6 +686,19 @@ html[data-theme="dark"] .ref-chip.ok{background:#14301d;color:#4ade80}
 
   <!-- ============ HOME ============ -->
   <section id="screen-home" class="hidden">
+    <div id="cat-slider"></div>
+    <div id="home-cat" class="hidden">
+      <div style="display:flex;align-items:center;gap:12px;margin-top:14px">
+        <img id="cat-logo" class="catlogo" src="" alt="" style="width:54px;height:54px">
+        <div><h1 id="cat-title"></h1><p class="sub" id="cat-desc"></p></div>
+      </div>
+      <div id="cat-cd"></div>
+      <h2 data-i18n="subjectTests">Subject-wise tests</h2>
+      <div class="card" id="subject-list" style="padding:4px 14px"></div>
+      <h2 data-i18n="fullMock">Full mock test</h2>
+      <div class="card" id="mock-card" style="padding:4px 14px"></div>
+    </div>
+    <div id="home-master">
     <div id="home-banner"></div>
     <div id="home-premium"></div>
     <div id="home-focus"></div>
@@ -675,19 +709,7 @@ html[data-theme="dark"] .ref-chip.ok{background:#14301d;color:#4ade80}
     <div class="grid" id="catgrid"></div>
     <h2 data-i18n="freeMocks">Free mock tests</h2>
     <div class="grid" id="freemocks"></div>
-  </section>
-
-  <!-- ============ CATEGORY ============ -->
-  <section id="screen-category" class="hidden">
-    <div style="display:flex;align-items:center;gap:12px;margin-top:14px">
-      <img id="cat-logo" class="catlogo" src="" alt="" style="width:54px;height:54px">
-      <div><h1 id="cat-title"></h1><p class="sub" id="cat-desc"></p></div>
     </div>
-    <div id="cat-cd"></div>
-    <h2 data-i18n="subjectTests">Subject-wise tests</h2>
-    <div class="card" id="subject-list" style="padding:4px 14px"></div>
-    <h2 data-i18n="fullMock">Full mock test</h2>
-    <div class="card" id="mock-card" style="padding:4px 14px"></div>
   </section>
 
   <!-- ============ WALLET ============ -->
@@ -1263,16 +1285,17 @@ function isAdmin(){ return !!ME && ADMIN_PHONES.includes(ME.phone); }
 let CURSCREEN = "auth";
 function go(screen){
   if(!ME && screen !== "auth"){ go("auth"); return; }
+  if(screen === "category"){ if(CURSCREEN !== "home") go("home"); showCatView(CURCAT); return; }
   if(!NAVBACK && CURSCREEN && CURSCREEN !== screen && CURSCREEN !== "auth") NAVHIST = [CURSCREEN];
   CURSCREEN = screen;
-  ["auth","home","category","wallet","profile","notifications","result","admin","notes","pyq","doubts","pyqgroup","notesgroup","bookmarks","refer"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
+  ["auth","home","wallet","profile","notifications","result","admin","notes","pyq","doubts","pyqgroup","notesgroup","bookmarks","refer"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
   $("appheader").classList.toggle("hidden", screen==="auth");
   $("bnav").classList.toggle("hidden", screen==="auth");
   ["home","pyq","notes","profile","doubts"].forEach(s=>{ const b=$("bn-"+s); if(b) b.classList.toggle("on", s===screen); });
   if(screen==="pyqgroup"){ const b=$("bn-pyq"); if(b) b.classList.add("on"); }
   if(screen==="notesgroup"){ const b=$("bn-notes"); if(b) b.classList.add("on"); }
   if(screen==="auth"){ placeSocialBtns("auth"); paintAuthCTA(); }
-  if(screen==="home") renderHome();
+  if(screen==="home"){ showMasterView(); renderHome(); }
   if(screen==="wallet") renderWallet();
   if(screen==="profile") renderProfile();
   if(screen==="notifications") renderNotifs();
@@ -2124,6 +2147,7 @@ async function adminCouponDel(code){
   loadAdminCoupons();
 }
 function renderHome(){
+  buildCatSlider();
   placeSocialBtns("home");
   refreshInstallFloat();
   playPromo();
@@ -2162,6 +2186,34 @@ function renderHome(){
 let CURCAT = "ssc";
 function resetCatSections(){
   ["subject-list","mock-card"].forEach(id=>{ const el = $(id); if(el){ el.classList.remove("hidden"); const h = el.previousElementSibling; if(h && h.tagName === "H2") h.classList.remove("hidden"); } });
+}
+const SLIDE_ORDER = ["rpsc","upsc","ssc","neet","jee","reet","cuet","ca","school"];
+let SLIDECAT = null, SLIDELOCK = 0;
+function buildCatSlider(){
+  const el = $("cat-slider"); if(!el) return;
+  if(!el.dataset.wired){ el.dataset.wired = "1"; el.addEventListener("scroll", ()=>{ clearTimeout(window._slT); window._slT = setTimeout(sliderScrollEnd, 130); }, {passive:true}); }
+  const cards = [`<div class="cscard${SLIDECAT ? "" : " on"}" data-cat="home" onclick="selectCatSlide('home')"><img src="${ASSET.logo}" alt=""><div class="cs-name">${T("navHome")}</div></div>`];
+  SLIDE_ORDER.forEach(k=>{ const c = CATS[k]; if(!c) return; cards.push(`<div class="cscard${SLIDECAT === k ? " on" : ""}" data-cat="${k}" onclick="selectCatSlide('${k}')"><img src="${ASSET[k] || ASSET.logo}" alt=""><div class="cs-name">${c.name[LANG] || c.name.en}</div></div>`); });
+  el.innerHTML = cards.join("");
+}
+function syncSlider(cat){
+  SLIDECAT = cat;
+  document.querySelectorAll(".cscard").forEach(el=> el.classList.toggle("on", el.dataset.cat === (cat || "home")));
+  const on = document.querySelector(".cscard.on");
+  if(on){ SLIDELOCK = Date.now(); try{ on.scrollIntoView({inline:"center", block:"nearest", behavior:"smooth"}); }catch(e){} }
+}
+function showCatView(cat){ const hc = $("home-cat"), hm = $("home-master"); if(hc) hc.classList.remove("hidden"); if(hm) hm.classList.add("hidden"); syncSlider(cat); }
+function showMasterView(){ const hc = $("home-cat"), hm = $("home-master"); if(hc) hc.classList.add("hidden"); if(hm) hm.classList.remove("hidden"); syncSlider(null); }
+function selectCatSlide(k){
+  if(k === "home"){ showMasterView(); window.scrollTo(0,0); return; }
+  renderCategory(k); showCatView(k); window.scrollTo(0,0);
+}
+function sliderScrollEnd(){
+  const el = $("cat-slider"); if(!el || Date.now() - SLIDELOCK < 450) return;
+  const mid = el.getBoundingClientRect().left + el.clientWidth / 2;
+  let best = null, bd = 1e9;
+  el.querySelectorAll(".cscard").forEach(c=>{ const r = c.getBoundingClientRect(); const d = Math.abs(r.left + r.width / 2 - mid); if(d < bd){ bd = d; best = c; } });
+  if(best && best.dataset.cat !== (SLIDECAT || "home")) selectCatSlide(best.dataset.cat);
 }
 function renderCategory(cat){
   if(cat === "pyq"){ go("pyq"); return; }
@@ -3410,7 +3462,7 @@ document.addEventListener("visibilitychange", async ()=>{
   if(!r.ok && r.error === "session"){ doLogout(); const e = $("li-err"); if(e) e.textContent = LANG==="hi" ? "यह खाता किसी अन्य डिवाइस पर लॉगिन हुआ, इसलिए आप यहाँ लॉगआउट हो गए।" : "This account was signed in on another device, so you were logged out here."; }
   else if(r.ok){ if(r.user.photo) ME.photo = r.user.photo; healPhoto(); ME.stars = r.user.stars; ME.purchases = r.user.purchases; ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger; if(r.user._unotifs) ME._unotifs = r.user._unotifs; refreshHeader(); checkDoubtBadge(); if(CURSCREEN === "home") renderHome(); }
 });
-window.addEventListener("scroll", ()=>{ const b = $("totop"); if(b) b.classList.toggle("hidden", window.scrollY < 300 || (typeof TEST !== "undefined" && TEST && !TEST.done)); }, {passive:true});
+window.addEventListener("scroll", ()=>{ const b = $("totop"); if(b) b.classList.toggle("hidden", window.scrollY < 300 || (typeof TEST !== "undefined" && TEST && !TEST.done)); const nb = $("bnav"); if(nb) nb.classList.toggle("mini", window.scrollY > 140); }, {passive:true});
 window.addEventListener("load", async ()=>{
   armBack();
   applyTheme(localStorage.getItem("study_theme") || "light", false);
