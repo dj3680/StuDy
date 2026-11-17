@@ -591,16 +591,18 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
 .ref-chip.ok{background:#e9f9ee;border-color:#16a34a;color:#15803d}
 html[data-theme="dark"] .ref-chip.ok{background:#14301d;color:#4ade80}
 /* Round 46: top category slider + video-style bottom nav */
-#cat-slider{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:16px 4px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#cat-slider{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:14px 6px 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,#fdf6e7,#fcefd8);border-radius:22px;margin-top:12px}
 #cat-slider::-webkit-scrollbar{display:none}
-.cscard{scroll-snap-align:center;flex:0 0 98px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 6px 10px;border-radius:19px;background:var(--card);border:2px solid transparent;opacity:.5;transform:scale(.92);transition:opacity .25s ease,transform .25s ease,border-color .25s ease,box-shadow .25s ease;cursor:pointer}
+.cscard{scroll-snap-align:center;flex:0 0 98px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 6px 10px;border-radius:19px;background:transparent;border:2px solid transparent;opacity:.6;transform:scale(.92);transition:opacity .25s ease,transform .25s ease,border-color .25s ease,box-shadow .25s ease;cursor:pointer}
 .cscard img{width:52px;height:52px;object-fit:contain;border-radius:12px;pointer-events:none}
 .cscard .cs-name{font-size:12px;font-weight:800;text-align:center;line-height:1.25;color:var(--ink)}
-.cscard.on{opacity:1;transform:scale(1.06);border-color:var(--gold);background:#fff;box-shadow:0 14px 26px -12px rgba(11,32,77,.35)}
+.cscard.on{opacity:1;transform:scale(1.07);border-color:#b8860b;background:#fff;box-shadow:0 14px 26px -12px rgba(11,32,77,.35)}
 html[data-theme="dark"] .cscard.on{background:#22242e}
+html[data-theme="dark"] #cat-slider{background:linear-gradient(180deg,#28251b,#1e1c14)}
 #home-cat:not(.hidden),#home-master:not(.hidden){animation:viewIn .3s ease}
 @keyframes viewIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
-.bnav{transition:transform .35s ease,padding .35s ease;transform-origin:center bottom}
+.bnav{transition:transform .35s ease,padding .35s ease;transform-origin:center bottom;border-radius:999px;background:rgba(255,255,255,.97);bottom:calc(14px + env(safe-area-inset-bottom))}
+.bnav .ndot{display:none}
 .bnav button{transition:background .25s ease,color .25s ease,font-size .25s ease,padding .25s ease}
 .bnav button svg{width:22px;height:22px;transition:width .25s ease,height .25s ease}
 .bnav button.on{background:#e8ebef;color:var(--navy);box-shadow:0 3px 9px rgba(11,32,77,.16),inset 0 1px 0 #fff;transform:none}
