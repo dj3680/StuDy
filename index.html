@@ -590,6 +590,27 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
 .ref-chip{flex:none;font-size:11px;font-weight:700;padding:5px 9px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);color:var(--mut);max-width:46%;text-align:center}
 .ref-chip.ok{background:#e9f9ee;border-color:#16a34a;color:#15803d}
 html[data-theme="dark"] .ref-chip.ok{background:#14301d;color:#4ade80}
+/* Round 47: leaderboard — fixed head + podium, ranks 4+ scroll; redesigned prize area */
+.mback.lbfix .modal{display:flex;flex-direction:column;overflow:hidden}
+#lb-fixed{flex:none}
+#rank-body{overflow-y:auto;min-height:0;margin-top:2px;-webkit-overflow-scrolling:touch}
+.lb-hero-t{font-size:17px;font-weight:900;margin:2px 0 10px}
+.lb-hero-banner{display:flex;align-items:center;gap:12px;background:linear-gradient(120deg,var(--navy),var(--navy2));border-radius:16px;padding:13px 14px;color:#fff}
+.lb-hero-amt{font-size:25px;font-weight:900;color:var(--goldb)}
+.lb-hero-txt{flex:1;display:flex;flex-direction:column;gap:2px}
+.lb-hero-txt b{font-size:14.5px}
+.lb-hero-txt span{font-size:11.5px;opacity:.85;line-height:1.45}
+.lb-hero-chip{flex:none;font-size:10.5px;font-weight:800;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);padding:5px 8px;border-radius:999px}
+.wk-box{margin-top:10px;background:#fffbf0;border:1px solid #ecd28a;border-radius:14px;padding:11px 13px}
+.wk-box.wk-load{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:13px}
+.wk-box.wk-load .spin{width:18px;height:18px;flex:none}
+.wk-t{font-weight:800;font-size:13.5px}
+.wk-line{margin-top:4px;font-size:12.5px;color:var(--mut);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.wk-line b{color:var(--ink)}
+.wk-dots{display:inline-flex;gap:4px}
+.wk-dots i{width:9px;height:9px;border-radius:50%;background:#e7dfc8;border:1px solid #d9c98f}
+.wk-dots i.on{background:var(--goldb);border-color:var(--goldb)}
+html[data-theme="dark"] .wk-box{background:#2a2416}
 /* Round 46: top category slider + video-style bottom nav */
 #cat-slider{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:14px 6px 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,#fdf6e7,#fcefd8);border-radius:22px;margin-top:12px}
 #cat-slider::-webkit-scrollbar{display:none}
@@ -617,7 +638,7 @@ html[data-theme="dark"] .bnav button.on svg{color:#fff}
 </head>
 <body>
 <div id="splash" style="position:fixed;inset:0;background:#fff;z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px">
-  <img data-a="logo" alt="StuDy" style="height:84px;animation:spPulse 1.2s ease-in-out infinite">
+  <img data-a="logo" alt="StuDy" style="height:84px;animation:spPulse 1.2s ease-in-out infinite;opacity:0;transition:opacity .25s ease" onload="this.style.opacity='1'">
   <div style="font-size:23px;font-weight:900">Stu<span style="color:var(--goldb)">Dy</span></div>
   <div class="spin"></div>
   <div class="sub">Loading…</div>
@@ -3018,30 +3039,35 @@ function allRankers(){
 }
 function topRankers(){ return allRankers().slice(0,10); }
 async function showRewards(){
-  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">🏆 ${LANG==="hi" ? "रिवार्ड्स और टॉप रैंकर्स" : "Rewards & Top Rankers"}</h3><p class="sub" style="margin-top:6px">${T("why4")}</p><div id="rank-body" style="margin-top:6px"><div style="text-align:center;padding:22px 6px"><div class="spin" style="margin:0 auto"></div><p class="sub" style="margin-top:10px">${LANG==="hi" ? "रैंकिंग लोड हो रही है…" : "Loading rankings…"}</p></div></div>`);
+  const wkTitle = LANG === "hi" ? "साप्ताहिक #1 इनाम — ₹100 अपने-आप" : "Weekly #1 Prize — ₹100 auto-credit";
+  const wkDots = n => `<span class="wk-dots">${[1,2,3,4,5,6,7].map(i=>`<i class="${i <= (n || 0) ? "on" : ""}"></i>`).join("")}</span>`;
+  const wkFill = tp => { const wb = $("wk-box"); if(!wb) return;
+    wb.classList.remove("wk-load");
+    wb.innerHTML = tp
+      ? `<div class="wk-t">🏆 ${wkTitle}</div><div class="wk-line">${LANG === "hi" ? "इस सप्ताह के #1" : "This week's #1"}: <b>${esc(tp.name || "")}</b> · ${tp.score} ${LANG === "hi" ? "अंक" : "pts"}</div><div class="wk-line">${wkDots(tp.streak)}<span>${LANG === "hi" ? "लगातार #1" : "#1 streak"}: <b>${tp.streak || 0}/7</b> ${LANG === "hi" ? "दिन" : "days"}</span></div>`
+      : `<div class="wk-t">🏆 ${wkTitle}</div><div class="wk-line">${LANG === "hi" ? "इस सप्ताह अभी कोई रैंकिंग नहीं है — पहले #1 बनें!" : "No weekly ranking yet — be the first #1!"}</div>`;
+  };
+  showModal(`<button class="x" onclick="closeModal()">✕</button>
+  <div class="lb-hero"><div class="lb-hero-t">🏆 ${LANG === "hi" ? "रिवार्ड्स और टॉप रैंकर्स" : "Rewards & Top Rankers"}</div>
+  <div class="lb-hero-banner"><div class="lb-hero-amt">₹100</div><div class="lb-hero-txt"><b>${LANG === "hi" ? "साप्ताहिक #1 इनाम" : "Weekly #1 Prize"}</b><span>${LANG === "hi" ? "लगातार 7 दिन रैंक #1 बनाए रखें — इनाम अपने-आप आपके खाते में।" : "Hold Rank #1 for 7 straight days — the prize lands in your account automatically."}</span></div><span class="lb-hero-chip">${LANG === "hi" ? "हर सप्ताह नई रेस" : "New race every week"}</span></div>
+  <div id="wk-box" class="wk-box wk-load"><div class="spin"></div><span>${LANG === "hi" ? "इस सप्ताह की रेस लोड हो रही है…" : "Loading this week's race…"}</span></div></div>
+  <div id="lb-fixed"><div style="text-align:center;padding:16px 6px"><div class="spin" style="margin:0 auto"></div></div></div>
+  <div id="rank-body"></div>`, "lbfix");
+  if(BACKEND_URL){ api("weeklyTop", {}).then(w => wkFill(w && w.ok ? w.top : null)).catch(() => wkFill(null)); }
+  else wkFill(null);
   let rows = [], meRank = null;
   if(BACKEND_URL){ const r = await api("leaderboard", {phone: ME ? ME.phone : ""}); if(r.ok){ rows = r.rows || []; meRank = r.me || null; } }
   else { rows = topRankers(); if(ME){ const all = allRankers(); const i = all.findIndex(r=>r.phone===ME.phone); if(i>=0) meRank = {rank:i+1, score:all[i].score, tests:all[i].tests}; } }
-  const box = $("rank-body"); if(!box) return;
-  const medals = ["🥇","🥈","🥉"];
+  const fx = $("lb-fixed"), box = $("rank-body"); if(!box) return;
   const rowHtml = (r, i, mine) => `<div class="testrow"${mine ? ' style="background:#fffbf0;border:1px solid #ecd28a;border-radius:10px;padding-left:8px;padding-right:8px"' : ""}><span class="lb-rankno">${i+1}</span><div class="lb-row-av">${avInner(r)}</div><div class="ti"><div class="tt">${esc(r.name)}${mine ? ' <span class="tag">You</span>' : ""}</div><div class="ts">${r.tests} ${T("testsTaken").toLowerCase()}${r.phone ? " · " + maskPhone(r.phone) : ""}</div></div><b>${r.score} pts</b></div>`;
   const podHtml = (r, i, cls) => r ? `<div class="lb-p ${cls}"><div class="lb-crown">👑</div><div class="lb-av">${avInner(r)}</div><div class="lb-ranknum">${i+1}</div><div class="lb-name">${esc(r.name)}${(meRank && meRank.rank===i+1) ? ' <span class="tag">You</span>' : ""}</div><div class="lb-score">${r.score} pts</div></div>` : `<div class="lb-p ${cls}"></div>`;
+  if(fx) fx.innerHTML = rows.length ? `<div class="lb-podium"><div style="text-align:center;color:#fff;font-weight:900;font-size:16.5px;margin-bottom:13px">🏆 ${LANG === "hi" ? "लीडरबोर्ड" : "Leaderboard"}</div><div class="lb-top">${podHtml(rows[1],1,"second")}${podHtml(rows[0],0,"first")}${podHtml(rows[2],2,"third")}</div></div>` : "";
   let body = "";
-  if(rows.length){
-    body += `<div class="lb-podium"><div style="text-align:center;color:#fff;font-weight:900;font-size:16.5px;margin-bottom:13px">🏆 ${LANG==="hi" ? "लीडरबोर्ड" : "Leaderboard"}</div><div class="lb-top">${podHtml(rows[1],1,"second")}${podHtml(rows[0],0,"first")}${podHtml(rows[2],2,"third")}</div></div>`;
-    body += rows.slice(3,10).map((r,j)=> rowHtml(r, j+3, !!(meRank && meRank.rank===j+4))).join("");
-  } else body = `<p class="sub" style="padding:10px 0">${LANG==="hi" ? "अभी कोई रैंकिंग नहीं है — पहले टॉपर बनें!" : "No rankings yet — be the first topper!"}</p>`;;
+  if(rows.length) body += rows.slice(3,10).map((r,j)=> rowHtml(r, j+3, !!(meRank && meRank.rank===j+4))).join("");
+  else body = `<p class="sub" style="padding:10px 0">${LANG === "hi" ? "अभी कोई रैंकिंग नहीं है — पहले टॉपर बनें!" : "No rankings yet — be the first topper!"}</p>`;
   if(ME && meRank && meRank.rank > 10) body += `<div style="border-top:1px dashed var(--line);margin-top:8px;padding-top:8px">${rowHtml({name: ME.name || "", phone: ME.phone, photo: ME.photo || "", score: meRank.score, tests: meRank.tests}, meRank.rank-1, true)}</div>`;
-  else if(ME && !meRank) body += `<p class="sub" style="margin-top:8px">${LANG==="hi" ? "आपकी अभी कोई रैंक नहीं है — पहला टेस्ट दें और रैंक पाएँ!" : "You are not ranked yet — take your first test to get a rank!"}</p>`;
+  else if(ME && !meRank) body += `<p class="sub" style="margin-top:8px">${LANG === "hi" ? "आपकी अभी कोई रैंक नहीं है — पहला टेस्ट दें और रैंक पाएँ!" : "You are not ranked yet — take your first test to get a rank!"}</p>`;
   box.innerHTML = body;
-  if(BACKEND_URL){
-    const w = await api("weeklyTop", {});
-    const wb = $("rank-body"); if(!wb || !w.ok) return;
-    const tp = w.top;
-    const line = tp ? `${LANG==="hi" ? "इस सप्ताह के #1" : "This week's #1"}: <b>${esc(tp.name || "")}</b> · ${tp.score} ${LANG==="hi" ? "अंक" : "pts"} · ${LANG==="hi" ? "लगातार #1" : "#1 streak"}: <b>${tp.streak || 0}/7</b> ${LANG==="hi" ? "दिन" : "days"}`
-                    : (LANG==="hi" ? "इस सप्ताह अभी कोई रैंकिंग नहीं है।" : "No weekly ranking yet.");
-    wb.innerHTML = `<div style="padding:10px 12px;margin-bottom:10px;background:#fffbf0;border:1px solid #ecd28a;border-radius:10px"><div style="font-weight:700;font-size:13px">🏆 ${LANG==="hi" ? "साप्ताहिक #1 इनाम — ₹100 अपने-आप" : "Weekly #1 Prize — ₹100 auto-credit"}</div><div class="sub" style="margin-top:3px">${line}</div></div>` + wb.innerHTML;
-  }
 }
 
 
