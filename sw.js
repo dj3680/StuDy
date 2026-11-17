@@ -1,7 +1,8 @@
-/* StuDy service worker — offline shell + installability.
-   NOTE: true Web Push needs a push server (phase 2). This SW keeps the
-   app installable and usable offline for already-loaded content. */
-const CACHE = "study-v2-70";
+/* StuDy service worker — offline shell + installability + OneSignal push.
+   The OneSignal worker code is merged into this worker (importScripts at
+   the top) so ONE service worker serves both offline caching and push. */
+try{ importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js"); }catch(e){}
+const CACHE = "study-v2-71";
 const CORE = ["./", "./index.html", "./questions.js", "./questions2.js", "./questions3.js", "./manifest.webmanifest",
   ];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(()=>self.skipWaiting())); });
@@ -11,7 +12,4 @@ self.addEventListener("fetch", e => {
   e.respondWith(fetch(e.request).then(r => { const cp = r.clone(); caches.open(CACHE).then(c=>c.put(e.request, cp)); return r; })
     .catch(() => caches.match(e.request)));
 });
-self.addEventListener("push", e => {
-  const d = e.data ? e.data.json() : { title: "StuDy", body: "New update for you!" };
-  e.waitUntil(self.registration.showNotification(d.title, { body: d.body, icon: "assets/icon-192.png" }));
-});
+/* Push display is handled by the OneSignal worker code imported above. */

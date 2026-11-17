@@ -652,6 +652,20 @@ html[data-theme="dark"] .bnav button.on svg{color:#fff}
 .bnav.mini button{font-size:0;gap:0;padding:7px 12px}
 .bnav.mini .ndot{display:none}
 </style>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function(OneSignal){
+  try{
+    await OneSignal.init({
+      appId: "182672db-20eb-456c-8bc7-886ecfc91b1b",
+      serviceWorkerPath: "StuDy/sw.js",
+      serviceWorkerParam: { scope: "/StuDy/" },
+      notifyButton: { enable: false }
+    });
+  }catch(e){}
+});
+</script>
 </head>
 <body>
 <div id="splash" style="position:fixed;inset:0;background:#fff;z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px">
@@ -1120,7 +1134,7 @@ html[data-theme="dark"] .bnav button.on svg{color:#fff}
    MODE: BACKEND_URL empty -> DEMO (localStorage). Paste your
    Apps Script Web App URL to go LIVE with Google Sheets.
 ================================================================ */
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxRiO-cXu6nheMpQ7ah05CdSraBr7P7o0mNeJclcdPecrL-JeKdkZd4ydVzkDLHe_8E/exec";
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxOPLOxMTwa6uLnvYVp7XKFh96k4_epe9EgFvHFpixS5-Nr2DNoWHx7qZAd-ifjmnLZ/exec";
 const ADMIN_PHONES = ["9588293680","9628187101"];  // silent admins: owner + partner (verified on server in live mode)
 const UPI_ID = "dineshjangirdjsp-1@oksbi";
 const INSTAGRAM_URL = "https://www.instagram.com/dinesh.jangir_/";
@@ -1485,7 +1499,7 @@ function applyTheme(th, save){
 }
 function setTheme(th){ applyTheme(th, true); }
 function finishLogin(user){
-  ME = user; localStorage.setItem("study_session", user.phone); setSessionCookie(user.phone); healPhoto();
+  ME = user; localStorage.setItem("study_session", user.phone); setSessionCookie(user.phone); healPhoto(); osIdentify();
   if(!BACKEND_URL && !user.refCode){ user.refCode = demoRefCode(); Store.updateMe(u2=>{ u2.refCode = user.refCode; }); }
   if(user.session){ try{ localStorage.setItem("study_devsess", user.session); }catch(e){} }
   if(user.lang){ LANG = user.lang; localStorage.setItem("study_lang", LANG); }
@@ -1496,7 +1510,10 @@ function finishLogin(user){
   go("home"); hideSplash(); toast(T("welcome"));
   settleSavedTest();
 }
-function doLogout(){ ME=null; localStorage.removeItem("study_session"); clearSessionCookie(); go("auth"); }
+/* ---------------- OneSignal push ---------------- */
+function osIdentify(){ try{ if(!ME || !ME.phone) return; window.OneSignalDeferred = window.OneSignalDeferred || []; OneSignalDeferred.push(function(OneSignal){ try{ OneSignal.login(String(ME.phone)); }catch(e){} }); }catch(e){} }
+function osLogout(){ try{ window.OneSignalDeferred = window.OneSignalDeferred || []; OneSignalDeferred.push(function(OneSignal){ try{ OneSignal.logout(); }catch(e){} }); }catch(e){} }
+function doLogout(){ osLogout(); ME=null; localStorage.removeItem("study_session"); clearSessionCookie(); go("auth"); }
 function setLang(l, fromProfile){
   LANG=l; localStorage.setItem("study_lang", l); $("pf-lang").value=l; applyI18n();
   /* App language switches the ENTIRE app, tests included: reset the test
@@ -2862,7 +2879,14 @@ function renderNotifs(){
   $("notif-list").innerHTML = merged.length ? merged.map(n=>`<div class="card"><div style="font-weight:700;font-size:14.5px">${esc(n.title)}</div><p class="sub" style="margin-top:3px">${esc(n.body)}</p>${n.link? (["home","pyq","doubts","notes","profile","wallet"].includes(n.link) ? `<button class="btn sm" style="margin-top:9px" onclick="go('${n.link}')">${LANG==="hi" ? "देखें →" : "View →"}</button>` : `<a class="btn sm" href="${esc(n.link)}" target="_blank" rel="noopener" style="margin-top:9px">${esc(n.linkLabel||"Open")}</a>`) :""}<div class="sub" style="margin-top:5px;font-size:11.5px">${new Date(n.at).toLocaleString()}</div></div>`).join("") : `<p class="sub">${T("noNotif")}</p>`;
   localStorage.setItem("study_notifseen_"+(ME?ME.phone:""), merged.length); refreshHeader();
 }
-function enableNotifs(){ if("Notification" in window){ Notification.requestPermission().then(p=> toast(p==="granted" ? "Notifications enabled ✓" : "Notifications not allowed")); } else toast("Not supported on this browser"); }
+function enableNotifs(){
+  let done = false;
+  try{
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal){ done = true; try{ const perm = await OneSignal.Notifications.requestPermission(); toast(perm ? "Notifications enabled ✓" : "Notifications not allowed"); }catch(e){ toast("Notifications not allowed"); } });
+  }catch(e){}
+  setTimeout(()=>{ if(!done){ if("Notification" in window) Notification.requestPermission().then(p=> toast(p==="granted" ? "Notifications enabled ✓" : "Notifications not allowed")); else toast("Not supported on this browser"); } }, 3000);
+}
 
 /* ---------------- Admin ---------------- */
 function adminPaymentHtml(p){
