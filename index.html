@@ -711,6 +711,14 @@ OneSignalDeferred.push(async function(OneSignal){
   }catch(e){}
 });
 </script>
+<style>
+/* ===== Round 53: profile social row ===== */
+.pf-social{display:flex;gap:8px;padding:12px;margin-top:14px}
+.pfsoc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 2px;background:var(--card);border:1px solid var(--line);border-radius:14px;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--navy);cursor:pointer;text-decoration:none;transition:transform .12s ease}
+.pfsoc:active{transform:scale(.94)}
+.pfsoc svg{width:21px;height:21px}
+html[data-theme="dark"] .pfsoc{color:#eef1f8}
+</style>
 </head>
 <body>
 <div id="splash" style="position:fixed;inset:0;background:#fff;z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px">
@@ -836,7 +844,7 @@ OneSignalDeferred.push(async function(OneSignal){
       <div class="err" id="dep-err"></div><div class="okmsg" id="dep-ok"></div>
       <button class="btn gold" id="dep-btn" style="width:100%" onclick="submitDeposit(this)" data-i18n="paidBtn">I have paid — submit for approval</button>
       <p class="sub" style="margin-top:8px" data-i18n="approveNote">Money is credited after a quick approval, usually within a few hours.</p>
-      <p class="sub" style="margin-top:6px">Payment issue? <a href="https://t.me/Study_anuj" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700">Message us on Telegram</a> — we will fix it.</p>
+      <p class="sub" style="margin-top:6px">Payment issue? <a href="https://t.me/dj3680" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700">Message us on Telegram</a> — we will fix it.</p>
     </div>
     <h2>🎟️ <span data-i18n="couponTitle">Coupon code</span></h2>
     <div class="card">
@@ -934,6 +942,12 @@ OneSignalDeferred.push(async function(OneSignal){
       <div class="pf-link" onclick="showContact()"><span class="pf-link-ic">✉️</span><span data-i18n="contactLink">Contact Us</span><span class="pf-chev">›</span></div>
     </div>
     <button class="btn red" style="width:100%;margin-top:14px" onclick="doLogout()">⏻ <span data-i18n="logout">Logout</span></button>
+    <div class="card pf-social" id="pf-social">
+      <button class="pfsoc" onclick="promptInstall(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10.5"/><path d="m6.8 10 5.2 5.2L17.2 10"/><path d="M4.5 20h15"/></svg><span>Install App</span></button>
+      <a class="pfsoc" href="https://www.instagram.com/dinesh.jangir_/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igg2" x1="0" y1="24" x2="24" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".65" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="url(#igg2)" stroke-width="2"/><circle cx="12" cy="12" r="4.4" stroke="url(#igg2)" stroke-width="2"/><circle cx="17.6" cy="6.4" r="1.4" fill="url(#igg2)"/></svg><span>Follow Owner</span></a>
+      <a class="pfsoc" href="https://t.me/dj3680?text=Hi.%20I%27m%20a%20user%20of%20StuDy%20App%2C%20I%20need%20some%20help." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg><span>Telegram</span></a>
+      <button class="pfsoc" onclick="shareApp()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="m8.3 10.8 7.4-3.6M8.3 13.2l7.4 3.6"/></svg><span>Share</span></button>
+    </div>
   </section>
 
   <!-- ============ NOTIFICATIONS ============ -->
@@ -1099,10 +1113,10 @@ OneSignalDeferred.push(async function(OneSignal){
 </div>
 
 <!-- Floating Instagram -->
-<a id="igfloat" href="https://www.instagram.com/dinesh.jangir_/" target="_blank" rel="noopener" aria-label="Instagram — dinesh.jangir_">
+<a id="igfloat" href="https://www.instagram.com/study.edtech/" target="_blank" rel="noopener" aria-label="Instagram — study.edtech">
   <svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igg" x1="0" y1="24" x2="24" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".65" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="url(#igg)" stroke-width="2"/><circle cx="12" cy="12" r="4.4" stroke="url(#igg)" stroke-width="2"/><circle cx="17.6" cy="6.4" r="1.4" fill="url(#igg)"/></svg><span class="promo-label">Follow on Instagram</span>
 </a>
-      <a id="tgfloat" href="https://t.me/Study_anuj?text=Hi.%20I%27m%20a%20user%20of%20StuDy%20App%2C%20I%20need%20some%20help." target="_blank" rel="noopener" aria-label="Telegram">
+      <a id="tgfloat" href="https://t.me/dj3680?text=Hi.%20I%27m%20a%20user%20of%20StuDy%20App%2C%20I%20need%20some%20help." target="_blank" rel="noopener" aria-label="Telegram">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
         <span class="promo-label">Telegram</span>
       </a>
@@ -1182,7 +1196,7 @@ try{ const _spl = document.querySelector("#splash img[data-a='logo']"); if(_spl 
 const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxOPLOxMTwa6uLnvYVp7XKFh96k4_epe9EgFvHFpixS5-Nr2DNoWHx7qZAd-ifjmnLZ/exec";
 const ADMIN_PHONES = ["9588293680","9628187101"];  // silent admins: owner + partner (verified on server in live mode)
 const UPI_ID = "dineshjangirdjsp-1@oksbi";
-const INSTAGRAM_URL = "https://www.instagram.com/dinesh.jangir_/";
+const INSTAGRAM_URL = "https://www.instagram.com/study.edtech/";
 const SHARE_URL = "https://dj3680.github.io/StuDy/?install=1";
 try{ const _rp = new URLSearchParams(location.search).get("ref"); if(_rp && /^[A-Za-z0-9]{4,14}$/.test(_rp)) localStorage.setItem("study_ref", _rp.toUpperCase()); }catch(e){}
 function pendingRef(){ try{ return localStorage.getItem("study_ref") || ""; }catch(e){ return ""; } }
@@ -1333,7 +1347,7 @@ const DEFAULT_SETTINGS = {
   prices:{ test:5, mock:10, notes:30, bundle:50, sub:1000 },
   help:{ en:"How to use StuDy\n\n1. Register with your name, phone number and Gmail.\n2. Add money to your StuDy wallet using UPI (minimum ₹100, then multiples of ₹50).\n3. Buy any subject test (₹__T__), full mock (₹__M__) or notes (₹__N__) — once bought, it stays unlocked in your account forever.\n4. Your first attempt's marks are final; re-attempts are free practice with fresh questions.\n5. A question once shown to you will not repeat in your account (except a few very important ones).\n\nPayments are approved manually, usually within a few hours. If your money doesn't arrive, contact us with your UTR number.",
          hi:"StuDy का उपयोग कैसे करें\n\n1. अपने नाम, फ़ोन नंबर और Gmail से रजिस्टर करें।\n2. UPI से StuDy वॉलेट में पैसे जोड़ें (न्यूनतम ₹100, फिर ₹50 के गुणज)।\n3. कोई भी विषय टेस्ट (₹__T__), पूर्ण मॉक (₹__M__) या नोट्स (₹__N__) खरीदें — एक बार खरीदा, हमेशा अनलॉक रहेगा।\n4. पहले प्रयास के अंक अंतिम हैं; पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ।\n5. जो प्रश्न एक बार दिखा, वह दोबारा नहीं आएगा (कुछ अत्यंत महत्वपूर्ण प्रश्नों को छोड़कर)।\n\nभुगतान मैन्युअली स्वीकृत होते हैं, प्रायः कुछ घंटों में। पैसे न आएँ तो UTR नंबर के साथ संपर्क करें।" },
-  contact:{ en:"StuDy Support\nTelegram: @Study_anuj\n(Please mention your registered phone number and UTR for payment queries.)", hi:"StuDy सहायता\nTelegram: @Study_anuj\n(भुगतान संबंधी प्रश्नों हेतु अपना रजिस्टर्ड फ़ोन नंबर और UTR अवश्य लिखें।)" }
+  contact:{ en:"StuDy Support\nTelegram: @dj3680\n(Please mention your registered phone number and UTR for payment queries.)", hi:"StuDy सहायता\nTelegram: @dj3680\n(भुगतान संबंधी प्रश्नों हेतु अपना रजिस्टर्ड फ़ोन नंबर और UTR अवश्य लिखें।)" }
 };
 function getSettings(){ if(!BACKEND_URL) return DB.read("settings", null) || structuredClone(DEFAULT_SETTINGS); return window._settings || structuredClone(DEFAULT_SETTINGS); }
 function subPrice(){ const p = +((getSettings().prices||{}).sub); return p > 0 ? p : 1000; }
@@ -3339,7 +3353,7 @@ Q. What is the Instagram bonus?
 A. Tick "Follow the owner on Instagram" while submitting your payment and you get 10% EXTRA balance on approval - for example, Rs.200 becomes ₹220. Your follow may be checked before approval.
 
 Q. I paid but my balance has not arrived. What should I do?
-A. Approvals are manual, so please allow a few hours. If they still don't arrive, message us on Telegram (@Study_anuj) with your registered phone number and UTR number.
+A. Approvals are manual, so please allow a few hours. If they still don't arrive, message us on Telegram (@dj3680) with your registered phone number and UTR number.
 
 Q. Can I re-attempt a test?
 A. Yes - re-attempts are free practice with fresh questions, but your FIRST attempt's marks are final and count for your rank.
@@ -3372,7 +3386,7 @@ A. Profile - App language: switch between English and Hindi anytime.`, hi:`अ�
 उ. भुगतान भेजते समय "Follow the owner on Instagram" टिक करें - स्वीकृति पर 10% अतिरिक्त बैलेंस मिलता है, जैसे ₹200 पर ₹220। स्वीकृति से पहले आपका फ़ॉलो जाँचा जा सकता है।
 
 प्र. भुगतान किया, पर बैलेंस नहीं आया। क्या करूँ?
-उ. स्वीकृति मैन्युअल होती है, कृपया कुछ घंटे प्रतीक्षा करें। फिर भी न आएँ तो Telegram (@Study_anuj) पर अपना रजिस्टर्ड फ़ोन नंबर और UTR भेजें।
+उ. स्वीकृति मैन्युअल होती है, कृपया कुछ घंटे प्रतीक्षा करें। फिर भी न आएँ तो Telegram (@dj3680) पर अपना रजिस्टर्ड फ़ोन नंबर और UTR भेजें।
 
 प्र. क्या मैं टेस्ट दोबारा दे सकता हूँ?
 उ. हाँ - पुनः प्रयास निःशुल्क अभ्यास है, नए प्रश्नों के साथ; परंतु पहले प्रयास के अंक अंतिम हैं और रैंक में वही गिने जाते हैं।
@@ -3403,7 +3417,7 @@ function showHelp(){ const s=getSettings(); let txt = (LANG==="hi"? s.help.hi : 
   const PP = s.prices || {}; txt = txt.replaceAll("__T__", PP.test ?? 5).replaceAll("__M__", PP.mock ?? 10).replaceAll("__N__", PP.notes ?? 30).replaceAll("__B__", PP.bundle ?? 50);
   showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${T("helpLink")}</h3><div class="sub" style="white-space:pre-line;margin-top:8px;font-size:13.5px;color:var(--txt)">${esc(txt)}</div><div style="margin-top:16px;border-top:1px solid var(--line);padding-top:13px"><h3 style="font-size:15px">${T("whyUs")}</h3><div style="display:grid;gap:9px;margin-top:9px"><div><b style="font-size:13.5px">${T("why1t")}</b><div class="sub" style="margin-top:2px">${T("why1")}</div></div><div><b style="font-size:13.5px">${T("why2t")}</b><div class="sub" style="margin-top:2px">${T("why2")}</div></div><div><b style="font-size:13.5px">${T("why3t")}</b><div class="sub" style="margin-top:2px">${T("why3")}</div></div><div><b style="font-size:13.5px">${T("why4t")}</b><div class="sub" style="margin-top:2px">${T("why4")}</div></div></div></div>`); }
 function showContact(){ const s=getSettings(); const txt = (LANG==="hi"? s.contact.hi : s.contact.en) || s.contact.en;
-  const m = String(txt).match(/@([A-Za-z0-9_]{4,})/); const handle = m ? m[1] : "Study_anuj";
+  const m = String(txt).match(/@([A-Za-z0-9_]{4,})/); const handle = m ? m[1] : "dj3680";
   showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${T("contactLink")}</h3>
     <a class="tgbtn" href="https://t.me/${handle}" target="_blank" rel="noopener" style="margin-top:12px"><span class="tgic"><svg viewBox="0 0 24 24" fill="#fff"><path d="M21.9 4.4 18.8 19c-.23 1.02-.84 1.27-1.7.79l-4.7-3.47-2.27 2.19c-.25.25-.46.46-.95.46l.34-4.9 8.92-8.06c.39-.34-.08-.53-.6-.19L6.6 12.5 1.83 11c-1.04-.33-1.06-1.04.22-1.54l18.65-7.19c.86-.32 1.62.2 1.2 2.13z"/></svg></span><span><span style="display:block;font-weight:700;font-size:14px;color:var(--txt)">${T("telegram")}</span><span class="sub">@${handle} · ${T("telegramSub")}</span></span></a>
     <div class="sub" style="white-space:pre-line;margin-top:12px;font-size:13.5px;color:var(--txt)">${esc(txt)}</div>`); }
