@@ -510,9 +510,9 @@ html[data-theme="dark"] #sharefloat{background:linear-gradient(180deg,#2a5cff,#1
 .bnav button:not(.on) svg+span{opacity:.55}
 
 /* ===== Round 41: equal social cluster + entrance, totop fix, profile redesign ===== */
-#igfloat,#installfloat,#sharefloat,#tgfloat{position:static;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);box-shadow:0 4px 14px rgba(11,32,77,.14);display:flex;align-items:center;justify-content:center;color:var(--navy);cursor:pointer;flex:none;font-family:inherit;transition:transform .15s ease}
-#igfloat:active,#installfloat:active,#sharefloat:active,#tgfloat:active{transform:scale(.93)}
-#igfloat svg,#installfloat svg,#sharefloat svg,#tgfloat svg{width:21px;height:21px}
+#igfloat,#installfloat,#sharefloat,#tgfloat,#helpfloat{position:static;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);box-shadow:0 4px 14px rgba(11,32,77,.14);display:flex;align-items:center;justify-content:center;color:var(--navy);cursor:pointer;flex:none;font-family:inherit;transition:transform .15s ease}
+#igfloat:active,#installfloat:active,#sharefloat:active,#tgfloat:active,#helpfloat:active{transform:scale(.93)}
+#igfloat svg,#installfloat svg,#sharefloat svg,#tgfloat svg,#helpfloat svg{width:21px;height:21px}
 #igfloat.labeled,#installfloat.labeled,#sharefloat.labeled,#tgfloat.labeled{width:auto!important;height:auto;min-height:44px;border-radius:999px!important;padding:9px 16px!important;gap:7px}
 #igfloat.labeled .promo-label,#installfloat.labeled .promo-label,#sharefloat.labeled .promo-label,#tgfloat.labeled .promo-label{max-width:210px;opacity:1}
 @keyframes socIn{0%{opacity:0;transform:scale(.25) translateY(16px)}100%{opacity:1;transform:scale(1) translateY(0)}}
@@ -562,6 +562,10 @@ html[data-theme="dark"] .grp-card-t{color:#e8ecf6}
 html[data-theme="dark"] .notes-sec-h{color:#e8ecf6}
 #screen-pyqgroup .testrow{background:var(--bg2);border:1px solid var(--line2);border-radius:13px;padding:12px;margin-bottom:8px}
 #screen-notesgroup .testrow{background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:12px;margin:0 0 8px}
+.noterow{background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:12px;margin:0 0 8px}
+.noterow .tt{font-weight:700;font-size:15px}
+.noterow .ts{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.45}
+.noterow .nact{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
 .cb-rows{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:4px 12px}
 .cb-rows>div{display:flex;justify-content:space-between;padding:7px 0;font-size:13.5px}
 .cb-rows>div + div{border-top:1px solid var(--line)}
@@ -814,9 +818,8 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
     <div id="home-master">
     <div id="home-banner"></div>
     <div id="home-focus"></div>
-    <div style="display:flex;align-items:center;gap:8px;margin:22px 0 10px">
-      <h2 data-i18n="chooseCat" style="margin:0;flex:1">Choose your exam</h2>
-      <span id="exam-actions" style="display:flex;gap:8px;align-items:center"></span>
+    <div style="display:flex;justify-content:center;margin:22px 0 10px">
+      <span id="exam-actions" style="display:flex;gap:10px;align-items:center;justify-content:center"></span>
     </div>
     <div id="home-courses"></div>
     <div id="home-submocks"></div>
@@ -909,6 +912,51 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
     </div>
     <h2 data-i18n="history">History</h2>
     <div class="card" id="wallet-history" style="padding:4px 14px"></div>
+    <div id="wallet-admin" class="hidden">
+      <h2>🛠️ Admin</h2>
+      <div class="grid g3">
+        <div class="card stat"><div class="n" id="ad-users">0</div><div class="l">Registered users</div></div>
+        <div class="card stat"><div class="n" id="ad-attempts">0</div><div class="l">Total attempts</div></div>
+        <div class="card stat"><div class="n" id="ad-revenue">₹0</div><div class="l">Balance spent (revenue)</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin:22px 0 10px">
+        <h2 style="margin:0;flex:1">Payment approvals</h2>
+        <button class="btn sm ghost" id="ad-refresh" onclick="refreshAdminData()">↻ Refresh</button>
+      </div>
+      <div class="card" id="ad-payments"></div>
+      <h2>🎟️ Coupon codes</h2>
+      <div class="card">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="fld" style="flex:2;min-width:130px;margin:0"><label>Code</label><input id="ad-cpn-code" placeholder="e.g. STUDY50" style="text-transform:uppercase"></div>
+          <div class="fld" style="flex:1;min-width:90px;margin:0"><label>Amount (₹)</label><input id="ad-cpn-amt" type="number" placeholder="50"></div>
+          <div class="fld" style="flex:1;min-width:110px;margin:0"><label>Max uses (0 = unlimited)</label><input id="ad-cpn-max" type="number" placeholder="0"></div>
+        </div>
+        <button class="btn gold" style="width:100%;margin-top:10px" onclick="adminCouponAdd(this)">Create coupon</button>
+        <div class="err" id="ad-cpn-err"></div><div class="okmsg" id="ad-cpn-ok"></div>
+        <div id="ad-coupons" style="margin-top:8px"></div>
+      </div>
+      <h2>Add balance to a user (no payment needed)</h2>
+      <div class="card">
+        <div class="grid g2">
+          <div class="fld"><label>User phone number</label><input id="ad-as-phone" inputmode="numeric" maxlength="10" placeholder="10-digit phone"></div>
+          <div class="fld"><label>Amount to add (₹)</label><input id="ad-as-amt" type="number" placeholder="e.g. 50"></div>
+          <div class="fld"><label>Rank (optional, for reward message)</label><input id="ad-as-rank" type="number" placeholder="e.g. 1"></div>
+          <div class="fld"><label>Exam / test (optional)</label><input id="ad-as-exam" type="text" placeholder="e.g. RPSC Full Mock"></div>
+        </div>
+        <div class="fld"><label>Notification message (auto-filled for rank rewards — edit freely)</label><textarea id="ad-as-msg" rows="2"></textarea></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn" style="flex:1" onclick="adminAddStars(this)">Add balance &amp; notify user</button>
+        </div>
+        <div class="okmsg" id="ad-as-ok"></div><div class="err" id="ad-as-err"></div>
+      </div>
+      <h2>Help page &amp; Contact info</h2>
+      <div class="card">
+        <div class="fld"><label>Help / FAQ text</label><textarea id="ad-help" rows="5"></textarea></div>
+        <div class="fld"><label>Contact info (keep your Telegram @username here for the Telegram button)</label><textarea id="ad-contact" rows="3"></textarea></div>
+        <button class="btn sm" onclick="adminSavePages()">Save pages</button>
+        <div class="okmsg" id="ad-page-ok"></div>
+      </div>
+    </div>
   </section>
 
   <!-- ============ PROFILE ============ -->
@@ -974,7 +1022,6 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
     <div id="pf-purchases-wrap" class="hidden"><div class="card" id="pf-purchases" style="padding:4px 14px"></div></div>
     <button class="collapse-h" onclick="toggleCollapse('pf-attempts-wrap',this)"><span data-i18n="myAttempts">My attempts</span><span class="car">▾</span></button>
     <div id="pf-attempts-wrap" class="hidden"><div class="card" id="pf-attempts" style="padding:4px 14px"></div></div>
-    <div id="admin-entry" class="hidden" style="margin-top:16px"><button class="btn" style="width:100%" onclick="go('admin')">Admin Panel</button></div>
     <div class="pf-qa">
       <button class="pf-qab" onclick="go('wallet')"><span class="pf-qa-ic">💰</span><span>Wallet</span></button>
       <button class="pf-qab" onclick="shareApp()"><span class="pf-qa-ic">🔗</span><span>Share App</span></button>
@@ -1063,7 +1110,7 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
   <!-- ============ NOTES ============ -->
   <section id="screen-notes" class="hidden">
     <h2 data-i18n="navNotes">Notes</h2>
-    <p class="sub" style="margin-bottom:10px">All StuDy notes in one place — grouped by exam.</p>
+    <p class="sub" style="margin-bottom:10px">Basic + Premium Detailed notes of the courses you bought.</p>
     <div id="notes-all"></div>
   </section>
   <!-- ============ PYQ (coming soon) ============ -->
@@ -1083,72 +1130,6 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
     <h1 style="margin-top:6px">🎁 <span data-i18n="referTitle">Refer &amp; Win</span></h1>
     <div id="refer-body"></div>
   </section>
-  <!-- ============ ADMIN ============ -->
-  <section id="screen-admin" class="hidden">
-    <h1>Admin Panel</h1>
-    <div class="grid g3" style="margin-top:14px">
-      <div class="card stat"><div class="n" id="ad-users">0</div><div class="l">Registered users</div></div>
-      <div class="card stat"><div class="n" id="ad-attempts">0</div><div class="l">Total attempts</div></div>
-      <div class="card stat"><div class="n" id="ad-revenue">₹0</div><div class="l">Balance spent (revenue)</div></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;margin:22px 0 10px">
-      <h2 style="margin:0;flex:1">Payment approvals</h2>
-      <button class="btn sm ghost" id="ad-refresh" onclick="refreshAdminData()">↻ Refresh</button>
-    </div>
-    <div class="card" id="ad-payments"></div>
-    <h2>🎟️ Coupon codes</h2>
-    <div class="card">
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <div class="fld" style="flex:2;min-width:130px;margin:0"><label>Code</label><input id="ad-cpn-code" placeholder="e.g. STUDY50" style="text-transform:uppercase"></div>
-        <div class="fld" style="flex:1;min-width:90px;margin:0"><label>Amount (₹)</label><input id="ad-cpn-amt" type="number" placeholder="50"></div>
-        <div class="fld" style="flex:1;min-width:110px;margin:0"><label>Max uses (0 = unlimited)</label><input id="ad-cpn-max" type="number" placeholder="0"></div>
-      </div>
-      <button class="btn gold" style="width:100%;margin-top:10px" onclick="adminCouponAdd(this)">Create coupon</button>
-      <div class="err" id="ad-cpn-err"></div><div class="okmsg" id="ad-cpn-ok"></div>
-      <div id="ad-coupons" style="margin-top:8px"></div>
-    </div>
-    <h2>Add balance to a user (no payment needed)</h2>
-    <div class="card">
-      <div class="grid g2">
-        <div class="fld"><label>User phone number</label><input id="ad-as-phone" inputmode="numeric" maxlength="10" placeholder="10-digit phone"></div>
-        <div class="fld"><label>Amount to add (₹)</label><input id="ad-as-amt" type="number" placeholder="e.g. 50"></div>
-        <div class="fld"><label>Rank (optional, for reward message)</label><input id="ad-as-rank" type="number" placeholder="e.g. 1"></div>
-        <div class="fld"><label>Exam / test (optional)</label><input id="ad-as-exam" type="text" placeholder="e.g. RPSC Full Mock"></div>
-      </div>
-      <div class="fld"><label>Notification message (auto-filled for rank rewards — edit freely)</label><textarea id="ad-as-msg" rows="2"></textarea></div>
-      <div style="display:flex;gap:10px">
-        <button class="btn" style="flex:1" onclick="adminAddStars(this)">Add balance & notify user</button>
-      </div>
-      <div class="okmsg" id="ad-as-ok"></div><div class="err" id="ad-as-err"></div>
-    </div>
-    <h2>Prices (in ₹)</h2>
-    <div class="card">
-      <div class="grid g2">
-        <div class="fld"><label>Subject test price</label><input id="ad-p-test" type="number"></div>
-        <div class="fld"><label>Full mock price</label><input id="ad-p-mock" type="number"></div>
-        <div class="fld"><label>Subject notes price</label><input id="ad-p-notes" type="number"></div>
-        <div class="fld"><label>All-subjects bundle price</label><input id="ad-p-bundle" type="number"></div>
-      </div>
-      <p class="sub" style="margin:2px 0 10px">School subject prices are fixed by class — Class 9: ₹10 · Class 10: ₹20 · Class 11: ₹25 · Class 12: ₹30 — and do not change with the prices above.</p>
-      <button class="btn sm" onclick="adminSavePrices(this)">Save prices</button>
-      <div class="okmsg" id="ad-price-ok"></div>
-    </div>
-    <h2>Notifications</h2>
-    <div class="card">
-      <div class="fld"><label>Title</label><input id="ad-nt"></div>
-      <div class="fld"><label>Message</label><textarea id="ad-nb" rows="2"></textarea></div>
-      <button class="btn sm" onclick="adminAddNotif(this)">Post notification</button>
-      <div id="ad-notifs" style="margin-top:10px"></div>
-    </div>
-    <h2>Help page & Contact info</h2>
-    <div class="card">
-      <div class="fld"><label>Help / FAQ text</label><textarea id="ad-help" rows="5"></textarea></div>
-      <div class="fld"><label>Contact info (keep your Telegram @username here for the Telegram button)</label><textarea id="ad-contact" rows="3"></textarea></div>
-      <button class="btn sm" onclick="adminSavePages()">Save pages</button>
-      <div class="okmsg" id="ad-page-ok"></div>
-    </div>
-  </section>
-
   <footer>
     <div>Stu<img data-a="logo" alt="D" style="height:14px;vertical-align:-2px">y — <span data-i18n="tagline">Tests • Mocks • Notes — UPSC · RPSC · SSC</span></div>
     <div style="margin-top:5px"><a href="#" onclick="showHelp();return false" data-i18n="helpLink">Help / FAQ</a> · <a href="#" onclick="showContact();return false" data-i18n="contactLink">Contact Us</a></div>
@@ -1170,6 +1151,9 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
 
 <!-- Floating Share -->
 <button id="sharefloat" onclick="shareApp()" aria-label="Share StuDy" title="Share StuDy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="m8.3 10.8 7.4-3.6M8.3 13.2l7.4 3.6"/></svg><span class="promo-label">Share app</span></button>
+
+<!-- Help & Support (lives in the Home icon row) -->
+<button id="helpfloat" onclick="showHelp()" aria-label="Help &amp; Support" title="Help &amp; Support"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span class="promo-label">Help &amp; Support</span></button>
 
 <button id="totop" class="hidden" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
 <button id="pageback" class="hidden" onclick="pageBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -1450,7 +1434,7 @@ function go(screen){
   if(CURSCREEN === "progs" && screen !== "progs" && ME){ try{ localStorage.setItem("study_progs_seen_" + ME.phone, "1"); }catch(e){} }
   if(!NAVBACK && CURSCREEN && CURSCREEN !== screen && CURSCREEN !== "auth") NAVHIST = [CURSCREEN];
   CURSCREEN = screen;
-  ["auth","home","wallet","profile","notifications","result","admin","notes","pyq","doubts","pyqgroup","notesgroup","bookmarks","refer","mycourse","courses","progs"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
+  ["auth","home","wallet","profile","notifications","result","notes","pyq","doubts","pyqgroup","notesgroup","bookmarks","refer","mycourse","courses","progs"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
   $("appheader").classList.toggle("hidden", screen==="auth");
   $("bnav").classList.toggle("hidden", screen==="auth");
   ["home","mycourse","doubts","notes","courses","profile"].forEach(s=>{ const b=$("bn-"+s); if(b) b.classList.toggle("on", s===screen); });
@@ -1468,7 +1452,6 @@ function go(screen){
   if(screen==="pyq") renderPYQ();
   if(screen==="pyqgroup") renderPYQGroup();
   if(screen==="doubts") renderDoubts();
-  if(screen==="admin"){ renderAdmin(); loadAdminCoupons(); }
   if(screen==="mycourse") renderMyCourse();
   if(screen==="courses") renderCourses();
   if(screen==="progs") renderProgs();
@@ -1617,7 +1600,6 @@ function finishLogin(user, fromReg){
   TLANG = localStorage.getItem("study_tlang") || LANG;
   $("pf-lang").value = LANG; applyI18n(); _otpFlow=null;
   applyTheme(user.theme || localStorage.getItem("study_theme") || "light", false);
-  $("admin-entry").classList.toggle("hidden", !isAdmin());
   const _progsSeen = (()=>{ try{ return localStorage.getItem("study_progs_seen_" + user.phone); }catch(e){ return null; } })();
   if(fromReg || (!(user.progs && user.progs.length) && !_progsSeen)) go("progs"); else go("home");
   hideSplash(); toast(T("welcome"));
@@ -2091,20 +2073,22 @@ function renderHomeCourses(){
 }
 function submocksHead_(){
   const admSmock = isAdmin() ? `<span style="display:inline-flex;align-items:center;gap:5px;white-space:nowrap"><span class="price">₹${csSet().smockPrice}</span>${admPencil_("admEditSmockPrice()")}</span>` : "";
-  return `<div style="display:flex;align-items:baseline;gap:10px"><h2 style="flex:1">${LANG === "hi" ? "विषय मॉक टेस्ट" : "Subject Mock Tests"}</h2>${admSmock}<a href="javascript:void(0)" data-change-progs="1" onclick="go('progs')" style="font-size:13px;font-weight:700;color:var(--goldb);white-space:nowrap">${LANG === "hi" ? "बदलें" : "Change"}</a></div>`;
+  return `<div style="display:flex;align-items:baseline;gap:10px"><h2 style="flex:1">${LANG === "hi" ? "विषय मॉक टेस्ट" : "Subject Mock Tests"}</h2>${admSmock}</div>`;
 }
 function renderHomeSubjectMocks(){
   const el = $("home-submocks"); if(!el) return;
   normalizePurchases();
   const cs = csSet();
-  const sel = (ME && ME.progs) || [];
-  const cats = COURSE_CATS.filter(k => sel.includes(k) && (CATS[k].subjects || []).length);
-  if(!sel.length){
-    el.innerHTML = submocksHead_() + `<div class="card" id="submocks-select-prompt" style="text-align:center;padding:18px 14px"><div style="font-size:26px">🎯</div><b>${LANG === "hi" ? "अपने प्रोग्राम चुनें" : "Select your programmes"}</b><div class="sub" style="margin:5px 0 12px">${LANG === "hi" ? "अपने चुने हुए प्रोग्रामों के विषय मॉक यहाँ देखने के लिए पहले प्रोग्राम चुनें।" : "Select your programmes to see your ₹" + cs.smockPrice + " subject mocks here."}</div><button class="btn gold" id="submocks-select-btn" onclick="go('progs')">${LANG === "hi" ? "प्रोग्राम चुनें" : "Select programmes"}</button></div>`;
+  /* Round 61: subject mocks follow course OWNERSHIP, not the programme
+     selection - buying a programme puts its mocks here automatically,
+     and they are free for the owner (included in the course). */
+  const ownedCats = COURSE_CATS.filter(k => hasCourse(k) && (CATS[k].subjects || []).length);
+  if(!ownedCats.length){
+    el.innerHTML = submocksHead_() + `<div class="card" id="submocks-buy-prompt" style="text-align:center;padding:18px 14px"><div style="font-size:26px">🎯</div><b>${LANG === "hi" ? "विषय मॉक यहाँ मिलेंगे" : "Subject mocks live here"}</b><div class="sub" style="margin:5px 0 12px">${LANG === "hi" ? "अपने विषय मॉक यहाँ पाने के लिए कोर्स खरीदें — कोर्स के सभी विषय मॉक उसके मालिकों के लिए मुफ़्त हैं।" : "Buy a course to get its subject mocks here — every subject mock of a course is FREE for its owners."}</div><button class="btn gold" id="submocks-buy-btn" onclick="go('courses')">${LANG === "hi" ? "कोर्स देखें" : "View Courses"}</button></div>`;
     initReveal();
     return;
   }
-  el.innerHTML = submocksHead_() + `<p class="sub" style="margin:-4px 0 12px">${LANG === "hi" ? "हर विषय का एक मॉक — कोर्स वालों के लिए मुफ़्त, बाकियों के लिए सिर्फ़ ₹" + cs.smockPrice + "।" : "One mock per subject — free for course owners, just ₹" + cs.smockPrice + " for everyone else."}</p>` + cats.map(k=>{
+  el.innerHTML = submocksHead_() + `<p class="sub" style="margin:-4px 0 12px">${LANG === "hi" ? "आपके कोर्स के हर विषय का एक मॉक — कोर्स के साथ मुफ़्त शामिल।" : "One mock per subject of your courses — included FREE with the course."}</p>` + ownedCats.map(k=>{
     const c = CATS[k];
     let subs = c.subjects;
     if(k === "school"){
@@ -2114,16 +2098,16 @@ function renderHomeSubjectMocks(){
       if(!subs.length) return "";
     }
     const rows = subs.map(([sub])=>{
-      const free = smockFree(k, sub), owned = hasSmock(k, sub);
+      const free = smockFree(k, sub), ownedSm = hasSmock(k, sub);
       const n = k === "ssc" ? 25 : 20;
       const btn = free ? `<span class="tag free">${T("free")}</span><button class="btn sm" onclick="startSubjectMock('${k}','${sub}')">${T("start")}</button>`
-        : owned ? `<span class="tag free">${T("owned")}</span><button class="btn sm" onclick="startSubjectMock('${k}','${sub}')">${T("start")}</button>`
+        : ownedSm ? `<span class="tag free">${T("owned")}</span><button class="btn sm" onclick="startSubjectMock('${k}','${sub}')">${T("start")}</button>`
         : `<span class="price">₹${cs.smockPrice}</span><button class="btn sm gold" onclick="buySmock('${k}','${sub}')">${T("buyStart")}</button>`;
       return `<div class="testrow"><div class="ti"><div class="tt">${esc(subName(k, sub, LANG))}</div><div class="ts">${n} ${T("questions")} · 15 ${T("minutes")}</div></div>${btn}</div>`;
     }).join("");
-    return `<div class="card" style="padding:4px 14px;margin-bottom:12px"><div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px"><img class="catlogo" src="${ASSET[k] || ASSET.logo}" alt="" style="width:34px;height:34px" onerror="this.style.display='none'"><b>${esc(c.name[LANG] || c.name.en)}</b>${hasCourse(k) ? `<span class="tag free">${LANG === "hi" ? "कोर्स सक्रिय" : "Course active"}</span>` : ""}</div>${rows}</div>`;
+    return `<div class="card" style="padding:4px 14px;margin-bottom:12px"><div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px"><img class="catlogo" src="${ASSET[k] || ASSET.logo}" alt="" style="width:34px;height:34px" onerror="this.style.display='none'"><b>${esc(c.name[LANG] || c.name.en)}</b><span class="tag free">${LANG === "hi" ? "कोर्स सक्रिय" : "Course active"}</span></div>${rows}</div>`;
   }).join("");
-  if(!el.querySelector(".testrow")) el.innerHTML += `<div class="card" style="padding:14px"><div class="sub">${LANG === "hi" ? "चुने हुए प्रोग्रामों के लिए अभी विषय मॉक उपलब्ध नहीं हैं — Change से दूसरे प्रोग्राम चुनें।" : "No subject mocks for the selected programmes yet — tap Change to pick others."}</div></div>`;
+  if(!el.querySelector(".testrow")) el.innerHTML += `<div class="card" style="padding:14px"><div class="sub">${LANG === "hi" ? "आपके कोर्स के लिए अभी विषय मॉक उपलब्ध नहीं हैं।" : "No subject mocks available for your courses yet."}</div></div>`;
   initReveal();
 }
 
@@ -2198,115 +2182,176 @@ const NOTES_SUB_OPEN = {};
    must NOT close the parent exam dropdown, so the sub-wrap id ends in
    "-sub" (not "-wrap") and this toggle closes nothing else. */
 function toggleNotesSub(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); NOTES_SUB_OPEN[id] = opening; }
-/* ---------------- Round 59: Notes - Basic / Premium groups ----------------
-   Basic Notes = every existing book of the programme, included in the
-   course: owners download, non-owners see a course-locked row (no more
-   per-item buys on the Notes side). Premium Notes = Programme -> Exam
-   -> Subject -> Books below; a subject costs the settings premNotePrice
-   (default Rs.50) ON TOP of the course, which must be owned first. */
-function notesLockText_(cat){ const c = CATS[cat]; const nm = c ? (c.name[LANG] || c.name.en) : ""; return LANG === "hi" ? "🔒 " + nm + " कोर्स में शामिल" : "🔒 Included in the " + nm + " course"; }
-function notesLockBtn_(){ return `<button class="btn sm" onclick="go('courses')">${LANG === "hi" ? "कोर्स देखें" : "View Course"}</button>`; }
-const PREM_NOTES = {
-  rpsc: [ { exam:{ en:"RAS Pre 2026", hi:"RAS प्री 2026" }, subjects:[
-    { key:"rpsc_geo", name:{ en:"Geography", hi:"भूगोल" }, books:[GEO_DETAILED_BOOK, GEO_DETAILED_INDIA_BOOK, GEO_DETAILED_WORLD_BOOK] }
-  ] } ]
-};
-function premBooksCount_(cat){ const gs = PREM_NOTES[cat] || []; return gs.reduce((n,g) => n + g.subjects.reduce((m,sb) => m + sb.books.length, 0), 0); }
-function premNotesHTML(cat){
-  const groups = PREM_NOTES[cat]; if(!groups || !groups.length) return "";
-  const cs = csSet();
-  const cName = CATS[cat] ? (CATS[cat].name[LANG] || CATS[cat].name.en) : "";
-  return groups.map(g => {
-    const subs = g.subjects.map(sb => {
-      const price = cs.premNotePrices[sb.key] != null ? +cs.premNotePrices[sb.key] : cs.premNotePrice;
-      const subLine = LANG === "hi" ? "प्रीमियम नोट्स · " + sb.books.length + " किताबें" : "Premium Notes · " + sb.books.length + " books";
-      const admP = admPencil_("admEditPremNotePrice('" + sb.key + "')");
-      const admPP = isAdmin() ? `<span class="price">₹${price}</span>${admP}` : "";
-      if(!hasCourse(cat))
-        return `<div class="testrow"><div class="ti"><div class="tt">${sb.name[LANG] || sb.name.en}</div><div class="ts">${subLine}</div></div><span class="tag">🔒 ${LANG === "hi" ? "पहले " + cName + " कोर्स खरीदें" : "Buy the " + cName + " course first"}</span>${notesLockBtn_()}${admPP}</div>`;
-      if(!hasPremNote(sb.key))
-        return `<div class="testrow"><div class="ti"><div class="tt">${sb.name[LANG] || sb.name.en}</div><div class="ts">${subLine}</div></div><span class="price">₹${price}</span>${admP}<button class="btn sm gold" onclick="buyPremNote('${sb.key}')">${T("buyNotes")}</button></div>`;
-      const bookRows = sb.books.map(b => `<div class="testrow"><div class="ti"><div class="tt">${LANG === "hi" ? b.hi : b.en} — Notes PDF</div><div class="ts">${LANG === "hi" ? b.tag.hi : b.tag.en}</div></div><button class="btn sm" onclick="downloadNotes('${cat}','${b.sub}')">${T("download")}</button></div>`).join("");
-      return `<div class="testrow"><div class="ti"><div class="tt">${sb.name[LANG] || sb.name.en}</div><div class="ts">${subLine}</div></div><span class="tag free">${T("owned")}</span>${admPP}</div>` + bookRows;
-    }).join("");
-    return `<h2 style="margin:18px 0 8px">👑 ${LANG === "hi" ? "प्रीमियम नोट्स" : "Premium Notes"}</h2><p class="sub" style="margin:-4px 0 8px">${g.exam[LANG] || g.exam.en}</p><div class="card" style="padding:6px 14px">${subs}</div>`;
-  }).join("");
+/* ---------------- Round 61: Notes - owned categories + Basic/Premium drill-down ----------------
+   Notes tab lists ONLY categories the user owns a course for (School if
+   any class is owned). Category page -> two cards (Basic Notes /
+   Premium Detailed Notes) -> subject cards carrying the category logo
+   -> book rows. Premium today has books only for RPSC Geography
+   (key rpsc_geo: the three Detailed Geography books); every other
+   premium subject is listed with a "Coming soon" state so the
+   structure is ready for the next upload. */
+let NOTES_EXAM = "rpsc", NOTES_LVL = "top", NOTES_GRP = "basic", NOTES_SUB = "";
+function notesLockText_(cat){
+  return LANG === "hi"
+    ? ("इस कैटेगरी के नोट्स " + (CATS[cat] && CATS[cat].name ? CATS[cat].name.hi : cat) + " कोर्स में शामिल हैं। इन्हें खोलने के लिए कोर्स खरीदें।")
+    : ("Notes of this category are included in the " + (CATS[cat] && CATS[cat].name ? CATS[cat].name.en : cat) + " course. Buy the course to open them.");
 }
-function notesExamHTML(cat){
-  const P = getSettings().prices;
-  const subjectRow = (cat, sub) => {
-    const key = cat + "_" + sub, owned = hasNotes(key);
-    return `<div class="testrow"><div class="ti"><div class="tt">${subName(cat, sub, LANG)} \u2014 Notes PDF</div><div class="ts">${notesTag(sub)}</div></div>
-      ${owned ? `<button class="btn sm" onclick="downloadNotes('${cat}','${sub}')">` + T("download") + `</button>`
-              : `<span class="tag">${notesLockText_(cat)}</span>${notesLockBtn_()}`}</div>`;
-  };
+function notesLockBtn_(){
+  return `<button class="btn gold sm" onclick="go('courses')">${LANG === "hi" ? "कोर्स देखें" : "View Courses"}</button>`;
+}
+function openNotesExam(cat){ NOTES_EXAM = cat; NOTES_LVL = "top"; NOTES_GRP = "basic"; NOTES_SUB = ""; go("notesgroup"); }
+function openNotesGroup(grp){ NOTES_GRP = grp; NOTES_LVL = "subjects"; NOTES_SUB = ""; renderNotesExam(); window.scrollTo(0,0); }
+function openNotesSubject(sub){ NOTES_SUB = sub; NOTES_LVL = "books"; renderNotesExam(); window.scrollTo(0,0); }
+function notesBack_(){
+  if(NOTES_LVL === "books"){ NOTES_LVL = "subjects"; NOTES_SUB = ""; renderNotesExam(); window.scrollTo(0,0); }
+  else if(NOTES_LVL === "subjects"){ NOTES_LVL = "top"; renderNotesExam(); window.scrollTo(0,0); }
+  else go("notes");
+}
 
-  const geoSubDropdown = () => {
-    const rows = GEO_TRIO.map(g => {
-      const key = "rpsc_" + g.sub, owned = hasNotes(key);
-      const title = LANG === "hi" ? g.hi : g.en;
-      return `<div class="testrow"><div class="ti"><div class="tt">${title} \u2014 Notes PDF</div><div class="ts">${LANG === "hi" ? g.tag.hi : g.tag.en}</div></div>
-      ${owned ? `<button class="btn sm" onclick="downloadNotes('rpsc','${g.sub}')">` + T("download") + `</button>`
-              : `<span class="tag">${notesLockText_("rpsc")}</span>${notesLockBtn_()}`}</div>`;
-    }).join("");
-    return `<div class="notes-sec-h"><span>${LANG === "hi" ? "\u092d\u0942\u0917\u094b\u0932" : "Geography"} \u2014 Notes PDF</span></div><div style="padding-left:12px">${rows}</div>`;
-  };
-  const polSubDropdown = () => {
-    const rows = POL_DUO.map(g => {
-      const key = "rpsc_" + g.sub, owned = hasNotes(key);
-      const title = LANG === "hi" ? g.hi : g.en;
-      return `<div class="testrow"><div class="ti"><div class="tt">${title} \u2014 Notes PDF</div><div class="ts">${LANG === "hi" ? g.tag.hi : g.tag.en}</div></div>
-      ${owned ? `<button class="btn sm" onclick="downloadNotes('rpsc','${g.sub}')">` + T("download") + `</button>`
-              : `<span class="tag">${notesLockText_("rpsc")}</span>${notesLockBtn_()}`}</div>`;
-    }).join("");
-    return `<div class="notes-sec-h"><span>${LANG === "hi" ? "\u0930\u093e\u091c\u0928\u0940\u0924\u093f \u0935\u093f\u091c\u094d\u091e\u093e\u0928" : "Polity"} \u2014 Notes PDF</span></div><div style="padding-left:12px">${rows}</div>`;
-  };
-  const noteBookRow = (g, price) => {
-    const key = "rpsc_" + g.sub, owned = hasNotes(key);
-    const title = LANG === "hi" ? g.hi : g.en;
-    return `<div class="testrow"><div class="ti"><div class="tt">${title} \u2014 Notes PDF</div><div class="ts">${LANG === "hi" ? g.tag.hi : g.tag.en}</div></div>
-    ${owned ? `<button class="btn sm" onclick="downloadNotes('rpsc','${g.sub}')">` + T("download") + `</button>`
-            : `<span class="tag">${notesLockText_("rpsc")}</span>${notesLockBtn_()}`}</div>`;
-  };
-  const histSubDropdown = () => {
-    const rows = HIST_TRIO.map(g => noteBookRow(g, HIST_TRIO_PRICE)).join("");
-    return `<div class="notes-sec-h"><span>${LANG === "hi" ? "\u0907\u0924\u093f\u0939\u093e\u0938" : "History"} \u2014 Notes PDF</span></div><div style="padding-left:12px">${rows}</div>`;
-  };
-  const ecoSubDropdown = () => {
-    const rows = ECO_DUO.map(g => noteBookRow(g, ECO_DUO_PRICE)).join("");
-    return `<div class="notes-sec-h"><span>${LANG === "hi" ? "\u0905\u0930\u094d\u0925\u0936\u093e\u0938\u094d\u0924\u094d\u0930" : "Economy"} \u2014 Notes PDF</span></div><div style="padding-left:12px">${rows}</div>`;
-  };
-  const c = CATS[cat]; if(!c) return "";
-    let rows;
-    if(cat === "rpsc"){
-      rows = [subjectRow(cat, "raj"), histSubDropdown(), geoSubDropdown(), polSubDropdown(), ecoSubDropdown(), noteBookRow(SCI_BOOK, SCI_BOOK_PRICE), noteBookRow(REAS_BOOK, REAS_BOOK_PRICE), subjectRow(cat, "ca")].join("");
-    } else {
-      rows = c.subjects.map(([sub])=> subjectRow(cat, sub)).join("");
-    }
-  return `<h2 style="margin:2px 0 8px">📚 ${LANG === "hi" ? "बेसिक नोट्स" : "Basic Notes"}</h2><div class="card" style="padding:6px 14px">${rows}</div>` + premNotesHTML(cat);
+/* ----- Basic Notes subjects/books (existing noteBookRow content) ----- */
+const RPSC_BASIC_SUBJECTS = [
+  { sub:"raj",  name:{ en:"Rajasthan GK", hi:"राजस्थान सामान्य ज्ञान" } },
+  { sub:"hist", name:{ en:"History", hi:"इतिहास" }, books:HIST_TRIO },
+  { sub:"geo",  name:{ en:"Geography", hi:"भूगोल" }, books:GEO_TRIO },
+  { sub:"pol",  name:{ en:"Polity", hi:"राजनीति विज्ञान" }, books:POL_DUO },
+  { sub:"eco",  name:{ en:"Economy", hi:"अर्थव्यवस्था" }, books:ECO_DUO },
+  { sub:"sci",  name:{ en:"General Science", hi:"सामान्य विज्ञान" }, books:[SCI_BOOK] },
+  { sub:"reas", name:{ en:"Reasoning", hi:"तर्कशक्ति" }, books:[REAS_BOOK] },
+  { sub:"ca",   name:{ en:"Current Affairs", hi:"समसामयिकी" } }
+];
+function basicSubjects_(cat){
+  if(cat === "rpsc") return RPSC_BASIC_SUBJECTS;
+  if(cat === "school"){
+    const ownedCls = ["9","10","11","12"].filter(cls => hasClass(cls));
+    return (CATS.school.subjects || []).filter(([sub]) => ownedCls.some(cls => sub.indexOf("c" + cls + "_") === 0))
+      .map(([sub, en, hi]) => ({ sub, name:{ en, hi } }));
+  }
+  return (CATS[cat].subjects || []).map(([sub, en, hi]) => ({ sub, name:{ en, hi } }));
 }
-let NOTES_EXAM = "rpsc";
-function openNotesExam(cat){ NOTES_EXAM = cat; go("notesgroup"); }
-function notesExamCount(cat){
-  /* Round 59: honest computed count - Basic book rows (the bundle row is
-     gone) + Premium Notes books. RPSC = 2 subject rows (raj, ca) +
-     Geography 3 + Polity 2 + History 3 + Economy 2 + Science 1 +
-     Reasoning 1 = 14 Basic, + 3 Premium books = 17. */
-  if(cat === "rpsc") return 2 + GEO_TRIO.length + POL_DUO.length + HIST_TRIO.length + ECO_DUO.length + 2 + premBooksCount_(cat);
-  const c = CATS[cat]; return c ? c.subjects.length + premBooksCount_(cat) : 0;
+function basicBooks_(cat, s){
+  if(s.books) return s.books.map(b => ({ key:b.sub, title:{ en:b.en, hi:b.hi }, tag:b.tag }));
+  if(cat === "rpsc") return [{ key:s.sub, title:subName(cat, s.sub, LANG), tag:notesTag(s.sub) }];
+  return [{ key:s.sub, title:s.name[LANG] || s.name.en, tag:null }];
+}
+function basicBooksCount_(cat){ return basicSubjects_(cat).reduce((n, s) => n + basicBooks_(cat, s).length, 0); }
+
+/* ----- Premium Detailed Notes subjects ----- */
+const PREM_SUBJECT_LIST = {
+  rpsc: [
+    { sub:"geo",  name:{ en:"Geography", hi:"भूगोल" }, key:"rpsc_geo", books:[GEO_DETAILED_BOOK, GEO_DETAILED_INDIA_BOOK, GEO_DETAILED_WORLD_BOOK] },
+    { sub:"pol",  name:{ en:"Polity", hi:"राजनीति विज्ञान" } },
+    { sub:"hist", name:{ en:"History", hi:"इतिहास" } },
+    { sub:"eco",  name:{ en:"Economy", hi:"अर्थव्यवस्था" } },
+    { sub:"sci",  name:{ en:"Science", hi:"विज्ञान" } },
+    { sub:"reas", name:{ en:"Reasoning", hi:"तर्कशक्ति" } }
+  ]
+};
+const PREM_BOOK_SHORT = {
+  "geo-detailed":       { en:"Rajasthan Geography", hi:"राजस्थान भूगोल" },
+  "geo-detailed-india": { en:"Indian Geography", hi:"भारतीय भूगोल" },
+  "geo-detailed-world": { en:"World Geography", hi:"विश्व भूगोल" }
+};
+function premSubjects_(cat){
+  if(PREM_SUBJECT_LIST[cat]) return PREM_SUBJECT_LIST[cat];
+  return (CATS[cat].subjects || []).map(([sub, en, hi]) => ({ sub, name:{ en, hi } }));
+}
+function premBooksCount_(cat){ return premSubjects_(cat).reduce((n, s) => n + ((s.books || []).length), 0); }
+function premExamName_(cat){
+  if(cat === "rpsc") return LANG === "hi" ? "RAS प्री 2026" : "RAS Pre 2026";
+  return (CATS[cat] && CATS[cat].name && (CATS[cat].name[LANG] || CATS[cat].name.en)) || cat;
+}
+function notesExamCount(cat){ return basicBooksCount_(cat) + premBooksCount_(cat); }
+
+function notesHeadHtml_(cat){
+  const c = CATS[cat] || {};
+  return `<div class="examhead"><img src="${ASSET[cat] || ASSET.logo}" alt="" onerror="this.style.display='none'"><div><h2 style="margin:0">${esc((c.name && (c.name[LANG] || c.name.en)) || cat)} — ${T("notes")}</h2><div class="sub">${notesExamCount(cat)} ${LANG === "hi" ? "किताबें" : "books"}</div></div></div>`;
+}
+function notesBookRow_(cat, b){
+  const tagTxt = !b.tag ? "" : (typeof b.tag === "string" ? b.tag : (b.tag[LANG] || b.tag.en || ""));
+  const tag = tagTxt ? `<div class="ts">${esc(tagTxt)}</div>` : "";
+  const ttl = typeof b.title === "string" ? b.title : ((b.title && (b.title[LANG] || b.title.en)) || "");
+  return `<div class="noterow"><div class="tt">${esc(ttl)}</div>${tag}<div class="nact"><span class="tag free">${LANG === "hi" ? "कोर्स में शामिल" : "Included in the course"}</span><button class="btn sm gold" onclick="downloadNotes('${cat}','${b.key}')">${LANG === "hi" ? "⬇ डाउनलोड" : "⬇ Download"}</button></div></div>`;
 }
 function renderNotesExam(){
-  const c = CATS[NOTES_EXAM];
-  $("notesgroup-body").innerHTML = `<h1 style="margin-top:6px;display:flex;align-items:center;gap:10px"><img src="${ASSET[NOTES_EXAM] || ""}" alt="" style="height:34px" onerror="this.style.display='none'">${c ? (c.name[LANG] || c.name.en) : ""} — ${T("navNotes")}</h1>` + notesExamHTML(NOTES_EXAM);
+  const box = $("notesgroup-body"); if(!box) return;
+  normalizePurchases();
+  const cat = NOTES_EXAM, c = CATS[cat] || {};
+  const owned = hasCourse(cat), cs = csSet();
+  if(NOTES_LVL === "subjects"){
+    if(NOTES_GRP === "basic"){
+      const subs = basicSubjects_(cat);
+      box.innerHTML = notesHeadHtml_(cat)
+        + `<h3 style="margin:16px 0 4px">📚 ${LANG === "hi" ? "बेसिक नोट्स" : "Basic Notes"}</h3><p class="sub" style="margin:0 0 12px">${LANG === "hi" ? "किसी विषय को चुनकर उसकी किताबें खोलें।" : "Pick a subject to open its books."}</p>`
+        + subs.map(s=>{
+            const bs = basicBooks_(cat, s);
+            const line = bs.length > 1 ? `${bs.length} ${LANG === "hi" ? "किताबें" : "books"}` : (notesTag(s.sub) || "");
+            return `<div class="grp-card" data-basicsub="${s.sub}" onclick="openNotesSubject('${s.sub}')"><img class="catlogo" src="${ASSET[cat] || ASSET.logo}" alt="" onerror="this.style.display='none'"><div class="gt">${esc(s.name[LANG] || s.name.en)}</div><div class="gs">${esc(line)}</div></div>`;
+          }).join("");
+    } else {
+      const subs = premSubjects_(cat);
+      box.innerHTML = notesHeadHtml_(cat)
+        + `<h3 style="margin:16px 0 4px">👑 ${LANG === "hi" ? "प्रीमियम विस्तृत नोट्स" : "Premium Detailed Notes"}</h3><p class="sub" style="margin:0 0 12px">${LANG === "hi" ? "प्रति विषय ₹" + cs.premNotePrice + " — खरीदने पर उसी विषय की सभी विस्तृत किताबें खुल जाती हैं।" : "₹" + cs.premNotePrice + " per subject — buying unlocks all detailed books of that subject."}</p>`
+        + subs.map(s=>{
+            const hasBooks = (s.books || []).length > 0;
+            let line;
+            if(!hasBooks) line = LANG === "hi" ? "जल्द आ रहे हैं" : "Coming soon";
+            else if(s.key && hasPremNote(s.key)) line = LANG === "hi" ? "खरीदा गया ✓ — किताबें खुली हैं" : "Owned ✓ — books unlocked";
+            else line = `${s.books.length} ${LANG === "hi" ? "विस्तृत किताबें" : "detailed books"}`;
+            const admPrem = (isAdmin() && s.key) ? `<span onclick="event.stopPropagation()">${admPencil_("admEditPremNotePrice('" + s.key + "')")}</span>` : "";
+            return `<div class="grp-card" data-premsub="${s.sub}" onclick="openNotesSubject('${s.sub}')"><img class="catlogo" src="${ASSET[cat] || ASSET.logo}" alt="" onerror="this.style.display='none'"><div class="gt">${esc(s.name[LANG] || s.name.en)}</div><div class="gs">${esc(line)}</div>${admPrem}</div>`;
+          }).join("");
+    }
+    initReveal(); return;
+  }
+  if(NOTES_LVL === "books"){
+    if(NOTES_GRP === "basic"){
+      const s = basicSubjects_(cat).find(x => x.sub === NOTES_SUB);
+      if(!s){ NOTES_LVL = "subjects"; renderNotesExam(); return; }
+      box.innerHTML = notesHeadHtml_(cat)
+        + `<h3 style="margin:16px 0 10px">📚 ${esc(s.name[LANG] || s.name.en)}</h3>`
+        + (owned ? basicBooks_(cat, s).map(b => notesBookRow_(cat, b)).join("")
+          : `<div class="card" style="padding:14px"><div class="sub" style="margin-bottom:10px">${esc(notesLockText_(cat))}</div>${notesLockBtn_()}</div>`);
+    } else {
+      const s = premSubjects_(cat).find(x => x.sub === NOTES_SUB);
+      if(!s){ NOTES_LVL = "subjects"; renderNotesExam(); return; }
+      const hasBooks = (s.books || []).length > 0;
+      let body;
+      if(!hasBooks){
+        body = `<div class="card" style="padding:18px 14px;text-align:center"><div style="font-size:28px">🕐</div><b>${LANG === "hi" ? "जल्द आ रहे हैं" : "Coming soon"}</b><div class="sub" style="margin-top:5px">${LANG === "hi" ? "इस विषय के प्रीमियम विस्तृत नोट्स अगले अपडेट में आएंगे।" : "Premium Detailed Notes for this subject arrive in the next update."}</div></div>`;
+      } else if(!owned){
+        body = `<div class="card" style="padding:14px"><div class="sub" style="margin-bottom:10px">${LANG === "hi" ? "पहले RPSC कोर्स खरीदें" : "Buy the RPSC course first"} — ${esc(notesLockText_(cat))}</div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${notesLockBtn_()}${isAdmin() ? admPencil_("admEditPremNotePrice('" + s.key + "')") : ""}</div></div>`;
+      } else if(!hasPremNote(s.key)){
+        body = `<div class="card" style="padding:14px"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="price">₹${(cs.premNotePrices && cs.premNotePrices[s.key] != null) ? cs.premNotePrices[s.key] : cs.premNotePrice}</span><button class="btn sm gold" onclick="buyPremNote('${s.key}')">${T("buyStart")}</button>${isAdmin() ? admPencil_("admEditPremNotePrice('" + s.key + "')") : ""}</div><div class="sub" style="margin-top:8px">${esc(premExamName_(cat))} — ${LANG === "hi" ? "इस विषय की सभी विस्तृत किताबें एक खरीद में खुल जाती हैं।" : "one purchase unlocks every detailed book of this subject."}</div></div>`;
+      } else {
+        body = s.books.map(b=>{
+          const sh = PREM_BOOK_SHORT[b.sub] || { en:b.en || b.sub, hi:b.hi || b.en || b.sub };
+          return `<div class="grp-card" data-prembook="${b.sub}" onclick="downloadNotes('${cat}','${b.sub}')"><img class="catlogo" src="${ASSET[cat] || ASSET.logo}" alt="" onerror="this.style.display='none'"><div class="gt">${esc(sh[LANG] || sh.en)}</div><div class="gs">${esc((b.tag && b.tag[LANG]) || "")}</div></div>`;
+        }).join("");
+      }
+      box.innerHTML = notesHeadHtml_(cat)
+        + `<h3 style="margin:16px 0 10px">👑 ${esc(s.name[LANG] || s.name.en)} — ${esc(premExamName_(cat))}</h3>` + body;
+    }
+    initReveal(); return;
+  }
+  /* top level: the two group cards */
+  const basicN = basicBooksCount_(cat), premN = premBooksCount_(cat);
+  box.innerHTML = notesHeadHtml_(cat)
+    + `<div class="grp-card" data-notesgrp="basic" onclick="openNotesGroup('basic')"><div style="font-size:30px;line-height:1">📚</div><div class="gt">${LANG === "hi" ? "बेसिक नोट्स" : "Basic Notes"}</div><div class="gs">${LANG === "hi" ? "संक्षिप्त, बिंदुवार नोट्स — तेज़ दोहराव के लिए हर मुख्य तथ्य छोटी पंक्तियों में। आपके कोर्स के साथ शामिल।" : "Brief, point-wise notes for quick revision — every key fact in short lines. Included with your course."}</div><div class="gs" style="margin-top:6px;font-weight:700">${basicN} ${LANG === "hi" ? "किताबें" : "books"} · ${LANG === "hi" ? "कोर्स में शामिल" : "Included in the course"}</div></div>`
+    + `<div class="grp-card" data-notesgrp="premium" onclick="openNotesGroup('premium')"><div style="font-size:30px;line-height:1">👑</div><div class="gt">${LANG === "hi" ? "प्रीमियम विस्तृत नोट्स" : "Premium Detailed Notes"}</div><div class="gs">${LANG === "hi" ? "हर टॉपिक के गहरे, विस्तृत नोट्स — हर तथ्य समझाकर लिखी पूरी विस्तृत किताबें। प्रति विषय अलग से खरीदें।" : "Deep, detailed notes of every topic — the full detailed books with every fact explained. Bought separately per subject."}</div><div class="gs" style="margin-top:6px;font-weight:700">${premN} ${LANG === "hi" ? "विस्तृत किताबें" : "detailed books"} · ₹${cs.premNotePrice} ${LANG === "hi" ? "प्रति विषय" : "per subject"}</div></div>`;
   initReveal();
 }
 function renderNotes(){
-  $("notes-all").innerHTML = ["rpsc","upsc","ssc"].map(cat=>{
-    const c = CATS[cat]; if(!c) return "";
-    return `<div class="card grp-card" onclick="openNotesExam('${cat}')"><img src="${ASSET[cat] || ""}" alt="" onerror="this.style.display='none'}"><div class="grp-card-tx"><div class="grp-card-t">${c.name[LANG] || c.name.en}</div><div class="sub">${notesExamCount(cat)} ${LANG === "hi" ? "नोट्स PDF" : "notes PDFs"}</div></div><span class="grp-chev">›</span></div>`;
-  }).join("");
+  const g = $("notes-all"); if(!g) return;
+  normalizePurchases();
+  /* Round 61: the Notes tab lists ONLY categories the user owns. */
+  const ownedCats = COURSE_CATS.filter(k => hasCourse(k) && (CATS[k].subjects || []).length);
+  g.innerHTML = ownedCats.length ? ownedCats.map(k=>{
+    const c = CATS[k];
+    return `<div class="grp-card" onclick="openNotesExam('${k}')"><img class="catlogo" src="${ASSET[k] || ASSET.logo}" alt="" onerror="this.style.display='none'"><div class="gt">${esc(c.name[LANG] || c.name.en)}</div><div class="gs">${notesExamCount(k)} ${LANG === "hi" ? "किताबें" : "books"}</div></div>`;
+  }).join("") : noCourseCard_();
   initReveal();
 }
+
 /* ---------------- PYQ (Previous Year Papers) ----------------
    Real previous-year papers, typed in full. Price is FIXED at ₹3 per test
    (user rule) and does not move with admin exam prices. Premium includes
@@ -2358,7 +2403,7 @@ const PYQ_GROUPS = [
   { exam:"RPSC", logo:"rpsc", name:{ en:"RPSC — RAS Prelims", hi:"RPSC — RAS प्रीलिम्स" } },
   { exam:"UPSC", logo:"upsc", name:{ en:"UPSC — Civil Services Prelims", hi:"UPSC — सिविल सेवा प्रीलिम्स" } }
 ];
-function pageBack(){ if(CURSCREEN === "pyqgroup") go("mycourse"); else if(CURSCREEN === "notesgroup") go("notes"); }
+function pageBack(){ if(CURSCREEN === "pyqgroup") go("mycourse"); else if(CURSCREEN === "notesgroup") notesBack_(); }
 function pyqQuestions(id){ return (window.STUDY_QUESTIONS || []).filter(q=> q[1] === "pyq" && q[2] === id); }
 function pyqOwned(id){ const t = PYQ_TESTS.find(x=>x.id === id); return hasCourse(t ? (t.exam === "RPSC" ? "rpsc" : "upsc") : "rpsc"); }
 async function buyPYQ(id, btn){
@@ -2503,7 +2548,8 @@ function startCADaily(date, part){
 /* ---------------- Home / Category ---------------- */
 /* The Instagram / Download buttons live in different spots per screen:
    on the login screen they sit labelled, side by side, below the language
-   line (#auth-actions); on Home they sit in the "Choose your exam" row. */
+   line (#auth-actions); on Home they sit in the centered icon row (with
+   Telegram, Share and Help & Support). */
 function placeSocialBtns(where){
   const ig = $("igfloat"), dl = $("installfloat"), sh = $("sharefloat"), tg = $("tgfloat"); if(!ig || !dl) return;
   if(where === "auth"){
@@ -2514,6 +2560,7 @@ function placeSocialBtns(where){
     const ea = $("exam-actions"); if(!ea) return;
     dl.classList.remove("labeled"); ig.classList.remove("labeled"); if(tg) tg.classList.remove("labeled"); if(sh) sh.classList.remove("labeled");
     ea.appendChild(dl); ea.appendChild(ig); if(tg) ea.appendChild(tg); if(sh) ea.appendChild(sh);
+    const hf = $("helpfloat"); if(hf) ea.appendChild(hf);
   }
 }
 /* Promo animation plays EVERY time the Home page opens (user request). */
@@ -3322,6 +3369,7 @@ function renderWallet(){
     ? items.slice(0,3).map(rowHtml).join("") + (items.length > 3 ? `<div id="wh-more" class="hidden">${items.slice(3).map(rowHtml).join("")}</div><button class="btn ghost sm" style="width:100%;margin:8px 0" onclick="toggleWh(this)">${LANG==="hi" ? "पूरा इतिहास दिखाएँ ▾" : "Show full history ▾"}</button>` : "")
     : `<p class="sub" style="padding:12px 0">${T("noHistory")}</p>`;
   refreshHeader();
+  renderWalletAdmin();
 }
 
 async function submitDeposit(btn){
@@ -3415,7 +3463,6 @@ function renderProfile(){
   $("pf-attempts").innerHTML = mine.length ? [...mine].reverse().slice(0,15).map(a=>`<div class="testrow"><div class="ti"><div class="tt">${CATS[a.cat].name.en} — ${a.type==="test"?subName(a.cat,a.sub,"en"):a.type==="mock"?"Full Mock":"Free Mock"}</div><div class="ts">${new Date(a.at).toLocaleString()} ${a.first?"":"· practice"}</div></div><b>${a.score}/${a.total}</b></div>`).join("") : `<p class="sub" style="padding:12px 0">${T("noAttempts")}</p>`;
   const thSw = $("pf-theme"); if(thSw) thSw.checked = document.documentElement.dataset.theme === "dark";
   const instRow = $("pf-install-row"); if(instRow) instRow.classList.toggle("hidden", isStandalone);
-  $("admin-entry").classList.toggle("hidden", !isAdmin());
 }
 function renderNotifs(){
   const addBtn = $("notif-add"); if(addBtn) addBtn.classList.toggle("hidden", !isAdmin());
@@ -3449,13 +3496,12 @@ let ADMIN_STATS_LOADING = false;
 async function refreshAdminData(){
   const btn = $("ad-refresh");
   if(btn){ btn.disabled = true; btn.textContent = "⏳ Refreshing…"; }
-  if(!BACKEND_URL){ renderAdmin(); if(btn){ btn.disabled = false; btn.textContent = "↻ Refresh"; } return; }
+  if(!BACKEND_URL){ renderWalletAdmin(); if(btn){ btn.disabled = false; btn.textContent = "↻ Refresh"; } return; }
   let tries = 0;
   while(ADMIN_STATS_LOADING && tries < 48){ await new Promise(r=>setTimeout(r, 250)); tries++; }
   await loadAdminStats();
   if(btn){ btn.disabled = false; btn.textContent = "↻ Refresh"; }
 }
-function adminNotifHtml(n){ return `<div class="testrow"><div class="ti"><div class="tt">${esc(n.title)}</div><div class="ts">${esc(n.body)}</div></div><button class="btn sm red" onclick="adminDelNotif('${n.id}',this)">Delete</button></div>`; }
 function adminLoadFail(msg){
   ["ad-users","ad-attempts","ad-revenue"].forEach(id=>{ const e=$(id); if(e) e.textContent = "—"; });
   const html = `<p class="sub" style="padding:10px 0">${msg}</p>`;
@@ -3469,26 +3515,37 @@ async function loadAdminStats(){
     if(!_adminPass){ const ok = await ensureAdminPass(); if(!ok){ adminLoadFail("Admin confirmation needed to load live data."); return; } }
     const r = await api("adminStats", {adminPhone:ME.phone, adminPass:_adminPass});
     if(!r.ok){ if(r.error==="forbidden") _adminPass = null; adminLoadFail("Could not load live data — reopen the panel to retry."); return; }
-    if(CURSCREEN!=="admin") return;
+    if(CURSCREEN!=="wallet") return;
     $("ad-users").textContent = r.users ?? 0;
     $("ad-attempts").textContent = r.attempts ?? 0;
     $("ad-revenue").textContent = "₹" + (r.revenue ?? 0);
     const pend = r.pending || [];
     $("ad-payments").innerHTML = pend.length ? pend.map(adminPaymentHtml).join("") : `<p class="sub" style="padding:10px 0">No pending payments.</p>`;
-    const nots = r.notifs || [];
-    $("ad-notifs").innerHTML = nots.length ? nots.map(adminNotifHtml).join("") : `<p class="sub" style="padding:10px 0">No notifications.</p>`;
   }finally{ ADMIN_STATS_LOADING = false; }
 }
-function renderAdmin(){
-  if(!isAdmin()) return;
-  const P = getSettings().prices;
-  $("ad-p-test").value=P.test; $("ad-p-mock").value=P.mock; $("ad-p-notes").value=P.notes; $("ad-p-bundle").value=P.bundle;
+/* Round 61: the Admin Panel screen is abolished - its live functions
+   (payment approvals, manual add-balance, coupons, stats, help/contact
+   page editing) now live in an admin-only section on the Wallet page.
+   Price settings moved to the inline ✎ editors (Round 60) and
+   notification post/delete to the Notifications page (Round 60), so
+   those panel cards are gone for good. */
+function renderWalletAdmin(){
+  const sec = $("wallet-admin"); if(!sec) return;
+  if(!isAdmin()){ sec.classList.add("hidden"); return; }
+  sec.classList.remove("hidden");
   $("ad-help").value = getSettings().help.en; $("ad-contact").value = getSettings().contact.en;
+  loadAdminCoupons();
   if(BACKEND_URL){
-    const loading = `<div style="display:flex;align-items:center;gap:10px;padding:12px 2px"><div class="spin"></div><span class="sub">${LANG==="hi" ? "लाइव डेटा लोड हो रहा है…" : "Loading live data…"}</span></div>`;
-    $("ad-users").textContent = "…"; $("ad-attempts").textContent = "…"; $("ad-revenue").textContent = "…";
-    $("ad-payments").innerHTML = loading; $("ad-notifs").innerHTML = loading;
-    loadAdminStats(); return;
+    if(_adminPass){
+      const loading = `<div style="display:flex;align-items:center;gap:10px;padding:12px 2px"><div class="spin"></div><span class="sub">${LANG==="hi" ? "लाइव डेटा लोड हो रहा है…" : "Loading live data…"}</span></div>`;
+      $("ad-users").textContent = "…"; $("ad-attempts").textContent = "…"; $("ad-revenue").textContent = "…";
+      $("ad-payments").innerHTML = loading;
+      loadAdminStats();
+    } else if(!$("ad-payments").querySelector(".payrow")){
+      ["ad-users","ad-attempts","ad-revenue"].forEach(id=>{ const e = $(id); if(e) e.textContent = "—"; });
+      $("ad-payments").innerHTML = `<p class="sub" style="padding:10px 0">Tap ↻ Refresh to load live approvals — it asks your admin password once per session.</p>`;
+    }
+    return;
   }
   const us = Store.users(), atts = Store.attempts();
   $("ad-users").textContent = us.length; $("ad-attempts").textContent = atts.length;
@@ -3496,7 +3553,6 @@ function renderAdmin(){
   $("ad-revenue").textContent = "₹"+rev;
   const pend = Store.payments().filter(p=>p.status==="pending");
   $("ad-payments").innerHTML = pend.length ? pend.map(adminPaymentHtml).join("") : `<p class="sub" style="padding:10px 0">No pending payments.</p>`;
-  $("ad-notifs").innerHTML = Store.notifs().map(adminNotifHtml).join("");
 }
 async function adminDecide(id, approve, credit, btn){
   const row = btn ? btn.closest(".payrow") : null;
@@ -3530,7 +3586,7 @@ async function adminDecide(id, approve, credit, btn){
     if(p.insta){ n.body = "Your Instagram-bonus deposit of ₹"+p.amount+" (UTR "+p.utr+") was not approved — we could not verify your follow of @dinesh.jangir_. If you have followed, tap below and DM us; after checking, we will add your balance."; n.link = "https://ig.me/m/dinesh.jangir_"; n.linkLabel = "DM on Instagram"; }
     pushUnotif(p.phone, n);
   }
-  renderAdmin(); refreshHeader();
+  renderWalletAdmin(); refreshHeader();
 }
 async function adminAddStars(btn){ setBtnLoading(btn, true); try{ await adminAddStarsImpl(); } finally { setBtnLoading(btn, false); } }
 async function adminAddStarsImpl(){
@@ -3547,52 +3603,9 @@ async function adminAddStarsImpl(){
   pushUnotif(phone, { title: rank ? "🏆 Rank reward!" : "🎁 Balance added", body: msg });
   ok.textContent = "Added ₹"+amt+" to "+(u.name||phone)+" & notified ✓";
   $("ad-as-phone").value=""; $("ad-as-amt").value=""; $("ad-as-rank").value=""; $("ad-as-exam").value=""; $("ad-as-msg").value="";
-  renderAdmin();
+  renderWalletAdmin();
 }
 
-async function adminSavePrices(btn){
-  const s = getSettings(); s.prices = { test:+$("ad-p-test").value||5, mock:+$("ad-p-mock").value||10, notes:+$("ad-p-notes").value||30, bundle:+$("ad-p-bundle").value||50 };
-  if(!BACKEND_URL){ DB.write("settings", s); $("ad-price-ok").textContent = "Saved ✓"; return; }
-  setBtnLoading(btn, true);
-  try{
-    if(!(await ensureAdminPass())){ $("ad-price-ok").textContent = "Admin password required."; return; }
-    const r = await api("adminSaveSettings", {settings:s, adminPhone:ME.phone, adminPass:_adminPass});
-    if(r.ok){ window._settings = s; $("ad-price-ok").textContent = "Saved ✓"; }
-    else $("ad-price-ok").textContent = r.error === "forbidden" ? "Wrong admin password — try again." : "Failed — try again.";
-  } finally { setBtnLoading(btn, false); }
-}
-async function adminAddNotif(btn){
-  const t=$("ad-nt").value.trim(), b=$("ad-nb").value.trim(); if(!t||!b) return;
-  if(BACKEND_URL){
-    if(btn){ btn.disabled = true; btn.textContent = "⏳ Posting…"; }
-    const restore = ()=>{ if(btn){ btn.disabled = false; btn.textContent = "Post notification"; } };
-    if(!(await ensureAdminPass())){ restore(); return; }
-    const r = await api("adminAddNotif", {adminPhone:ME.phone, adminPass:_adminPass, title:t, body:b});
-    if(!r.ok){ if(r.error==="forbidden") _adminPass = null; restore(); alert(r.error==="forbidden" ? "Wrong admin password — please try again." : "Could not post — please try again."); return; }
-    restore();
-    $("ad-nt").value=""; $("ad-nb").value="";
-    toast(LANG==="hi" ? "सूचना पोस्ट हो गई ✓" : "Notification posted ✓");
-    loadAdminStats();
-    return;
-  }
-  const n = Store.notifs(); n.unshift({id:"n"+Date.now(), title:t, body:b, at:Date.now()}); Store.saveNotifs(n);
-  $("ad-nt").value=""; $("ad-nb").value=""; renderAdmin();
-}
-async function adminDelNotif(id, btn){
-  if(BACKEND_URL){
-    const row = btn ? btn.closest(".testrow") : null;
-    if(btn){ btn.disabled = true; btn.textContent = "⏳ Deleting…"; }
-    const restore = ()=>{ if(btn){ btn.disabled = false; btn.textContent = "Delete"; } };
-    if(!(await ensureAdminPass())){ restore(); return; }
-    const r = await api("adminDeleteNotif", {adminPhone:ME.phone, adminPass:_adminPass, id});
-    if(!r.ok){ if(r.error==="forbidden") _adminPass = null; restore(); alert(r.error==="forbidden" ? "Wrong admin password — please try again." : "Could not delete — please try again."); return; }
-    if(row) row.remove();
-    const box = $("ad-notifs"); if(box && !box.querySelector(".testrow")) box.innerHTML = `<p class="sub" style="padding:10px 0">No notifications.</p>`;
-    toast(LANG==="hi" ? "सूचना हटा दी गई ✓" : "Notification deleted ✓");
-    return;
-  }
-  Store.saveNotifs(Store.notifs().filter(n=>n.id!==id)); renderAdmin();
-}
 function adminSavePages(){
   const s = getSettings(); s.help.en = $("ad-help").value; s.contact.en = $("ad-contact").value;
   saveSettings(s); $("ad-page-ok").textContent="Saved ✓ (English page updated)";
