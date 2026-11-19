@@ -1704,6 +1704,12 @@ const GEO_DETAILED_BOOK = { sub:"geo-detailed", en:"Detailed Rajasthan Geography
    downloadNotes to notes/rpsc-geo-detailed-india.pdf. */
 const GEO_DETAILED_INDIA_PRICE = 10;
 const GEO_DETAILED_INDIA_BOOK = { sub:"geo-detailed-india", en:"Detailed Indian Geography (RAS Pre 2026)", hi:"\u0935\u093f\u0938\u094d\u0924\u0943\u0924 \u092d\u093e\u0930\u0924\u0940\u092f \u092d\u0942\u0917\u094b\u0932 (RAS Pre 2026)", tag:{ en:"Complete Indian Geography \u2014 every topic, every fact, easy language \u00b7 47 pages", hi:"\u092a\u0942\u0930\u093e \u092d\u093e\u0930\u0924\u0940\u092f \u092d\u0942\u0917\u094b\u0932 \u2014 \u0939\u0930 \u091f\u0949\u092a\u093f\u0915, \u0939\u0930 \u0924\u0925\u094d\u092f, \u0906\u0938\u093e\u0928 \u092d\u093e\u0937\u093e \u00b7 47 \u092a\u0947\u091c" } };
+/* Detailed World Geography (Round 56): one standalone book at a FIXED
+   Rs.10, immune to the admin notes price. New key (rpsc_geo-detailed-world) -
+   no old key exists, so no grandfathering. Downloads resolve via
+   downloadNotes to notes/rpsc-geo-detailed-world.pdf. */
+const GEO_DETAILED_WORLD_PRICE = 10;
+const GEO_DETAILED_WORLD_BOOK = { sub:"geo-detailed-world", en:"Detailed World Geography (RAS Pre 2026)", hi:"\u0935\u093f\u0938\u094d\u0924\u0943\u0924 \u0935\u093f\u0936\u094d\u0935 \u092d\u0942\u0917\u094b\u0932 (RAS Pre 2026)", tag:{ en:"Complete World Geography \u2014 every topic, every fact, easy language \u00b7 41 pages", hi:"\u092a\u0942\u0930\u093e \u0935\u093f\u0936\u094d\u0935 \u092d\u0942\u0917\u094b\u0932 \u2014 \u0939\u0930 \u091f\u0949\u092a\u093f\u0915, \u0939\u0930 \u0924\u0925\u094d\u092f, \u0906\u0938\u093e\u0928 \u092d\u093e\u0937\u093e \u00b7 41 \u092a\u0947\u091c" } };
 /* Notes open-state (Round 30 fix): renderNotes() rebuilds the whole Notes
    screen after a purchase, which used to collapse every dropdown the user
    had open. These record which exam wrap and sub-dropdowns are open so a
@@ -1766,7 +1772,7 @@ function notesExamHTML(cat){
   const c = CATS[cat]; if(!c) return "";
     let rows;
     if(cat === "rpsc"){
-      rows = [subjectRow(cat, "raj"), histSubDropdown(), geoSubDropdown(), noteBookRow(GEO_DETAILED_BOOK, GEO_DETAILED_PRICE), noteBookRow(GEO_DETAILED_INDIA_BOOK, GEO_DETAILED_INDIA_PRICE), polSubDropdown(), ecoSubDropdown(), noteBookRow(SCI_BOOK, SCI_BOOK_PRICE), noteBookRow(REAS_BOOK, REAS_BOOK_PRICE), subjectRow(cat, "ca")].join("") + bundleRow(cat);
+      rows = [subjectRow(cat, "raj"), histSubDropdown(), geoSubDropdown(), noteBookRow(GEO_DETAILED_BOOK, GEO_DETAILED_PRICE), noteBookRow(GEO_DETAILED_INDIA_BOOK, GEO_DETAILED_INDIA_PRICE), noteBookRow(GEO_DETAILED_WORLD_BOOK, GEO_DETAILED_WORLD_PRICE), polSubDropdown(), ecoSubDropdown(), noteBookRow(SCI_BOOK, SCI_BOOK_PRICE), noteBookRow(REAS_BOOK, REAS_BOOK_PRICE), subjectRow(cat, "ca")].join("") + bundleRow(cat);
     } else {
       rows = c.subjects.map(([sub])=> subjectRow(cat, sub)).join("") + bundleRow(cat);
     }
@@ -1775,7 +1781,7 @@ function notesExamHTML(cat){
 let NOTES_EXAM = "rpsc";
 function openNotesExam(cat){ NOTES_EXAM = cat; go("notesgroup"); }
 function notesExamCount(cat){
-  if(cat === "rpsc") return GEO_TRIO.length + POL_DUO.length + HIST_TRIO.length + ECO_DUO.length + 6;
+  if(cat === "rpsc") return GEO_TRIO.length + POL_DUO.length + HIST_TRIO.length + ECO_DUO.length + 7;
   const c = CATS[cat]; return c ? c.subjects.length + 1 : 0;
 }
 function renderNotesExam(){
