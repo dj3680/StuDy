@@ -1692,6 +1692,12 @@ const ECO_DUO = [
 ];
 const SCI_BOOK = { sub:"sci-tech", en:"General Science & Technology", hi:"\u0938\u093e\u092e\u093e\u0928\u094d\u092f\u0020\u0935\u093f\u091c\u094d\u091e\u093e\u0928\u0020\u0935\u0020\u092a\u094d\u0930\u094c\u0926\u094d\u092f\u094b\u0917\u093f\u0915\u0940", tag:{ en:"Everyday science, space, health & ICT - concepts in simple words", hi:"\u0930\u094b\u091c\u093c\u092e\u0930\u094d\u0930\u093e\u0020\u0935\u093f\u091c\u094d\u091e\u093e\u0928\u002c\u0020\u0905\u0902\u0924\u0930\u093f\u0915\u094d\u0937\u002c\u0020\u0938\u094d\u0935\u093e\u0938\u094d\u0925\u094d\u092f\u0020\u0935\u0020\u0049\u0043\u0054\u0020\u2014\u0020\u0906\u0938\u093e\u0928\u0020\u092d\u093e\u0937\u093e\u0020\u092e\u0947\u0902" } };
 const REAS_BOOK = { sub:"reas-mental", en:"Reasoning & Mental Ability", hi:"\u0924\u0930\u094d\u0915\u0936\u0915\u094d\u0924\u093f\u0020\u0935\u0020\u092e\u093e\u0928\u0938\u093f\u0915\u0020\u092f\u094b\u0917\u094d\u092f\u0924\u093e", tag:{ en:"Methods, formulas & worked examples - full numeracy bank", hi:"\u0924\u0930\u0940\u0915\u0947\u002c\u0020\u092b\u093c\u0949\u0930\u094d\u092e\u0942\u0932\u0947\u0020\u0935\u0020\u0939\u0932\u0020\u0915\u093f\u090f\u0020\u0917\u090f\u0020\u0909\u0926\u093e\u0939\u0930\u0923\u0020\u2014\u0020\u0938\u0902\u092a\u0942\u0930\u094d\u0923\u0020\u0938\u0902\u0916\u094d\u092f\u093e\u0924\u094d\u092e\u0915\u0020\u092c\u0948\u0902\u0915" } };
+/* Detailed Rajasthan Geography (Round 54): one standalone book at a FIXED
+   Rs.10, immune to the admin notes price. New key (rpsc_geo-detailed) -
+   no old key exists, so no grandfathering. Downloads resolve via
+   downloadNotes to notes/rpsc-geo-detailed.pdf. */
+const GEO_DETAILED_PRICE = 10;
+const GEO_DETAILED_BOOK = { sub:"geo-detailed", en:"Detailed Rajasthan Geography (RAS Pre 2026)", hi:"\u0935\u093f\u0938\u094d\u0924\u0943\u0924 \u0930\u093e\u091c\u0938\u094d\u0925\u093e\u0928 \u092d\u0942\u0917\u094b\u0932 (RAS Pre 2026)", tag:{ en:"Complete Rajasthan Geography \u2014 every topic, every fact, easy language \u00b7 104 pages", hi:"\u092a\u0942\u0930\u093e \u0930\u093e\u091c\u0938\u094d\u0925\u093e\u0928 \u092d\u0942\u0917\u094b\u0932 \u2014 \u0939\u0930 \u091f\u0949\u092a\u093f\u0915, \u0939\u0930 \u0924\u0925\u094d\u092f, \u0906\u0938\u093e\u0928 \u092d\u093e\u0937\u093e \u00b7 104 \u092a\u0947\u091c" } };
 /* Notes open-state (Round 30 fix): renderNotes() rebuilds the whole Notes
    screen after a purchase, which used to collapse every dropdown the user
    had open. These record which exam wrap and sub-dropdowns are open so a
@@ -1754,7 +1760,7 @@ function notesExamHTML(cat){
   const c = CATS[cat]; if(!c) return "";
     let rows;
     if(cat === "rpsc"){
-      rows = [subjectRow(cat, "raj"), histSubDropdown(), geoSubDropdown(), polSubDropdown(), ecoSubDropdown(), noteBookRow(SCI_BOOK, SCI_BOOK_PRICE), noteBookRow(REAS_BOOK, REAS_BOOK_PRICE), subjectRow(cat, "ca")].join("") + bundleRow(cat);
+      rows = [subjectRow(cat, "raj"), histSubDropdown(), geoSubDropdown(), noteBookRow(GEO_DETAILED_BOOK, GEO_DETAILED_PRICE), polSubDropdown(), ecoSubDropdown(), noteBookRow(SCI_BOOK, SCI_BOOK_PRICE), noteBookRow(REAS_BOOK, REAS_BOOK_PRICE), subjectRow(cat, "ca")].join("") + bundleRow(cat);
     } else {
       rows = c.subjects.map(([sub])=> subjectRow(cat, sub)).join("") + bundleRow(cat);
     }
@@ -1763,7 +1769,7 @@ function notesExamHTML(cat){
 let NOTES_EXAM = "rpsc";
 function openNotesExam(cat){ NOTES_EXAM = cat; go("notesgroup"); }
 function notesExamCount(cat){
-  if(cat === "rpsc") return GEO_TRIO.length + POL_DUO.length + HIST_TRIO.length + ECO_DUO.length + 4;
+  if(cat === "rpsc") return GEO_TRIO.length + POL_DUO.length + HIST_TRIO.length + ECO_DUO.length + 5;
   const c = CATS[cat]; return c ? c.subjects.length + 1 : 0;
 }
 function renderNotesExam(){
