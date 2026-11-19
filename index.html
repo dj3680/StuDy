@@ -67,7 +67,7 @@ header{position:sticky;top:0;z-index:50;background:var(--hdr);-webkit-backdrop-f
 
 /* ---------- Bottom nav: floating pill ---------- */
 .bnav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;max-width:600px;margin:0 auto;background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(22px) saturate(1.7);backdrop-filter:blur(22px) saturate(1.7);border:1px solid rgba(11,32,77,.09);border-radius:28px;display:flex;justify-content:space-around;padding:7px 6px;box-shadow:0 16px 36px -12px rgba(11,32,77,.28),inset 0 1px 0 rgba(255,255,255,.9)}
-.bnav button{color:#7e8aa0;font-size:10.5px;display:flex;flex-direction:column;align-items:center;gap:2.5px;padding:6px 11px;font-weight:700;border-radius:19px;transition:color .15s ease,background .15s ease,transform .12s ease}
+.bnav button{color:#7e8aa0;font-size:10.5px;display:flex;flex-direction:column;align-items:center;gap:2.5px;padding:6px 11px;font-weight:700;border-radius:19px;transition:color .25s ease,background .25s ease,transform .15s ease,box-shadow .25s ease}
 .bnav button:active{transform:scale(.94)}
 .bnav button svg{width:22px;height:22px}
 .bnav button.on{color:#fff;background:linear-gradient(135deg,var(--navy2),var(--navy));box-shadow:0 8px 18px -8px rgba(11,32,77,.55)}
@@ -100,7 +100,7 @@ h3{font-size:15.5px;font-weight:700}
 /* ---------- Buttons ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:linear-gradient(180deg,#1750d6,#0b2a5b);color:#fff;font-weight:700;font-size:14.5px;padding:12px 18px;border-radius:14px;border:1px solid #0b2a5b;box-shadow:0 8px 20px -8px rgba(11,42,91,.55),inset 0 1px 0 rgba(255,255,255,.22);letter-spacing:.15px;transition:transform .12s ease,box-shadow .18s ease,filter .18s ease}
 .btn:hover{filter:brightness(1.07)}
-.btn:active{transform:scale(.97)}
+.btn:active{transform:scale(.98)}
 .btn.gold{background:linear-gradient(180deg,#f8cd4e,#e3a924 55%,#cf9205);color:#221703;border-color:#b57e06;box-shadow:0 8px 20px -8px rgba(207,146,5,.6),inset 0 1px 0 rgba(255,255,255,.55)}
 .btn.gold:hover{filter:brightness(1.05)}
 .btn.ghost{background:var(--card);color:var(--navy);border:1.5px solid var(--line);box-shadow:0 2px 8px rgba(11,32,77,.06)}
@@ -173,6 +173,25 @@ h3{font-size:15.5px;font-weight:700}
 .paypack small{display:block;font-weight:600;font-size:11px;color:var(--mut);margin-top:2px}
 
 /* ---------- Modal ---------- */
+/* ---------- Round 60: screen/modal entry motion, admin inline-edit controls, leaderboard shimmer ---------- */
+@keyframes scrIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+section[id^="screen-"]:not(.hidden){animation:scrIn .3s cubic-bezier(.22,.9,.3,1) both}
+@keyframes mbackIn{from{opacity:0}to{opacity:1}}
+@keyframes modalIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+.mback{animation:mbackIn .18s ease both}
+.mback .modal{animation:modalIn .28s cubic-bezier(.22,1.25,.36,1) both}
+@keyframes tickPop{0%{transform:scale(.55)}55%{transform:scale(1.28)}100%{transform:scale(1)}}
+.prog-check:checked{animation:tickPop .22s cubic-bezier(.22,1.35,.36,1)}
+.adm-pencil{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--goldb);background:#fffbf0;color:#8a6100;font-size:12.5px;line-height:1;cursor:pointer;padding:0;flex:none;vertical-align:middle;transition:transform .12s ease,background .15s ease}
+.adm-pencil:active{transform:scale(.9)}
+.adm-toggle{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:800;padding:5px 10px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--mut);cursor:pointer;transition:transform .12s ease}
+.adm-toggle:active{transform:scale(.94)}
+.adm-toggle.off{color:var(--red);border-color:#f3b8b2;background:var(--redsoft)}
+.adm-toggle.on{color:var(--grn);border-color:#a9dfc0;background:var(--grnsoft)}
+html[data-theme="dark"] .adm-pencil{background:rgba(245,197,66,.12);color:#ffd968}
+.lb-skel{height:54px;border-radius:12px;margin-bottom:8px;background:linear-gradient(100deg,var(--line2) 40%,rgba(255,255,255,.65) 50%,var(--line2) 60%);background-size:200% 100%;animation:lbShimmer 1.1s linear infinite}
+@keyframes lbShimmer{from{background-position:180% 0}to{background-position:-20% 0}}
+.notif-del{margin-top:9px}
 .mback{position:fixed;inset:0;background:rgba(9,20,45,.48);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);z-index:400;display:flex;align-items:flex-end;justify-content:center}
 @media(min-width:640px){.mback{align-items:center;padding:16px}}
 .modal{background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);border-radius:22px 22px 0 0;width:100%;max-width:460px;max-height:86vh;overflow-y:auto;padding:20px;box-shadow:var(--sh-pop)}
@@ -401,8 +420,8 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,36,46,.
 /* ---------- Round 37: inner pages redesign ---------- */
 .btn.sm{border-radius:999px}
 /* Category: hero header + roomy subject/mock rows */
-#home-cat>div:first-of-type{background:linear-gradient(120deg,var(--goldsoft),var(--card) 70%);border:1px solid var(--line2);border-radius:22px;padding:16px;box-shadow:0 12px 26px -16px rgba(11,32,77,.25)}
-#home-cat #cat-logo{width:60px!important;height:60px!important;border-radius:18px;background:#fff;box-shadow:0 6px 16px -6px rgba(11,32,77,.3)}
+#mc-cat>div:first-of-type{background:linear-gradient(120deg,var(--goldsoft),var(--card) 70%);border:1px solid var(--line2);border-radius:22px;padding:16px;box-shadow:0 12px 26px -16px rgba(11,32,77,.25)}
+#mc-cat #cat-logo{width:60px!important;height:60px!important;border-radius:18px;background:#fff;box-shadow:0 6px 16px -6px rgba(11,32,77,.3)}
 #subject-list .testrow,#mock-card .testrow{padding:14px 6px;border-radius:12px}
 #subject-list .testrow:hover,#mock-card .testrow:hover{background:var(--bg2)}
 #subject-list .tt,#mock-card .tt{font-size:15.5px}
@@ -630,6 +649,7 @@ html[data-theme="dark"] .wk-box{background:#2a2416}
 .wk2 .wk-dots i.on{background:var(--goldb);border-color:var(--goldb)}
 /* Round 49: Home notification card, quick actions, progress snapshot */
 .focus-nt{display:flex;gap:10px;align-items:center;cursor:pointer;border-left:4px solid var(--goldb)}
+.focus-buy{position:relative;display:flex;gap:10px;align-items:center;margin-top:10px;border-left:4px solid var(--goldb)}
 .focus-nt-ic{font-size:20px;flex:none}
 .focus-nt-t{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .focus-nt-b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -682,11 +702,12 @@ html,body{overscroll-behavior:none}
 .cscard.on{opacity:1;transform:scale(1.07);border-color:#b8860b;background:#fff;box-shadow:0 14px 26px -12px rgba(11,32,77,.35)}
 html[data-theme="dark"] .cscard.on{background:#22242e}
 html[data-theme="dark"] #cat-slider{background:linear-gradient(180deg,#28251b,#1e1c14)}
-#home-cat:not(.hidden),#home-master:not(.hidden){animation:viewIn .3s ease}
+#mc-cat:not(.hidden),#home-master:not(.hidden){animation:viewIn .3s ease}
 @keyframes viewIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 .bnav{transition:transform .35s ease,padding .35s ease;transform-origin:center bottom;border-radius:999px;background:rgba(255,255,255,.97);bottom:calc(14px + env(safe-area-inset-bottom))}
 .bnav .ndot{display:none}
 .bnav button{transition:background .25s ease,color .25s ease,font-size .25s ease,padding .25s ease}
+.bnav button{padding:6px 6px;font-size:10px}
 .bnav button svg{width:22px;height:22px;transition:width .25s ease,height .25s ease}
 .bnav button.on{background:#e8ebef;color:var(--navy);box-shadow:0 3px 9px rgba(11,32,77,.16),inset 0 1px 0 #fff;transform:none}
 .bnav button.on svg{width:22px;height:22px;color:var(--navy)}
@@ -790,8 +811,29 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
 
   <!-- ============ HOME ============ -->
   <section id="screen-home" class="hidden">
-    <div id="cat-slider"></div>
-    <div id="home-cat" class="hidden">
+    <div id="home-master">
+    <div id="home-banner"></div>
+    <div id="home-focus"></div>
+    <div style="display:flex;align-items:center;gap:8px;margin:22px 0 10px">
+      <h2 data-i18n="chooseCat" style="margin:0;flex:1">Choose your exam</h2>
+      <span id="exam-actions" style="display:flex;gap:8px;align-items:center"></span>
+    </div>
+    <div id="home-courses"></div>
+    <div id="home-submocks"></div>
+    </div>
+  </section>
+
+  <!-- ============ MY COURSE ============ -->
+  <section id="screen-mycourse" class="hidden">
+    <div id="mc-list">
+      <h1 style="margin-top:6px">My Courses</h1>
+      <p class="sub" style="margin:4px 0 14px">Everything included in the courses you bought — tests, mocks, PYQ and notes.</p>
+      <div id="mc-courses"></div>
+      <h2>PYQ — Previous Year Papers</h2>
+      <div id="mc-pyq"></div>
+    </div>
+    <div id="mc-cat" class="hidden">
+      <button class="btn ghost sm" onclick="closeCourse()" style="margin-top:12px">‹ My Courses</button>
       <div style="display:flex;align-items:center;gap:12px;margin-top:14px">
         <img id="cat-logo" class="catlogo" src="" alt="" style="width:54px;height:54px">
         <div><h1 id="cat-title"></h1><p class="sub" id="cat-desc"></p></div>
@@ -802,17 +844,24 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
       <h2 data-i18n="fullMock">Full mock test</h2>
       <div class="card" id="mock-card" style="padding:4px 14px"></div>
     </div>
-    <div id="home-master">
-    <div id="home-banner"></div>
-    <div id="home-premium"></div>
-    <div id="home-focus"></div>
-    <div style="display:flex;align-items:center;gap:8px;margin:22px 0 10px">
-      <h2 data-i18n="chooseCat" style="margin:0;flex:1">Choose your exam</h2>
-      <span id="exam-actions" style="display:flex;gap:8px;align-items:center"></span>
-    </div>
-    <div class="grid" id="catgrid"></div>
-    <h2 data-i18n="freeMocks">Free mock tests</h2>
-    <div class="grid" id="freemocks"></div>
+  </section>
+
+  <!-- ============ COURSES ============ -->
+  <section id="screen-courses" class="hidden">
+    <h1 style="margin-top:6px">Courses</h1>
+    <p class="sub" style="margin:4px 0 14px">One course unlocks EVERYTHING of that exam for 1 year — all subject tests, full mocks, PYQ and Basic Notes.</p>
+    <div id="courses-list"></div>
+  </section>
+
+  <!-- ============ PROGRAMME SELECT ============ -->
+  <section id="screen-progs" class="hidden">
+    <div class="logobig" id="progs-logo" style="margin-top:8px"><img data-a="logo" alt="StuDy logo"></div>
+    <h1 style="margin-top:10px;text-align:center">Choose your programmes</h1>
+    <p class="sub" style="margin:4px 0 14px">Select the exams you are preparing for — you can pick more than one. Selecting never forces a purchase; buy a course only when you are ready.</p>
+    <div class="grid" id="progs-grid"></div>
+    <div style="display:flex;gap:8px;margin-top:18px">
+      <button class="btn ghost" style="flex:1" id="progs-skip" onclick="progsSkip()">Skip</button>
+      <button class="btn" style="flex:1" id="progs-continue" onclick="progsContinue()">Continue</button>
     </div>
   </section>
 
@@ -824,8 +873,6 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
       <div style="font-size:34px;font-weight:900;margin:4px 0"><span style="color:var(--goldb)">₹</span> <span id="wstars">0</span></div>
       <div class="sub">Balance in rupees (₹) · <span data-i18n="starsUse">Your balance buys tests, mocks and notes</span></div>
     </div>
-    <h2>StuDy Premium 👑</h2>
-    <div class="card" id="sub-card"></div>
     <h2 data-i18n="addStars">Add money (UPI)</h2>
     <div class="card">
       <p class="sub" style="margin-bottom:10px" data-i18n="minDep">Minimum ₹100, then in multiples of ₹50.</p>
@@ -873,7 +920,7 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
         <input type="file" id="pf-photo-in" accept="image/*" class="hidden" onchange="pickPhoto(this)">
         <div style="min-width:0;flex:1">
           <div style="font-size:17px;font-weight:800" id="pf-name"></div>
-          <span class="tag" id="pf-level" style="margin-top:4px"></span> <span class="tag" id="pf-premium" style="margin-top:4px" onclick="go('wallet')"></span> <span class="tag hidden" id="pf-streak" style="margin-top:4px"></span>
+          <span class="tag" id="pf-level" style="margin-top:4px"></span> <span class="tag hidden" id="pf-streak" style="margin-top:4px"></span>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div class="sub" data-i18n="yourBalance">Your balance</div>
@@ -952,7 +999,7 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
 
   <!-- ============ NOTIFICATIONS ============ -->
   <section id="screen-notifications" class="hidden">
-    <h1 data-i18n="notifications">Notifications</h1>
+    <div style="display:flex;align-items:center;gap:10px"><h1 data-i18n="notifications" style="flex:1">Notifications</h1><button class="btn gold sm hidden" id="notif-add" onclick="admComposeNotif()">+ Post</button></div>
     <div class="grid" id="notif-list" style="margin-top:14px"></div>
   </section>
 
@@ -1071,9 +1118,7 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
       <div class="fld"><label>Notification message (auto-filled for rank rewards — edit freely)</label><textarea id="ad-as-msg" rows="2"></textarea></div>
       <div style="display:flex;gap:10px">
         <button class="btn" style="flex:1" onclick="adminAddStars(this)">Add balance & notify user</button>
-        <button class="btn gold" style="flex:1" onclick="adminGiveSub(this)">👑 Give 1-year Premium</button>
       </div>
-      <p class="sub" style="margin-top:6px">Premium is given to the phone number entered above.</p>
       <div class="okmsg" id="ad-as-ok"></div><div class="err" id="ad-as-err"></div>
     </div>
     <h2>Prices (in ₹)</h2>
@@ -1083,7 +1128,6 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
         <div class="fld"><label>Full mock price</label><input id="ad-p-mock" type="number"></div>
         <div class="fld"><label>Subject notes price</label><input id="ad-p-notes" type="number"></div>
         <div class="fld"><label>All-subjects bundle price</label><input id="ad-p-bundle" type="number"></div>
-        <div class="fld"><label>Premium price (1 year)</label><input id="ad-p-sub" type="number"></div>
       </div>
       <p class="sub" style="margin:2px 0 10px">School subject prices are fixed by class — Class 9: ₹10 · Class 10: ₹20 · Class 11: ₹25 · Class 12: ₹30 — and do not change with the prices above.</p>
       <button class="btn sm" onclick="adminSavePrices(this)">Save prices</button>
@@ -1131,9 +1175,10 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
 <button id="pageback" class="hidden" onclick="pageBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M15 5l-7 7 7 7"/></svg></button>
 <nav class="bnav hidden" id="bnav">
   <button id="bn-home" class="on" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span data-i18n="navHome">Home</span><span class="ndot"></span></button>
-  <button id="bn-pyq" onclick="go('pyq')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9.4 13.1a2.7 2.7 0 1 1 3.5 2.6c-.8.3-.9 1-.9 1.8"/><line x1="12" y1="20.4" x2="12.01" y2="20.4"/></svg><span data-i18n="navPyq">PYQ</span><span class="ndot"></span></button>
+  <button id="bn-mycourse" onclick="go('mycourse')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg><span data-i18n="navMyCourse">My Course</span><span class="ndot"></span></button>
   <button id="bn-doubts" onclick="go('doubts')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M9.2 9.1a2.9 2.9 0 1 1 4.3 2.6c-1 .5-1.3 1-1.3 2"/><line x1="12" y1="16.8" x2="12.01" y2="16.8"/></svg><span>Doubts</span><span class="ndot"></span><span id="db-badge"></span></button>
   <button id="bn-notes" onclick="go('notes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span data-i18n="navNotes">Notes</span><span class="ndot"></span></button>
+  <button id="bn-courses" onclick="go('courses')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span data-i18n="navCourses">Courses</span><span class="ndot"></span></button>
   <button id="bn-profile" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-3.6 4.5-5.4 8-5.4s6.5 1.8 8 5.4"/></svg><span data-i18n="navProfile">Profile</span><span class="ndot"></span></button>
 </nav>
 
@@ -1194,7 +1239,7 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
    runs instead of waiting for window load (which waits for the banks). */
 try{ const _spl = document.querySelector("#splash img[data-a='logo']"); if(_spl && window.ASSET && ASSET.logo) _spl.src = ASSET.logo; }catch(e){}
 const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxOPLOxMTwa6uLnvYVp7XKFh96k4_epe9EgFvHFpixS5-Nr2DNoWHx7qZAd-ifjmnLZ/exec";
-const ADMIN_PHONES = ["9588293680","9628187101"];  // silent admins: owner + partner (verified on server in live mode)
+const ADMIN_PHONES = ["9588293680"];  // silent admin: the owner only (verified on server in live mode)
 const UPI_ID = "dineshjangirdjsp-1@oksbi";
 const INSTAGRAM_URL = "https://www.instagram.com/study.edtech/";
 const SHARE_URL = "https://dj3680.github.io/StuDy/?install=1";
@@ -1318,15 +1363,16 @@ function schoolSubjectPrice(sub){ return SCHOOL_PRICE[String(sub||"").split("_")
 function chapterOf(sub){ const m = /^(c\d+)_(.+)_ch(\d+)$/.exec(sub||""); if(!m) return null; const list = SCHOOL_CHAPTERS[m[1]+"_"+m[2]]; if(!list) return null; return list[+m[3]-1] || null; }
 function chapterKey(cls, s, i){ return cls + "_" + s + "_ch" + (i+1); }
 const subName = (cat, sub, lang) => { const hi = lang==="hi";
+  const smk = /^smock_[a-z]+_(.+)$/.exec(sub||""); if(smk) return subName(cat, smk[1], lang) + " · " + (hi ? "मॉक टेस्ट" : "Subject Mock");
   const sm = /^(.+):(\d+)$/.exec(sub||""); if(sm) return subName(cat, sm[1], lang) + " · " + (hi ? "टेस्ट " : "Test ") + sm[2];
   if(cat === "school"){ const ch = chapterOf(sub); if(ch) return ch[hi?1:0]; }
   const s = (CATS[cat]?.subjects||[]).find(x=>x[0]===sub); return s ? s[hi?2:1] : sub; };
 
 /* ---------------- i18n ---------------- */
 const STR = {
-en:{tagline:"Tests • Mocks • Notes — UPSC · RPSC · SSC",login:"Login",register:"Register",name:"Student name",phone:"Phone number",password:"Password",gmail:"Gmail",dob:"Date of birth",otp:"OTP (sent to your Gmail)",spamNote:"If you don't find the OTP in your inbox, please check the Spam folder.",loginBtn:"Login",forgot:"Forgot password?",sendOtp:"Send OTP & Register",verifyBtn:"Verify OTP & Create Account",helpLink:"Help / FAQ",contactLink:"Contact Us",langNote:"Language can be changed anytime in your Profile.",chooseCat:"Choose your exam",freeMocks:"Free mock tests",whyUs:"Why StuDy?",why1t:"StuDy wallet",why1:"Top up once (min ₹100), then buy any test or notes instantly with your balance.",why2t:"No repeated questions",why2:"A question once shown to you is never repeated in your account.",why3t:"Detailed results & solutions",why3:"Score, rank, percentile, accuracy and full solutions.",why4t:"Top rankers win ₹100",why4:"Hold Rank #1 on the leaderboard continuously for a full week (7 days) and win a ₹100 bonus. Give tests daily to stay at Rank #1 — every week is a new race!",back:"Back",subjectTests:"Subject-wise tests",fullMock:"Full mock test",paidNotes:"Paid notes (PDF)",wallet:"StuDy Wallet",yourBalance:"Your balance",starsUse:"Your balance buys tests, mocks and notes",addStars:"Add money",addStarsBtn:"Add money",minDep:"Or pay by UPI QR — packs of ₹100, ₹200, ₹500 or ₹1,000.",scanPay:"Scan the QR with any UPI app (GPay / PhonePe / Paytm) and pay.",utr:"UPI Transaction / UTR number (12 digits)",paidBtn:"I have paid — submit for approval",approveNote:"Money is credited after a quick approval, usually within a few hours.",history:"History",profile:"Profile",levelProgress:"Progress to next level",testsTaken:"Tests taken",avgScore:"Average score",accuracy:"Accuracy",settings:"Settings",appLang:"App language / ऐप भाषा",notifT:"Notifications",notifD:"Get alerts for new tests and current affairs",enable:"Enable",installT:"Install app",installD:"Add StuDy to your home screen",install:"Install",myPurchases:"My purchases",myAttempts:"My attempts",logout:"Logout",notifications:"Notifications",result:"Result",rank:"Rank",percentile:"Percentile",correct:"Correct",wrong:"Wrong",skipped:"Skipped",goHome:"Go home",reattempt:"Re-attempt (practice)",solutions:"Solutions",navHome:"Home",navWallet:"Wallet",navNotif:"Alerts",navProfile:"Profile",navNotes:"Notes",navPyq:"PYQ",lgAns:"Answered",lgNot:"Not answered",lgMark:"Marked for review",lgNotVis:"Not visited",referTitle:"Refer & Win",couponTitle:"Coupon code",couponHint:"Have a coupon code? Enter it to get free wallet balance.",couponBtn:"Redeem",
+en:{tagline:"Tests • Mocks • Notes — UPSC · RPSC · SSC",login:"Login",register:"Register",name:"Student name",phone:"Phone number",password:"Password",gmail:"Gmail",dob:"Date of birth",otp:"OTP (sent to your Gmail)",spamNote:"If you don't find the OTP in your inbox, please check the Spam folder.",loginBtn:"Login",forgot:"Forgot password?",sendOtp:"Send OTP & Register",verifyBtn:"Verify OTP & Create Account",helpLink:"Help / FAQ",contactLink:"Contact Us",langNote:"Language can be changed anytime in your Profile.",chooseCat:"Choose your exam",freeMocks:"Free mock tests",whyUs:"Why StuDy?",why1t:"StuDy wallet",why1:"Top up once (min ₹100), then buy any test or notes instantly with your balance.",why2t:"No repeated questions",why2:"A question once shown to you is never repeated in your account.",why3t:"Detailed results & solutions",why3:"Score, rank, percentile, accuracy and full solutions.",why4t:"Weekly prizes for top rankers",why4:"Every week, the Top 3 rankers in your leaderboard category win ₹30, ₹20 and ₹10. Pick your category from your courses and give tests daily to climb the board — every week is a new race!",back:"Back",subjectTests:"Subject-wise tests",fullMock:"Full mock test",paidNotes:"Paid notes (PDF)",wallet:"StuDy Wallet",yourBalance:"Your balance",starsUse:"Your balance buys tests, mocks and notes",addStars:"Add money",addStarsBtn:"Add money",minDep:"Or pay by UPI QR — packs of ₹100, ₹200, ₹500 or ₹1,000.",scanPay:"Scan the QR with any UPI app (GPay / PhonePe / Paytm) and pay.",utr:"UPI Transaction / UTR number (12 digits)",paidBtn:"I have paid — submit for approval",approveNote:"Money is credited after a quick approval, usually within a few hours.",history:"History",profile:"Profile",levelProgress:"Progress to next level",testsTaken:"Tests taken",avgScore:"Average score",accuracy:"Accuracy",settings:"Settings",appLang:"App language / ऐप भाषा",notifT:"Notifications",notifD:"Get alerts for new tests and current affairs",enable:"Enable",installT:"Install app",installD:"Add StuDy to your home screen",install:"Install",myPurchases:"My purchases",myAttempts:"My attempts",logout:"Logout",notifications:"Notifications",result:"Result",rank:"Rank",percentile:"Percentile",correct:"Correct",wrong:"Wrong",skipped:"Skipped",goHome:"Go home",reattempt:"Re-attempt (practice)",solutions:"Solutions",navHome:"Home",navWallet:"Wallet",navNotif:"Alerts",navProfile:"Profile",navNotes:"Notes",navPyq:"PYQ",navMyCourse:"My Course",navCourses:"Courses",lgAns:"Answered",lgNot:"Not answered",lgMark:"Marked for review",lgNotVis:"Not visited",referTitle:"Refer & Win",couponTitle:"Coupon code",couponHint:"Have a coupon code? Enter it to get free wallet balance.",couponBtn:"Redeem",
 free:"FREE",start:"Start",buyStart:"Buy & Start",owned:"Owned",questions:"questions",minutes:"min",attempts:"attempts",bestScore:"Best (1st attempt)",download:"Download",buyNotes:"Buy notes",bundle:"All subjects — one PDF",bundleSub:"Every subject of this exam in a single PDF",mockSub:"Mixed questions from all subjects",freeMockSub:"One FREE full mock for this exam",firstCounts:"Only your first attempt's marks count. Re-attempts are free practice.",depositPending:"Deposit submitted — waiting for approval.",noHistory:"Nothing here yet.",noNotif:"No notifications yet.",noPurchases:"No purchases yet.",noAttempts:"No attempts yet — take your first test!",errName:"Please enter the student's full name.",errPhone:"Enter a valid 10-digit phone number.",errPass:"Password must be at least 6 characters.",errGmail:"Enter a valid Gmail address.",errDob:"Select your date of birth.",errOtp:"Enter the 6-digit OTP.",errExists:"This phone number is already registered. Please login.",errNoUser:"Account not found. Please register first.",errBadPass:"Wrong password. Please try again.",errBadOtp:"Incorrect or expired OTP.",otpSent:"OTP sent to your Gmail. If you don't find it, check the Spam folder.",welcome:"Welcome to StuDy!",insufficient:"Not enough balance. Add money to your StuDy wallet first.",purchased:"Unlocked!",depErrUtr:"Enter the 12-digit UTR / transaction number.",depDup:"This UTR is already submitted.",submitConfirm:"Submit the test? You cannot change answers after submitting.",timeUp:"Time is over — your test was auto-submitted.",firstAttemptNote:"This score is from your first attempt and is final.",practiceNote:"Practice attempt — your first-attempt score remains the official one.",level:"Level",reportCard:"My Report Card",verifyCard:"Verify Report Card",telegram:"Chat on Telegram",telegramSub:"Fastest support — replies within a few hours"},
-hi:{tagline:"टेस्ट • मॉक • नोट्स — UPSC · RPSC · SSC",login:"लॉगिन",register:"रजिस्टर",name:"छात्र का नाम",phone:"फ़ोन नंबर",password:"पासवर्ड",gmail:"Gmail",dob:"जन्म तिथि",otp:"OTP (आपके Gmail पर भेजा गया)",spamNote:"यदि OTP इनबॉक्स में न मिले, तो कृपया Spam फ़ोल्डर देखें।",loginBtn:"लॉगिन करें",forgot:"पासवर्ड भूल गए?",sendOtp:"OTP भेजें और रजिस्टर करें",verifyBtn:"OTP सत्यापित करें और खाता बनाएँ",helpLink:"सहायता / FAQ",contactLink:"संपर्क करें",langNote:"भाषा कभी भी प्रोफ़ाइल में बदली जा सकती है।",chooseCat:"अपनी परीक्षा चुनें",freeMocks:"निःशुल्क मॉक टेस्ट",whyUs:"StuDy ही क्यों",why1t:"StuDy वॉलेट",why1:"एक बार टॉप-अप करें (न्यूनतम ₹100), फिर बैलेंस से कोई भी टेस्ट या नोट्स तुरंत खरीदें।",why2t:"कोई प्रश्न दोहराया नहीं",why2:"जो प्रश्न आपको एक बार दिखा, वह आपके खाते में दोबारा नहीं आएगा।",why3t:"विस्तृत परिणाम और हल",why3:"स्कोर, रैंक, प्रतिशतक, सटीकता और पूर्ण हल।",why4t:"टॉप रैंकर्स जीतें ₹100",why4:"लीडरबोर्ड पर लगातार पूरे एक सप्ताह (7 दिन) Rank #1 बनाए रखें और ₹100 बोनस जीतें। Rank #1 पर बने रहने के लिए रोज़ टेस्ट दें — हर सप्ताह एक नई दौड़ है!",back:"वापस",subjectTests:"विषयवार टेस्ट",fullMock:"पूर्ण मॉक टेस्ट",paidNotes:"सशुल्क नोट्स (PDF)",wallet:"StuDy वॉलेट",yourBalance:"आपका बैलेंस",starsUse:"बैलेंस से टेस्ट, मॉक और नोट्स खरीदें",addStars:"पैसे जोड़ें",addStarsBtn:"पैसे जोड़ें",minDep:"या UPI QR से जोड़ें — ₹100, ₹200, ₹500 या ₹1,000 के पैक।",scanPay:"किसी भी UPI ऐप (GPay / PhonePe / Paytm) से QR स्कैन कर भुगतान करें।",utr:"UPI लेनदेन / UTR नंबर (12 अंक)",paidBtn:"मैंने भुगतान कर दिया — स्वीकृति हेतु भेजें",approveNote:"त्वरित स्वीकृति के बाद पैसे जुड़ जाते हैं, प्रायः कुछ घंटों में।",history:"इतिहास",profile:"प्रोफ़ाइल",levelProgress:"अगले स्तर की प्रगति",testsTaken:"दिए गए टेस्ट",avgScore:"औसत स्कोर",accuracy:"सटीकता",settings:"सेटिंग्स",appLang:"ऐप भाषा / App language",notifT:"सूचनाएँ",notifD:"नए टेस्ट और समसामयिकी की सूचना पाएँ",enable:"चालू करें",installT:"ऐप इंस्टॉल करें",installD:"StuDy को होम स्क्रीन पर जोड़ें",install:"इंस्टॉल",myPurchases:"मेरी खरीद",myAttempts:"मेरे प्रयास",logout:"लॉगआउट",notifications:"सूचनाएँ",result:"परिणाम",rank:"रैंक",percentile:"प्रतिशतक",correct:"सही",wrong:"गलत",skipped:"छोड़े गए",goHome:"होम पर जाएँ",reattempt:"पुनः प्रयास (अभ्यास)",solutions:"हल",navHome:"होम",navWallet:"वॉलेट",navNotif:"सूचनाएँ",navProfile:"प्रोफ़ाइल",navNotes:"नोट्स",navPyq:"PYQ",lgAns:"उत्तर दिया",lgNot:"उत्तर नहीं दिया",lgMark:"समीक्षा हेतु चिह्नित",lgNotVis:"देखा नहीं",referTitle:"रेफ़र करें और जीतें",couponTitle:"कूपन कोड",couponHint:"कूपन कोड है? मुफ़्त वॉलेट बैलेंस पाने के लिए दर्ज करें।",couponBtn:"रिडीम करें",
+hi:{tagline:"टेस्ट • मॉक • नोट्स — UPSC · RPSC · SSC",login:"लॉगिन",register:"रजिस्टर",name:"छात्र का नाम",phone:"फ़ोन नंबर",password:"पासवर्ड",gmail:"Gmail",dob:"जन्म तिथि",otp:"OTP (आपके Gmail पर भेजा गया)",spamNote:"यदि OTP इनबॉक्स में न मिले, तो कृपया Spam फ़ोल्डर देखें।",loginBtn:"लॉगिन करें",forgot:"पासवर्ड भूल गए?",sendOtp:"OTP भेजें और रजिस्टर करें",verifyBtn:"OTP सत्यापित करें और खाता बनाएँ",helpLink:"सहायता / FAQ",contactLink:"संपर्क करें",langNote:"भाषा कभी भी प्रोफ़ाइल में बदली जा सकती है।",chooseCat:"अपनी परीक्षा चुनें",freeMocks:"निःशुल्क मॉक टेस्ट",whyUs:"StuDy ही क्यों",why1t:"StuDy वॉलेट",why1:"एक बार टॉप-अप करें (न्यूनतम ₹100), फिर बैलेंस से कोई भी टेस्ट या नोट्स तुरंत खरीदें।",why2t:"कोई प्रश्न दोहराया नहीं",why2:"जो प्रश्न आपको एक बार दिखा, वह आपके खाते में दोबारा नहीं आएगा।",why3t:"विस्तृत परिणाम और हल",why3:"स्कोर, रैंक, प्रतिशतक, सटीकता और पूर्ण हल।",why4t:"टॉप रैंकर्स के लिए साप्ताहिक इनाम",why4:"हर सप्ताह, आपकी लीडरबोर्ड कैटेगरी के टॉप 3 रैंकर्स ₹30, ₹20 और ₹10 जीतते हैं। अपने कोर्सेज़ में से अपनी कैटेगरी चुनें और बोर्ड पर ऊपर चढ़ने के लिए रोज़ टेस्ट दें — हर सप्ताह एक नई दौड़ है!",back:"वापस",subjectTests:"विषयवार टेस्ट",fullMock:"पूर्ण मॉक टेस्ट",paidNotes:"सशुल्क नोट्स (PDF)",wallet:"StuDy वॉलेट",yourBalance:"आपका बैलेंस",starsUse:"बैलेंस से टेस्ट, मॉक और नोट्स खरीदें",addStars:"पैसे जोड़ें",addStarsBtn:"पैसे जोड़ें",minDep:"या UPI QR से जोड़ें — ₹100, ₹200, ₹500 या ₹1,000 के पैक।",scanPay:"किसी भी UPI ऐप (GPay / PhonePe / Paytm) से QR स्कैन कर भुगतान करें।",utr:"UPI लेनदेन / UTR नंबर (12 अंक)",paidBtn:"मैंने भुगतान कर दिया — स्वीकृति हेतु भेजें",approveNote:"त्वरित स्वीकृति के बाद पैसे जुड़ जाते हैं, प्रायः कुछ घंटों में।",history:"इतिहास",profile:"प्रोफ़ाइल",levelProgress:"अगले स्तर की प्रगति",testsTaken:"दिए गए टेस्ट",avgScore:"औसत स्कोर",accuracy:"सटीकता",settings:"सेटिंग्स",appLang:"ऐप भाषा / App language",notifT:"सूचनाएँ",notifD:"नए टेस्ट और समसामयिकी की सूचना पाएँ",enable:"चालू करें",installT:"ऐप इंस्टॉल करें",installD:"StuDy को होम स्क्रीन पर जोड़ें",install:"इंस्टॉल",myPurchases:"मेरी खरीद",myAttempts:"मेरे प्रयास",logout:"लॉगआउट",notifications:"सूचनाएँ",result:"परिणाम",rank:"रैंक",percentile:"प्रतिशतक",correct:"सही",wrong:"गलत",skipped:"छोड़े गए",goHome:"होम पर जाएँ",reattempt:"पुनः प्रयास (अभ्यास)",solutions:"हल",navHome:"होम",navWallet:"वॉलेट",navNotif:"सूचनाएँ",navProfile:"प्रोफ़ाइल",navNotes:"नोट्स",navPyq:"PYQ",navMyCourse:"मेरा कोर्स",navCourses:"कोर्स",lgAns:"उत्तर दिया",lgNot:"उत्तर नहीं दिया",lgMark:"समीक्षा हेतु चिह्नित",lgNotVis:"देखा नहीं",referTitle:"रेफ़र करें और जीतें",couponTitle:"कूपन कोड",couponHint:"कूपन कोड है? मुफ़्त वॉलेट बैलेंस पाने के लिए दर्ज करें।",couponBtn:"रिडीम करें",
 free:"निःशुल्क",start:"प्रारंभ करें",buyStart:"खरीदें और प्रारंभ करें",owned:"खरीदा हुआ",questions:"प्रश्न",minutes:"मिनट",attempts:"प्रयास",bestScore:"सर्वश्रेष्ठ (पहला प्रयास)",download:"डाउनलोड",buyNotes:"नोट्स खरीदें",bundle:"सभी विषय — एक PDF",bundleSub:"इस परीक्षा के सभी विषय एक ही PDF में",mockSub:"सभी विषयों के मिश्रित प्रश्न",freeMockSub:"इस परीक्षा का एक निःशुल्क पूर्ण मॉक",firstCounts:"केवल आपके पहले प्रयास के अंक मान्य हैं। पुनः प्रयास निःशुल्क अभ्यास है।",depositPending:"जमा अनुरोध भेजा गया — स्वीकृति की प्रतीक्षा है।",noHistory:"अभी यहाँ कुछ नहीं है।",noNotif:"अभी कोई सूचना नहीं है।",noPurchases:"अभी कोई खरीद नहीं है।",noAttempts:"अभी कोई प्रयास नहीं — अपना पहला टेस्ट दें!",errName:"कृपया छात्र का पूरा नाम डालें।",errPhone:"सही 10-अंकों का फ़ोन नंबर डालें।",errPass:"पासवर्ड कम से कम 6 अक्षरों का हो।",errGmail:"सही Gmail पता डालें।",errDob:"अपनी जन्म तिथि चुनें।",errOtp:"6-अंकों का OTP डालें।",errExists:"यह फ़ोन नंबर पहले से रजिस्टर्ड है। कृपया लॉगिन करें।",errNoUser:"खाता नहीं मिला। कृपया पहले रजिस्टर करें।",errBadPass:"गलत पासवर्ड। पुनः प्रयास करें।",errBadOtp:"गलत या समाप्त OTP।",otpSent:"OTP आपके Gmail पर भेजा गया। न मिले तो Spam फ़ोल्डर देखें।",welcome:"StuDy में आपका स्वागत है!",insufficient:"बैलेंस पर्याप्त नहीं है। पहले StuDy वॉलेट में पैसे जोड़ें।",purchased:"अनलॉक हो गया!",depErrUtr:"12-अंकों का UTR / लेनदेन नंबर डालें।",depDup:"यह UTR पहले से भेजा जा चुका है।",submitConfirm:"टेस्ट जमा करें? जमा करने के बाद उत्तर नहीं बदले जा सकेंगे।",timeUp:"समय समाप्त — आपका टेस्ट स्वतः जमा हो गया।",firstAttemptNote:"यह स्कोर आपके पहले प्रयास का है और अंतिम है।",practiceNote:"अभ्यास प्रयास — आपका पहला-प्रयास स्कोर ही आधिकारिक रहेगा।",level:"स्तर",reportCard:"मेरी रिपोर्ट कार्ड",verifyCard:"रिपोर्ट कार्ड सत्यापित करें",telegram:"Telegram पर चैट करें",telegramSub:"सबसे तेज़ सहायता — कुछ घंटों में जवाब"}
 };
 let LANG = localStorage.getItem("study_lang") || "en";
@@ -1350,7 +1396,6 @@ const DEFAULT_SETTINGS = {
   contact:{ en:"StuDy Support\nTelegram: @dj3680\n(Please mention your registered phone number and UTR for payment queries.)", hi:"StuDy सहायता\nTelegram: @dj3680\n(भुगतान संबंधी प्रश्नों हेतु अपना रजिस्टर्ड फ़ोन नंबर और UTR अवश्य लिखें।)" }
 };
 function getSettings(){ if(!BACKEND_URL) return DB.read("settings", null) || structuredClone(DEFAULT_SETTINGS); return window._settings || structuredClone(DEFAULT_SETTINGS); }
-function subPrice(){ const p = +((getSettings().prices||{}).sub); return p > 0 ? p : 1000; }
 function saveSettings(s){ if(!BACKEND_URL){ DB.write("settings", s); } else { ensureAdminPass().then(ok=>{ if(ok) api("adminSaveSettings", {settings:s, adminPhone:(ME&&ME.phone), adminPass:_adminPass}); }); window._settings = s; } }
 async function api(action, payload){
   try{
@@ -1401,17 +1446,18 @@ function isAdmin(){ return !!ME && ADMIN_PHONES.includes(ME.phone); }
 let CURSCREEN = "auth";
 function go(screen){
   if(!ME && screen !== "auth"){ go("auth"); return; }
-  if(screen === "category"){ if(CURSCREEN !== "home") go("home"); showCatView(CURCAT); return; }
+  if(screen === "category"){ if(CURSCREEN !== "mycourse") go("mycourse"); openCourse(CURCAT); return; }
+  if(CURSCREEN === "progs" && screen !== "progs" && ME){ try{ localStorage.setItem("study_progs_seen_" + ME.phone, "1"); }catch(e){} }
   if(!NAVBACK && CURSCREEN && CURSCREEN !== screen && CURSCREEN !== "auth") NAVHIST = [CURSCREEN];
   CURSCREEN = screen;
-  ["auth","home","wallet","profile","notifications","result","admin","notes","pyq","doubts","pyqgroup","notesgroup","bookmarks","refer"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
+  ["auth","home","wallet","profile","notifications","result","admin","notes","pyq","doubts","pyqgroup","notesgroup","bookmarks","refer","mycourse","courses","progs"].forEach(s=> $("screen-"+s).classList.toggle("hidden", s!==screen));
   $("appheader").classList.toggle("hidden", screen==="auth");
   $("bnav").classList.toggle("hidden", screen==="auth");
-  ["home","pyq","notes","profile","doubts"].forEach(s=>{ const b=$("bn-"+s); if(b) b.classList.toggle("on", s===screen); });
-  if(screen==="pyqgroup"){ const b=$("bn-pyq"); if(b) b.classList.add("on"); }
+  ["home","mycourse","doubts","notes","courses","profile"].forEach(s=>{ const b=$("bn-"+s); if(b) b.classList.toggle("on", s===screen); });
+  if(screen==="pyqgroup"){ const b=$("bn-mycourse"); if(b) b.classList.add("on"); }
   if(screen==="notesgroup"){ const b=$("bn-notes"); if(b) b.classList.add("on"); }
   if(screen==="auth"){ placeSocialBtns("auth"); paintAuthCTA(); }
-  if(screen==="home"){ showMasterView(); renderHome(); }
+  if(screen==="home"){ renderHome(); }
   if(screen==="wallet") renderWallet();
   if(screen==="profile") renderProfile();
   if(screen==="notifications") renderNotifs();
@@ -1423,6 +1469,9 @@ function go(screen){
   if(screen==="pyqgroup") renderPYQGroup();
   if(screen==="doubts") renderDoubts();
   if(screen==="admin"){ renderAdmin(); loadAdminCoupons(); }
+  if(screen==="mycourse") renderMyCourse();
+  if(screen==="courses") renderCourses();
+  if(screen==="progs") renderProgs();
   if(screen !== "home") armBack();
   refreshHeader(); window.scrollTo(0,0);
   if(screen !== "doubts") checkDoubtBadge();
@@ -1478,15 +1527,15 @@ async function doRegister(){
     setBtnLoading($("rg-btn"), false);
     if(!r.ok) return err.textContent = r.error==="exists" ? T("errExists") : T("errBadOtp");
     if(ADMIN_PHONES.includes(_otpFlow.phone)) _adminPass = _otpFlow.pass;
-    finishLogin(r.user); return;
+    finishLogin(r.user, true); return;
   }
   if(code!==_otpFlow.code || Date.now()>_otpFlow.exp) return err.textContent=T("errBadOtp");
   const _ref = regRefVal(); let _refBy = "";
   if(_ref){ if(/^\d{10}$/.test(_ref) && _ref !== _otpFlow.phone && Store.users().some(u=> u.phone === _ref)) _refBy = _ref; else { const _byc = Store.users().find(u=> u.refCode && String(u.refCode).toUpperCase() === _ref && u.phone !== _otpFlow.phone); if(_byc) _refBy = _byc.phone; } }
   const user = { name:_otpFlow.name, phone:_otpFlow.phone, gmail:_otpFlow.gmail, dob:_otpFlow.dob, pass:_otpFlow.pass, stars:0, lang:LANG,
-                 purchases:{tests:{}, mocks:{}, notes:{}}, ledger:[], createdAt:Date.now(), seenNotif:0, referredBy: _refBy, firstDep:0, refRewarded:0, refCode: demoRefCode() };
+                 purchases:{tests:{}, mocks:{}, notes:{}, courses:{}, classes:{}, premNotes:{}, smocks:{}}, progs:[], lbCat:"", lbCatAt:0, ledger:[], createdAt:Date.now(), seenNotif:0, referredBy: _refBy, firstDep:0, refRewarded:0, refCode: demoRefCode() };
   const us = Store.users(); us.push(user); Store.saveUsers(us);
-  finishLogin(user);
+  finishLogin(user, true);
 }
 let _fpPhone = null, _fpDemo = null;
 function fpOpen(e){ if(e) e.preventDefault(); fpStep1(); }
@@ -1560,8 +1609,8 @@ function applyTheme(th, save){
   if(save && ME){ ME.theme = th; if(!BACKEND_URL) Store.updateMe(u=>u.theme = th); else api("setTheme", {phone:ME.phone, theme:th}); }
 }
 function setTheme(th){ applyTheme(th, true); }
-function finishLogin(user){
-  ME = user; localStorage.setItem("study_session", user.phone); setSessionCookie(user.phone); healPhoto(); osIdentify();
+function finishLogin(user, fromReg){
+  ME = user; normalizePurchases(); localStorage.setItem("study_session", user.phone); setSessionCookie(user.phone); healPhoto(); osIdentify();
   if(!BACKEND_URL && !user.refCode){ user.refCode = demoRefCode(); Store.updateMe(u2=>{ u2.refCode = user.refCode; }); }
   if(user.session){ try{ localStorage.setItem("study_devsess", user.session); }catch(e){} }
   if(user.lang){ LANG = user.lang; localStorage.setItem("study_lang", LANG); }
@@ -1569,7 +1618,9 @@ function finishLogin(user){
   $("pf-lang").value = LANG; applyI18n(); _otpFlow=null;
   applyTheme(user.theme || localStorage.getItem("study_theme") || "light", false);
   $("admin-entry").classList.toggle("hidden", !isAdmin());
-  go("home"); hideSplash(); toast(T("welcome"));
+  const _progsSeen = (()=>{ try{ return localStorage.getItem("study_progs_seen_" + user.phone); }catch(e){ return null; } })();
+  if(fromReg || (!(user.progs && user.progs.length) && !_progsSeen)) go("progs"); else go("home");
+  hideSplash(); toast(T("welcome"));
   settleSavedTest();
 }
 /* ---------------- OneSignal push ---------------- */
@@ -1599,13 +1650,14 @@ function setTestLang(l){
 }
 
 /* ---------------- Entitlements ---------------- */
-const isSubActive = () => !!(ME && (+ME.subUntil||0) > Date.now());
+const isSubActive = () => false; /* Round 57: StuDy Premium is retired - a stale subUntil must never grant access again; course ownership (see the Round 57 block below) is the only entitlement. */
 const subTillText = () => isSubActive() ? new Date(+ME.subUntil).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}) : "";
-const hasTest  = (cat,sub) => { if(isSubActive()) return true; if(!(ME && ME.purchases && ME.purchases.tests)) return false; if(ME.purchases.tests[cat+"_"+sub]) return true; if(cat==="school" && /_ch\d+$/.test(sub)) return !!ME.purchases.tests[cat+"_"+sub.replace(/_ch\d+$/, "")]; return false; };
-const hasMock  = cat => isSubActive() || !!(ME && ME.purchases && ME.purchases.mocks && ME.purchases.mocks[cat]);
+const hasTest  = (cat,sub) => { if(cat === "school"){ const m = /^c(9|10|11|12)_/.exec(String(sub || "")); if(m) return hasClass(m[1]); return hasCourse("school"); } return hasCourse(cat); };
+const hasMock  = cat => hasCourse(cat);
 const GEO_TRIO_KEYS = ["rpsc_geo-world", "rpsc_geo-india", "rpsc_geo-rajasthan"];
 const POL_DUO_KEYS = ["rpsc_pol-india", "rpsc_pol-rajasthan"];
-const hasNotes = key => isSubActive() || !!(ME && ME.purchases && ME.purchases.notes && (ME.purchases.notes[key] || (GEO_TRIO_KEYS.includes(key) && ME.purchases.notes["rpsc_geo"]) || (POL_DUO_KEYS.includes(key) && ME.purchases.notes["rpsc_pol"]) || (HIST_TRIO_KEYS.includes(key) && ME.purchases.notes["rpsc_hist"]) || (key === "rpsc_sci-tech" && ME.purchases.notes["rpsc_sci"])));
+const PREM_DETAILED_KEYS = ["rpsc_geo-detailed", "rpsc_geo-detailed-india", "rpsc_geo-detailed-world"];
+const hasNotes = key => { const k = String(key || ""); if(PREM_DETAILED_KEYS.includes(k)) return hasCourse("rpsc") && hasPremNote("rpsc_geo"); return hasCourse(k.split("_")[0]); };
 function spendStars(amount, label){
   if((ME.stars||0) < amount){ toast(T("insufficient")); go("wallet"); return false; }
   ME.stars -= amount;
@@ -1649,6 +1701,432 @@ async function buyNotes(cat, key, label, fixedPrice){
   if(!BACKEND_URL) Store.updateMe(u=>u.purchases=ME.purchases); else api("buy",{phone:ME.phone, kind:"notes", key:cat+"_"+key});
   toast(T("purchased")); renderCategory(cat); if(CURSCREEN === "notes") renderNotes(); if(CURSCREEN === "notesgroup") renderNotesExam();
 }
+/* ---------------- Round 57: course model ----------------
+   Entitlement = course ownership. purchases.courses[cat] and
+   purchases.classes["9".."12"] hold EXPIRY timestamps (1-year validity);
+   purchases.premNotes[key] and purchases.smocks[cat_sub] are booleans.
+   Buys are ATOMIC backend actions (buyCourse / buyClass / buyPremNote /
+   buySmock) - never the legacy spend+buy pair. In demo mode the same
+   semantics run locally against the Store. Prices come from settings
+   with client-side defaults, because bootstrap ships the raw saved
+   settings row, which does not carry the new keys yet. */
+const COURSE_CATS = ["rpsc","upsc","ssc","neet","jee","reet","cuet","ca","school"];
+const COURSE_YEAR_MS = 365*24*3600*1000;
+function normalizePurchases(){
+  if(!ME) return;
+  if(!ME.purchases || typeof ME.purchases !== "object") ME.purchases = {};
+  ["tests","mocks","notes","courses","classes","premNotes","smocks"].forEach(k=>{ if(!ME.purchases[k] || typeof ME.purchases[k] !== "object") ME.purchases[k] = {}; });
+}
+const hasClass = (cls) => !!ME && !!ME.purchases && (+((ME.purchases.classes || {})[String(cls).replace(/^c/, "")]) || 0) > Date.now();
+const hasCourse = (cat) => { if(!ME || !ME.purchases) return false; if(cat === "school") return ["9","10","11","12"].some(c => hasClass(c)); return (+((ME.purchases.courses || {})[cat]) || 0) > Date.now(); };
+const hasPremNote = (key) => !!ME && !!ME.purchases && !!((ME.purchases.premNotes || {})[key]);
+const hasSmock = (cat, sub) => !!ME && !!ME.purchases && !!((ME.purchases.smocks || {})[cat + "_" + sub]);
+function csSet(){
+  const st = getSettings() || {};
+  const cp = (st.classPrices && typeof st.classPrices === "object") ? st.classPrices : {};
+  return {
+    coursePrice: st.coursePrice != null && +st.coursePrice > 0 ? +st.coursePrice : 79,
+    classPrices: { "9": cp["9"] != null ? +cp["9"] : 30, "10": cp["10"] != null ? +cp["10"] : 40, "11": cp["11"] != null ? +cp["11"] : 45, "12": cp["12"] != null ? +cp["12"] : 50 },
+    premNotePrice: st.premNotePrice != null && +st.premNotePrice > 0 ? +st.premNotePrice : 50,
+    premNotePrices: (st.premNotePrices && typeof st.premNotePrices === "object") ? st.premNotePrices : {},
+    smockPrice: st.smockPrice != null && +st.smockPrice >= 0 ? +st.smockPrice : 3,
+    coursesOff: Array.isArray(st.coursesOff) ? st.coursesOff : []
+  };
+}
+/* ---------------- Round 60: admin inline editing ----------------
+   One reusable price editor + settings saver for the owner (isAdmin).
+   Saves ride the existing saveSettings path with the FULL settings
+   object: current settings merged over the csSet/backend defaults, so
+   no key is ever lost. Prices the backend reads from settings:
+   coursePrice, classPrices, premNotePrice(s), smockPrice, coursesOff.
+   NOT settings-driven (hard-coded constants on BOTH sides, so no
+   editor is wired for them): the referral reward / min-deposit
+   (REF_REWARD / REF_MIN_DEP) and the Instagram +10% deposit bonus
+   (x1.1 in the backend decidePayment_ and in the Wallet display). */
+function admPencil_(fn){ return isAdmin() ? `<button class="adm-pencil" title="Edit" aria-label="Edit" onclick="${fn}">✎</button>` : ""; }
+function admSettings_(){
+  const base = { coursePrice:79, classPrices:{"9":30,"10":40,"11":45,"12":50}, premNotePrice:50, premNotePrices:{}, smockPrice:3, courseDays:365, coursesOff:[], lbPrizes:[30,20,10] };
+  const cur = getSettings() || {};
+  const s = Object.assign({}, base, cur);
+  s.classPrices = Object.assign({}, base.classPrices, (cur.classPrices && typeof cur.classPrices === "object") ? cur.classPrices : {});
+  s.premNotePrices = Object.assign({}, (cur.premNotePrices && typeof cur.premNotePrices === "object") ? cur.premNotePrices : {});
+  s.coursesOff = Array.isArray(cur.coursesOff) ? cur.coursesOff.slice() : [];
+  return s;
+}
+function admSaveSettings_(mutate, rerender){
+  if(!isAdmin()) return;
+  const s = admSettings_();
+  mutate(s);
+  saveSettings(s);
+  if(rerender) rerender();
+  toast(LANG === "hi" ? "सहेजा गया ✓" : "Saved ✓");
+}
+let ADM_EDIT_APPLY_ = null;
+function admEditPrice_(label, current, minVal, applyFn){
+  if(!isAdmin()) return;
+  ADM_EDIT_APPLY_ = applyFn;
+  showModal(`<button class="x" onclick="closeModal()">✕</button>
+  <h3 style="margin:2px 0 12px">✎ ${esc(label)}</h3>
+  <div class="fld"><label>${esc(label)}</label><input id="adm-edit-val" type="number" inputmode="numeric" min="${minVal}" step="1" value="${current}"></div>
+  <div style="display:flex;gap:8px;margin-top:6px"><button class="btn ghost" onclick="closeModal()">${LANG === "hi" ? "रद्द करें" : "Cancel"}</button><button class="btn gold" style="flex:1" onclick="admEditSave_(${minVal})">${LANG === "hi" ? "सहेजें" : "Save"}</button></div>`);
+  setTimeout(()=>{ const i = $("adm-edit-val"); if(i){ i.focus(); i.select(); } }, 60);
+}
+function admEditSave_(minVal){
+  const i = $("adm-edit-val"); if(!i) return;
+  const v = Math.round(+i.value);
+  if(!isFinite(v) || v < (minVal || 0)){ toast(LANG === "hi" ? "सही कीमत डालें।" : "Enter a valid price."); return; }
+  const fn = ADM_EDIT_APPLY_; ADM_EDIT_APPLY_ = null;
+  closeModal();
+  if(fn) fn(v);
+}
+function admEditCoursePrice(){ const cs = csSet(); admEditPrice_(LANG === "hi" ? "कोर्स कीमत (₹)" : "Course price (₹)", cs.coursePrice, 1, v => admSaveSettings_(s => { s.coursePrice = v; }, renderCourses)); }
+function admEditClassPrice(cls){ const cs = csSet(); admEditPrice_((LANG === "hi" ? "कक्षा " : "Class ") + cls + (LANG === "hi" ? " कीमत (₹)" : " price (₹)"), cs.classPrices[cls], 1, v => admSaveSettings_(s => { s.classPrices[cls] = v; }, renderCourses)); }
+function admEditPremNotePrice(key){ const cs = csSet(); const cur = cs.premNotePrices[key] != null ? +cs.premNotePrices[key] : cs.premNotePrice; admEditPrice_(LANG === "hi" ? "प्रीमियम नोट्स कीमत (₹)" : "Premium Notes price (₹)", cur, 1, v => admSaveSettings_(s => { s.premNotePrices[key] = v; }, () => { if(CURSCREEN === "notesgroup") renderNotesExam(); else if(CURSCREEN === "notes") renderNotes(); })); }
+function admEditSmockPrice(){ const cs = csSet(); admEditPrice_(LANG === "hi" ? "विषय मॉक कीमत (₹)" : "Subject mock price (₹)", cs.smockPrice, 0, v => admSaveSettings_(s => { s.smockPrice = v; }, renderHomeSubjectMocks)); }
+function admToggleCourse(cat){
+  if(!isAdmin()) return;
+  const off = csSet().coursesOff.includes(cat);
+  admSaveSettings_(s => { s.coursesOff = off ? s.coursesOff.filter(x => x !== cat) : s.coursesOff.concat([cat]); }, renderCourses);
+}
+function admCourseCtl_(cat, off){
+  if(!isAdmin()) return "";
+  return off
+    ? `<button class="adm-toggle on" onclick="admToggleCourse('${cat}')">↩ ${LANG === "hi" ? "वापस लाएँ" : "Restore"}</button>`
+    : `<button class="adm-toggle off" onclick="admToggleCourse('${cat}')">✕ ${LANG === "hi" ? "हटाएँ" : "Remove"}</button>`;
+}
+/* Notifications page: admin + post composer + per-item delete (global
+   notifications only - personal unotifs belong to their user). Posting
+   reuses the Admin Panel's backend action (api "adminAddNotif") and
+   deleting reuses api "adminDeleteNotif". */
+function admComposeNotif(){
+  if(!isAdmin()) return;
+  showModal(`<button class="x" onclick="closeModal()">✕</button>
+  <h3 style="margin:2px 0 12px">📣 ${LANG === "hi" ? "नई सूचना पोस्ट करें" : "Post a notification"}</h3>
+  <div class="fld"><label>${LANG === "hi" ? "शीर्षक" : "Title"}</label><input id="adm-nt-t" placeholder="${LANG === "hi" ? "शीर्षक लिखें" : "Notification title"}"></div>
+  <div class="fld"><label>${LANG === "hi" ? "संदेश" : "Message"}</label><textarea id="adm-nt-b" rows="3" placeholder="${LANG === "hi" ? "संदेश लिखें" : "Notification message"}"></textarea></div>
+  <div style="display:flex;gap:8px;margin-top:6px"><button class="btn ghost" onclick="closeModal()">${LANG === "hi" ? "रद्द करें" : "Cancel"}</button><button class="btn gold" style="flex:1" onclick="admPostNotif_(this)">${LANG === "hi" ? "पोस्ट करें" : "Post"}</button></div>`);
+  setTimeout(()=>{ const i = $("adm-nt-t"); if(i) i.focus(); }, 60);
+}
+async function admPostNotif_(btn){
+  const t = ($("adm-nt-t").value || "").trim(), b = ($("adm-nt-b").value || "").trim();
+  if(!t || !b){ toast(LANG === "hi" ? "शीर्षक और संदेश दोनों लिखें।" : "Write both a title and a message."); return; }
+  if(BACKEND_URL){
+    if(btn){ btn.disabled = true; btn.textContent = "⏳"; }
+    if(!(await ensureAdminPass())){ if(btn){ btn.disabled = false; btn.textContent = "Post"; } return; }
+    const r = await api("adminAddNotif", {adminPhone:ME.phone, adminPass:_adminPass, title:t, body:b});
+    if(!r.ok){ if(r.error === "forbidden") _adminPass = null; if(btn){ btn.disabled = false; } alert(r.error === "forbidden" ? "Wrong admin password — please try again." : "Could not post — please try again."); return; }
+    closeModal();
+    toast(LANG === "hi" ? "सूचना पोस्ट हो गई ✓" : "Notification posted ✓");
+    return;
+  }
+  const nn = {id:"n"+Date.now(), title:t, body:b, at:Date.now()};
+  const n = Store.notifs(); n.unshift(nn); Store.saveNotifs(n);
+  try{ const c = JSON.parse(localStorage.getItem("study_notifs_cache") || "null"); if(Array.isArray(c)){ c.unshift(nn); localStorage.setItem("study_notifs_cache", JSON.stringify(c)); } }catch(e){}
+  closeModal();
+  toast(LANG === "hi" ? "सूचना पोस्ट हो गई ✓" : "Notification posted ✓");
+  renderNotifs();
+}
+async function admDelNotifInline(id, btn){
+  if(!isAdmin()) return;
+  if(BACKEND_URL){
+    if(btn){ btn.disabled = true; btn.textContent = "⏳"; }
+    if(!(await ensureAdminPass())){ if(btn){ btn.disabled = false; btn.textContent = "🗑 Delete"; } return; }
+    const r = await api("adminDeleteNotif", {adminPhone:ME.phone, adminPass:_adminPass, id});
+    if(!r.ok){ if(r.error === "forbidden") _adminPass = null; if(btn){ btn.disabled = false; btn.textContent = "🗑 Delete"; } alert(r.error === "forbidden" ? "Wrong admin password — please try again." : "Could not delete — please try again."); return; }
+    try{ const c = JSON.parse(localStorage.getItem("study_notifs_cache") || "null"); if(Array.isArray(c)) localStorage.setItem("study_notifs_cache", JSON.stringify(c.filter(n => String(n.id) !== String(id)))); }catch(e){}
+    toast(LANG === "hi" ? "सूचना हटा दी गई ✓" : "Notification deleted ✓");
+    renderNotifs();
+    return;
+  }
+  Store.saveNotifs(Store.notifs().filter(n => String(n.id) !== String(id)));
+  try{ const c = JSON.parse(localStorage.getItem("study_notifs_cache") || "null"); if(Array.isArray(c)) localStorage.setItem("study_notifs_cache", JSON.stringify(c.filter(n => String(n.id) !== String(id)))); }catch(e){}
+  renderNotifs();
+}
+const fmtDay = ts => ts ? new Date(+ts).toLocaleDateString("en-IN", {day:"numeric", month:"short", year:"numeric"}) : "";
+const tillText = ts => LANG === "hi" ? fmtDay(ts) + " तक सक्रिय" : "Active till " + fmtDay(ts);
+function demoApplyBuy_(price, label, mutate){
+  ME.stars = (ME.stars || 0) - price;
+  ME.ledger = ME.ledger || [];
+  ME.ledger.unshift({at: Date.now(), amt: -price, label});
+  if(mutate) mutate();
+  Store.updateMe(u=>{ u.stars = ME.stars; u.ledger = ME.ledger; u.purchases = ME.purchases; });
+}
+function buyFailToast_(r){
+  const e = r && r.error;
+  if(e === "funds"){ toast(T("insufficient")); go("wallet"); return; }
+  if(e === "unavailable"){ toast(LANG === "hi" ? "यह अभी उपलब्ध नहीं है।" : "This is not available right now."); return; }
+  if(e === "owned"){ toast(LANG === "hi" ? "यह पहले से खरीदा हुआ है।" : "Already owned."); return; }
+  if(e === "nocourse"){ toast(LANG === "hi" ? "पहले इस परीक्षा का कोर्स खरीदें।" : "Buy this exam's course first."); return; }
+  toast(LANG === "hi" ? "खरीद नहीं हुई — फिर कोशिश करें।" : "Purchase failed — please try again.");
+}
+function rerenderAfterBuy_(){
+  if(CURSCREEN === "courses") renderCourses();
+  else if(CURSCREEN === "mycourse") renderMyCourse();
+  else if(CURSCREEN === "home") renderHome();
+}
+async function buyCourse(cat){
+  if(!ME || !COURSE_CATS.includes(cat) || cat === "school") return;
+  normalizePurchases();
+  if(hasCourse(cat)){ toast(LANG === "hi" ? "यह कोर्स पहले से सक्रिय है।" : "This course is already active."); return; }
+  const cs = csSet();
+  if(cs.coursesOff.includes(cat)){ toast(LANG === "hi" ? "यह कोर्स अभी उपलब्ध नहीं है।" : "This course is not available right now."); return; }
+  const label = "Course: " + CATS[cat].name.en;
+  if(!await confirmBuy(cs.coursePrice, label + " (1 year)")) return;
+  if(!BACKEND_URL){
+    demoApplyBuy_(cs.coursePrice, label, ()=>{ ME.purchases.courses[cat] = Date.now() + COURSE_YEAR_MS; });
+  } else {
+    const r = await api("buyCourse", {phone: ME.phone, session: mySess(), cat});
+    if(!r || !r.ok){ buyFailToast_(r); return; }
+    if(r.user){ ME = r.user; normalizePurchases(); }
+  }
+  toast(T("purchased")); refreshHeader(); rerenderAfterBuy_();
+}
+async function buyClass(cls){
+  cls = String(cls || "").replace(/^c/, "");
+  if(!ME || !["9","10","11","12"].includes(cls)) return;
+  normalizePurchases();
+  if(hasClass(cls)){ toast(LANG === "hi" ? "यह कक्षा पहले से सक्रिय है।" : "This class is already active."); return; }
+  const cs = csSet();
+  if(cs.coursesOff.includes("school")){ toast(LANG === "hi" ? "स्कूल कोर्स अभी उपलब्ध नहीं है।" : "School courses are not available right now."); return; }
+  const price = cs.classPrices[cls];
+  const label = "School course: Class " + cls;
+  if(!await confirmBuy(price, label + " (1 year)")) return;
+  if(!BACKEND_URL){
+    demoApplyBuy_(price, label, ()=>{ ME.purchases.classes[cls] = Date.now() + COURSE_YEAR_MS; });
+  } else {
+    const r = await api("buyClass", {phone: ME.phone, session: mySess(), cls});
+    if(!r || !r.ok){ buyFailToast_(r); return; }
+    if(r.user){ ME = r.user; normalizePurchases(); }
+  }
+  toast(T("purchased")); refreshHeader(); rerenderAfterBuy_();
+}
+async function buyPremNote(key){
+  if(!ME || !key) return;
+  normalizePurchases();
+  if(hasPremNote(key)){ toast(LANG === "hi" ? "यह पहले से खरीदा हुआ है।" : "Already owned."); return; }
+  const cat = String(key).split("_")[0];
+  if(!BACKEND_URL && !hasCourse(cat)){ toast(LANG === "hi" ? "पहले इस परीक्षा का कोर्स खरीदें।" : "Buy this exam's course first."); return; }
+  const cs = csSet();
+  const price = cs.premNotePrices[key] != null ? +cs.premNotePrices[key] : cs.premNotePrice;
+  if(!await confirmBuy(price, "Premium Notes: " + key)) return;
+  if(!BACKEND_URL){
+    demoApplyBuy_(price, "Premium Notes: " + key, ()=>{ ME.purchases.premNotes[key] = true; });
+  } else {
+    const r = await api("buyPremNote", {phone: ME.phone, session: mySess(), key});
+    if(!r || !r.ok){ buyFailToast_(r); return; }
+    if(r.user){ ME = r.user; normalizePurchases(); }
+  }
+  toast(T("purchased")); refreshHeader();
+  if(CURSCREEN === "notes") renderNotes(); if(CURSCREEN === "notesgroup") renderNotesExam();
+}
+/* Subject mocks: one mock per subject from that subject's bank. Owners of
+   the category course get it free; others buy it once for the settings
+   smockPrice (default Rs.3). The test runs under the dedicated kind
+   smock_<cat>_<sub>, so attempts record the right cat with the real
+   subject recoverable from the kind (see subName / result re-attempt). */
+function smockFree(cat, sub){
+  if(cat === "school"){ const m = /^c(9|10|11|12)_/.exec(String(sub || "")); return m ? hasClass(m[1]) : hasCourse("school"); }
+  return hasCourse(cat);
+}
+function startSubjectMock(cat, sub){
+  const n = cat === "ssc" ? 25 : 20;
+  const qs = drawFreshBatch(cat, sub, n);
+  if(!qs.length){ toast(LANG === "hi" ? "प्रश्न उपलब्ध नहीं हैं।" : "No questions available yet."); return; }
+  startTestWith(cat, "smock_" + cat + "_" + sub, qs, false, 15 * 60);
+}
+async function buySmock(cat, sub){
+  if(!ME) return;
+  normalizePurchases();
+  if(smockFree(cat, sub) || hasSmock(cat, sub)){ startSubjectMock(cat, sub); return; }
+  const cs = csSet();
+  const label = "Subject mock: " + CATS[cat].name.en + " " + subName(cat, sub, "en");
+  if(!await confirmBuy(cs.smockPrice, label)) return;
+  if(!BACKEND_URL){
+    demoApplyBuy_(cs.smockPrice, label, ()=>{ ME.purchases.smocks[cat + "_" + sub] = true; });
+  } else {
+    const r = await api("buySmock", {phone: ME.phone, session: mySess(), cat, sub});
+    if(!r || !r.ok){
+      if(r && (r.error === "included" || r.error === "owned")){ if(r.user){ ME = r.user; normalizePurchases(); } }
+      else { buyFailToast_(r); return; }
+    }
+    else if(r.user){ ME = r.user; normalizePurchases(); }
+  }
+  toast(T("purchased")); refreshHeader();
+  if(CURSCREEN === "home") renderHome();
+  startSubjectMock(cat, sub);
+}
+/* Leaderboard participation (UI lands in the leaderboard round): one
+   category, chosen from bought courses, locked for 1 month. */
+async function setLbCat(cat){
+  if(!ME) return {ok:false, error:"nouser"};
+  normalizePurchases();
+  if(!BACKEND_URL){
+    const now = Date.now();
+    if(ME.lbCat && ME.lbCat === cat) return {ok:true, lbCat: cat, lbCatAt: +ME.lbCatAt || now};
+    if(ME.lbCat && ME.lbCat !== cat && (+ME.lbCatAt || 0) && now < lbUnlockAt_())
+      return {ok:false, error:"locked", unlockAt: lbUnlockAt_()};
+    if(!hasCourse(cat)) return {ok:false, error:"notenrolled"};
+    ME.lbCat = cat; ME.lbCatAt = now;
+    Store.updateMe(u=>{ u.lbCat = cat; u.lbCatAt = now; });
+    return {ok:true, lbCat: cat, lbCatAt: now};
+  }
+  const r = await api("setLbCat", {phone: ME.phone, session: mySess(), cat});
+  if(r && r.ok){ ME.lbCat = r.lbCat || cat; if(r.lbCatAt) ME.lbCatAt = r.lbCatAt; }
+  return r;
+}
+
+/* ---------------- Programme select ---------------- */
+let PROG_SEL = new Set();
+function renderProgs(){
+  PROG_SEL = new Set((ME && ME.progs) || []);
+  paintProgs();
+}
+function paintProgs(){
+  const el = $("progs-grid"); if(!el) return;
+  el.innerHTML = COURSE_CATS.map(k=>{
+    const c = CATS[k]; const on = PROG_SEL.has(k);
+    return `<div class="catrow" data-prog="${k}" role="checkbox" aria-checked="${on}" onclick="toggleProg('${k}')" style="${on ? "border-color:var(--goldb);background:var(--goldsoft)" : ""}"><input type="checkbox" class="prog-check" ${on ? "checked" : ""} tabindex="-1" style="width:21px;height:21px;flex:none;accent-color:var(--goldb);pointer-events:none;margin:0"><img class="catlogo" src="${ASSET[k] || ASSET.logo}" alt="" onerror="this.style.display='none'"><span style="flex:1;min-width:0"><span style="display:block;font-weight:700;font-size:15.5px">${esc(c.name[LANG] || c.name.en)}</span><span class="sub" style="display:block;margin-top:1px">${esc(c.desc[LANG] || c.desc.en)}</span></span></div>`;
+  }).join("");
+}
+function toggleProg(k){ if(PROG_SEL.has(k)) PROG_SEL.delete(k); else PROG_SEL.add(k); paintProgs(); }
+function progsSkip(){
+  if(ME){ try{ localStorage.setItem("study_progs_seen_" + ME.phone, "1"); }catch(e){} }
+  go("home");
+}
+async function progsContinue(){
+  const sel = [...PROG_SEL];
+  if(ME){ try{ localStorage.setItem("study_progs_seen_" + ME.phone, "1"); }catch(e){} }
+  if(!BACKEND_URL){ if(ME){ ME.progs = sel; Store.updateMe(u=>{ u.progs = sel; }); } }
+  else if(ME){
+    const r = await api("setProgs", {phone: ME.phone, session: mySess(), progs: sel});
+    ME.progs = (r && r.ok && Array.isArray(r.progs)) ? r.progs : sel;
+  }
+  go("home");
+}
+
+/* ---------------- Courses shop ---------------- */
+function renderCourses(){
+  const el = $("courses-list"); if(!el) return;
+  normalizePurchases();
+  const cs = csSet();
+  el.innerHTML = COURSE_CATS.map(k=>{
+    const c = CATS[k];
+    const logo = `<img class="catlogo" src="${ASSET[k] || ASSET.logo}" alt="" onerror="this.outerHTML='<div class=catletter>${k[0].toUpperCase()}</div>'">`;
+    if(k === "school"){
+      const off = cs.coursesOff.includes("school");
+      const rows = ["9","10","11","12"].map(cls=>{
+        const ownedC = hasClass(cls);
+        const admP = admPencil_("admEditClassPrice('" + cls + "')");
+        const admPrice = isAdmin() ? `<span class="price">₹${cs.classPrices[cls]}</span>${admP}` : "";
+        const right = off ? `<span class="tag">${LANG === "hi" ? "अभी उपलब्ध नहीं" : "Unavailable"}</span>${admPrice}`
+          : ownedC ? `<span class="tag free">${tillText(+ME.purchases.classes[cls])}</span><button class="btn sm" onclick="CURCLASS='c${cls}';goCourse('school')">${LANG === "hi" ? "खोलें" : "Open"}</button>${admPrice}`
+          : `<span class="price">₹${cs.classPrices[cls]}</span>${admP}<button class="btn sm gold" onclick="buyClass('${cls}')">${T("buyStart")}</button>`;
+        return `<div class="testrow"><div class="ti"><div class="tt">${LANG === "hi" ? "कक्षा" : "Class"} ${cls}</div><div class="ts">${LANG === "hi" ? "सभी विषय · अध्याय टेस्ट · नोट्स" : "All subjects · chapter tests · notes"}</div></div>${right}</div>`;
+      }).join("");
+      return `<div class="card" data-cat="school" style="padding:14px;margin-bottom:12px"><div style="display:flex;align-items:center;gap:12px">${logo}<div style="flex:1;min-width:0"><b style="font-size:15.5px">${esc(c.name[LANG] || c.name.en)}</b><div class="sub">${esc(c.desc[LANG] || c.desc.en)}</div></div>${admCourseCtl_("school", off)}</div><div style="margin-top:6px">${rows}</div></div>`;
+    }
+    const off = cs.coursesOff.includes(k);
+    const owned = hasCourse(k);
+    const admP = admPencil_("admEditCoursePrice()");
+    const admPrice = isAdmin() ? `<span class="price">₹${cs.coursePrice}</span>${admP}` : "";
+    const right = off ? `<span class="tag">${LANG === "hi" ? "अभी उपलब्ध नहीं" : "Unavailable"}</span>${admPrice}`
+      : owned ? `<span class="tag free">${tillText(+ME.purchases.courses[k])}</span><button class="btn sm" onclick="goCourse('${k}')">${LANG === "hi" ? "खोलें" : "Open"}</button>${admPrice}`
+      : `<span class="price">₹${cs.coursePrice}</span>${admP}<button class="btn sm gold" onclick="buyCourse('${k}')">${T("buyStart")}</button>`;
+    return `<div class="card" data-cat="${k}" style="display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:12px">${logo}<div style="flex:1;min-width:0"><b style="font-size:15.5px">${esc(c.name[LANG] || c.name.en)}</b><div class="sub">${esc(c.desc[LANG] || c.desc.en)}</div><div class="sub">${LANG === "hi" ? "सभी टेस्ट · मॉक · PYQ · नोट्स शामिल" : "All tests · mocks · PYQ · notes included"}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">${right}${admCourseCtl_(k, off)}</div></div>`;
+  }).join("");
+  initReveal();
+}
+
+/* ---------------- My Course ---------------- */
+let MC_OPEN = null;
+function ownedCourseCard_(k){
+  const c = CATS[k];
+  const till = k === "school" ? Math.max(...["9","10","11","12"].map(x=> +(ME.purchases.classes[x] || 0))) : +ME.purchases.courses[k];
+  const sub = k === "school"
+    ? ["9","10","11","12"].filter(x=> hasClass(x)).map(x=> (LANG === "hi" ? "कक्षा " : "Class ") + x).join(" · ")
+    : tillText(till);
+  return `<button class="catrow" onclick="goCourse('${k}')"><img class="catlogo" src="${ASSET[k] || ASSET.logo}" alt="" onerror="this.outerHTML='<div class=catletter>${k[0].toUpperCase()}</div>'"><span style="flex:1;min-width:0"><span style="display:block;font-weight:700;font-size:15.5px">${esc(c.name[LANG] || c.name.en)}</span><span class="sub" style="display:block;margin-top:1px">${esc(c.desc[LANG] || c.desc.en)}</span><span style="display:block;margin-top:6px"><span class="tag free">${sub}</span></span></span><span style="color:#bbb;font-size:20px">›</span></button>`;
+}
+function noCourseCard_(){
+  return `<div class="card" style="text-align:center;padding:22px 16px"><div style="font-size:30px">🎓</div><b style="display:block;margin-top:6px">${LANG === "hi" ? "कोई कोर्स नहीं खरीदा" : "No course bought"}</b><p class="sub" style="margin:6px 0 14px">${LANG === "hi" ? "एक कोर्स खरीदें और उसके सभी टेस्ट, मॉक, PYQ व नोट्स अनलॉक करें।" : "Buy a course to unlock all its tests, mocks, PYQ and notes."}</p><button class="btn gold" onclick="go('courses')">${LANG === "hi" ? "कोर्स खरीदें" : "Buy Course"}</button></div>`;
+}
+function renderMyCourse(){
+  MC_OPEN = null;
+  normalizePurchases();
+  const list = $("mc-list"), cv = $("mc-cat");
+  if(cv) cv.classList.add("hidden");
+  if(list) list.classList.remove("hidden");
+  const el = $("mc-courses"); if(!el) return;
+  const owned = COURSE_CATS.filter(k => hasCourse(k));
+  el.innerHTML = owned.length ? owned.map(ownedCourseCard_).join("") : noCourseCard_();
+  const pq = $("mc-pyq");
+  if(pq){
+    pq.innerHTML = PYQ_GROUPS.map(g=>{
+      const cat = g.exam === "RPSC" ? "rpsc" : "upsc";
+      const tests = PYQ_TESTS.filter(t=> t.exam === g.exam);
+      return `<div class="card grp-card" onclick="openPYQGroup('${g.exam}')"><img src="${ASSET[g.logo] || ""}" alt="" onerror="this.style.display='none'"><div class="grp-card-tx"><div class="grp-card-t">${esc(g.name[LANG] || g.name.en)}</div><div class="sub">${tests.length} ${LANG === "hi" ? "पेपर" : "papers"} · ${hasCourse(cat) ? (LANG === "hi" ? "आपके कोर्स में शामिल" : "Included in your course") : (LANG === "hi" ? "कोर्स के साथ शामिल" : "Included with the course")}</div></div><span class="grp-chev">›</span></div>`;
+    }).join("");
+  }
+  initReveal();
+}
+function goCourse(cat){ go("mycourse"); openCourse(cat); }
+function openCourse(cat){
+  MC_OPEN = cat; CURCAT = cat;
+  if(cat === "school"){ const ownedCls = ["9","10","11","12"].find(c => hasClass(c)); if(ownedCls) CURCLASS = "c" + ownedCls; }
+  const list = $("mc-list"), cv = $("mc-cat");
+  if(list) list.classList.add("hidden");
+  if(cv) cv.classList.remove("hidden");
+  renderCategory(cat);
+  window.scrollTo(0, 0);
+}
+function closeCourse(){ MC_OPEN = null; renderMyCourse(); window.scrollTo(0, 0); }
+
+/* ---------------- Home: my courses + subject mocks ---------------- */
+function renderHomeCourses(){
+  const el = $("home-courses"); if(!el) return;
+  normalizePurchases();
+  const owned = COURSE_CATS.filter(k => hasCourse(k));
+  el.innerHTML = `<h2>${LANG === "hi" ? "मेरे कोर्स" : "My Courses"}</h2>` + (owned.length ? `<div class="grid">${owned.map(ownedCourseCard_).join("")}</div>` : noCourseCard_());
+  initReveal();
+}
+function submocksHead_(){
+  const admSmock = isAdmin() ? `<span style="display:inline-flex;align-items:center;gap:5px;white-space:nowrap"><span class="price">₹${csSet().smockPrice}</span>${admPencil_("admEditSmockPrice()")}</span>` : "";
+  return `<div style="display:flex;align-items:baseline;gap:10px"><h2 style="flex:1">${LANG === "hi" ? "विषय मॉक टेस्ट" : "Subject Mock Tests"}</h2>${admSmock}<a href="javascript:void(0)" data-change-progs="1" onclick="go('progs')" style="font-size:13px;font-weight:700;color:var(--goldb);white-space:nowrap">${LANG === "hi" ? "बदलें" : "Change"}</a></div>`;
+}
+function renderHomeSubjectMocks(){
+  const el = $("home-submocks"); if(!el) return;
+  normalizePurchases();
+  const cs = csSet();
+  const sel = (ME && ME.progs) || [];
+  const cats = COURSE_CATS.filter(k => sel.includes(k) && (CATS[k].subjects || []).length);
+  if(!sel.length){
+    el.innerHTML = submocksHead_() + `<div class="card" id="submocks-select-prompt" style="text-align:center;padding:18px 14px"><div style="font-size:26px">🎯</div><b>${LANG === "hi" ? "अपने प्रोग्राम चुनें" : "Select your programmes"}</b><div class="sub" style="margin:5px 0 12px">${LANG === "hi" ? "अपने चुने हुए प्रोग्रामों के विषय मॉक यहाँ देखने के लिए पहले प्रोग्राम चुनें।" : "Select your programmes to see your ₹" + cs.smockPrice + " subject mocks here."}</div><button class="btn gold" id="submocks-select-btn" onclick="go('progs')">${LANG === "hi" ? "प्रोग्राम चुनें" : "Select programmes"}</button></div>`;
+    initReveal();
+    return;
+  }
+  el.innerHTML = submocksHead_() + `<p class="sub" style="margin:-4px 0 12px">${LANG === "hi" ? "हर विषय का एक मॉक — कोर्स वालों के लिए मुफ़्त, बाकियों के लिए सिर्फ़ ₹" + cs.smockPrice + "।" : "One mock per subject — free for course owners, just ₹" + cs.smockPrice + " for everyone else."}</p>` + cats.map(k=>{
+    const c = CATS[k];
+    let subs = c.subjects;
+    if(k === "school"){
+      const ownedCls = ["9","10","11","12"].filter(cls => hasClass(cls));
+      if(!ownedCls.length) return "";
+      subs = subs.filter(([sub]) => ownedCls.some(cls => sub.indexOf("c" + cls + "_") === 0));
+      if(!subs.length) return "";
+    }
+    const rows = subs.map(([sub])=>{
+      const free = smockFree(k, sub), owned = hasSmock(k, sub);
+      const n = k === "ssc" ? 25 : 20;
+      const btn = free ? `<span class="tag free">${T("free")}</span><button class="btn sm" onclick="startSubjectMock('${k}','${sub}')">${T("start")}</button>`
+        : owned ? `<span class="tag free">${T("owned")}</span><button class="btn sm" onclick="startSubjectMock('${k}','${sub}')">${T("start")}</button>`
+        : `<span class="price">₹${cs.smockPrice}</span><button class="btn sm gold" onclick="buySmock('${k}','${sub}')">${T("buyStart")}</button>`;
+      return `<div class="testrow"><div class="ti"><div class="tt">${esc(subName(k, sub, LANG))}</div><div class="ts">${n} ${T("questions")} · 15 ${T("minutes")}</div></div>${btn}</div>`;
+    }).join("");
+    return `<div class="card" style="padding:4px 14px;margin-bottom:12px"><div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px"><img class="catlogo" src="${ASSET[k] || ASSET.logo}" alt="" style="width:34px;height:34px" onerror="this.style.display='none'"><b>${esc(c.name[LANG] || c.name.en)}</b>${hasCourse(k) ? `<span class="tag free">${LANG === "hi" ? "कोर्स सक्रिय" : "Course active"}</span>` : ""}</div>${rows}</div>`;
+  }).join("");
+  if(!el.querySelector(".testrow")) el.innerHTML += `<div class="card" style="padding:14px"><div class="sub">${LANG === "hi" ? "चुने हुए प्रोग्रामों के लिए अभी विषय मॉक उपलब्ध नहीं हैं — Change से दूसरे प्रोग्राम चुनें।" : "No subject mocks for the selected programmes yet — tap Change to pick others."}</div></div>`;
+  initReveal();
+}
+
 
 
 
@@ -1720,27 +2198,56 @@ const NOTES_SUB_OPEN = {};
    must NOT close the parent exam dropdown, so the sub-wrap id ends in
    "-sub" (not "-wrap") and this toggle closes nothing else. */
 function toggleNotesSub(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); NOTES_SUB_OPEN[id] = opening; }
+/* ---------------- Round 59: Notes - Basic / Premium groups ----------------
+   Basic Notes = every existing book of the programme, included in the
+   course: owners download, non-owners see a course-locked row (no more
+   per-item buys on the Notes side). Premium Notes = Programme -> Exam
+   -> Subject -> Books below; a subject costs the settings premNotePrice
+   (default Rs.50) ON TOP of the course, which must be owned first. */
+function notesLockText_(cat){ const c = CATS[cat]; const nm = c ? (c.name[LANG] || c.name.en) : ""; return LANG === "hi" ? "🔒 " + nm + " कोर्स में शामिल" : "🔒 Included in the " + nm + " course"; }
+function notesLockBtn_(){ return `<button class="btn sm" onclick="go('courses')">${LANG === "hi" ? "कोर्स देखें" : "View Course"}</button>`; }
+const PREM_NOTES = {
+  rpsc: [ { exam:{ en:"RAS Pre 2026", hi:"RAS प्री 2026" }, subjects:[
+    { key:"rpsc_geo", name:{ en:"Geography", hi:"भूगोल" }, books:[GEO_DETAILED_BOOK, GEO_DETAILED_INDIA_BOOK, GEO_DETAILED_WORLD_BOOK] }
+  ] } ]
+};
+function premBooksCount_(cat){ const gs = PREM_NOTES[cat] || []; return gs.reduce((n,g) => n + g.subjects.reduce((m,sb) => m + sb.books.length, 0), 0); }
+function premNotesHTML(cat){
+  const groups = PREM_NOTES[cat]; if(!groups || !groups.length) return "";
+  const cs = csSet();
+  const cName = CATS[cat] ? (CATS[cat].name[LANG] || CATS[cat].name.en) : "";
+  return groups.map(g => {
+    const subs = g.subjects.map(sb => {
+      const price = cs.premNotePrices[sb.key] != null ? +cs.premNotePrices[sb.key] : cs.premNotePrice;
+      const subLine = LANG === "hi" ? "प्रीमियम नोट्स · " + sb.books.length + " किताबें" : "Premium Notes · " + sb.books.length + " books";
+      const admP = admPencil_("admEditPremNotePrice('" + sb.key + "')");
+      const admPP = isAdmin() ? `<span class="price">₹${price}</span>${admP}` : "";
+      if(!hasCourse(cat))
+        return `<div class="testrow"><div class="ti"><div class="tt">${sb.name[LANG] || sb.name.en}</div><div class="ts">${subLine}</div></div><span class="tag">🔒 ${LANG === "hi" ? "पहले " + cName + " कोर्स खरीदें" : "Buy the " + cName + " course first"}</span>${notesLockBtn_()}${admPP}</div>`;
+      if(!hasPremNote(sb.key))
+        return `<div class="testrow"><div class="ti"><div class="tt">${sb.name[LANG] || sb.name.en}</div><div class="ts">${subLine}</div></div><span class="price">₹${price}</span>${admP}<button class="btn sm gold" onclick="buyPremNote('${sb.key}')">${T("buyNotes")}</button></div>`;
+      const bookRows = sb.books.map(b => `<div class="testrow"><div class="ti"><div class="tt">${LANG === "hi" ? b.hi : b.en} — Notes PDF</div><div class="ts">${LANG === "hi" ? b.tag.hi : b.tag.en}</div></div><button class="btn sm" onclick="downloadNotes('${cat}','${b.sub}')">${T("download")}</button></div>`).join("");
+      return `<div class="testrow"><div class="ti"><div class="tt">${sb.name[LANG] || sb.name.en}</div><div class="ts">${subLine}</div></div><span class="tag free">${T("owned")}</span>${admPP}</div>` + bookRows;
+    }).join("");
+    return `<h2 style="margin:18px 0 8px">👑 ${LANG === "hi" ? "प्रीमियम नोट्स" : "Premium Notes"}</h2><p class="sub" style="margin:-4px 0 8px">${g.exam[LANG] || g.exam.en}</p><div class="card" style="padding:6px 14px">${subs}</div>`;
+  }).join("");
+}
 function notesExamHTML(cat){
   const P = getSettings().prices;
   const subjectRow = (cat, sub) => {
     const key = cat + "_" + sub, owned = hasNotes(key);
     return `<div class="testrow"><div class="ti"><div class="tt">${subName(cat, sub, LANG)} \u2014 Notes PDF</div><div class="ts">${notesTag(sub)}</div></div>
       ${owned ? `<button class="btn sm" onclick="downloadNotes('${cat}','${sub}')">` + T("download") + `</button>`
-              : `<span class="price">\u20b9${P.notes}</span><button class="btn sm gold" onclick="buyNotes('${cat}','${sub}','${esc(subName(cat, sub, "en"))} notes')">${T("buyNotes")}</button>`}</div>`;
+              : `<span class="tag">${notesLockText_(cat)}</span>${notesLockBtn_()}`}</div>`;
   };
-  const bundleRow = (cat) => {
-    const c = CATS[cat];
-    return `<div class="testrow"><div class="ti"><div class="tt">${T("bundle")}</div><div class="ts">${T("bundleSub")}</div></div>
-      ${hasNotes(cat + "_bundle") ? `<button class="btn sm" onclick="downloadNotes('${cat}','bundle')">${T("download")}</button>`
-              : `<span class="price">\u20b9${P.bundle}</span><button class="btn sm gold" onclick="buyNotes('${cat}','bundle','${c.name.en} all-subject notes')">${T("buyNotes")}</button>`}</div>`;
-  };
+
   const geoSubDropdown = () => {
     const rows = GEO_TRIO.map(g => {
       const key = "rpsc_" + g.sub, owned = hasNotes(key);
       const title = LANG === "hi" ? g.hi : g.en;
       return `<div class="testrow"><div class="ti"><div class="tt">${title} \u2014 Notes PDF</div><div class="ts">${LANG === "hi" ? g.tag.hi : g.tag.en}</div></div>
       ${owned ? `<button class="btn sm" onclick="downloadNotes('rpsc','${g.sub}')">` + T("download") + `</button>`
-              : `<span class="price">\u20b9${GEO_TRIO_PRICE}</span><button class="btn sm gold" onclick="buyNotes('rpsc','${g.sub}','${g.en} notes',${GEO_TRIO_PRICE})">${T("buyNotes")}</button>`}</div>`;
+              : `<span class="tag">${notesLockText_("rpsc")}</span>${notesLockBtn_()}`}</div>`;
     }).join("");
     return `<div class="notes-sec-h"><span>${LANG === "hi" ? "\u092d\u0942\u0917\u094b\u0932" : "Geography"} \u2014 Notes PDF</span></div><div style="padding-left:12px">${rows}</div>`;
   };
@@ -1750,7 +2257,7 @@ function notesExamHTML(cat){
       const title = LANG === "hi" ? g.hi : g.en;
       return `<div class="testrow"><div class="ti"><div class="tt">${title} \u2014 Notes PDF</div><div class="ts">${LANG === "hi" ? g.tag.hi : g.tag.en}</div></div>
       ${owned ? `<button class="btn sm" onclick="downloadNotes('rpsc','${g.sub}')">` + T("download") + `</button>`
-              : `<span class="price">\u20b9${POL_DUO_PRICE}</span><button class="btn sm gold" onclick="buyNotes('rpsc','${g.sub}','${g.en} notes',${POL_DUO_PRICE})">${T("buyNotes")}</button>`}</div>`;
+              : `<span class="tag">${notesLockText_("rpsc")}</span>${notesLockBtn_()}`}</div>`;
     }).join("");
     return `<div class="notes-sec-h"><span>${LANG === "hi" ? "\u0930\u093e\u091c\u0928\u0940\u0924\u093f \u0935\u093f\u091c\u094d\u091e\u093e\u0928" : "Polity"} \u2014 Notes PDF</span></div><div style="padding-left:12px">${rows}</div>`;
   };
@@ -1759,7 +2266,7 @@ function notesExamHTML(cat){
     const title = LANG === "hi" ? g.hi : g.en;
     return `<div class="testrow"><div class="ti"><div class="tt">${title} \u2014 Notes PDF</div><div class="ts">${LANG === "hi" ? g.tag.hi : g.tag.en}</div></div>
     ${owned ? `<button class="btn sm" onclick="downloadNotes('rpsc','${g.sub}')">` + T("download") + `</button>`
-            : `<span class="price">\u20b9${price}</span><button class="btn sm gold" onclick="buyNotes('rpsc','${g.sub}','${g.en} notes',${price})">${T("buyNotes")}</button>`}</div>`;
+            : `<span class="tag">${notesLockText_("rpsc")}</span>${notesLockBtn_()}`}</div>`;
   };
   const histSubDropdown = () => {
     const rows = HIST_TRIO.map(g => noteBookRow(g, HIST_TRIO_PRICE)).join("");
@@ -1772,17 +2279,21 @@ function notesExamHTML(cat){
   const c = CATS[cat]; if(!c) return "";
     let rows;
     if(cat === "rpsc"){
-      rows = [subjectRow(cat, "raj"), histSubDropdown(), geoSubDropdown(), noteBookRow(GEO_DETAILED_BOOK, GEO_DETAILED_PRICE), noteBookRow(GEO_DETAILED_INDIA_BOOK, GEO_DETAILED_INDIA_PRICE), noteBookRow(GEO_DETAILED_WORLD_BOOK, GEO_DETAILED_WORLD_PRICE), polSubDropdown(), ecoSubDropdown(), noteBookRow(SCI_BOOK, SCI_BOOK_PRICE), noteBookRow(REAS_BOOK, REAS_BOOK_PRICE), subjectRow(cat, "ca")].join("") + bundleRow(cat);
+      rows = [subjectRow(cat, "raj"), histSubDropdown(), geoSubDropdown(), polSubDropdown(), ecoSubDropdown(), noteBookRow(SCI_BOOK, SCI_BOOK_PRICE), noteBookRow(REAS_BOOK, REAS_BOOK_PRICE), subjectRow(cat, "ca")].join("");
     } else {
-      rows = c.subjects.map(([sub])=> subjectRow(cat, sub)).join("") + bundleRow(cat);
+      rows = c.subjects.map(([sub])=> subjectRow(cat, sub)).join("");
     }
-  return `<div class="card" style="padding:6px 14px">${rows}</div>`;
+  return `<h2 style="margin:2px 0 8px">📚 ${LANG === "hi" ? "बेसिक नोट्स" : "Basic Notes"}</h2><div class="card" style="padding:6px 14px">${rows}</div>` + premNotesHTML(cat);
 }
 let NOTES_EXAM = "rpsc";
 function openNotesExam(cat){ NOTES_EXAM = cat; go("notesgroup"); }
 function notesExamCount(cat){
-  if(cat === "rpsc") return GEO_TRIO.length + POL_DUO.length + HIST_TRIO.length + ECO_DUO.length + 7;
-  const c = CATS[cat]; return c ? c.subjects.length + 1 : 0;
+  /* Round 59: honest computed count - Basic book rows (the bundle row is
+     gone) + Premium Notes books. RPSC = 2 subject rows (raj, ca) +
+     Geography 3 + Polity 2 + History 3 + Economy 2 + Science 1 +
+     Reasoning 1 = 14 Basic, + 3 Premium books = 17. */
+  if(cat === "rpsc") return 2 + GEO_TRIO.length + POL_DUO.length + HIST_TRIO.length + ECO_DUO.length + 2 + premBooksCount_(cat);
+  const c = CATS[cat]; return c ? c.subjects.length + premBooksCount_(cat) : 0;
 }
 function renderNotesExam(){
   const c = CATS[NOTES_EXAM];
@@ -1794,6 +2305,7 @@ function renderNotes(){
     const c = CATS[cat]; if(!c) return "";
     return `<div class="card grp-card" onclick="openNotesExam('${cat}')"><img src="${ASSET[cat] || ""}" alt="" onerror="this.style.display='none'}"><div class="grp-card-tx"><div class="grp-card-t">${c.name[LANG] || c.name.en}</div><div class="sub">${notesExamCount(cat)} ${LANG === "hi" ? "नोट्स PDF" : "notes PDFs"}</div></div><span class="grp-chev">›</span></div>`;
   }).join("");
+  initReveal();
 }
 /* ---------------- PYQ (Previous Year Papers) ----------------
    Real previous-year papers, typed in full. Price is FIXED at ₹3 per test
@@ -1846,9 +2358,9 @@ const PYQ_GROUPS = [
   { exam:"RPSC", logo:"rpsc", name:{ en:"RPSC — RAS Prelims", hi:"RPSC — RAS प्रीलिम्स" } },
   { exam:"UPSC", logo:"upsc", name:{ en:"UPSC — Civil Services Prelims", hi:"UPSC — सिविल सेवा प्रीलिम्स" } }
 ];
-function pageBack(){ if(CURSCREEN === "pyqgroup") go("pyq"); else if(CURSCREEN === "notesgroup") go("notes"); }
+function pageBack(){ if(CURSCREEN === "pyqgroup") go("mycourse"); else if(CURSCREEN === "notesgroup") go("notes"); }
 function pyqQuestions(id){ return (window.STUDY_QUESTIONS || []).filter(q=> q[1] === "pyq" && q[2] === id); }
-function pyqOwned(id){ return isSubActive() || !!(ME && ME.purchases && ME.purchases.tests && ME.purchases.tests["pyq_" + id]); }
+function pyqOwned(id){ const t = PYQ_TESTS.find(x=>x.id === id); return hasCourse(t ? (t.exam === "RPSC" ? "rpsc" : "upsc") : "rpsc"); }
 async function buyPYQ(id, btn){
   const t = PYQ_TESTS.find(x=>x.id === id); if(!t) return;
   if(!await confirmBuy(PYQ_PRICE, "PYQ: " + (t.title[LANG] || t.title.en))) return;
@@ -1880,7 +2392,7 @@ function renderPYQ(){
     ${PYQ_GROUPS.map(g=>{
       const tests = PYQ_TESTS.filter(t=> t.exam === g.exam);
       if(!tests.length) return "";
-      return `<div class="card grp-card" onclick="openPYQGroup('${g.exam}')"><img src="${ASSET[g.logo] || ""}" alt="" onerror="this.style.display='none'"><div class="grp-card-tx"><div class="grp-card-t">${esc(g.name[LANG] || g.name.en)}</div><div class="sub">${tests.length} ${LANG === "hi" ? "पेपर" : "papers"} · ₹${PYQ_PRICE} ${LANG === "hi" ? "प्रति पेपर" : "per paper"}</div></div><span class="grp-chev">›</span></div>`;
+      return `<div class="card grp-card" onclick="openPYQGroup('${g.exam}')"><img src="${ASSET[g.logo] || ""}" alt="" onerror="this.style.display='none'"><div class="grp-card-tx"><div class="grp-card-t">${esc(g.name[LANG] || g.name.en)}</div><div class="sub">${tests.length} ${LANG === "hi" ? "पेपर" : "papers"} · ${LANG === "hi" ? "कोर्स में शामिल" : "included in the course"}</div></div><span class="grp-chev">›</span></div>`;
     }).join("")}
     <p class="sub" style="margin-top:14px;text-align:center">${LANG === "hi" ? "और पेपर (SSC · NEET · JEE · REET) जल्द आ रहे हैं।" : "More papers (SSC · NEET · JEE · REET) coming soon."}</p>`;
 }
@@ -1888,6 +2400,7 @@ let PYQ_GROUP = "RPSC";
 function openPYQGroup(exam){ PYQ_GROUP = exam; go("pyqgroup"); }
 function renderPYQGroup(){
   const g = PYQ_GROUPS.find(x=> x.exam === PYQ_GROUP) || PYQ_GROUPS[0];
+  const cat = g.exam === "RPSC" ? "rpsc" : "upsc";
   const mine = Store.attempts().filter(a=> ME && a.phone === ME.phone && a.cat === "pyq");
   const rowFor = t=>{
     const owned = pyqOwned(t.id);
@@ -1895,11 +2408,11 @@ function renderPYQGroup(){
     const first = att.find(a=>a.first);
     const btn = owned
       ? `<button class="btn sm" onclick="startPYQ('${t.id}')">${att.length ? (LANG === "hi" ? "पुनः प्रयास" : "Re-Attempt") : (LANG === "hi" ? "शुरू करें" : "Start")}</button>`
-      : `<span class="price">₹${PYQ_PRICE}</span><button class="btn sm gold" onclick="buyPYQ('${t.id}', this)">${LANG === "hi" ? "₹3 में खरीदें और शुरू करें" : "Buy ₹3 & Start"}</button>`;
-    return `<div class="testrow"><div class="ti"><div class="tt">${esc(t.title[LANG] || t.title.en)}</div><div class="ts">${esc(t.meta[LANG] || t.meta.en)}</div><div class="ts">${t.n} ${T("questions")} · ${t.mins} ${T("minutes")}${first ? ` · ${LANG === "hi" ? "पहला स्कोर" : "First score"}: ${first.score}/${first.total}` : ""}${att.length > 1 ? ` · ${att.length} ${T("attempts")}` : ""}</div></div>${btn}</div>`;
+      : `<span class="tag">🔒 ${LANG === "hi" ? "कोर्स में शामिल" : "In the course"}</span><button class="btn sm gold" onclick="go('courses')">${LANG === "hi" ? "कोर्स देखें" : "View Course"}</button>`;
+    return `<div class="testrow" data-pyq="${t.id}"><div class="ti"><div class="tt">${esc(t.title[LANG] || t.title.en)}</div><div class="ts">${esc(t.meta[LANG] || t.meta.en)}</div><div class="ts">${t.n} ${T("questions")} · ${t.mins} ${T("minutes")}${first ? ` · ${LANG === "hi" ? "पहला स्कोर" : "First score"}: ${first.score}/${first.total}` : ""}${att.length > 1 ? ` · ${att.length} ${T("attempts")}` : ""}</div></div>${btn}</div>`;
   };
   const tests = PYQ_TESTS.filter(t=> t.exam === g.exam);
-  $("pyqgroup-body").innerHTML = `<h1 style="margin-top:6px">${esc(g.name[LANG] || g.name.en)}</h1><p class="sub" style="margin-top:5px">${tests.length} ${LANG === "hi" ? "पेपर" : "papers"} · ₹${PYQ_PRICE} ${LANG === "hi" ? "प्रति पेपर · प्रीमियम शामिल" : "per paper · Premium included"}</p><div class="card" style="padding:6px 14px;margin-top:12px">${tests.map(rowFor).join("")}</div>`;
+  $("pyqgroup-body").innerHTML = `<h1 style="margin-top:6px">${esc(g.name[LANG] || g.name.en)}</h1><p class="sub" style="margin-top:5px">${tests.length} ${LANG === "hi" ? "पेपर" : "papers"} · ${LANG === "hi" ? "सभी पेपर " + (CATS[cat].name.en) + " कोर्स में शामिल हैं" : "All papers are included in the " + (CATS[cat].name.en) + " course"}</p><div class="card" style="padding:6px 14px;margin-top:12px">${tests.map(rowFor).join("")}</div>`;
   initReveal();
 }
 
@@ -1919,11 +2432,7 @@ function caSets(){
   return Object.keys(byDate).sort().reverse().map(d=>({ date:d, qs:byDate[d] }));
 }
 function caOwned(date, part){
-  if(isSubActive()) return true;
-  if(!(ME && ME.purchases && ME.purchases.tests)) return false;
-  if(part && caIsSplit(date)) return !!ME.purchases.tests["ca_" + date + "_" + part];
-  if(caIsSplit(date)) return !!(ME.purchases.tests["ca_" + date + "_rj"] && ME.purchases.tests["ca_" + date + "_in"]);
-  return !!ME.purchases.tests["ca_" + date];
+  return hasCourse("ca");
 }
 function caDateLabel(d){
   const dt = new Date(d + "T00:00:00"), now = new Date();
@@ -2115,6 +2624,24 @@ function catCountdownHTML(cat){
   }
   return "";
 }
+function buyPromptSig_(){ return [...((ME && ME.progs) || [])].sort().join(","); }
+function buyPromptHtml(){
+  if(!ME) return "";
+  normalizePurchases();
+  const unbought = (ME.progs || []).filter(k => COURSE_CATS.includes(k) && !hasCourse(k));
+  if(!unbought.length) return "";
+  let dismissed = ""; try{ dismissed = localStorage.getItem("study_buyprompt_x_" + ME.phone) || ""; }catch(e){}
+  if(dismissed === buyPromptSig_()) return "";
+  const cs = csSet();
+  const names = unbought.map(k => esc(CATS[k].name[LANG] || CATS[k].name.en)).join(" · ");
+  const title = LANG === "hi" ? "आपके चुने हुए प्रोग्राम" : "Your selected programmes";
+  const body = LANG === "hi" ? `आपने ${names} चुना है — Courses सेक्शन में हर प्रोग्राम सिर्फ़ ₹${cs.coursePrice} में अनलॉक करें और उसके सभी टेस्ट, मॉक, PYQ व नोट्स पाएँ।` : `You selected ${names} — unlock everything for just ₹${cs.coursePrice} per programme in the Courses section: all tests, mocks, PYQ & notes.`;
+  return `<div class="card focus-buy" id="home-buyprompt"><span style="font-size:20px;flex:none">🎓</span><div style="flex:1;min-width:0;padding-right:24px"><b style="font-size:14px">${title}</b><div class="sub" style="margin-top:2px">${body}</div><button class="btn sm gold" style="margin-top:8px" onclick="go('courses')">${LANG === "hi" ? "कोर्स देखें" : "View Courses"}</button></div><button class="focus-x" onclick="dismissBuyPrompt()" aria-label="Close">✕</button></div>`;
+}
+function dismissBuyPrompt(){
+  if(ME){ try{ localStorage.setItem("study_buyprompt_x_" + ME.phone, buyPromptSig_()); }catch(e){} }
+  renderHomeFocus();
+}
 function renderHomeFocus(){
   const el = $("home-focus"); if(!el) return;
   if(!ME){ el.innerHTML = ""; return; }
@@ -2133,7 +2660,7 @@ function renderHomeFocus(){
   const bmHtml = `<div class="card focus-bm" onclick="go('bookmarks')"><span style="font-size:20px">🔖</span><div style="flex:1;min-width:0"><b>${LANG === "hi" ? "सेव किए गए प्रश्न" : "Bookmarked Questions"}</b><div class="sub">${bmN} ${LANG === "hi" ? "प्रश्न सेव हैं — दोहराने के लिए टैप करें" : "saved questions — tap to revise"}</div></div><span style="color:#bbb;font-size:19px">›</span></div>`;
   const gn = globalNotifs();
   const ntHtml = gn.length ? `<div class="card focus-nt" onclick="go('notifications')"><span class="focus-nt-ic">🔔</span><div style="flex:1;min-width:0"><div class="focus-nt-t">${esc(gn[0].title || "")}</div><div class="sub focus-nt-b">${esc(gn[0].body || "")}</div></div><span class="focus-nt-when">${timeAgo(gn[0].at)}</span></div>` : "";
-  el.innerHTML = ntHtml + cd + streakHtml + bmHtml;
+  el.innerHTML = ntHtml + buyPromptHtml() + cd + streakHtml + bmHtml;
 }
 
 /* ---------------- Round 44: Refer & Win + coupons ---------------- */
@@ -2286,7 +2813,6 @@ async function adminCouponDel(code){
   loadAdminCoupons();
 }
 function renderHome(){
-  buildCatSlider();
   placeSocialBtns("home");
   refreshInstallFloat();
   playPromo();
@@ -2298,61 +2824,14 @@ function renderHome(){
   renderHomeFocus();
   $("home-banner").innerHTML = (n && dismissed !== nkey) ? `<div class="banner"${n.link === "doubts" ? ` onclick="go('doubts')" style="cursor:pointer"` : ""}><div style="font-size:17px">${n.link === "doubts" ? "💬" : "📢"}</div><div style="flex:1;min-width:0"><div class="bt">${esc(n.title)}</div><div class="bs">${esc(n.body)}</div></div><button onclick="event.stopPropagation();dismissBanner('${nkey}')" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0">✕</button></div>` : "";
   const _cta = installCTAHTML(); if(_cta) $("home-banner").insertAdjacentHTML("afterbegin", _cta);
-  let phide = ""; try{ phide = localStorage.getItem("study_phide_"+(ME?ME.phone:"")) || ""; }catch(e){}
-  const stripKey = isSubActive() ? String((ME&&ME.subUntil)||"") : "promo";
-  $("home-premium").innerHTML = (phide === stripKey) ? ""
-    : isSubActive()
-    ? `<div class="card" style="margin-top:16px;border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff);display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><b>👑 StuDy Premium active</b> <span class="sub">— everything unlocked · till ${subTillText()}</span></div><button onclick="hidePremiumStrip()" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:8px 10px;flex-shrink:0">✕</button></div>`
-    : `<div class="card" style="margin-top:16px;border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff);display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><b>👑 StuDy Premium — ₹${subPrice()}/year</b><div class="sub">Unlock EVERY test, mock and notes — no per-test buying.</div></div><button class="btn gold sm" onclick="go('wallet')">Get Premium</button><button onclick="hidePremiumStrip()" aria-label="Close" style="color:var(--mut);font-size:16px;line-height:1;padding:8px 10px;flex-shrink:0">✕</button></div>`;
-  const CAT_ORDER = ["rpsc","upsc","ssc","neet","jee","reet","cuet","ca","school"];
-  $("catgrid").innerHTML = Object.entries(CATS).filter(([k])=>k!=="pyq").sort((a,b)=> CAT_ORDER.indexOf(a[0]) - CAT_ORDER.indexOf(b[0])).map(([k,c])=>`
-    <button class="catrow" onclick="renderCategory('${k}');go('category')">
-      <img class="catlogo" src="${ASSET[k]}" alt="${c.name.en} logo" onerror="this.outerHTML='<div class=catletter>${k[0].toUpperCase()}</div>'">
-      <span style="flex:1;min-width:0">
-        <span style="display:block;font-weight:700;font-size:15.5px">${c.name[LANG]||c.name.en}</span>
-        <span class="sub" style="display:block;margin-top:1px">${c.desc[LANG]||c.desc.en}</span>
-        <span style="display:block;margin-top:6px"><span class="tag">${k==="school" ? (LANG==="hi" ? "कक्षा 9–12 · फिक्स्ड टेस्ट" : "Class 9–12 · Fixed tests") : (FULLMOCK[k] && !c.subjects.length) ? `${FULLMOCK[k].n} ${T("questions")} · ${FULLMOCK[k].mins} ${T("minutes")} · ${LANG==="hi" ? "केवल पूर्ण मॉक" : "Full mock only"}` : c.subjects.length + " " + T("subjectTests")}</span>${FREE_MOCK_CATS.includes(k) ? ` <span class="tag free">1 ${T("free")} mock</span>` : ""}</span>
-      </span>
-      <span style="color:#bbb;font-size:20px">›</span>
-    </button>`).join("");
-  $("freemocks").innerHTML = Object.entries(CATS).filter(([k])=>FREE_MOCK_CATS.includes(k)).map(([k,c])=>{ const cfg = FULLMOCK[k]; const done = freeMockDone(k);
-    return `<div class="card" style="padding:12px 14px"><div style="display:flex;align-items:center;gap:12px">
-      <img class="catlogo" src="${ASSET[k]}" alt="" style="width:42px;height:42px" onerror="this.style.display='none'">
-      <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14.5px">${c.name.en} — ${T("freeMocks")}</div><div class="sub">${T("freeMockSub")} · ${cfg.n} ${T("questions")} · ${cfg.mins} ${T("minutes")}</div></div>
-      <button class="btn sm" onclick="startFreeMock('${k}')">${done ? (LANG==="hi" ? "पुनः प्रयास" : "Re-Attempt") : T("start")} · ${T("free")}</button>
-    </div></div>`; }).join("");
+  renderHomeCourses();
+  renderHomeSubjectMocks();
+  initReveal();
 }
+
 let CURCAT = "ssc";
 function resetCatSections(){
   ["subject-list","mock-card"].forEach(id=>{ const el = $(id); if(el){ el.classList.remove("hidden"); const h = el.previousElementSibling; if(h && h.tagName === "H2") h.classList.remove("hidden"); } });
-}
-const SLIDE_ORDER = ["rpsc","upsc","ssc","neet","jee","reet","cuet","ca","school"];
-let SLIDECAT = null, SLIDELOCK = 0;
-function buildCatSlider(){
-  const el = $("cat-slider"); if(!el) return;
-  if(!el.dataset.wired){ el.dataset.wired = "1"; el.addEventListener("scroll", ()=>{ clearTimeout(window._slT); window._slT = setTimeout(sliderScrollEnd, 130); }, {passive:true}); }
-  const cards = [`<div class="cscard${SLIDECAT ? "" : " on"}" data-cat="home" onclick="selectCatSlide('home')"><img src="${ASSET.logo}" alt=""><div class="cs-name">${T("navHome")}</div></div>`];
-  SLIDE_ORDER.forEach(k=>{ const c = CATS[k]; if(!c) return; cards.push(`<div class="cscard${SLIDECAT === k ? " on" : ""}" data-cat="${k}" onclick="selectCatSlide('${k}')"><img src="${ASSET[k] || ASSET.logo}" alt=""><div class="cs-name">${c.name[LANG] || c.name.en}</div></div>`); });
-  el.innerHTML = cards.join("");
-}
-function syncSlider(cat){
-  SLIDECAT = cat;
-  document.querySelectorAll(".cscard").forEach(el=> el.classList.toggle("on", el.dataset.cat === (cat || "home")));
-  const on = document.querySelector(".cscard.on");
-  if(on){ SLIDELOCK = Date.now(); try{ on.scrollIntoView({inline:"center", block:"nearest", behavior:"smooth"}); }catch(e){} }
-}
-function showCatView(cat){ const hc = $("home-cat"), hm = $("home-master"); if(hc) hc.classList.remove("hidden"); if(hm) hm.classList.add("hidden"); syncSlider(cat); }
-function showMasterView(){ const hc = $("home-cat"), hm = $("home-master"); if(hc) hc.classList.add("hidden"); if(hm) hm.classList.remove("hidden"); syncSlider(null); }
-function selectCatSlide(k){
-  if(k === "home"){ showMasterView(); window.scrollTo(0,0); return; }
-  renderCategory(k); showCatView(k); window.scrollTo(0,0);
-}
-function sliderScrollEnd(){
-  const el = $("cat-slider"); if(!el || Date.now() - SLIDELOCK < 450) return;
-  const mid = el.getBoundingClientRect().left + el.clientWidth / 2;
-  let best = null, bd = 1e9;
-  el.querySelectorAll(".cscard").forEach(c=>{ const r = c.getBoundingClientRect(); const d = Math.abs(r.left + r.width / 2 - mid); if(d < bd){ bd = d; best = c; } });
-  if(best && best.dataset.cat !== (SLIDECAT || "home")) selectCatSlide(best.dataset.cat);
 }
 function renderCategory(cat){
   if(cat === "pyq"){ go("pyq"); return; }
@@ -2457,7 +2936,7 @@ function mockSectionHTML(cat, c, P){
 const MOCK_LIB_BASE = 4151;
 function libMockCount(){ return Math.max(1, mockWindow() - MOCK_LIB_BASE + 1); }
 function libMockWin(n){ return MOCK_LIB_BASE + n - 1; }
-function hasLibMock(cat, n){ if(isSubActive()) return true; if(!(ME && ME.purchases && ME.purchases.mocks)) return false; if(ME.purchases.mocks[cat+"_"+n]) return true; if(n===1 && ME.purchases.mocks[cat]) return true; return false; }
+function hasLibMock(cat, n){ return hasCourse(cat); }
 async function buyLibMock(cat, n){
   const p = mockPrice(cat);
   if(!await confirmBuy(p, "Full mock "+n+": "+CATS[cat].name.en)) return;
@@ -2588,7 +3067,7 @@ function startTest(cat, kind){
 const TESTS_PER_SUBJECT = 10;
 function seriesQCount(cat){ return cat === "ssc" ? 25 : 20; }
 const EXPANDED = new Set();
-function hasSeries(cat, sub, n){ return isSubActive() || !!(ME && ME.purchases && ME.purchases.tests && ME.purchases.tests[cat + "_" + sub + "#" + n]); }
+function hasSeries(cat, sub, n){ return hasCourse(cat); }
 async function buySeries(cat, sub, n){
   const p = getSettings().prices.test;
   if(!await confirmBuy(p, "Test " + n + ": " + CATS[cat].name.en + " " + subName(cat, sub, "en"))) return;
@@ -2767,7 +3246,7 @@ function renderResult(rec){
   $("res-perc").textContent = rec.first ? perc+"%" : "—";
   $("res-acc").textContent = acc+"%"; $("res-right").textContent = rec.correct; $("res-wrong").textContent = rec.wrong; $("res-skip").textContent = rec.skipped;
   $("res-note").textContent = rec.first ? T("firstAttemptNote") : T("practiceNote");
-  $("res-reattempt").onclick = ()=>{ if(rec.cat === "pyq"){ startPYQ(rec.sub); return; } if(rec.cat === "ca"){ startCADaily(rec.sub); return; } if(FULLMOCK[rec.cat]){ startFullMock(rec.cat); return; } const sm = /^(.+):(\d+)$/.exec(rec.sub); if(sm) startSeries(rec.cat, sm[1], +sm[2]); else startTest(rec.cat, rec.sub); };
+  $("res-reattempt").onclick = ()=>{ if(rec.cat === "pyq"){ startPYQ(rec.sub); return; } if(rec.cat === "ca"){ startCADaily(rec.sub); return; } if(rec.sub.indexOf("smock_") === 0){ startSubjectMock(rec.cat, rec.sub.substring(7 + rec.cat.length)); return; } if(FULLMOCK[rec.cat]){ startFullMock(rec.cat); return; } const sm = /^(.+):(\d+)$/.exec(rec.sub); if(sm) startSeries(rec.cat, sm[1], +sm[2]); else startTest(rec.cat, rec.sub); };
   const byId = {}; window.STUDY_QUESTIONS.forEach(q=>byId[q[0]]=q);
   /* Round 32: professional score report - performance tiers match the
      reference card: Poor <40, Average 40-59, Good 60-74, Excellent 75+. */
@@ -2830,11 +3309,7 @@ function toggleWh(btn){ const m = $("wh-more"); if(!m) return; const open = m.cl
 function renderWallet(){
   const _wr = $("w-refer-sub"); if(_wr && ME){ _wr.textContent = ME.firstDep ? (LANG === "hi" ? "आपका इनवाइट लिंक चालू है — दोस्तों की सूची और इनाम देखें ›" : "Your invite link is active — see your friends & rewards ›") : (LANG === "hi" ? "🔒 पहला डिपॉज़िट (₹100+) करके अपना इनवाइट लिंक खोलें" : "🔒 Deposit your first ₹100+ to unlock your invite link"); }
   $("wstars").textContent = ME.stars||0;
-  const sc = $("sub-card");
-  if(sc){ sc.innerHTML = isSubActive()
-    ? `<div style="display:flex;align-items:center;gap:10px"><div style="font-size:26px">👑</div><div style="flex:1"><b>Premium is ACTIVE</b><div class="sub">Everything is unlocked · valid till ${subTillText()}</div></div></div>`
-    : `<div style="display:flex;align-items:flex-start;gap:10px"><div style="flex:1;min-width:200px"><b>Unlock EVERYTHING for 1 year — ₹${subPrice()}</b><div class="sub">All subject tests, series, full mocks, REET mock, school chapters and notes. No per-test buying.</div></div></div>
-       <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn gold" onclick="buySubWithBalance(this)">Buy with wallet balance (₹${ME.stars||0})</button></div>`; }
+
   $("amtchips").innerHTML = [100,200,500,1000].map(a=>`<button class="${a===DEP_AMT?"on":""}" onclick="DEP_AMT=${a};renderWallet()">₹${a}</button>`).join("");
   $("qrimg").src = ASSET["qr"+DEP_AMT];
   const dc = $("dep-disc"), df = $("dep-full"); if(dc) dc.textContent = "₹"+Math.round(DEP_AMT*1.1); if(df) df.textContent = "₹"+DEP_AMT;
@@ -2848,19 +3323,7 @@ function renderWallet(){
     : `<p class="sub" style="padding:12px 0">${T("noHistory")}</p>`;
   refreshHeader();
 }
-async function buySubWithBalance(btn){
-  if(isSubActive()){ toast(LANG==="hi" ? "प्रीमियम पहले से सक्रिय है।" : "Premium is already active."); return; }
-  if(!await confirmBuy(subPrice(), "StuDy Premium (1 year)")) return;
-  if((ME.stars||0) < subPrice()){ toast(T("insufficient")); return; }
-  if(BACKEND_URL){ setBtnLoading(btn, true); const r = await api("buySub", {phone:ME.phone, session:mySess()}); setBtnLoading(btn, false);
-    if(!r.ok){ toast(r.error === "funds" ? T("insufficient") : "Failed — try again."); return; }
-    if(r.user.photo) ME.photo = r.user.photo; healPhoto(); ME.stars = r.user.stars; ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger;
-  } else {
-    if(!spendStars(subPrice(), "StuDy Premium (1 year)")) return;
-    ME.subUntil = Date.now() + 365*24*3600*1000; Store.updateMe(u=>u.subUntil = ME.subUntil);
-  }
-  refreshHeader(); renderWallet(); toast(LANG==="hi" ? "👑 प्रीमियम सक्रिय हो गया!" : "👑 Premium activated!");
-}
+
 async function submitDeposit(btn){
   const utr = $("dep-utr").value.trim(); const err=$("dep-err"), ok=$("dep-ok"); err.textContent=""; ok.textContent="";
   if(!/^\d{12}$/.test(utr)) return err.textContent=T("depErrUtr");
@@ -2940,13 +3403,11 @@ function renderProfile(){
   const xp = firsts.reduce((s,a)=>s+a.correct*10,0);
   const lvl = 1+Math.floor(xp/200), into = xp%200;
   $("pf-level").textContent = T("level")+" "+lvl+" · "+xp+" XP";
-  $("pf-premium").textContent = isSubActive() ? "👑 Premium" : "Free plan";
   const _stk = studyStreak(); const _pfs = $("pf-streak"); if(_pfs){ _pfs.textContent = _stk.streak > 0 ? "🔥 " + _stk.streak + " day streak" : ""; _pfs.classList.toggle("hidden", _stk.streak <= 0); }
   $("pf-xp").style.width = Math.round(100*into/200)+"%";
   $("pf-xp-txt").textContent = into+" / 200 XP";
   const P = getSettings().prices;
   const rows = [];
-  if(isSubActive()) rows.push({t:"👑 StuDy Premium — everything unlocked", v:"till " + subTillText()});
   Object.keys(ME.purchases.tests).forEach(k=>{ const [c,s]=k.split("_"); rows.push({t:`${CATS[c].name.en} — ${subName(c,s,"en")} test`, v:"₹"+P.test}); });
   Object.keys(ME.purchases.mocks).forEach(c=> rows.push({t:`${CATS[c].name.en} — Full mock`, v:"₹"+P.mock}));
   Object.keys(ME.purchases.notes).forEach(k=> rows.push({t:`Notes — ${k}`, v:"Paid"}));
@@ -2957,8 +3418,9 @@ function renderProfile(){
   $("admin-entry").classList.toggle("hidden", !isAdmin());
 }
 function renderNotifs(){
-  const merged = [...personalNotifs(), ...globalNotifs()].sort((a,b)=>b.at-a.at);
-  $("notif-list").innerHTML = merged.length ? merged.map(n=>`<div class="card"><div style="font-weight:700;font-size:14.5px">${esc(n.title)}</div><p class="sub" style="margin-top:3px">${esc(n.body)}</p>${n.link? (["home","pyq","doubts","notes","profile","wallet"].includes(n.link) ? `<button class="btn sm" style="margin-top:9px" onclick="go('${n.link}')">${LANG==="hi" ? "देखें →" : "View →"}</button>` : `<a class="btn sm" href="${esc(n.link)}" target="_blank" rel="noopener" style="margin-top:9px">${esc(n.linkLabel||"Open")}</a>`) :""}<div class="sub" style="margin-top:5px;font-size:11.5px">${new Date(n.at).toLocaleString()}</div></div>`).join("") : `<p class="sub">${T("noNotif")}</p>`;
+  const addBtn = $("notif-add"); if(addBtn) addBtn.classList.toggle("hidden", !isAdmin());
+  const merged = [...personalNotifs().map(n => Object.assign({}, n, {_pers:1})), ...globalNotifs().map(n => Object.assign({}, n, {_glob:1}))].sort((a,b)=>b.at-a.at);
+  $("notif-list").innerHTML = merged.length ? merged.map(n=>`<div class="card"><div style="font-weight:700;font-size:14.5px">${esc(n.title)}</div><p class="sub" style="margin-top:3px">${esc(n.body)}</p>${n.link? (["home","pyq","doubts","notes","profile","wallet"].includes(n.link) ? `<button class="btn sm" style="margin-top:9px" onclick="go('${n.link}')">${LANG==="hi" ? "देखें →" : "View →"}</button>` : `<a class="btn sm" href="${esc(n.link)}" target="_blank" rel="noopener" style="margin-top:9px">${esc(n.linkLabel||"Open")}</a>`) :""}<div class="sub" style="margin-top:5px;font-size:11.5px">${new Date(n.at).toLocaleString()}</div>${(isAdmin() && n._glob && n.id) ? `<button class="btn sm red notif-del" onclick="admDelNotifInline('${n.id}',this)">🗑 ${LANG==="hi" ? "हटाएँ" : "Delete"}</button>` : ""}</div>`).join("") : `<p class="sub">${T("noNotif")}</p>`;
   localStorage.setItem("study_notifseen_"+(ME?ME.phone:""), merged.length); refreshHeader();
 }
 function enableNotifs(){
@@ -3020,7 +3482,7 @@ async function loadAdminStats(){
 function renderAdmin(){
   if(!isAdmin()) return;
   const P = getSettings().prices;
-  $("ad-p-test").value=P.test; $("ad-p-mock").value=P.mock; $("ad-p-notes").value=P.notes; $("ad-p-bundle").value=P.bundle; $("ad-p-sub").value=P.sub||1000;
+  $("ad-p-test").value=P.test; $("ad-p-mock").value=P.mock; $("ad-p-notes").value=P.notes; $("ad-p-bundle").value=P.bundle;
   $("ad-help").value = getSettings().help.en; $("ad-contact").value = getSettings().contact.en;
   if(BACKEND_URL){
     const loading = `<div style="display:flex;align-items:center;gap:10px;padding:12px 2px"><div class="spin"></div><span class="sub">${LANG==="hi" ? "लाइव डेटा लोड हो रहा है…" : "Loading live data…"}</span></div>`;
@@ -3087,25 +3549,9 @@ async function adminAddStarsImpl(){
   $("ad-as-phone").value=""; $("ad-as-amt").value=""; $("ad-as-rank").value=""; $("ad-as-exam").value=""; $("ad-as-msg").value="";
   renderAdmin();
 }
-async function adminGiveSub(btn){ setBtnLoading(btn, true); try{ await adminGiveSubImpl(); } finally { setBtnLoading(btn, false); } }
-async function adminGiveSubImpl(){
-  const phone = $("ad-as-phone").value.trim(); const err = $("ad-as-err"), ok = $("ad-as-ok"); err.textContent = ""; ok.textContent = "";
-  if(!validPhone(phone)) return err.textContent = "Enter a valid 10-digit phone number above first.";
-  if(BACKEND_URL){ if(!(await ensureAdminPass())) return err.textContent = "Admin password required.";
-    const r = await api("adminSetSub", {adminPhone:ME.phone, adminPass:_adminPass, phone, days:365});
-    if(!r.ok){ if(r.error==="forbidden"){ _adminPass = null; return err.textContent = "Wrong admin password — please try again."; } return err.textContent = r.error === "nouser" ? "No registered user with this phone number." : ("Failed: " + r.error); }
-    ok.textContent = "👑 Premium activated for " + phone + " (1 year) & user notified ✓";
-    if(phone === ME.phone){ const m = await api("me", {phone:ME.phone, session:mySess()}); if(m.ok){ ME = m.user; refreshHeader(); } }
-    return; }
-  const us = Store.users(); const u = us.find(x=>x.phone===phone);
-  if(!u) return err.textContent = "No registered user with this phone number.";
-  u.subUntil = Math.max(Date.now(), +u.subUntil||0) + 365*24*3600*1000; Store.saveUsers(us);
-  if(ME.phone === phone) ME.subUntil = u.subUntil;
-  pushUnotif(phone, { title:"👑 Premium activated", body:"StuDy Premium has been activated on your account for 1 year. Everything is unlocked!" });
-  ok.textContent = "👑 Premium activated for " + (u.name||phone) + " ✓";
-}
+
 async function adminSavePrices(btn){
-  const s = getSettings(); s.prices = { test:+$("ad-p-test").value||5, mock:+$("ad-p-mock").value||10, notes:+$("ad-p-notes").value||30, bundle:+$("ad-p-bundle").value||50, sub:+$("ad-p-sub").value||1000 };
+  const s = getSettings(); s.prices = { test:+$("ad-p-test").value||5, mock:+$("ad-p-mock").value||10, notes:+$("ad-p-notes").value||30, bundle:+$("ad-p-bundle").value||50 };
   if(!BACKEND_URL){ DB.write("settings", s); $("ad-price-ok").textContent = "Saved ✓"; return; }
   setBtnLoading(btn, true);
   try{
@@ -3161,25 +3607,86 @@ function allRankers(){
   return Object.values(agg).sort((x,y)=>y.score-x.score).map(r=>({...r, name: names[r.phone] || r.phone}));
 }
 function topRankers(){ return allRankers().slice(0,10); }
+/* ---------------- Round 59: leaderboard participation ----------------
+   One category per user, chosen from bought courses (setLbCat), locked
+   for 1 calendar month. The board shows only that category: this week's
+   (Mon-Sun IST) first attempts of that category's participants - the
+   Top 5 plus the caller's own row when it falls outside. */
+function lbWeekRange_(){
+  const off = 5.5*3600*1000, day = 24*3600*1000;
+  const istDay = Math.floor((Date.now() + off) / day);
+  const dow = new Date(istDay * day).getUTCDay();
+  const start = (istDay - ((dow + 6) % 7)) * day - off;
+  return [start, start + 7*day - 1];
+}
+function demoLeaderboard_(cat){
+  const users = {}; Store.users().forEach(u => { users[u.phone] = u; });
+  if(ME) users[ME.phone] = Object.assign({}, users[ME.phone] || {}, ME);
+  const wk = lbWeekRange_(), ws = wk[0], we = wk[1];
+  const agg = {};
+  Store.attempts().filter(a => a.first && a.cat === cat && (+a.at || 0) >= ws && (+a.at || 0) <= we && users[a.phone] && users[a.phone].lbCat === cat)
+    .forEach(a => { const u = users[a.phone], k = a.phone; agg[k] = agg[k] || {phone:k, name: u.name || k, photo: u.photo || "", score:0, tests:0}; agg[k].score += a.score; agg[k].tests++; });
+  const rows = Object.values(agg).sort((x,y) => y.score - x.score);
+  let me = null;
+  if(ME && ME.lbCat === cat){ const i = rows.findIndex(r => r.phone === ME.phone); if(i >= 0) me = {rank: i+1, score: rows[i].score, tests: rows[i].tests}; }
+  return {rows, me};
+}
+function lbUnlockAt_(){ if(!ME || !ME.lbCatAt) return 0; const d = new Date(+ME.lbCatAt); d.setMonth(d.getMonth() + 1); return d.getTime(); }
+function lbCatName_(){ const c = ME && CATS[ME.lbCat]; return c ? (c.name[LANG] || c.name.en) : ""; }
+function lbOwnedCats_(){ return COURSE_CATS.filter(k => hasCourse(k)); }
+function paintLbChooser_(){
+  const fx = $("lb-fixed"), box = $("rank-body"); if(!box) return;
+  if(fx) fx.innerHTML = "";
+  const owned = lbOwnedCats_();
+  if(!owned.length){
+    box.innerHTML = `<div style="text-align:center;padding:14px 6px"><div style="font-size:30px">🏆</div><p class="sub" style="margin:8px 0 12px">${LANG === "hi" ? "लीडरबोर्ड में भाग लेने के लिए एक कोर्स खरीदें — फिर अपनी कैटेगरी चुनकर हर सप्ताह के टॉप 3 इनामों की दौड़ में शामिल हों।" : "Buy a course to participate in the leaderboard — then pick your category and race for the weekly Top 3 prizes."}</p><button class="btn gold" onclick="closeModal();go('courses')">${LANG === "hi" ? "कोर्स देखें" : "View Courses"}</button></div>`;
+    return;
+  }
+  box.innerHTML = `<p class="sub" style="padding:2px 0 4px">${LANG === "hi" ? "अपनी लीडरबोर्ड कैटेगरी चुनें — अपने खरीदे हुए कोर्सेज़ में से कोई एक। चुनी हुई कैटेगरी 1 महीने के लिए लॉक रहेगी।" : "Choose your leaderboard category — one of your bought courses. Your choice stays locked for 1 month."}</p>` +
+    owned.map(k => `<button class="btn" style="width:100%;margin-top:8px" onclick="lbChoose_('${k}')">${esc(CATS[k].name[LANG] || CATS[k].name.en)}</button>`).join("");
+}
+async function lbChoose_(cat){
+  const r = await setLbCat(cat);
+  if(r && r.ok){ showRewards(); return; }
+  if(r && r.error === "locked"){ toast((LANG === "hi" ? "कैटेगरी लॉक है — बदली जा सकती है: " : "Category is locked — you can switch on ") + fmtDay(r.unlockAt)); return; }
+  if(r && r.error === "notenrolled"){ toast(LANG === "hi" ? "पहले इस परीक्षा का कोर्स खरीदें।" : "Buy this exam's course first."); return; }
+  toast(LANG === "hi" ? "नहीं हुआ — फिर कोशिश करें।" : "Could not set your category — please try again.");
+}
+function lbSwitchMenu_(){
+  const box = $("rank-body"); if(!box) return;
+  const others = lbOwnedCats_().filter(k => k !== ME.lbCat);
+  box.innerHTML = `<p class="sub" style="padding:2px 0 4px">${LANG === "hi" ? "नई कैटेगरी चुनें — यह अगले 1 महीने के लिए लॉक रहेगी।" : "Pick your new category — it stays locked for the next 1 month."}</p>` +
+    others.map(k => `<button class="btn" style="width:100%;margin-top:8px" onclick="lbChoose_('${k}')">${esc(CATS[k].name[LANG] || CATS[k].name.en)}</button>`).join("") +
+    `<button class="btn ghost" style="width:100%;margin-top:8px" onclick="showRewards()">${LANG === "hi" ? "वापस" : "Back"}</button>`;
+}
+function lbPartLine_(){
+  if(!ME || !ME.lbCat) return "";
+  const un = lbUnlockAt_();
+  const canSwitch = !!un && Date.now() >= un && lbOwnedCats_().some(k => k !== ME.lbCat);
+  return `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 10px"><span class="tag" style="font-size:12px">${LANG === "hi" ? "आपकी कैटेगरी" : "Your category"}: <b>${esc(lbCatName_())}</b></span>${un ? `<span class="sub" style="font-size:12px">${LANG === "hi" ? "लॉक रहेगी" : "Locked till"} ${fmtDay(un)}</span>` : ""}${canSwitch ? `<button class="btn ghost sm" onclick="lbSwitchMenu_()">${LANG === "hi" ? "कैटेगरी बदलें" : "Switch category"}</button>` : ""}</div>`;
+}
 async function showRewards(){
   showModal(`<button class="x" onclick="closeModal()">✕</button>
   <div class="lb-hero"><div class="lb-hero-t">🏆 ${LANG === "hi" ? "रिवार्ड्स और टॉप रैंकर्स" : "Rewards & Top Rankers"}</div>
-  <div class="lb-prize">🏆 <span>${LANG === "hi" ? "लगातार 7 दिन रैंक #1 बनाए रखें और" : "Hold Rank #1 for 7 straight days and win"} <b>₹100</b>${LANG === "hi" ? " जीतें — #1 बने रहने के लिए रोज़ टेस्ट दें।" : " — give tests daily to stay at #1."}</span></div></div>
+  <div class="lb-prize">🏆 <span>${LANG === "hi" ? "आपकी कैटेगरी में साप्ताहिक इनाम — पहला" : "Weekly prizes in your category — 1st"} <b>₹30</b> · ${LANG === "hi" ? "दूसरा" : "2nd"} <b>₹20</b> · ${LANG === "hi" ? "तीसरा" : "3rd"} <b>₹10</b>${LANG === "hi" ? "। हर सप्ताह टॉप 3 जीतते हैं!" : ". Top 3 win every week!"}</span></div></div>
   <div id="lb-fixed"><div style="text-align:center;padding:16px 6px"><div class="spin" style="margin:0 auto"></div></div></div>
   <div id="rank-body"></div>`, "lbfix");
+  if(!ME || !ME.lbCat){ paintLbChooser_(); return; }
+  if(BACKEND_URL){ const b0 = $("rank-body"); if(b0) b0.innerHTML = `<div class="lb-skel"></div><div class="lb-skel"></div><div class="lb-skel"></div>`; }
   let rows = [], meRank = null;
-  if(BACKEND_URL){ const r = await api("leaderboard", {phone: ME ? ME.phone : ""}); if(r.ok){ rows = r.rows || []; meRank = r.me || null; } }
-  else { rows = topRankers(); if(ME){ const all = allRankers(); const i = all.findIndex(r=>r.phone===ME.phone); if(i>=0) meRank = {rank:i+1, score:all[i].score, tests:all[i].tests}; } }
+  if(BACKEND_URL){ const r = await api("leaderboard", {phone: ME.phone, session: mySess(), cat: ME.lbCat}); if(r && r.ok){ rows = r.rows || []; meRank = r.me || null; } }
+  else { const d = demoLeaderboard_(ME.lbCat); rows = d.rows; meRank = d.me; }
   const fx = $("lb-fixed"), box = $("rank-body"); if(!box) return;
   const rowHtml = (r, i, mine) => `<div class="testrow lb-row"${mine ? ' style="background:#fffbf0;border:1px solid #ecd28a;border-radius:10px;padding-left:8px;padding-right:8px"' : ""}><span class="lb-rankno">${i+1}</span><div class="lb-row-av">${avInner(r)}</div><div class="ti"><div class="tt">${esc(r.name)}${mine ? ' <span class="tag">You</span>' : ""}</div><div class="ts">${r.tests} ${T("testsTaken").toLowerCase()}${r.phone ? " · " + maskPhone(r.phone) : ""}</div></div><span class="lb-pts">${r.score} pts</span></div>`;
   const podHtml = (r, i, cls) => r ? `<div class="lb-p ${cls}"><div class="lb-crown">👑</div><div class="lb-av">${avInner(r)}</div><div class="lb-ranknum">${i+1}</div><div class="lb-name">${esc(r.name)}${(meRank && meRank.rank===i+1) ? ' <span class="tag">You</span>' : ""}</div><div class="lb-score">${r.score} pts</div><div class="lb-ped"></div></div>` : `<div class="lb-p ${cls}"></div>`;
-  if(fx) fx.innerHTML = rows.length ? `<div class="lb-podium"><div style="text-align:center;color:#fff;font-weight:900;font-size:16.5px;margin-bottom:13px">🏆 ${LANG === "hi" ? "लीडरबोर्ड" : "Leaderboard"}</div><div class="lb-top">${podHtml(rows[1],1,"second")}${podHtml(rows[0],0,"first")}${podHtml(rows[2],2,"third")}</div></div>` : "";
-  let body = "";
-  if(rows.length) body += rows.slice(3,10).map((r,j)=> rowHtml(r, j+3, !!(meRank && meRank.rank===j+4))).join("");
-  else body = `<p class="sub" style="padding:10px 0">${LANG === "hi" ? "अभी कोई रैंकिंग नहीं है — पहले टॉपर बनें!" : "No rankings yet — be the first topper!"}</p>`;
-  if(ME && meRank && meRank.rank > 10) body += `<div style="border-top:1px dashed var(--line);margin-top:8px;padding-top:8px">${rowHtml({name: ME.name || "", phone: ME.phone, photo: ME.photo || "", score: meRank.score, tests: meRank.tests}, meRank.rank-1, true)}</div>`;
-  else if(ME && !meRank) body += `<p class="sub" style="margin-top:8px">${LANG === "hi" ? "आपकी अभी कोई रैंक नहीं है — पहला टेस्ट दें और रैंक पाएँ!" : "You are not ranked yet — take your first test to get a rank!"}</p>`;
+  if(fx) fx.innerHTML = rows.length ? `<div class="lb-podium"><div style="text-align:center;color:#fff;font-weight:900;font-size:16.5px;margin-bottom:13px">🏆 ${esc(lbCatName_())} ${LANG === "hi" ? "लीडरबोर्ड" : "Leaderboard"}</div><div class="lb-top">${podHtml(rows[1],1,"second")}${podHtml(rows[0],0,"first")}${podHtml(rows[2],2,"third")}</div></div>` : "";
+  let body = lbPartLine_();
+  if(rows.length) body += rows.slice(3,5).map((r,j)=> rowHtml(r, j+3, !!(meRank && meRank.rank===j+4))).join("");
+  else body += `<p class="sub" style="padding:10px 0">${LANG === "hi" ? "इस सप्ताह अभी कोई रैंकिंग नहीं है — पहले टॉपर बनें!" : "No rankings yet this week — be the first topper!"}</p>`;
+  if(ME && meRank && meRank.rank > 5) body += `<div style="border-top:1px dashed var(--line);margin-top:8px;padding-top:8px">${rowHtml({name: ME.name || "", phone: ME.phone, photo: ME.photo || "", score: meRank.score, tests: meRank.tests}, meRank.rank-1, true)}</div>`;
+  else if(ME && !meRank) body += `<p class="sub" style="margin-top:8px">${LANG === "hi" ? "इस सप्ताह आपकी अभी कोई रैंक नहीं है — अपनी कैटेगरी में एक टेस्ट दें और बोर्ड पर आएँ!" : "You are not ranked yet this week — take a test in your category to join the board!"}</p>`;
   box.innerHTML = body;
+  initReveal();
 }
 
 
@@ -3335,7 +3842,7 @@ function dbMarkSeen(){
   localStorage.setItem(dbSeenKey(), String(DB_LATEST || Date.now()));
   dbSetBadge(false);
 }
-const NAV_ORDER = ["home","pyq","doubts","notes","profile"];
+const NAV_ORDER = ["home","mycourse","doubts","notes","courses","profile"];
 let NAV_TX = null, NAV_SWIPE_AT = 0;
 function slideScreen(name, dir){ const el = $("screen-" + name); if(!el) return; el.classList.remove("slide-l","slide-r"); void el.offsetWidth; el.classList.add(dir > 0 ? "slide-l" : "slide-r"); }
 function navSwipe(dir){
@@ -3600,7 +4107,7 @@ document.addEventListener("visibilitychange", async ()=>{
   if(Date.now() - _lastSessCheck < 30000) return; _lastSessCheck = Date.now();
   const r = await api("me", {phone: ME.phone, session: mySess()});
   if(!r.ok && r.error === "session"){ doLogout(); const e = $("li-err"); if(e) e.textContent = LANG==="hi" ? "यह खाता किसी अन्य डिवाइस पर लॉगिन हुआ, इसलिए आप यहाँ लॉगआउट हो गए।" : "This account was signed in on another device, so you were logged out here."; }
-  else if(r.ok){ if(r.user.photo) ME.photo = r.user.photo; healPhoto(); ME.stars = r.user.stars; ME.purchases = r.user.purchases; ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger; if(r.user._unotifs) ME._unotifs = r.user._unotifs; refreshHeader(); checkDoubtBadge(); if(CURSCREEN === "home") renderHome(); }
+  else if(r.ok){ if(r.user.photo) ME.photo = r.user.photo; healPhoto(); ME.stars = r.user.stars; ME.purchases = r.user.purchases; normalizePurchases(); ME.subUntil = r.user.subUntil; ME.ledger = r.user.ledger; if(r.user._unotifs) ME._unotifs = r.user._unotifs; refreshHeader(); checkDoubtBadge(); if(CURSCREEN === "home") renderHome(); }
 });
 window.addEventListener("scroll", ()=>{ const b = $("totop"); if(b) b.classList.toggle("hidden", window.scrollY < 300 || (typeof TEST !== "undefined" && TEST && !TEST.done)); const nb = $("bnav"); if(nb) nb.classList.toggle("mini", window.scrollY > 140); }, {passive:true});
 let _booted = false;
