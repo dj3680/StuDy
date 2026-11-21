@@ -500,17 +500,32 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,36,46,.
 .pfb-cambtn{width:34px;height:34px;border-radius:50%;border:2px solid #fff;background:#eef1f6;color:#0b2450;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(4,12,30,.28);padding:0}
 .pfb-cambtn svg{width:16px;height:16px}
 .pfb-covercam{position:absolute;right:12px;bottom:12px}
-.pfb-avwrap{position:relative;width:124px;margin:-62px auto 0;z-index:2}
-.pfb-av{width:124px;height:124px;border-radius:50%;border:4px solid var(--bg);background:var(--gold);color:#fff;font-size:44px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
-.pfb-av img{width:100%;height:100%;object-fit:cover}
-.pfb-avcam{position:absolute;right:0;bottom:6px}
+.pfb-avwrap{position:relative;width:150px;margin:-30px auto 0;z-index:2}
+.pfb-av{position:relative;width:150px;height:150px;border-radius:50%;border:4px solid var(--bg);background:var(--gold);color:#fff;font-size:54px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
+.pfb-av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.pfb-thought{position:absolute;left:0;right:0;top:36px;bottom:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;cursor:pointer;z-index:1}
+.pfb-thought .th-label{font-size:9.5px;letter-spacing:2.6px;font-weight:800;color:#ffd977}
+.pfb-thought .th-text{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:17.5px;line-height:1.45;color:#fff;text-shadow:0 2px 10px rgba(4,12,30,.45);margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pfb-thoughtedit{position:absolute;right:10px;bottom:10px;z-index:2;background:rgba(255,255,255,.94);border:none;border-radius:999px;padding:6px 11px;font-size:11px;font-weight:800;color:#0b2450;cursor:pointer;box-shadow:0 2px 8px rgba(4,12,30,.28);font-family:inherit}
+#thought-view{position:fixed;inset:0;z-index:300;background:linear-gradient(140deg,#0b2450 0%,#1d4ed8 60%,#b8860b 150%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;text-align:center}
+#thought-view.hidden{display:none}
+#thought-view .tv-label{font-size:11px;letter-spacing:3.2px;font-weight:800;color:#ffd977}
+#thought-view .tv-text{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:clamp(23px,6.2vw,32px);line-height:1.55;color:#fff;text-shadow:0 3px 14px rgba(4,12,30,.4);margin-top:16px;max-width:640px}
+#thought-view .tv-x{position:absolute;top:calc(14px + env(safe-area-inset-top));right:16px;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.94);color:#0b2450;font-size:17px;cursor:pointer}
+#thought-view .tv-brand{position:absolute;bottom:calc(24px + env(safe-area-inset-bottom));left:0;right:0;display:flex;justify-content:center;opacity:.9}
+.ep-row{display:flex;align-items:center;gap:12px;padding:13px 2px;cursor:pointer;width:100%;background:none;border:none;font:inherit;text-align:left;color:var(--ink)}
+.ep-row + .ep-row{border-top:1px solid var(--line)}
+.ep-ic{font-size:19px;width:26px;text-align:center;flex:none}
+.ep-tx{flex:1;min-width:0}
+.ep-l{font-size:11.5px;color:var(--mut)}
+.ep-v{font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pfb-name{text-align:center;font-size:23px;font-weight:900;margin-top:10px;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:7px;padding:0 16px}
 .pfb-stats{text-align:center;margin-top:5px;font-size:13.5px;color:var(--ink)}
 .pfb-stats b{font-weight:800}
 .pfb-bio{text-align:center;margin-top:7px;font-size:13.5px;color:var(--ink);padding:0 22px}
 .pfb-details{text-align:center;margin-top:4px;font-size:12.5px;color:var(--mut);padding:0 22px;line-height:1.7}
 .pfb-actions{display:flex;gap:10px;padding:14px 16px 4px}
-.pfb-actions .btn{flex:1;padding:12px;font-size:14.5px;border-radius:12px}
+.pfb-actions .btn{flex:1;padding:11px 4px;font-size:13px;border-radius:12px;white-space:nowrap}
 .pdet-row{display:flex;align-items:center;gap:12px;padding:11px 0}
 .pdet-row + .pdet-row{border-top:1px solid var(--line)}
 .pdet-ic{font-size:19px;width:26px;text-align:center;flex:none}
@@ -1107,29 +1122,29 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
   <section id="screen-profile" class="hidden">
     <div class="pfb-hero">
       <div class="pfb-cover" id="pf-cover">
-        <img class="pfb-coverimg hidden" id="pf-cover-img" alt="">
         <div class="pfb-shade"></div>
-        <button class="pfb-icbtn pfb-topleft" onclick="openPfMenu()" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-        <div class="pfb-topright">
-          <button class="pfb-icbtn" onclick="pfEditScroll()" aria-label="Edit profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
-          <button class="pfb-icbtn" onclick="go('notifications')" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg></button>
-          <button class="pfb-icbtn" onclick="openPfMenu()" aria-label="More"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+        <div class="pfb-thought" id="pf-thought" onclick="openThoughtView()">
+          <div class="th-label">✦ Educational Thought ✦</div>
+          <div class="th-text" id="pf-thought-text"></div>
         </div>
-        <button class="pfb-cambtn pfb-covercam" onclick="document.getElementById('pf-cover-in').click()" aria-label="Change cover photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
-        <input type="file" id="pf-cover-in" accept="image/*" class="hidden" onchange="pickCover(this)">
+        <button class="pfb-icbtn pfb-topleft" onclick="pfSettingsScroll()" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+        <div class="pfb-topright">
+          <button class="pfb-icbtn" onclick="openEditProfile()" aria-label="Edit profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+        </div>
+        <button class="pfb-thoughtedit hidden" id="pf-thought-edit" onclick="openThoughtEditor()">✎ Thought</button>
       </div>
       <div class="pfb-avwrap">
         <div class="pfb-av" id="pf-avatar" onclick="showPhotoMenu()" title="Profile photo">S</div>
-        <button class="pfb-cambtn pfb-avcam" onclick="showPhotoMenu()" aria-label="Change profile photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
         <input type="file" id="pf-photo-in" accept="image/*" class="hidden" onchange="pickPhoto(this)">
       </div>
-      <div class="pfb-name"><span id="pf-name"></span><span id="pf-badge" class="hidden" title="StuDy Owner"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="10" fill="#b8860b"/><path d="m8.2 12.4 2.5 2.5 5-5.4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+      <div class="pfb-name"><span id="pf-name"></span></div>
       <div class="pfb-stats" id="pf-fstats"></div>
       <div class="pfb-bio" id="pf-progs"></div>
       <div class="pfb-details" id="pf-details"></div>
       <div class="pfb-actions">
-        <button class="btn" onclick="showReportCard()">📄 <span data-i18n="reportCard">My Report Card</span></button>
+        <button class="btn" onclick="showReportCard()">📄 Report Card</button>
         <button class="btn ghost" onclick="go('wallet')">💰 Wallet</button>
+        <button class="btn ghost" onclick="go('wallet')">➕ <span data-i18n="addStarsBtn">Add money</span></button>
       </div>
     </div>
     <div class="card" style="margin-top:12px">
@@ -1138,7 +1153,6 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
         <div style="display:flex;justify-content:space-between;font-size:12px"><span class="sub" data-i18n="levelProgress">Progress to next level</span><span id="pf-xp-txt"></span></div>
         <div class="bar" style="margin-top:5px"><i id="pf-xp" style="width:0%"></i></div>
       </div>
-      <button class="btn" style="width:100%;margin-top:13px" onclick="go('wallet')" data-i18n="addStarsBtn">Add money</button>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px">
       <div class="card stat"><div class="n" id="st-tests">0</div><div class="l" data-i18n="testsTaken">Tests taken</div></div>
@@ -1158,13 +1172,7 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
       <div id="rc-trend"></div>
       <div id="rc-subs"></div>
     </div>
-    <h2 id="pf-details-card">Personal details</h2>
-    <div class="card" style="padding:4px 14px">
-      <div class="pdet-row"><span class="pdet-ic">📱</span><div class="pdet-tx"><div class="pdet-l">Phone</div><div class="pdet-v" id="pf-phone"></div></div></div>
-      <div class="pdet-row"><span class="pdet-ic">✉️</span><div class="pdet-tx"><div class="pdet-l">Gmail</div><div class="pdet-v" id="pf-gmail" style="word-break:break-all"></div></div></div>
-      <div class="pdet-row"><span class="pdet-ic">🎂</span><div class="pdet-tx"><div class="pdet-l" data-i18n="dob">Date of birth</div><div class="pdet-v" id="pf-dob"></div></div><button class="btn sm ghost" style="padding:3px 10px;font-size:11.5px" onclick="editDob()">✎ Edit</button></div>
-    </div>
-    <h2 data-i18n="settings">Settings</h2>
+    <h2 data-i18n="settings" id="pf-settings-h">Settings</h2>
     <div class="card" style="padding:4px 14px">
       <div class="fld" style="margin-top:10px"><label data-i18n="appLang">App language / ऐप भाषा</label>
         <select id="pf-lang" onchange="setLang(this.value,true)">
@@ -1185,16 +1193,20 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
     <div class="pf-qa">
       <button class="pf-qab" onclick="shareApp()"><span class="pf-qa-ic">🔗</span><span>Share App</span></button>
       <button class="pf-qab" onclick="showRewards()"><span class="pf-qa-ic">🏆</span><span>Ranks</span></button>
-    </div>
-    <div class="card pf-links">
-      <div class="pf-link" onclick="go('bookmarks')"><span class="pf-link-ic">🔖</span><span data-i18n="savedQ">Saved Questions</span><span class="pf-chev">›</span></div>
-      <div class="pf-link" id="pf-myposts" onclick="go('myposts')"><span class="pf-link-ic">📝</span><span>Manage your posts</span><span class="pf-chev">›</span></div>
-      <div class="pf-link" onclick="go('refer')"><span class="pf-link-ic">🎁</span><span>Refer &amp; Win</span><span class="pf-chev">›</span></div>
-      <div class="pf-link" onclick="showVerifier()"><span class="pf-link-ic">🔎</span><span data-i18n="verifyCard">Verify Report Card</span><span class="pf-chev">›</span></div>
-      <div class="pf-link" onclick="showHelp()"><span class="pf-link-ic">❓</span><span data-i18n="helpLink">Help / FAQ</span><span class="pf-chev">›</span></div>
-      <div class="pf-link" onclick="showContact()"><span class="pf-link-ic">✉️</span><span data-i18n="contactLink">Contact Us</span><span class="pf-chev">›</span></div>
+      <button class="pf-qab" onclick="go('bookmarks')"><span class="pf-qa-ic">🔖</span><span data-i18n="savedQ">Saved Questions</span></button>
+      <button class="pf-qab" id="pf-myposts" onclick="go('myposts')"><span class="pf-qa-ic">📝</span><span>Manage your posts</span></button>
+      <button class="pf-qab" onclick="go('refer')"><span class="pf-qa-ic">🎁</span><span>Refer &amp; Win</span></button>
+      <button class="pf-qab" onclick="showVerifier()"><span class="pf-qa-ic">🔎</span><span data-i18n="verifyCard">Verify Report Card</span></button>
+      <button class="pf-qab" onclick="showHelp()"><span class="pf-qa-ic">❓</span><span data-i18n="helpLink">Help / FAQ</span></button>
+      <button class="pf-qab" onclick="showContact()"><span class="pf-qa-ic">✉️</span><span data-i18n="contactLink">Contact Us</span></button>
     </div>
     <button class="btn red" style="width:100%;margin-top:14px" onclick="doLogout()">⏻ <span data-i18n="logout">Logout</span></button>
+    <div id="thought-view" class="hidden">
+      <button class="tv-x" onclick="closeThoughtView()" aria-label="Close">✕</button>
+      <div class="tv-label">✦ EDUCATIONAL THOUGHT ✦</div>
+      <div class="tv-text" id="tv-text"></div>
+      <div class="tv-brand"><img data-a="logo" style="height:26px;width:auto" alt=""> <span style="font-weight:900;color:#fff;font-size:19px;margin-left:5px">StuDy</span></div>
+    </div>
     <div class="card pf-social" id="pf-social">
       <button class="pfsoc" onclick="promptInstall(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10.5"/><path d="m6.8 10 5.2 5.2L17.2 10"/><path d="M4.5 20h15"/></svg><span>Install App</span></button>
       <a class="pfsoc" href="https://www.instagram.com/dinesh.jangir_/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igg2" x1="0" y1="24" x2="24" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".65" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="url(#igg2)" stroke-width="2"/><circle cx="12" cy="12" r="4.4" stroke="url(#igg2)" stroke-width="2"/><circle cx="17.6" cy="6.4" r="1.4" fill="url(#igg2)"/></svg><span>Follow Owner</span></a>
@@ -1941,7 +1953,7 @@ function classValidityFor(cls){ const cs = csSet(); return (cs.classValidity && 
    (x1.1 in the backend decidePayment_ and in the Wallet display). */
 function admPencil_(fn){ return isAdmin() ? `<button class="adm-pencil" title="Edit" aria-label="Edit" onclick="${fn}">✎</button>` : ""; }
 function admSettings_(){
-  const base = { coursePrice:79, coursePrices:{}, classPrices:{"9":30,"10":40,"11":45,"12":50}, premNotePrice:50, premNotePrices:{}, smockPrice:3, courseDays:365, courseValidity:{}, classValidity:{}, coursesOff:[], lbPrizes:[30,20,10] };
+  const base = { coursePrice:79, coursePrices:{}, classPrices:{"9":30,"10":40,"11":45,"12":50}, premNotePrice:50, premNotePrices:{}, smockPrice:3, courseDays:365, courseValidity:{}, classValidity:{}, coursesOff:[], lbPrizes:[30,20,10], thoughts:[] };
   const cur = getSettings() || {};
   const s = Object.assign({}, base, cur);
   s.classPrices = Object.assign({}, base.classPrices, (cur.classPrices && typeof cur.classPrices === "object") ? cur.classPrices : {});
@@ -3719,27 +3731,128 @@ async function saveDob(btn){
   else Store.updateMe(u=>u.dob = v);
   ME.dob = v; closeModal(); renderProfile(); toast(LANG==="hi" ? "जन्म तिथि अपडेट हो गई ✓" : "Date of birth updated ✓");
 }
-/* Round 67f: Facebook-style profile hero */
-function applyCover_(url){
-  const img = $("pf-cover-img"); if(!img) return;
-  if(url){ img.src = url; img.classList.remove("hidden"); }
-  else { img.removeAttribute("src"); img.classList.add("hidden"); }
+/* Round 67f/68: Facebook-style profile hero + banner thoughts */
+const FALLBACK_THOUGHTS = [
+  "Education is the most powerful weapon which you can use to change the world.",
+  "मेहनत इतनी खामोशी से करो कि सफलता शोर मचा दे।",
+  "Small progress every day adds up to big results — one test at a time."
+];
+function thoughtList_(){
+  const t = (getSettings() || {}).thoughts;
+  const arr = (Array.isArray(t) ? t : []).map(x=> String((x && x.text) || x || "").trim()).filter(Boolean);
+  return arr.length ? arr : FALLBACK_THOUGHTS.slice();
 }
-async function pickCover(inp){
-  const f = inp.files && inp.files[0]; inp.value = ""; if(!f || !ME) return;
-  const d = await fitPhoto(f, 1080, false, 420000); if(!d) return;
-  try{ localStorage.setItem("study_cover_" + ME.phone, d); }
-  catch(e){ toast(LANG === "hi" ? "कवर फ़ोटो बहुत बड़ी है" : "Cover photo is too large"); return; }
-  applyCover_(d);
-  toast(LANG === "hi" ? "✅ कवर फ़ोटो लग गई" : "✅ Cover photo updated");
+function currentThought_(){
+  const list = thoughtList_();
+  const idx = Math.floor(Date.now() / (5 * 864e5)) % list.length;
+  return list[idx];
 }
-function pfEditScroll(){
-  const el = $("pf-details-card"); if(!el) return;
+function openThoughtView(){
+  const t = $("tv-text"); if(t) t.textContent = currentThought_();
+  const v = $("thought-view"); if(v) v.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+function closeThoughtView(){
+  const v = $("thought-view"); if(v) v.classList.add("hidden");
+  document.body.style.overflow = "";
+}
+function openThoughtEditor(){
+  if(!ME || !isAdmin()) return;
+  const saved = (getSettings() || {}).thoughts;
+  const arr = (Array.isArray(saved) ? saved : []).map(x=> String((x && x.text) || x || "").trim()).filter(Boolean);
+  const rows = arr.length ? arr.map((t, i)=> `<div style="display:flex;gap:8px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line)"><div style="flex:1;font-family:Georgia,serif;font-style:italic;font-size:14px">${esc(t)}</div><button class="btn sm danger" onclick="delThought(${i})">✕</button></div>`).join("") : `<p class="sub" style="padding:10px 0">No thoughts saved yet — the app is showing default thoughts. Add your first one below.</p>`;
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">✦ Banner thoughts</h3>
+  <p class="sub" style="margin-top:6px">These thoughts appear on every student's profile banner and change automatically every 5 days.</p>
+  <div style="margin-top:6px">${rows}</div>
+  <div class="fld" style="margin-top:12px"><label>New thought</label><textarea id="th-new" rows="3" placeholder="Write an educational thought…"></textarea></div>
+  <button class="btn gold" style="width:100%" onclick="addThought(this)">＋ Add thought</button>`);
+}
+async function saveThoughts_(arr){
+  const s = getSettings(); s.thoughts = arr.map(t=> ({text: t}));
+  saveSettings(s);
+  if(BACKEND_URL){ await new Promise(r=> setTimeout(r, 900)); }
+  renderPfHero();
+}
+async function addThought(btn){
+  const ta = $("th-new"); const v = (ta.value || "").trim(); if(!v) return;
+  const saved = (getSettings() || {}).thoughts;
+  const arr = (Array.isArray(saved) ? saved : []).map(x=> String((x && x.text) || x || "").trim()).filter(Boolean);
+  arr.push(v);
+  setBtnLoading(btn, true);
+  await saveThoughts_(arr);
+  setBtnLoading(btn, false);
+  toast("✦ Thought added");
+  openThoughtEditor();
+}
+async function delThought(i){
+  const saved = (getSettings() || {}).thoughts;
+  const arr = (Array.isArray(saved) ? saved : []).map(x=> String((x && x.text) || x || "").trim()).filter(Boolean);
+  arr.splice(i, 1);
+  await saveThoughts_(arr);
+  toast("Thought removed");
+  openThoughtEditor();
+}
+function pfSettingsScroll(){
+  const el = $("pf-settings-h"); if(!el) return;
   try{ el.scrollIntoView({behavior:"smooth", block:"start"}); }catch(e){}
+}
+function openEditProfile(){
+  if(!ME) return;
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG === "hi" ? "प्रोफ़ाइल संपादित करें" : "Edit profile"}</h3>
+  <div style="margin-top:8px">
+    <button class="ep-row" onclick="editName()"><span class="ep-ic">👤</span><span class="ep-tx"><span class="ep-l">${LANG === "hi" ? "नाम" : "Name"}</span><div class="ep-v">${esc(ME.name || "")}</div></span><span class="pf-chev">›</span></button>
+    <button class="ep-row" onclick="editDob()"><span class="ep-ic">🎂</span><span class="ep-tx"><span class="ep-l">${LANG === "hi" ? "जन्म तिथि" : "Birthday"}</span><div class="ep-v">${esc(fmtDob(ME.dob) || "—")}</div></span><span class="pf-chev">›</span></button>
+    <button class="ep-row" onclick="closeModal();showPhotoMenu()"><span class="ep-ic">📷</span><span class="ep-tx"><span class="ep-l">${LANG === "hi" ? "प्रोफ़ाइल फ़ोटो" : "Profile photo"}</span><div class="ep-v">${LANG === "hi" ? "फ़ोटो बदलें या हटाएँ" : "Change or remove photo"}</div></span><span class="pf-chev">›</span></button>
+    <button class="ep-row" onclick="openChangePass()"><span class="ep-ic">🔑</span><span class="ep-tx"><span class="ep-l">${LANG === "hi" ? "पासवर्ड" : "Password"}</span><div class="ep-v">${LANG === "hi" ? "पासवर्ड बदलें" : "Change password"}</div></span><span class="pf-chev">›</span></button>
+  </div>`);
+}
+function editName(){
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG === "hi" ? "नाम बदलें" : "Edit name"}</h3>
+  <div class="fld" style="margin-top:12px"><label>${LANG === "hi" ? "आपका नाम" : "Your name"}</label><input id="ed-name" type="text" value="${esc(ME.name || "")}" maxlength="50"></div>
+  <p class="err" id="ed-name-err"></p>
+  <button class="btn" style="width:100%" onclick="saveName(this)">${LANG === "hi" ? "सहेजें" : "Save"}</button>`);
+  setTimeout(()=>{ try{ $("ed-name").focus(); }catch(e){} }, 60);
+}
+async function saveName(btn){
+  const v = ($("ed-name").value || "").trim().replace(/\s+/g, " ");
+  const err = $("ed-name-err"); err.textContent = "";
+  if(v.length < 2) return err.textContent = LANG === "hi" ? "नाम बहुत छोटा है" : "Name is too short";
+  if(BACKEND_URL){ setBtnLoading(btn, true); const r = await api("setName", {phone: ME.phone, session: mySess(), name: v}); setBtnLoading(btn, false); if(!r.ok) return err.textContent = LANG === "hi" ? "सेव नहीं हुआ — फिर कोशिश करें" : "Could not save — try again"; }
+  else Store.updateMe(u=> u.name = v);
+  ME.name = v; closeModal(); renderProfile(); renderPfHero();
+  toast(LANG === "hi" ? "✅ नाम अपडेट हो गया" : "✅ Name updated");
+}
+function openChangePass(){
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG === "hi" ? "पासवर्ड बदलें" : "Change password"}</h3>
+  <div class="fld" style="margin-top:12px"><label>${LANG === "hi" ? "मौजूदा पासवर्ड" : "Current password"}</label><input id="cp-old" type="password" autocomplete="current-password"></div>
+  <div class="fld"><label>${LANG === "hi" ? "नया पासवर्ड (कम से कम 6 अक्षर)" : "New password (min 6 characters)"}</label><input id="cp-new" type="password" autocomplete="new-password"></div>
+  <div class="fld"><label>${LANG === "hi" ? "नया पासवर्ड फिर से लिखें" : "Confirm new password"}</label><input id="cp-new2" type="password" autocomplete="new-password"></div>
+  <p class="err" id="cp-err"></p>
+  <button class="btn" style="width:100%" onclick="saveChangePass(this)">${LANG === "hi" ? "पासवर्ड बदलें" : "Change password"}</button>`);
+}
+async function saveChangePass(btn){
+  const o = $("cp-old").value || "", n = $("cp-new").value || "", n2 = $("cp-new2").value || "";
+  const err = $("cp-err"); err.textContent = "";
+  if(!o) return err.textContent = LANG === "hi" ? "मौजूदा पासवर्ड लिखें" : "Enter your current password";
+  if(n.length < 6) return err.textContent = LANG === "hi" ? "नया पासवर्ड कम से कम 6 अक्षरों का हो" : "New password must be at least 6 characters";
+  if(n !== n2) return err.textContent = LANG === "hi" ? "दोनों नए पासवर्ड एक जैसे नहीं हैं" : "The new passwords do not match";
+  if(n === o) return err.textContent = LANG === "hi" ? "नया पासवर्ड पुराने से अलग रखें" : "New password must be different from the old one";
+  if(BACKEND_URL){
+    setBtnLoading(btn, true);
+    const r = await api("changePass", {phone: ME.phone, session: mySess(), oldPass: o, newPass: n});
+    setBtnLoading(btn, false);
+    if(!r.ok) return err.textContent = r.error === "badpass" ? (LANG === "hi" ? "मौजूदा पासवर्ड गलत है" : "Current password is wrong") : (LANG === "hi" ? "बदला नहीं गया — फिर कोशिश करें" : "Could not change — try again");
+  } else {
+    const users = DB.read("users", []);
+    const ix = users.findIndex(u=> u.phone === ME.phone);
+    if(ix < 0 || String(users[ix].pass) !== o) return err.textContent = LANG === "hi" ? "मौजूदा पासवर्ड गलत है" : "Current password is wrong";
+    users[ix].pass = n; DB.write("users", users);
+  }
+  closeModal();
+  toast(LANG === "hi" ? "🔑 पासवर्ड बदल गया" : "🔑 Password changed");
 }
 function renderPfHero(){
   if(!ME) return;
-  const bd = $("pf-badge"); if(bd) bd.classList.toggle("hidden", !isAdmin());
   const tests = ($("st-tests") && $("st-tests").textContent) || "0";
   const atts = DB.read("attempts", []);
   let points = 0;
@@ -3751,20 +3864,18 @@ function renderPfHero(){
   const pg = $("pf-progs");
   if(pg) pg.textContent = names.length ? "🎯 " + (LANG === "hi" ? "तैयारी: " : "Preparing for ") + names.join(" · ") : "🎓 StuDy Student";
   const det = [];
+  if(ME.phone) det.push("📱 " + ME.phone);
   if(ME.gmail) det.push("✉️ " + ME.gmail);
   if(ME.dob) det.push("🎂 " + fmtDob(ME.dob));
   if(ME.createdAt) { const cd = new Date(ME.createdAt); if(!isNaN(cd)) det.push("📅 " + (LANG === "hi" ? "जुड़े: " : "Joined ") + cd.toLocaleDateString(LANG === "hi" ? "hi-IN" : "en-IN", {month:"short", year:"numeric"})); }
   const dt = $("pf-details"); if(dt) dt.textContent = det.join("  ·  ");
-  let cv = null; try{ cv = localStorage.getItem("study_cover_" + ME.phone); }catch(e){}
-  applyCover_(cv);
+  const tt = $("pf-thought-text"); if(tt) tt.textContent = currentThought_();
+  const te = $("pf-thought-edit"); if(te) te.classList.toggle("hidden", !isAdmin());
 }
 function renderProfile(){
   healPhoto();
   $("pf-name").textContent = ME.name || ME.phone;
   $("pf-avatar").innerHTML = avInner(ME);
-  $("pf-phone").textContent = ME.phone;
-  $("pf-gmail").textContent = ME.gmail;
-  $("pf-dob").textContent = fmtDob(ME.dob);
   $("pf-stars").textContent = ME.stars||0;
   const mine = Store.attempts().filter(a=>a.phone===ME.phone);
   const firsts = mine.filter(a=>a.first);
