@@ -4802,11 +4802,11 @@ async function drawCardImage(snap){
   const W = 720, PAD = 38, S = 2, ink = "#14161d", mut = "#5b6472", gold = "#b8860b", hi = LANG === "hi";
   const subs = snap.subs || [], courses = snap.courses || [];
   const meas = document.createElement("canvas").getContext("2d");
-  meas.font = "11.5px Arial, sans-serif";
+  meas.font = "11.5px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
   const footLines = wrapText_(meas, hi ? "ग्रेड: A+ ≥90 · A ≥80 · B+ ≥70 · B ≥60 · C ≥50 · D ≥40 · E <40 — कुल % सभी विषयों के % का औसत है।" : "Grades: A+ ≥90 · A ≥80 · B+ ≥70 · B ≥60 · C ≥50 · D ≥40 · E <40 — Overall % is the average of all subject percentages.", W - PAD * 2);
-  meas.font = "14.5px Arial, sans-serif";
+  meas.font = "14.5px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
   const emptyLines = subs.length ? [] : wrapText_(meas, hi ? "अभी कोई विषय टेस्ट नहीं — विषय टेस्ट देकर अपनी रिपोर्ट बनाएँ।" : "No subject tests yet — attempt subject tests to build your report.", W - PAD * 2);
-  const dividerY = 206, nameBase = dividerY + 40, metaBase = nameBase + 25;
+  const dividerY = 216, nameBase = dividerY + 40, metaBase = nameBase + 25;
   const statsTop = metaBase + (courses.length ? 42 : 22), statsH = 186, statsBot = statsTop + statsH;
   const headBase = statsBot + 40, tblHeadBase = headBase + 25, tblDivY = headBase + 34;
   const tableH = subs.length ? subs.length * 32 : (12 + emptyLines.length * 20);
@@ -4816,43 +4816,46 @@ async function drawCardImage(snap){
   const cx = cv.getContext("2d"); cx.scale(S, S);
   cx.fillStyle = "#ffffff"; rr_(cx, 3, 3, W - 6, H - 6, 26); cx.fill();
   cx.lineWidth = 3; cx.strokeStyle = "#c9a227"; rr_(cx, 3, 3, W - 6, H - 6, 26); cx.stroke();
-  try{ const wm = await loadImg_(ASSET.saraswatiHQ); cx.save(); cx.globalAlpha = 0.10; const ws = 430; cx.drawImage(wm, (W - ws) / 2, statsTop - 30, ws, ws); cx.restore(); }catch(e){}
-  try{ const lg = await loadImg_(ASSET.wordmark); const lw = 196; cx.drawImage(lg, PAD, 30, lw, lw * lg.height / lg.width); }catch(e){}
-  cx.fillStyle = gold; cx.font = "800 24px Arial, sans-serif"; cx.textAlign = "left";
-  cx.fillText(hi ? "सत्यापित" : "VERIFIED", PAD, 112); cx.fillText(hi ? "रिपोर्ट कार्ड" : "REPORT CARD", PAD, 140);
-  const qrSize = 116, qx = W - PAD - qrSize, qy = 30;
+  try{ const wm = await loadImg_(ASSET.saraswatiHQ); const ws = 470; const tc = document.createElement("canvas"); tc.width = ws; tc.height = ws; const tx = tc.getContext("2d"); tx.drawImage(wm, 0, 0, ws, ws); tx.globalCompositeOperation = "destination-in"; const grd = tx.createRadialGradient(ws / 2, ws / 2, ws * 0.18, ws / 2, ws / 2, ws * 0.5); grd.addColorStop(0, "rgba(0,0,0,1)"); grd.addColorStop(1, "rgba(0,0,0,0)"); tx.fillStyle = grd; tx.fillRect(0, 0, ws, ws); cx.save(); cx.globalAlpha = 0.09; cx.drawImage(tc, (W - ws) / 2, statsTop + 150 - ws / 2); cx.restore(); }catch(e){}
+  try{ const lg = await loadImg_(ASSET.wordmark); const lw = 158; cx.drawImage(lg, PAD, 30, lw, lw * lg.height / lg.width); }catch(e){}
+  cx.fillStyle = gold; cx.font = "800 21px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; cx.textAlign = "left";
+  try{ cx.letterSpacing = "3.5px"; }catch(e){}
+  cx.fillText(hi ? "सत्यापित रिपोर्ट कार्ड" : "VERIFIED REPORT CARD", PAD, 118);
+  try{ cx.letterSpacing = "0px"; }catch(e){}
+  const qrSize = 128, qx = W - PAD - qrSize, qy = 30;
   try{ const q = qrcode(0, "M"); q.addData("https://dj3680.github.io/StuDy/?verify=" + snap.code); q.make(); const n = q.getModuleCount(), cell = qrSize / n; cx.fillStyle = "#ffffff"; cx.fillRect(qx - 6, qy - 6, qrSize + 12, qrSize + 12); cx.strokeStyle = "#14161d"; cx.lineWidth = 1.5; cx.strokeRect(qx - 6, qy - 6, qrSize + 12, qrSize + 12); cx.fillStyle = "#000000"; for(let r = 0; r < n; r++) for(let c = 0; c < n; c++) if(q.isDark(r, c)) cx.fillRect(qx + c * cell, qy + r * cell, Math.ceil(cell), Math.ceil(cell)); }catch(e){}
-  cx.fillStyle = mut; cx.font = "700 11px Arial, sans-serif"; cx.textAlign = "center";
+  cx.fillStyle = mut; cx.font = "700 11px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; cx.textAlign = "center";
   cx.fillText(hi ? "सत्यापन हेतु स्कैन करें" : "SCAN TO VERIFY", qx + qrSize / 2, qy + qrSize + 20);
-  cx.fillStyle = "#33415e"; cx.font = "700 14.5px 'Courier New', monospace";
+  cx.fillStyle = "#33415e"; cx.font = "700 14.5px ui-monospace, 'Courier New', monospace";
   cx.fillText(snap.code, qx + qrSize / 2, qy + qrSize + 42);
   cx.textAlign = "left";
   cx.strokeStyle = "#e8d48b"; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(PAD, dividerY); cx.lineTo(W - PAD, dividerY); cx.stroke();
-  cx.fillStyle = ink; cx.font = "800 29px Arial, sans-serif"; cx.fillText(snap.name || "", PAD, nameBase);
-  cx.fillStyle = mut; cx.font = "15px Arial, sans-serif";
+  cx.fillStyle = ink; cx.font = "800 29px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; cx.fillText(snap.name || "", PAD, nameBase);
+  cx.fillStyle = mut; cx.font = "15px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
   cx.fillText("Phone: " + maskPhone(snap.phone) + " · Issued: " + new Date(snap.at).toLocaleDateString(), PAD, metaBase);
   if(courses.length){ cx.fillText((hi ? "कोर्स" : "Courses") + ": " + courses.join(" · "), PAD, metaBase + 20); }
   const stats = [[snap.avg + "%", hi ? "कुल प्रतिशत" : "Overall %"], [gradeOf(snap.avg), hi ? "ग्रेड" : "Grade"], [String(snap.points), hi ? "कुल अंक" : "Total points"], [String(snap.tests), hi ? "दिए गए टेस्ट" : "Tests taken"], [snap.acc + "%", hi ? "सटीकता" : "Accuracy"], ["#" + snap.rank, hi ? "रैंक" : "Overall rank"]];
   const tw = (W - PAD * 2 - 20) / 3, th = 88;
   stats.forEach((st, i)=>{ const col = i % 3, row = (i / 3) | 0, x = PAD + col * (tw + 10), yy = statsTop + row * (th + 10);
     cx.strokeStyle = "#e3e6ee"; cx.lineWidth = 1.5; cx.fillStyle = "#ffffff"; rr_(cx, x, yy, tw, th, 12); cx.fill(); cx.stroke();
-    cx.fillStyle = ink; cx.font = "800 25px Arial, sans-serif"; cx.textAlign = "center"; cx.fillText(st[0], x + tw / 2, yy + 40);
-    cx.fillStyle = mut; cx.font = "12.5px Arial, sans-serif"; cx.fillText(st[1], x + tw / 2, yy + 64); cx.textAlign = "left"; });
-  cx.fillStyle = gold; cx.font = "800 16px Arial, sans-serif"; cx.fillText(hi ? "विषयवार प्रदर्शन" : "SUBJECT-WISE PERFORMANCE", PAD, headBase);
+    cx.fillStyle = ink; cx.font = "800 25px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; cx.textAlign = "center"; cx.fillText(st[0], x + tw / 2, yy + 40);
+    cx.fillStyle = mut; cx.font = "12.5px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; cx.fillText(st[1], x + tw / 2, yy + 64); cx.textAlign = "left"; });
+  cx.fillStyle = gold; cx.font = "800 16px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; cx.fillText(hi ? "विषयवार प्रदर्शन" : "SUBJECT-WISE PERFORMANCE", PAD, headBase);
   const cT = W - PAD - 170, cP = W - PAD - 88, cG = W - PAD;
-  cx.font = "700 12px Arial, sans-serif"; cx.fillStyle = mut;
+  cx.font = "700 12px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; cx.fillStyle = mut;
   cx.fillText(hi ? "विषय" : "Subject", PAD, tblHeadBase); cx.textAlign = "center"; cx.fillText(hi ? "टेस्ट" : "Tests", cT, tblHeadBase); cx.fillText(hi ? "अंक %" : "Marks %", cP, tblHeadBase); cx.textAlign = "right"; cx.fillText(hi ? "ग्रेड" : "Grade", cG, tblHeadBase); cx.textAlign = "left";
   cx.strokeStyle = "#eceef3"; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(PAD, tblDivY); cx.lineTo(W - PAD, tblDivY); cx.stroke();
-  if(subs.length){ subs.forEach((sb, i)=>{ const base = tblDivY + 23 + i * 32; cx.fillStyle = ink; cx.font = "600 15px Arial, sans-serif"; let nm = sb.name || ""; while(nm.length && cx.measureText(nm).width > (cT - PAD - 44)) nm = nm.slice(0, -2); if(nm !== (sb.name || "")) nm = nm.trim() + "…"; cx.fillText(nm, PAD, base); cx.textAlign = "center"; cx.font = "15px Arial, sans-serif"; cx.fillText(String(sb.tests != null ? sb.tests : ""), cT, base); cx.fillText(sb.pct + "%", cP, base); cx.textAlign = "right"; cx.font = "700 15px Arial, sans-serif"; cx.fillText(sb.grade || "", cG, base); cx.textAlign = "left"; }); }
-  else { cx.fillStyle = mut; cx.font = "14.5px Arial, sans-serif"; emptyLines.forEach((ln, i)=> cx.fillText(ln, PAD, tblDivY + 21 + i * 20)); }
-  cx.fillStyle = "#9aa0a6"; cx.font = "11.5px Arial, sans-serif";
+  if(subs.length){ subs.forEach((sb, i)=>{ const base = tblDivY + 23 + i * 32; cx.fillStyle = ink; cx.font = "600 15px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; let nm = sb.name || ""; while(nm.length && cx.measureText(nm).width > (cT - PAD - 44)) nm = nm.slice(0, -2); if(nm !== (sb.name || "")) nm = nm.trim() + "…"; cx.fillText(nm, PAD, base); cx.textAlign = "center"; cx.font = "15px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; cx.fillText(String(sb.tests != null ? sb.tests : ""), cT, base); cx.fillText(sb.pct + "%", cP, base); cx.textAlign = "right"; cx.font = "700 15px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; cx.fillText(sb.grade || "", cG, base); cx.textAlign = "left"; }); }
+  else { cx.fillStyle = mut; cx.font = "14.5px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; emptyLines.forEach((ln, i)=> cx.fillText(ln, PAD, tblDivY + 21 + i * 20)); }
+  if(!subs.length){ cx.strokeStyle = "#d9dce4"; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(PAD, footTop - 4); cx.lineTo(W - PAD, footTop - 4); cx.stroke(); }
+  cx.fillStyle = "#9aa0a6"; cx.font = "11.5px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
   footLines.forEach((ln, i)=> cx.fillText(ln, PAD, footTop + 12 + i * 16));
-  try{ const svgs = document.querySelectorAll("#print-area svg"); if(svgs.length){ const st = svgs[svgs.length - 1].cloneNode(true); st.setAttribute("xmlns", "http://www.w3.org/2000/svg"); st.setAttribute("width", "118"); st.setAttribute("height", "118"); const simg = await loadImg_("data:image/svg+xml;charset=utf-8," + encodeURIComponent(new XMLSerializer().serializeToString(st))); cx.drawImage(simg, PAD, botY, 118, 118); } }catch(e){}
-  try{ const sg = await loadImg_(ASSET.sign); const sw2 = 138; cx.drawImage(sg, W - PAD - sw2, botY, sw2, sw2 * sg.height / sg.width); }catch(e){}
-  cx.strokeStyle = "#33415e"; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(W - PAD - 150, botY + 118); cx.lineTo(W - PAD, botY + 118); cx.stroke();
-  cx.fillStyle = "#33415e"; cx.textAlign = "center"; cx.font = "700 13px Arial, sans-serif";
-  cx.fillText("Dinesh Jangir", W - PAD - 75, botY + 136);
-  cx.font = "11.5px Arial, sans-serif"; cx.fillText(hi ? "प्राधिकृत हस्ताक्षर" : "Authority Signature", W - PAD - 75, botY + 152);
+  try{ const svgs = document.querySelectorAll("#print-area svg"); if(svgs.length){ const st = svgs[svgs.length - 1].cloneNode(true); st.setAttribute("xmlns", "http://www.w3.org/2000/svg"); st.setAttribute("width", "118"); st.setAttribute("height", "118"); const simg = await loadImg_("data:image/svg+xml;charset=utf-8," + encodeURIComponent(new XMLSerializer().serializeToString(st))); cx.save(); cx.globalAlpha = 0.93; cx.translate(PAD + 59, botY + 59); cx.rotate(-8 * Math.PI / 180); cx.drawImage(simg, -59, -59, 118, 118); try{ const sm = await loadImg_(ASSET.wordmark); const mw = 62; cx.drawImage(sm, -mw / 2, -mw * sm.height / sm.width / 2, mw, mw * sm.height / sm.width); }catch(e){} cx.restore(); } }catch(e){}
+  try{ const sg = await loadImg_(ASSET.sign); const sh = 88, sw2 = sh * sg.width / sg.height; cx.drawImage(sg, W - PAD - sw2, botY, sw2, sh); }catch(e){}
+  cx.strokeStyle = "#33415e"; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(W - PAD - 150, botY + 96); cx.lineTo(W - PAD, botY + 96); cx.stroke();
+  cx.fillStyle = "#33415e"; cx.textAlign = "center"; cx.font = "700 13px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
+  cx.fillText("Dinesh Jangir", W - PAD - 75, botY + 114);
+  cx.font = "11.5px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"; cx.fillText(hi ? "प्राधिकृत हस्ताक्षर" : "Authority Signature", W - PAD - 75, botY + 130);
   cx.textAlign = "left";
   return cv;
 }
