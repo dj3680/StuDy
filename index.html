@@ -1414,6 +1414,8 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
 <script src="questions5.js"></script>
 <script src="questions6.js"></script>
 <script src="questions7.js"></script>
+<script src="questions8.js"></script>
+<script src="questions9.js"></script>
 <script>/* qrcode-generator 1.4.4 — Kazuhiko Arase, MIT License */
 /**
  * Minified by jsDelivr using Terser v5.37.0.
@@ -1558,7 +1560,7 @@ function schoolSubjectPrice(sub){ return SCHOOL_PRICE[String(sub||"").split("_")
 function chapterOf(sub){ const m = /^(c\d+)_(.+)_ch(\d+)$/.exec(sub||""); if(!m) return null; const list = SCHOOL_CHAPTERS[m[1]+"_"+m[2]]; if(!list) return null; return list[+m[3]-1] || null; }
 function chapterKey(cls, s, i){ return cls + "_" + s + "_ch" + (i+1); }
 const PREM_GEO_NAMES = { geoprem_raj:["Rajasthan Geography","राजस्थान भूगोल"], geoprem_ind:["Indian Geography","भारत का भूगोल"], geoprem_wld:["World Geography","विश्व भूगोल"], geopremf_raj:["Rajasthan Geography","राजस्थान भूगोल"], geopremf_ind:["Indian Geography","भारत का भूगोल"], geopremf_wld:["World Geography","विश्व भूगोल"], geoprem_full:["Full Geography","संपूर्ण भूगोल"] };
-const SM_NAMES = { sm_rajgeo:["Rajasthan Geography","राजस्थान भूगोल"], smf_rajgeo:["Rajasthan Geography","राजस्थान भूगोल"], sm_worldgeo:["World Geography","विश्व भूगोल"], smf_worldgeo:["World Geography","विश्व भूगोल"], sm_indgeo:["Indian Geography","भारत का भूगोल"], smf_indgeo:["Indian Geography","भारत का भूगोल"], sm_ancient:["Ancient History","प्राचीन इतिहास"], smf_ancient:["Ancient History","प्राचीन इतिहास"], sm_medieval:["Medieval History","मध्यकालीन इतिहास"], smf_medieval:["Medieval History","मध्यकालीन इतिहास"], sm_modern:["Modern History","आधुनिक इतिहास"], smf_modern:["Modern History","आधुनिक इतिहास"], sm_polity:["Indian Polity","भारतीय राजव्यवस्था"], smf_polity:["Indian Polity","भारतीय राजव्यवस्था"] };
+const SM_NAMES = { sm_rajgeo:["Rajasthan Geography","राजस्थान भूगोल"], smf_rajgeo:["Rajasthan Geography","राजस्थान भूगोल"], sm_worldgeo:["World Geography","विश्व भूगोल"], smf_worldgeo:["World Geography","विश्व भूगोल"], sm_indgeo:["Indian Geography","भारत का भूगोल"], smf_indgeo:["Indian Geography","भारत का भूगोल"], sm_ancient:["Ancient History","प्राचीन इतिहास"], smf_ancient:["Ancient History","प्राचीन इतिहास"], sm_medieval:["Medieval History","मध्यकालीन इतिहास"], smf_medieval:["Medieval History","मध्यकालीन इतिहास"], sm_modern:["Modern History","आधुनिक इतिहास"], smf_modern:["Modern History","आधुनिक इतिहास"], sm_polity:["Indian Polity","भारतीय राजव्यवस्था"], smf_polity:["Indian Polity","भारतीय राजव्यवस्था"], sm_science:["General Science","सामान्य विज्ञान"], smf_science:["General Science","सामान्य विज्ञान"], sm_maths:["Maths","गणित"], smf_maths:["Maths","गणित"], sm_reasoning:["Reasoning","तर्कशक्ति"], smf_reasoning:["Reasoning","तर्कशक्ति"], sm_rajpolity:["Rajasthan Polity","राजस्थान राजव्यवस्था"], smf_rajpolity:["Rajasthan Polity","राजस्थान राजव्यवस्था"], sm_eco_in:["Indian Economy","भारतीय अर्थव्यवस्था"], smf_eco_in:["Indian Economy","भारतीय अर्थव्यवस्था"], sm_rajhist:["Rajasthan History","राजस्थान इतिहास"], smf_rajhist:["Rajasthan History","राजस्थान इतिहास"], sm_rajeco:["Rajasthan Economy","राजस्थान अर्थव्यवस्था"], smf_rajeco:["Rajasthan Economy","राजस्थान अर्थव्यवस्था"], sm_rajart:["Rajasthan Art & Culture","राजस्थान कला एवं संस्कृति"], smf_rajart:["Rajasthan Art & Culture","राजस्थान कला एवं संस्कृति"] };
 const subName = (cat, sub, lang) => { const hi = lang==="hi";
   const pm = /^(geoprem_[a-z]+|geopremf_[a-z]+|geoprem_full):(\d+)$/.exec(sub||""); if(pm) return subName(cat, pm[1], lang) + " · " + (hi ? "मॉक टेस्ट " : "Mock Test ") + pm[2];
   const rf = /^rfull_(\d+)$/.exec(sub||""); if(rf) return (hi ? "RAS प्री 2026 फुल मॉक टेस्ट " : "RAS Pre 2026 Full Mock Test ") + rf[1];
@@ -2506,7 +2508,18 @@ const HIST_ANCIENT_COMPLETE_BOOK = { sub:"hist-ancient-complete", en:"Ancient Hi
 const HIST_MEDIEVAL_COMPLETE_BOOK = { sub:"hist-medieval-complete", en:"Medieval History — Complete Notes (RAS Pre 2026)", hi:"मध्यकालीन इतिहास — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Medieval History — every topic, every fact, easy language · 48 pages", hi:"पूरा मध्यकालीन इतिहास — हर टॉपिक, हर तथ्य, आसान भाषा · 48 पेज" } };
 const HIST_MODERN_COMPLETE_BOOK = { sub:"hist-modern-complete", en:"Modern History — Complete Notes (RAS Pre 2026)", hi:"आधुनिक इतिहास — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Modern History — every topic, every fact, easy language · 73 pages", hi:"पूरा आधुनिक इतिहास — हर टॉपिक, हर तथ्य, आसान भाषा · 73 पेज" } };
 const POL_COMPLETE_BOOK = { sub:"pol-complete", en:"Indian Polity — Complete Notes (RAS Pre 2026)", hi:"भारतीय राजव्यवस्था — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Indian Polity — every topic, every fact, easy language · 43 pages", hi:"पूरी भारतीय राजव्यवस्था — हर टॉपिक, हर तथ्य, आसान भाषा · 43 पेज" } };
-/* Notes open-state (Round 30 fix): renderNotes() rebuilds the whole Notes
+
+/* Round 80: batch-2 complete subject notes (RAS Pre 2026) — one book per
+   subject, priced per book like the other premium books (admin-editable).
+   Downloads resolve via downloadNotes to notes/rpsc-<sub>.pdf. */
+const SCI_COMPLETE_BOOK = { sub:"sci-complete", en:"General Science — Complete Notes (RAS Pre 2026)", hi:"सामान्य विज्ञान — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete General Science — every topic, every fact, easy language · 147 pages", hi:"पूरा सामान्य विज्ञान — हर टॉपिक, हर तथ्य, आसान भाषा · 147 पेज" } };
+const MATHS_COMPLETE_BOOK = { sub:"maths-complete", en:"Maths — Complete Notes (RAS Pre 2026)", hi:"गणित — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Maths — every topic, every formula and shortcut, easy language · 290 pages", hi:"पूरा गणित — हर टॉपिक, हर फ़ॉर्मूला और शॉर्टकट, आसान भाषा · 290 पेज" } };
+const REAS_COMPLETE_BOOK = { sub:"reas-complete", en:"Reasoning — Complete Notes (RAS Pre 2026)", hi:"तर्कशक्ति — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Reasoning — every topic, every trick, easy language · 110 pages", hi:"पूरी तर्कशक्ति — हर टॉपिक, हर ट्रिक, आसान भाषा · 110 पेज" } };
+const POL_RAJ_COMPLETE_BOOK = { sub:"pol-raj-complete", en:"Rajasthan Polity — Complete Notes (RAS Pre 2026)", hi:"राजस्थान राजव्यवस्था — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Rajasthan Polity — every topic, every fact, easy language · 156 pages", hi:"पूरी राजस्थान राजव्यवस्था — हर टॉपिक, हर तथ्य, आसान भाषा · 156 पेज" } };
+const ECO_IND_COMPLETE_BOOK = { sub:"eco-ind-complete", en:"Indian Economy — Complete Notes (RAS Pre 2026)", hi:"भारतीय अर्थव्यवस्था — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Indian Economy — every topic, every fact, easy language · 208 pages", hi:"पूरी भारतीय अर्थव्यवस्था — हर टॉपिक, हर तथ्य, आसान भाषा · 208 पेज" } };
+const ECO_RAJ_COMPLETE_BOOK = { sub:"eco-raj-complete", en:"Rajasthan Economy — Complete Notes (RAS Pre 2026)", hi:"राजस्थान अर्थव्यवस्था — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Rajasthan Economy — every topic, every fact, easy language · 429 pages", hi:"पूरी राजस्थान अर्थव्यवस्था — हर टॉपिक, हर तथ्य, आसान भाषा · 429 पेज" } };
+const HIST_RAJ_COMPLETE_BOOK = { sub:"hist-raj-complete", en:"Rajasthan History — Complete Notes (RAS Pre 2026)", hi:"राजस्थान इतिहास — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Rajasthan History — every topic, every fact, easy language · 580 pages", hi:"पूरा राजस्थान इतिहास — हर टॉपिक, हर तथ्य, आसान भाषा · 580 पेज" } };
+const ART_COMPLETE_BOOK = { sub:"art-complete", en:"Rajasthan Art & Culture — Complete Notes (RAS Pre 2026)", hi:"राजस्थान कला एवं संस्कृति — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Rajasthan Art & Culture — every topic, every fact, easy language · 395 pages", hi:"पूरी राजस्थान कला एवं संस्कृति — हर टॉपिक, हर तथ्य, आसान भाषा · 395 पेज" } };/* Notes open-state (Round 30 fix): renderNotes() rebuilds the whole Notes
    screen after a purchase, which used to collapse every dropdown the user
    had open. These record which exam wrap and sub-dropdowns are open so a
    re-render restores them exactly as the user left them. */
@@ -2573,11 +2586,13 @@ function basicBooksCount_(cat){ return basicSubjects_(cat).reduce((n, s) => n + 
 const PREM_SUBJECT_LIST = {
   rpsc: [
     { sub:"geo",  name:{ en:"Geography", hi:"भूगोल" }, key:"rpsc_geo", books:[GEO_DETAILED_BOOK, GEO_DETAILED_INDIA_BOOK, GEO_DETAILED_WORLD_BOOK, GEO_RAJ_COMPLETE_BOOK, GEO_IND_COMPLETE_BOOK, GEO_WLD_COMPLETE_BOOK] },
-    { sub:"pol",  name:{ en:"Polity", hi:"राजनीति विज्ञान" }, books:[POL_COMPLETE_BOOK] },
-    { sub:"hist", name:{ en:"History", hi:"इतिहास" }, books:[HIST_ANCIENT_COMPLETE_BOOK, HIST_MEDIEVAL_COMPLETE_BOOK, HIST_MODERN_COMPLETE_BOOK] },
-    { sub:"eco",  name:{ en:"Economy", hi:"अर्थव्यवस्था" } },
-    { sub:"sci",  name:{ en:"Science", hi:"विज्ञान" } },
-    { sub:"reas", name:{ en:"Reasoning", hi:"तर्कशक्ति" } }
+    { sub:"pol",  name:{ en:"Polity", hi:"राजनीति विज्ञान" }, books:[POL_COMPLETE_BOOK, POL_RAJ_COMPLETE_BOOK] },
+    { sub:"hist", name:{ en:"History", hi:"इतिहास" }, books:[HIST_ANCIENT_COMPLETE_BOOK, HIST_MEDIEVAL_COMPLETE_BOOK, HIST_MODERN_COMPLETE_BOOK, HIST_RAJ_COMPLETE_BOOK] },
+    { sub:"eco",  name:{ en:"Economy", hi:"अर्थव्यवस्था" }, books:[ECO_IND_COMPLETE_BOOK, ECO_RAJ_COMPLETE_BOOK] },
+    { sub:"sci",  name:{ en:"Science", hi:"विज्ञान" }, books:[SCI_COMPLETE_BOOK] },
+    { sub:"reas", name:{ en:"Reasoning", hi:"तर्कशक्ति" }, books:[REAS_COMPLETE_BOOK] },
+    { sub:"maths", name:{ en:"Maths", hi:"गणित" }, books:[MATHS_COMPLETE_BOOK] },
+    { sub:"art",  name:{ en:"Art & Culture", hi:"कला एवं संस्कृति" }, books:[ART_COMPLETE_BOOK] }
   ]
 };
 const PREM_BOOK_SHORT = {
@@ -2590,7 +2605,15 @@ const PREM_BOOK_SHORT = {
   "hist-ancient-complete":  { en:"Ancient History — Complete Notes", hi:"प्राचीन इतिहास — संपूर्ण नोट्स" },
   "hist-medieval-complete": { en:"Medieval History — Complete Notes", hi:"मध्यकालीन इतिहास — संपूर्ण नोट्स" },
   "hist-modern-complete":   { en:"Modern History — Complete Notes", hi:"आधुनिक इतिहास — संपूर्ण नोट्स" },
-  "pol-complete":       { en:"Indian Polity — Complete Notes", hi:"भारतीय राजव्यवस्था — संपूर्ण नोट्स" }
+  "pol-complete":       { en:"Indian Polity — Complete Notes", hi:"भारतीय राजव्यवस्था — संपूर्ण नोट्स" },
+  "sci-complete":       { en:"General Science — Complete Notes", hi:"सामान्य विज्ञान — संपूर्ण नोट्स" },
+  "maths-complete":     { en:"Maths — Complete Notes", hi:"गणित — संपूर्ण नोट्स" },
+  "reas-complete":      { en:"Reasoning — Complete Notes", hi:"तर्कशक्ति — संपूर्ण नोट्स" },
+  "pol-raj-complete":   { en:"Rajasthan Polity — Complete Notes", hi:"राजस्थान राजव्यवस्था — संपूर्ण नोट्स" },
+  "eco-ind-complete":   { en:"Indian Economy — Complete Notes", hi:"भारतीय अर्थव्यवस्था — संपूर्ण नोट्स" },
+  "eco-raj-complete":   { en:"Rajasthan Economy — Complete Notes", hi:"राजस्थान अर्थव्यवस्था — संपूर्ण नोट्स" },
+  "hist-raj-complete":  { en:"Rajasthan History — Complete Notes", hi:"राजस्थान इतिहास — संपूर्ण नोट्स" },
+  "art-complete":       { en:"Rajasthan Art & Culture — Complete Notes", hi:"राजस्थान कला एवं संस्कृति — संपूर्ण नोट्स" }
 };
 function premSubjects_(cat){
   if(PREM_SUBJECT_LIST[cat]) return PREM_SUBJECT_LIST[cat];
@@ -3530,7 +3553,7 @@ function startPremGeoFull(n){
   startTestWith("rpsc", "geoprem_full:" + n, shuffle(qs), false, 25*60);
 }
 /* Round 78: lecture-notes subject mocks (RAS Pre 2026) — fixed slices, no repeats */
-const SM_SUBJECTS = [["rajgeo","Rajasthan Geography","राजस्थान भूगोल"],["indgeo","Indian Geography","भारत का भूगोल"],["worldgeo","World Geography","विश्व भूगोल"],["ancient","Ancient History","प्राचीन इतिहास"],["medieval","Medieval History","मध्यकालीन इतिहास"],["modern","Modern History","आधुनिक इतिहास"],["polity","Indian Polity","भारतीय राजव्यवस्था"]];
+const SM_SUBJECTS = [["rajgeo","Rajasthan Geography","राजस्थान भूगोल"],["indgeo","Indian Geography","भारत का भूगोल"],["worldgeo","World Geography","विश्व भूगोल"],["ancient","Ancient History","प्राचीन इतिहास"],["medieval","Medieval History","मध्यकालीन इतिहास"],["modern","Modern History","आधुनिक इतिहास"],["polity","Indian Polity","भारतीय राजव्यवस्था"],["science","General Science","सामान्य विज्ञान"],["maths","Maths","गणित"],["reasoning","Reasoning","तर्कशक्ति"],["rajpolity","Rajasthan Polity","राजस्थान राजव्यवस्था"],["eco_in","Indian Economy","भारतीय अर्थव्यवस्था"],["rajhist","Rajasthan History","राजस्थान इतिहास"],["rajeco","Rajasthan Economy","राजस्थान अर्थव्यवस्था"],["rajart","Rajasthan Art & Culture","राजस्थान कला एवं संस्कृति"]];
 let PREM_SM = null;
 function startSmTest(slug, n){
   const qs = poolFor("rpsc", "sm_" + slug).slice((n-1)*30, n*30);
