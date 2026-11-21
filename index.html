@@ -1009,6 +1009,10 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
         <div><h1 id="cat-title"></h1><p class="sub" id="cat-desc"></p></div>
       </div>
       <div id="cat-cd"></div>
+      <div id="prem-wrap" class="hidden">
+        <h2 id="prem-title">RAS Pre Subject Mock Tests</h2>
+        <div class="card" id="prem-card" style="padding:12px 14px"></div>
+      </div>
       <h2 data-i18n="subjectTests">Subject-wise tests</h2>
       <div class="card" id="subject-list" style="padding:4px 14px"></div>
       <h2 data-i18n="fullMock">Full mock test</h2>
@@ -2346,7 +2350,7 @@ function renderHomeCourses(){
 }
 function submocksHead_(){
   const admSmock = isAdmin() ? `<span style="display:inline-flex;align-items:center;gap:5px;white-space:nowrap"><span class="price">₹${csSet().smockPrice}</span>${admPencil_("admEditSmockPrice()")}</span>` : "";
-  return `<div style="display:flex;align-items:baseline;gap:10px"><h2 style="flex:1">${LANG === "hi" ? "विषय मॉक टेस्ट" : "Subject Mock Tests"}</h2>${admSmock}</div>`;
+  return `<div style="display:flex;align-items:baseline;gap:10px"><h2 style="flex:1">${LANG === "hi" ? "रैपिड मॉक टेस्ट" : "Rapid Mock Tests"}</h2>${admSmock}</div>`;
 }
 /* Round 62: category chips above the subject mocks. SMOCK_CAT === null
    is the default "My Courses" view (owned courses' mocks, free with the
@@ -3213,6 +3217,7 @@ function resetCatSections(){
 }
 function renderCategory(cat){
   if(cat === "pyq"){ go("pyq"); return; }
+  { const _pw0 = $("prem-wrap"); if(_pw0) _pw0.classList.add("hidden"); }
   CURCAT = cat; const c = CATS[cat]; const P = getSettings().prices;
   const _ccd = $("cat-cd"); if(_ccd) _ccd.innerHTML = catCountdownHTML(cat);
   resetCatSections();
@@ -3228,39 +3233,18 @@ function renderCategory(cat){
     const owned = hasSeries(cat, sub, n);
     const att = myAttempts.filter(a=>a.cat===cat && a.sub===sub+":"+n && a.type==="test");
     const first = att.find(a=>a.first);
-    return `<div class="srow"><div class="tt">${LANG==="hi" ? "टेस्ट" : "Test"} ${n}</div>
-      <div class="ts">${seriesQCount(cat)} ${T("questions")} · 15 ${T("minutes")}${att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : ""}</div><div class="nact">${owned ? `<button class="btn sm" onclick="startSeries('${cat}','${sub}',${n})">${att.length ? reAtt : T("start")}</button>`
-              : `<span class="price">₹${P.test}</span><button class="btn sm gold" onclick="buySeries('${cat}','${sub}',${n})">${T("buyStart")}</button>`}</div>
-    </div>`; };
-  const premGeoHTML = ()=>{
-    const owned = hasCourse("rpsc");
-    const prow = (title, meta, kind, onclick)=>{
-      const att = myAttempts.filter(a=>a.cat==="rpsc" && a.sub===kind && a.type==="test");
-      const first = att.find(a=>a.first);
-      return `<div class="srow"><div class="tt">${title}</div>
-      <div class="ts">${meta}${att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : ""}</div><div class="nact">${owned ? `<button class="btn sm" onclick="${onclick}">${att.length ? reAtt : T("start")}</button>`
-              : `<span class="tag">${LANG==="hi" ? "RPSC कोर्स के साथ" : "With RPSC Course"}</span>`}</div>
-    </div>`; };
-    let h = `<div class="pgroup-h">${LANG==="hi" ? "मॉक टेस्ट" : "Mock Tests"} <span class="pgroup-tag">${LANG==="hi" ? "प्रीमियम नोट्स" : "PREMIUM NOTES"}</span></div>`;
-    PREM_GEO_BOOKS.forEach(([b, en, hi])=>{
-      h += `<div class="pgroup-sub">${LANG==="hi" ? hi : en}</div>`;
-      for(let n=1; n<=5; n++) h += prow((LANG==="hi" ? "मॉक टेस्ट " : "Mock Test ") + n, `30 ${T("questions")} · 15 ${T("minutes")}`, "geoprem_" + b + ":" + n, `startPremGeo('${b}',${n})`);
-    });
-    h += `<div class="pgroup-sub">${LANG==="hi" ? "संपूर्ण भूगोल" : "Full Geography"}</div>`;
-    for(let n=1; n<=3; n++) h += prow((LANG==="hi" ? "फुल मॉक टेस्ट " : "Full Mock Test ") + n, `150 ${T("questions")} · 25 ${T("minutes")}`, "geoprem_full:" + n, `startPremGeoFull(${n})`);
-    return h;
-  };
+    return `<div class="smtile"><div class="smt-t">${LANG==="hi" ? "टेस्ट" : "Test"} ${n}</div>
+      <div class="smt-s">${att.length ? `${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : "&nbsp;"}</div>
+      <div class="smt-a">${owned ? `<button class="btn sm" onclick="startSeries('${cat}','${sub}',${n})">${att.length ? reAtt : T("start")}</button>`
+              : `<span class="price">₹${P.test}</span><button class="btn sm gold" onclick="buySeries('${cat}','${sub}',${n})">${T("buyStart")}</button>`}</div></div>`; };
   $("subject-list").innerHTML = c.subjects.map(([sub])=>{
     const exp = EXPANDED.has(cat + "_" + sub);
-    const isPremGeo = cat === "rpsc" && sub === "geo";
-    const rows = Array.from({length:TESTS_PER_SUBJECT}, (_,i)=> seriesRow(sub, i+1)).join("");
-    const inner = isPremGeo ? premGeoHTML() + `<div class="pgroup-h">${LANG==="hi" ? "बेसिक मॉक टेस्ट" : "Basic Mock Tests"}</div>` + rows : rows;
-    const subTs = isPremGeo ? (LANG==="hi" ? "मॉक टेस्ट (प्रीमियम नोट्स) · बेसिक मॉक टेस्ट" : "Mock Tests (Premium Notes) · Basic Mock Tests") : `${TESTS_PER_SUBJECT} ${LANG==="hi" ? "टेस्ट" : "Tests"} · ${seriesQCount(cat)} ${T("questions")} ${LANG==="hi" ? "प्रत्येक" : "each"}`;
     return `<div class="testrow" style="cursor:pointer" onclick="toggleSeries('${cat}','${sub}')"><div class="ti"><div class="tt">${subName(cat,sub,LANG)}</div>
-      <div class="ts">${subTs}</div></div>
+      <div class="ts">${TESTS_PER_SUBJECT} ${LANG==="hi" ? "टेस्ट" : "Tests"} · ${seriesQCount(cat)} ${T("questions")} ${LANG==="hi" ? "प्रत्येक" : "each"}</div></div>
       <span style="color:#bbb;font-size:19px;padding:0 6px">${exp ? "▾" : "›"}</span></div>
-      <div class="${exp ? "" : "hidden"}" style="padding-left:12px">${inner}</div>`;
+      <div class="${exp ? "" : "hidden"}" style="padding:6px 0 4px"><p class="sub" style="margin:2px 0 8px">${seriesQCount(cat)} ${T("questions")} · 15 ${T("minutes")} · ${T("firstCounts")}</p><div class="tilegrid">${Array.from({length:TESTS_PER_SUBJECT}, (_,i)=> seriesRow(sub, i+1)).join("")}</div></div>`;
   }).join("");
+  if(cat === "rpsc"){ const _pw = $("prem-wrap"); if(_pw){ _pw.classList.remove("hidden"); renderPremSection(); } }
   $("mock-card").innerHTML = mockSectionHTML(cat, c, P);
 }
 function renderSchoolCategory(c, P){
@@ -3315,16 +3299,15 @@ function freeMockRowHTML(cat, c){
   const mine = Store.attempts().filter(a=> ME && a.phone===ME.phone && a.cat===cat && a.type==="mock" && a.win===0);
   const first = mine.find(a=> a.first);
   const btn = `<span class="tag free">${T("free")}</span><button class="btn sm" onclick="startFreeMock('${cat}')">${mine.length ? (LANG==="hi" ? "पुनः प्रयास" : "Re-Attempt") : T("start")}</button>`;
-  return `<div class="srow"><div class="tt">${LANG==="hi" ? "मुफ़्त मॉक" : "Free Mock"}</div>
-    <div class="ts">${cfg.n} ${T("questions")} \u00b7 ${cfg.mins} ${T("minutes")} \u00b7 ${cfg.pattern[LANG]||cfg.pattern.en}${mine.length ? ` \u00b7 ${mine.length} ${T("attempts")}${first ? ` \u00b7 ${T("bestScore")}: ${first.score}` : ""}` : ""}</div>
-    <div class="ts" style="color:var(--red)">${LANG==="hi" ? "नकारात्मक अंकन: प्रत्येक गलत उत्तर पर −0.25" : "Negative marking: −0.25 for every wrong answer"}</div>
-    <div class="nact">${btn}</div></div>`;
+  return `<div class="smtile"><div class="smt-t">${LANG==="hi" ? "मुफ़्त मॉक" : "Free Mock"}</div>
+    <div class="smt-s">${cfg.n} ${T("questions")} · ${cfg.mins} ${T("minutes")}${mine.length ? ` · ${mine.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : ""}</div>
+    <div class="smt-a">${btn}</div></div>`;
 }
 function mockSectionHTML(cat, c, P){
   const cnt = libMockCount(); let rows = "";
   for(let n = cnt; n >= 1; n--) rows += fullMockRowHTML(cat, c, P, n);
-  return `<p class="sub" style="padding:2px 0 10px">${T("firstCounts")} ${LANG==="hi" ? "हर 5 दिन में यहाँ एक नया मॉक जुड़ता है — पुराने मॉक हमेशा रहते हैं।" : "A new mock is added here every 5 days — previous mocks always stay."} ${mockRefreshIn()}.</p>`
-    + freeMockRowHTML(cat, c) + rows;
+  return `<p class="sub" style="padding:2px 0 10px">${T("firstCounts")} ${LANG==="hi" ? "हर 5 दिन में यहाँ एक नया मॉक जुड़ता है — पुराने मॉक हमेशा रहते हैं।" : "A new mock is added here every 5 days — previous mocks always stay."} ${mockRefreshIn()}.<br>${FULLMOCK[cat] ? (FULLMOCK[cat].pattern[LANG]||FULLMOCK[cat].pattern.en) : ""}<br><span style="color:var(--red)">${LANG==="hi" ? "नकारात्मक अंकन: प्रत्येक गलत उत्तर पर −0.25 अंक" : "Negative marking: −0.25 for every wrong answer"}</span></p>`
+    + `<div class="tilegrid">` + freeMockRowHTML(cat, c) + rows + `</div>`;
 }
 /* ----- Full-mock library: every 5-day set stays listed forever; each mock is
    bought separately. Mock numbers count from MOCK_LIB_BASE (the 5-day window
@@ -3357,10 +3340,9 @@ function fullMockRowHTML(cat, c, P, n){
   const owned = hasLibMock(cat, n);
   const btn = owned ? `<button class="btn sm" onclick="startLibMock('${cat}',${n})">${mine.length ? (LANG==="hi" ? "पुनः प्रयास" : "Re-Attempt") : T("start")}</button>`
     : `<span class="price">₹${mockPrice(cat)}</span><button class="btn sm gold" onclick="buyLibMock('${cat}',${n})">${T("buyStart")}</button>`;
-  return `<div class="srow"><div class="tt">${LANG==="hi" ? "फुल मॉक " : "Full Mock "}${n}</div>
-    <div class="ts">${cfg.n} ${T("questions")} \u00b7 ${cfg.mins} ${T("minutes")} \u00b7 ${cfg.pattern[LANG]||cfg.pattern.en}${mine.length ? ` \u00b7 ${mine.length} ${T("attempts")}${winFirst ? ` \u00b7 ${T("bestScore")}: ${winFirst.score}` : ""}` : ""}</div>
-    <div class="ts" style="color:var(--red)">${LANG==="hi" ? "नकारात्मक अंकन: प्रत्येक गलत उत्तर पर −0.25" : "Negative marking: −0.25 for every wrong answer"}</div>
-    <div class="nact">${btn}</div></div>`;
+  return `<div class="smtile"><div class="smt-t">${LANG==="hi" ? "फुल मॉक " : "Full Mock "}${n}</div>
+    <div class="smt-s">${cfg.n} ${T("questions")} · ${cfg.mins} ${T("minutes")}${mine.length ? ` · ${mine.length} ${T("attempts")}${winFirst ? ` · ${T("bestScore")}: ${winFirst.score}` : ""}` : ""}</div>
+    <div class="smt-a">${btn}</div></div>`;
 }
 function renderFullMockCategory(cat, c, P){
   const cfg = FULLMOCK[cat];
@@ -3508,6 +3490,47 @@ function startPremGeoFull(n){
   const qs = [];
   ["raj","ind","wld"].forEach(b=>{ qs.push(...poolFor("rpsc", "geopremf_" + b).slice((n-1)*50, n*50)); });
   startTestWith("rpsc", "geoprem_full:" + n, shuffle(qs), false, 25*60);
+}
+let PREM_OPEN = false, PREM_SUB = null;
+function premToggleGeo(){ PREM_OPEN = !PREM_OPEN; if(!PREM_OPEN) PREM_SUB = null; renderPremSection(); }
+function premPickSub(k){ PREM_SUB = (PREM_SUB === k ? null : k); renderPremSection(); }
+function renderPremSection(){
+  const el = $("prem-card"); if(!el) return;
+  const owned = hasCourse("rpsc");
+  const myA = Store.attempts().filter(a=> ME && a.phone===ME.phone && a.cat==="rpsc" && a.type==="test");
+  const reAtt = LANG==="hi" ? "पुनः प्रयास" : "Re-Attempt";
+  const navTile = (title, sub, onclick)=> `<div class="smtile" style="cursor:pointer" onclick="${onclick}"><div class="smt-t">${title}</div><div class="smt-s">${sub}</div></div>`;
+  let h = `<div class="tilegrid">`;
+  (CATS.rpsc ? CATS.rpsc.subjects : []).forEach(([sub])=>{
+    const nm = subName("rpsc", sub, LANG);
+    if(sub === "geo") h += navTile(nm, (LANG==="hi" ? "मॉक टेस्ट · प्रीमियम नोट्स" : "Mock Tests · Premium Notes") + (PREM_OPEN ? " ▾" : " ›"), "premToggleGeo()");
+    else h += `<div class="smtile" style="opacity:.55"><div class="smt-t">${nm}</div><div class="smt-s">${LANG==="hi" ? "जल्द आ रहा है" : "Coming Soon"}</div></div>`;
+  });
+  h += `</div>`;
+  if(PREM_OPEN){
+    h += `<div class="tilegrid" style="margin-top:12px">`;
+    PREM_GEO_BOOKS.forEach(([b, en, hi2])=>{
+      h += navTile(LANG==="hi" ? hi2 : en, (LANG==="hi" ? "5 मॉक टेस्ट · 30 प्रश्न · 15 मिनट" : "5 Mock Tests · 30 questions · 15 min") + (PREM_SUB === b ? " ▾" : " ›"), `premPickSub('${b}')`);
+    });
+    h += navTile(LANG==="hi" ? "संपूर्ण भूगोल" : "Full Geography", (LANG==="hi" ? "3 फुल मॉक टेस्ट · 150 प्रश्न · 25 मिनट" : "3 Full Mock Tests · 150 questions · 25 min") + (PREM_SUB === "full" ? " ▾" : " ›"), "premPickSub('full')");
+    h += `</div>`;
+    if(PREM_SUB){
+      const isFull = PREM_SUB === "full";
+      const count = isFull ? 3 : 5;
+      h += `<div class="tilegrid" style="margin-top:12px">`;
+      for(let n=1; n<=count; n++){
+        const kind = isFull ? "geoprem_full:" + n : "geoprem_" + PREM_SUB + ":" + n;
+        const att = myA.filter(a=>a.sub===kind);
+        const first = att.find(a=>a.first);
+        const title = isFull ? (LANG==="hi" ? "फुल मॉक टेस्ट " : "Full Mock Test ") + n : (LANG==="hi" ? "मॉक टेस्ट " : "Mock Test ") + n;
+        const meta = (isFull ? `150 ${T("questions")} · 25 ${T("minutes")}` : `30 ${T("questions")} · 15 ${T("minutes")}`) + (att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : "");
+        const act = owned ? `<button class="btn sm" onclick="${isFull ? `startPremGeoFull(${n})` : `startPremGeo('${PREM_SUB}',${n})`}">${att.length ? reAtt : T("start")}</button>` : `<span class="tag">${LANG==="hi" ? "RPSC कोर्स के साथ" : "With RPSC Course"}</span>`;
+        h += `<div class="smtile"><div class="smt-t">${title}</div><div class="smt-s">${meta}</div><div class="smt-a">${act}</div></div>`;
+      }
+      h += `</div>`;
+    }
+  }
+  el.innerHTML = h;
 }
 function toggleSeries(cat, sub){
   const key = cat + "_" + sub;
