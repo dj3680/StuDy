@@ -511,6 +511,10 @@ html[data-theme="dark"] .thead{background:linear-gradient(180deg,rgba(34,36,46,.
 .pfb-thoughtedit.hidden{display:none}
 .ep-row{display:flex;align-items:center;gap:12px;padding:13px 2px;cursor:pointer;width:100%;background:none;border:none;font:inherit;text-align:left;color:var(--ink)}
 .ep-row + .ep-row{border-top:1px solid var(--line)}
+.pgroup-h{font-size:15px;font-weight:900;color:var(--ink);margin:12px 0 4px;display:flex;align-items:center;gap:8px}
+.pgroup-tag{font-size:9.5px;letter-spacing:1.2px;background:linear-gradient(135deg,#b8860b,#d4a017);color:#fff;padding:3px 8px;border-radius:999px;font-weight:800}
+.pgroup-sub{font-size:12.5px;font-weight:800;color:#31517e;margin:10px 0 2px}
+html[data-theme="dark"] .pgroup-sub{color:#9db9ec}
 .ep-ic{display:flex;align-items:center;justify-content:center;width:30px;flex:none;color:#31517e}
 .ep-ic svg{width:23px;height:23px}
 html[data-theme="dark"] .ep-ic{color:#9db9ec}
@@ -1398,6 +1402,7 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
 <script src="questions.js"></script>
 <script src="questions2.js"></script>
 <script src="questions3.js"></script>
+<script src="questions4.js"></script>
 <script>
 /* ================================================================
    StuDy v2 — light minimalist UI.
@@ -1531,7 +1536,10 @@ const SCHOOL_PRICE = { c9:10, c10:20, c11:25, c12:30 };
 function schoolSubjectPrice(sub){ return SCHOOL_PRICE[String(sub||"").split("_")[0]] || getSettings().prices.test; }
 function chapterOf(sub){ const m = /^(c\d+)_(.+)_ch(\d+)$/.exec(sub||""); if(!m) return null; const list = SCHOOL_CHAPTERS[m[1]+"_"+m[2]]; if(!list) return null; return list[+m[3]-1] || null; }
 function chapterKey(cls, s, i){ return cls + "_" + s + "_ch" + (i+1); }
+const PREM_GEO_NAMES = { geoprem_raj:["Rajasthan Geography","राजस्थान भूगोल"], geoprem_ind:["Indian Geography","भारत का भूगोल"], geoprem_wld:["World Geography","विश्व भूगोल"], geopremf_raj:["Rajasthan Geography","राजस्थान भूगोल"], geopremf_ind:["Indian Geography","भारत का भूगोल"], geopremf_wld:["World Geography","विश्व भूगोल"], geoprem_full:["Full Geography","संपूर्ण भूगोल"] };
 const subName = (cat, sub, lang) => { const hi = lang==="hi";
+  const pm = /^(geoprem_[a-z]+|geopremf_[a-z]+|geoprem_full):(\d+)$/.exec(sub||""); if(pm) return subName(cat, pm[1], lang) + " · " + (hi ? "मॉक टेस्ट " : "Mock Test ") + pm[2];
+  const pgn = PREM_GEO_NAMES[sub]; if(pgn) return hi ? pgn[1] : pgn[0];
   const smk = /^smock_[a-z]+_(.+)$/.exec(sub||""); if(smk) return subName(cat, smk[1], lang) + " · " + (hi ? "मॉक टेस्ट" : "Subject Mock");
   const sm = /^(.+):(\d+)$/.exec(sub||""); if(sm) return subName(cat, sm[1], lang) + " · " + (hi ? "टेस्ट " : "Test ") + sm[2];
   if(cat === "school"){ const ch = chapterOf(sub); if(ch) return ch[hi?1:0]; }
@@ -3224,12 +3232,34 @@ function renderCategory(cat){
       <div class="ts">${seriesQCount(cat)} ${T("questions")} · 15 ${T("minutes")}${att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : ""}</div><div class="nact">${owned ? `<button class="btn sm" onclick="startSeries('${cat}','${sub}',${n})">${att.length ? reAtt : T("start")}</button>`
               : `<span class="price">₹${P.test}</span><button class="btn sm gold" onclick="buySeries('${cat}','${sub}',${n})">${T("buyStart")}</button>`}</div>
     </div>`; };
+  const premGeoHTML = ()=>{
+    const owned = hasCourse("rpsc");
+    const prow = (title, meta, kind, onclick)=>{
+      const att = myAttempts.filter(a=>a.cat==="rpsc" && a.sub===kind && a.type==="test");
+      const first = att.find(a=>a.first);
+      return `<div class="srow"><div class="tt">${title}</div>
+      <div class="ts">${meta}${att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : ""}</div><div class="nact">${owned ? `<button class="btn sm" onclick="${onclick}">${att.length ? reAtt : T("start")}</button>`
+              : `<span class="tag">${LANG==="hi" ? "RPSC कोर्स के साथ" : "With RPSC Course"}</span>`}</div>
+    </div>`; };
+    let h = `<div class="pgroup-h">${LANG==="hi" ? "मॉक टेस्ट" : "Mock Tests"} <span class="pgroup-tag">${LANG==="hi" ? "प्रीमियम नोट्स" : "PREMIUM NOTES"}</span></div>`;
+    PREM_GEO_BOOKS.forEach(([b, en, hi])=>{
+      h += `<div class="pgroup-sub">${LANG==="hi" ? hi : en}</div>`;
+      for(let n=1; n<=5; n++) h += prow((LANG==="hi" ? "मॉक टेस्ट " : "Mock Test ") + n, `30 ${T("questions")} · 15 ${T("minutes")}`, "geoprem_" + b + ":" + n, `startPremGeo('${b}',${n})`);
+    });
+    h += `<div class="pgroup-sub">${LANG==="hi" ? "संपूर्ण भूगोल" : "Full Geography"}</div>`;
+    for(let n=1; n<=3; n++) h += prow((LANG==="hi" ? "फुल मॉक टेस्ट " : "Full Mock Test ") + n, `150 ${T("questions")} · 25 ${T("minutes")}`, "geoprem_full:" + n, `startPremGeoFull(${n})`);
+    return h;
+  };
   $("subject-list").innerHTML = c.subjects.map(([sub])=>{
     const exp = EXPANDED.has(cat + "_" + sub);
+    const isPremGeo = cat === "rpsc" && sub === "geo";
+    const rows = Array.from({length:TESTS_PER_SUBJECT}, (_,i)=> seriesRow(sub, i+1)).join("");
+    const inner = isPremGeo ? premGeoHTML() + `<div class="pgroup-h">${LANG==="hi" ? "बेसिक मॉक टेस्ट" : "Basic Mock Tests"}</div>` + rows : rows;
+    const subTs = isPremGeo ? (LANG==="hi" ? "मॉक टेस्ट (प्रीमियम नोट्स) · बेसिक मॉक टेस्ट" : "Mock Tests (Premium Notes) · Basic Mock Tests") : `${TESTS_PER_SUBJECT} ${LANG==="hi" ? "टेस्ट" : "Tests"} · ${seriesQCount(cat)} ${T("questions")} ${LANG==="hi" ? "प्रत्येक" : "each"}`;
     return `<div class="testrow" style="cursor:pointer" onclick="toggleSeries('${cat}','${sub}')"><div class="ti"><div class="tt">${subName(cat,sub,LANG)}</div>
-      <div class="ts">${TESTS_PER_SUBJECT} ${LANG==="hi" ? "टेस्ट" : "Tests"} · ${seriesQCount(cat)} ${T("questions")} ${LANG==="hi" ? "प्रत्येक" : "each"}</div></div>
+      <div class="ts">${subTs}</div></div>
       <span style="color:#bbb;font-size:19px;padding:0 6px">${exp ? "▾" : "›"}</span></div>
-      <div class="${exp ? "" : "hidden"}" style="padding-left:12px">${Array.from({length:TESTS_PER_SUBJECT}, (_,i)=> seriesRow(sub, i+1)).join("")}</div>`;
+      <div class="${exp ? "" : "hidden"}" style="padding-left:12px">${inner}</div>`;
   }).join("");
   $("mock-card").innerHTML = mockSectionHTML(cat, c, P);
 }
@@ -3467,6 +3497,17 @@ function startSeries(cat, sub, n){
   }
   const byId = {}; window.STUDY_QUESTIONS.forEach(q=> byId[q[0]] = q);
   startTestWith(cat, kind, ids.map(id=>byId[id]).filter(Boolean), false, 15*60);
+}
+/* Round 71: Premium-Notes Geography mock tests — fixed slices, no repeats */
+const PREM_GEO_BOOKS = [["raj","Rajasthan Geography","राजस्थान भूगोल"],["ind","Indian Geography","भारत का भूगोल"],["wld","World Geography","विश्व भूगोल"]];
+function startPremGeo(book, n){
+  const qs = poolFor("rpsc", "geoprem_" + book).slice((n-1)*30, n*30);
+  startTestWith("rpsc", "geoprem_" + book + ":" + n, qs, false, 15*60);
+}
+function startPremGeoFull(n){
+  const qs = [];
+  ["raj","ind","wld"].forEach(b=>{ qs.push(...poolFor("rpsc", "geopremf_" + b).slice((n-1)*50, n*50)); });
+  startTestWith("rpsc", "geoprem_full:" + n, shuffle(qs), false, 25*60);
 }
 function toggleSeries(cat, sub){
   const key = cat + "_" + sub;
