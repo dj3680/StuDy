@@ -1009,6 +1009,10 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
         <div><h1 id="cat-title"></h1><p class="sub" id="cat-desc"></p></div>
       </div>
       <div id="cat-cd"></div>
+      <div id="rasfull-wrap" class="hidden">
+        <h2>RAS Pre 2026 Full Mock Test</h2>
+        <div class="card" id="rasfull-card" style="padding:12px 14px"></div>
+      </div>
       <div id="prem-wrap" class="hidden">
         <h2 id="prem-title">RAS Pre Subject Mock Tests</h2>
         <div class="card" id="prem-card" style="padding:12px 14px"></div>
@@ -1407,6 +1411,9 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
 <script src="questions2.js"></script>
 <script src="questions3.js"></script>
 <script src="questions4.js"></script>
+<script src="questions5.js"></script>
+<script src="questions6.js"></script>
+<script src="questions7.js"></script>
 <script>/* qrcode-generator 1.4.4 — Kazuhiko Arase, MIT License */
 /**
  * Minified by jsDelivr using Terser v5.37.0.
@@ -1551,8 +1558,11 @@ function schoolSubjectPrice(sub){ return SCHOOL_PRICE[String(sub||"").split("_")
 function chapterOf(sub){ const m = /^(c\d+)_(.+)_ch(\d+)$/.exec(sub||""); if(!m) return null; const list = SCHOOL_CHAPTERS[m[1]+"_"+m[2]]; if(!list) return null; return list[+m[3]-1] || null; }
 function chapterKey(cls, s, i){ return cls + "_" + s + "_ch" + (i+1); }
 const PREM_GEO_NAMES = { geoprem_raj:["Rajasthan Geography","राजस्थान भूगोल"], geoprem_ind:["Indian Geography","भारत का भूगोल"], geoprem_wld:["World Geography","विश्व भूगोल"], geopremf_raj:["Rajasthan Geography","राजस्थान भूगोल"], geopremf_ind:["Indian Geography","भारत का भूगोल"], geopremf_wld:["World Geography","विश्व भूगोल"], geoprem_full:["Full Geography","संपूर्ण भूगोल"] };
+const SM_NAMES = { sm_rajgeo:["Rajasthan Geography","राजस्थान भूगोल"], smf_rajgeo:["Rajasthan Geography","राजस्थान भूगोल"], sm_worldgeo:["World Geography","विश्व भूगोल"], smf_worldgeo:["World Geography","विश्व भूगोल"], sm_indgeo:["Indian Geography","भारत का भूगोल"], smf_indgeo:["Indian Geography","भारत का भूगोल"], sm_ancient:["Ancient History","प्राचीन इतिहास"], smf_ancient:["Ancient History","प्राचीन इतिहास"], sm_medieval:["Medieval History","मध्यकालीन इतिहास"], smf_medieval:["Medieval History","मध्यकालीन इतिहास"], sm_modern:["Modern History","आधुनिक इतिहास"], smf_modern:["Modern History","आधुनिक इतिहास"], sm_polity:["Indian Polity","भारतीय राजव्यवस्था"], smf_polity:["Indian Polity","भारतीय राजव्यवस्था"] };
 const subName = (cat, sub, lang) => { const hi = lang==="hi";
   const pm = /^(geoprem_[a-z]+|geopremf_[a-z]+|geoprem_full):(\d+)$/.exec(sub||""); if(pm) return subName(cat, pm[1], lang) + " · " + (hi ? "मॉक टेस्ट " : "Mock Test ") + pm[2];
+  const rf = /^rfull_(\d+)$/.exec(sub||""); if(rf) return (hi ? "RAS प्री 2026 फुल मॉक टेस्ट " : "RAS Pre 2026 Full Mock Test ") + rf[1];
+  const smn = SM_NAMES[sub]; if(smn) return hi ? smn[1] : smn[0];
   const pgn = PREM_GEO_NAMES[sub]; if(pgn) return hi ? pgn[1] : pgn[0];
   const smk = /^smock_[a-z]+_(.+)$/.exec(sub||""); if(smk) return subName(cat, smk[1], lang) + " · " + (hi ? "मॉक टेस्ट" : "Subject Mock");
   const sm = /^(.+):(\d+)$/.exec(sub||""); if(sm) return subName(cat, sm[1], lang) + " · " + (hi ? "टेस्ट " : "Test ") + sm[2];
@@ -2486,6 +2496,16 @@ const GEO_DETAILED_INDIA_BOOK = { sub:"geo-detailed-india", en:"Detailed Indian 
    downloadNotes to notes/rpsc-geo-detailed-world.pdf. */
 const GEO_DETAILED_WORLD_PRICE = 10;
 const GEO_DETAILED_WORLD_BOOK = { sub:"geo-detailed-world", en:"Detailed World Geography (RAS Pre 2026)", hi:"\u0935\u093f\u0938\u094d\u0924\u0943\u0924 \u0935\u093f\u0936\u094d\u0935 \u092d\u0942\u0917\u094b\u0932 (RAS Pre 2026)", tag:{ en:"Complete World Geography \u2014 every topic, every fact, easy language \u00b7 41 pages", hi:"\u092a\u0942\u0930\u093e \u0935\u093f\u0936\u094d\u0935 \u092d\u0942\u0917\u094b\u0932 \u2014 \u0939\u0930 \u091f\u0949\u092a\u093f\u0915, \u0939\u0930 \u0924\u0925\u094d\u092f, \u0906\u0938\u093e\u0928 \u092d\u093e\u0937\u093e \u00b7 41 \u092a\u0947\u091c" } };
+/* Round 78: complete subject notes (RAS Pre 2026) — one book per subject,
+   priced per book like the other premium books (admin-editable).
+   Downloads resolve via downloadNotes to notes/rpsc-<sub>.pdf. */
+const GEO_RAJ_COMPLETE_BOOK = { sub:"geo-raj-complete", en:"Rajasthan Geography — Complete Notes (RAS Pre 2026)", hi:"राजस्थान भूगोल — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Rajasthan Geography — every topic, every fact, easy language · 68 pages", hi:"पूरा राजस्थान भूगोल — हर टॉपिक, हर तथ्य, आसान भाषा · 68 पेज" } };
+const GEO_IND_COMPLETE_BOOK = { sub:"geo-ind-complete", en:"Indian Geography — Complete Notes (RAS Pre 2026)", hi:"भारतीय भूगोल — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Indian Geography — every topic, every fact, easy language · 35 pages", hi:"पूरा भारतीय भूगोल — हर टॉपिक, हर तथ्य, आसान भाषा · 35 पेज" } };
+const GEO_WLD_COMPLETE_BOOK = { sub:"geo-wld-complete", en:"World Geography — Complete Notes (RAS Pre 2026)", hi:"विश्व भूगोल — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete World Geography — every topic, every fact, easy language · 32 pages", hi:"पूरा विश्व भूगोल — हर टॉपिक, हर तथ्य, आसान भाषा · 32 पेज" } };
+const HIST_ANCIENT_COMPLETE_BOOK = { sub:"hist-ancient-complete", en:"Ancient History — Complete Notes (RAS Pre 2026)", hi:"प्राचीन इतिहास — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Ancient History — every topic, every fact, easy language · 50 pages", hi:"पूरा प्राचीन इतिहास — हर टॉपिक, हर तथ्य, आसान भाषा · 50 पेज" } };
+const HIST_MEDIEVAL_COMPLETE_BOOK = { sub:"hist-medieval-complete", en:"Medieval History — Complete Notes (RAS Pre 2026)", hi:"मध्यकालीन इतिहास — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Medieval History — every topic, every fact, easy language · 48 pages", hi:"पूरा मध्यकालीन इतिहास — हर टॉपिक, हर तथ्य, आसान भाषा · 48 पेज" } };
+const HIST_MODERN_COMPLETE_BOOK = { sub:"hist-modern-complete", en:"Modern History — Complete Notes (RAS Pre 2026)", hi:"आधुनिक इतिहास — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Modern History — every topic, every fact, easy language · 73 pages", hi:"पूरा आधुनिक इतिहास — हर टॉपिक, हर तथ्य, आसान भाषा · 73 पेज" } };
+const POL_COMPLETE_BOOK = { sub:"pol-complete", en:"Indian Polity — Complete Notes (RAS Pre 2026)", hi:"भारतीय राजव्यवस्था — संपूर्ण नोट्स (RAS Pre 2026)", tag:{ en:"Complete Indian Polity — every topic, every fact, easy language · 43 pages", hi:"पूरी भारतीय राजव्यवस्था — हर टॉपिक, हर तथ्य, आसान भाषा · 43 पेज" } };
 /* Notes open-state (Round 30 fix): renderNotes() rebuilds the whole Notes
    screen after a purchase, which used to collapse every dropdown the user
    had open. These record which exam wrap and sub-dropdowns are open so a
@@ -2552,9 +2572,9 @@ function basicBooksCount_(cat){ return basicSubjects_(cat).reduce((n, s) => n + 
 /* ----- Premium Detailed Notes subjects ----- */
 const PREM_SUBJECT_LIST = {
   rpsc: [
-    { sub:"geo",  name:{ en:"Geography", hi:"भूगोल" }, key:"rpsc_geo", books:[GEO_DETAILED_BOOK, GEO_DETAILED_INDIA_BOOK, GEO_DETAILED_WORLD_BOOK] },
-    { sub:"pol",  name:{ en:"Polity", hi:"राजनीति विज्ञान" } },
-    { sub:"hist", name:{ en:"History", hi:"इतिहास" } },
+    { sub:"geo",  name:{ en:"Geography", hi:"भूगोल" }, key:"rpsc_geo", books:[GEO_DETAILED_BOOK, GEO_DETAILED_INDIA_BOOK, GEO_DETAILED_WORLD_BOOK, GEO_RAJ_COMPLETE_BOOK, GEO_IND_COMPLETE_BOOK, GEO_WLD_COMPLETE_BOOK] },
+    { sub:"pol",  name:{ en:"Polity", hi:"राजनीति विज्ञान" }, books:[POL_COMPLETE_BOOK] },
+    { sub:"hist", name:{ en:"History", hi:"इतिहास" }, books:[HIST_ANCIENT_COMPLETE_BOOK, HIST_MEDIEVAL_COMPLETE_BOOK, HIST_MODERN_COMPLETE_BOOK] },
     { sub:"eco",  name:{ en:"Economy", hi:"अर्थव्यवस्था" } },
     { sub:"sci",  name:{ en:"Science", hi:"विज्ञान" } },
     { sub:"reas", name:{ en:"Reasoning", hi:"तर्कशक्ति" } }
@@ -2563,7 +2583,14 @@ const PREM_SUBJECT_LIST = {
 const PREM_BOOK_SHORT = {
   "geo-detailed":       { en:"Rajasthan Geography", hi:"राजस्थान भूगोल" },
   "geo-detailed-india": { en:"Indian Geography", hi:"भारतीय भूगोल" },
-  "geo-detailed-world": { en:"World Geography", hi:"विश्व भूगोल" }
+  "geo-detailed-world": { en:"World Geography", hi:"विश्व भूगोल" },
+  "geo-raj-complete":   { en:"Rajasthan Geography — Complete Notes", hi:"राजस्थान भूगोल — संपूर्ण नोट्स" },
+  "geo-ind-complete":   { en:"Indian Geography — Complete Notes", hi:"भारतीय भूगोल — संपूर्ण नोट्स" },
+  "geo-wld-complete":   { en:"World Geography — Complete Notes", hi:"विश्व भूगोल — संपूर्ण नोट्स" },
+  "hist-ancient-complete":  { en:"Ancient History — Complete Notes", hi:"प्राचीन इतिहास — संपूर्ण नोट्स" },
+  "hist-medieval-complete": { en:"Medieval History — Complete Notes", hi:"मध्यकालीन इतिहास — संपूर्ण नोट्स" },
+  "hist-modern-complete":   { en:"Modern History — Complete Notes", hi:"आधुनिक इतिहास — संपूर्ण नोट्स" },
+  "pol-complete":       { en:"Indian Polity — Complete Notes", hi:"भारतीय राजव्यवस्था — संपूर्ण नोट्स" }
 };
 function premSubjects_(cat){
   if(PREM_SUBJECT_LIST[cat]) return PREM_SUBJECT_LIST[cat];
@@ -3228,6 +3255,7 @@ function resetCatSections(){
 function renderCategory(cat){
   if(cat === "pyq"){ go("pyq"); return; }
   { const _pw0 = $("prem-wrap"); if(_pw0) _pw0.classList.add("hidden"); }
+  { const _rw0 = $("rasfull-wrap"); if(_rw0) _rw0.classList.add("hidden"); }
   CURCAT = cat; const c = CATS[cat]; const P = getSettings().prices;
   const _ccd = $("cat-cd"); if(_ccd) _ccd.innerHTML = catCountdownHTML(cat);
   resetCatSections();
@@ -3254,7 +3282,7 @@ function renderCategory(cat){
       <span style="color:#bbb;font-size:19px;padding:0 6px">${exp ? "▾" : "›"}</span></div>
       <div class="${exp ? "" : "hidden"}" style="padding:6px 0 4px"><p class="sub" style="margin:2px 0 8px">${seriesQCount(cat)} ${T("questions")} · 15 ${T("minutes")} · ${T("firstCounts")}</p><div class="tilegrid">${Array.from({length:TESTS_PER_SUBJECT}, (_,i)=> seriesRow(sub, i+1)).join("")}</div></div>`;
   }).join("");
-  if(cat === "rpsc"){ const _pw = $("prem-wrap"); if(_pw){ _pw.classList.remove("hidden"); renderPremSection(); } }
+  if(cat === "rpsc"){ const _pw = $("prem-wrap"); if(_pw){ _pw.classList.remove("hidden"); renderPremSection(); } const _rw = $("rasfull-wrap"); if(_rw){ _rw.classList.remove("hidden"); renderRasFullSection(); } }
   $("mock-card").innerHTML = mockSectionHTML(cat, c, P);
 }
 function renderSchoolCategory(c, P){
@@ -3501,10 +3529,45 @@ function startPremGeoFull(n){
   ["raj","ind","wld"].forEach(b=>{ qs.push(...poolFor("rpsc", "geopremf_" + b).slice((n-1)*50, n*50)); });
   startTestWith("rpsc", "geoprem_full:" + n, shuffle(qs), false, 25*60);
 }
+/* Round 78: lecture-notes subject mocks (RAS Pre 2026) — fixed slices, no repeats */
+const SM_SUBJECTS = [["rajgeo","Rajasthan Geography","राजस्थान भूगोल"],["indgeo","Indian Geography","भारत का भूगोल"],["worldgeo","World Geography","विश्व भूगोल"],["ancient","Ancient History","प्राचीन इतिहास"],["medieval","Medieval History","मध्यकालीन इतिहास"],["modern","Modern History","आधुनिक इतिहास"],["polity","Indian Polity","भारतीय राजव्यवस्था"]];
+let PREM_SM = null;
+function startSmTest(slug, n){
+  const qs = poolFor("rpsc", "sm_" + slug).slice((n-1)*30, n*30);
+  startTestWith("rpsc", "sm_" + slug + ":" + n, qs, false, 15*60);
+}
+function startSmFull(slug, n){
+  const qs = poolFor("rpsc", "smf_" + slug).slice((n-1)*150, n*150);
+  startTestWith("rpsc", "smf_" + slug + ":" + n, qs, false, 25*60);
+}
+function premOpenSm(slug){ PREM_SM = slug; PREM_LEVEL = 3; renderPremSection(); }
+function premOpenSmFull(){ PREM_LEVEL = 4; renderPremSection(); }
+/* Round 78: RAS Pre 2026 Full Mock Tests — real pattern, 150Q / 3 hours */
+function startRasFull(n){
+  const qs = poolFor("rpsc", "rfull_" + n);
+  startTestWith("rpsc", "rfull_" + n, qs, false, 3*60*60);
+}
+function renderRasFullSection(){
+  const el = $("rasfull-card"); if(!el) return;
+  const owned = hasCourse("rpsc");
+  const myA = Store.attempts().filter(a=> ME && a.phone===ME.phone && a.cat==="rpsc" && a.type==="test");
+  const reAtt = LANG==="hi" ? "पुनः प्रयास" : "Re-Attempt";
+  let h = `<p class="sub" style="margin:0 0 12px">${LANG==="hi" ? "असली RAS पैटर्न — 150 प्रश्न · 200 अंक · 3 घंटे" : "Real RAS pattern — 150 questions · 200 marks · 3 hours"}</p><div class="tilegrid">`;
+  for(let n=1; n<=10; n++){
+    const kind = "rfull_" + n;
+    const att = myA.filter(a=>a.sub===kind);
+    const first = att.find(a=>a.first);
+    const meta = `150 ${T("questions")} · 180 ${T("minutes")}` + (att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : "");
+    const act = owned ? `<button class="btn sm" onclick="startRasFull(${n})">${att.length ? reAtt : T("start")}</button>` : `<span class="tag">${LANG==="hi" ? "RPSC कोर्स के साथ" : "With RPSC Course"}</span>`;
+    h += `<div class="smtile"><div class="smt-t">${LANG==="hi" ? "फुल मॉक टेस्ट " : "Full Mock Test "}${n}</div><div class="smt-s">${meta}</div><div class="smt-a">${act}</div></div>`;
+  }
+  h += `</div>`;
+  el.innerHTML = h;
+}
 let PREM_LEVEL = 0, PREM_SUB = null;
 function premOpenGeo(){ PREM_LEVEL = 1; PREM_SUB = null; renderPremSection(); }
 function premPickSub(k){ PREM_SUB = k; PREM_LEVEL = 2; renderPremSection(); }
-function premBack(){ if(PREM_LEVEL === 2){ PREM_LEVEL = 1; PREM_SUB = null; } else { PREM_LEVEL = 0; } renderPremSection(); }
+function premBack(){ if(PREM_LEVEL === 2){ PREM_LEVEL = 1; PREM_SUB = null; } else if(PREM_LEVEL === 4){ PREM_LEVEL = 3; } else { PREM_LEVEL = 0; PREM_SM = null; } renderPremSection(); }
 function renderPremSection(){
   const el = $("prem-card"); if(!el) return;
   const owned = hasCourse("rpsc");
@@ -3520,6 +3583,9 @@ function renderPremSection(){
       if(sub === "geo") h += navTile(nm, LANG==="hi" ? "मॉक टेस्ट · प्रीमियम नोट्स" : "Mock Tests · Premium Notes", "premOpenGeo()");
       else h += `<div class="smtile" style="opacity:.55"><div class="smt-t">${nm}</div><div class="smt-s">${LANG==="hi" ? "जल्द आ रहा है" : "Coming Soon"}</div></div>`;
     });
+    SM_SUBJECTS.forEach(([slug, en, hi2])=>{
+      h += navTile(LANG==="hi" ? hi2 : en, LANG==="hi" ? "मॉक टेस्ट · विस्तृत नोट्स" : "Mock Tests · Detailed Notes", `premOpenSm('${slug}')`);
+    });
     h += `</div>`;
   } else if(PREM_LEVEL === 1){
     h += head(LANG==="hi" ? "सभी विषय" : "All Subjects", subName("rpsc", "geo", LANG));
@@ -3529,7 +3595,7 @@ function renderPremSection(){
     });
     h += navTile(LANG==="hi" ? "संपूर्ण भूगोल" : "Full Geography", LANG==="hi" ? "3 फुल मॉक टेस्ट · 150 प्रश्न · 25 मिनट" : "3 Full Mock Tests · 150 questions · 25 min", "premPickSub('full')");
     h += `</div>`;
-  } else {
+  } else if(PREM_LEVEL === 2) {
     const isFull = PREM_SUB === "full";
     const subTitle = isFull ? (LANG==="hi" ? "संपूर्ण भूगोल" : "Full Geography") : (LANG==="hi" ? (PREM_GEO_BOOKS.find(b=>b[0]===PREM_SUB)||[])[2] : (PREM_GEO_BOOKS.find(b=>b[0]===PREM_SUB)||[])[1]) || "";
     h += head(subName("rpsc", "geo", LANG), subTitle);
@@ -3543,6 +3609,33 @@ function renderPremSection(){
       const meta = (isFull ? `150 ${T("questions")} · 25 ${T("minutes")}` : `30 ${T("questions")} · 15 ${T("minutes")}`) + (att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : "");
       const act = owned ? `<button class="btn sm" onclick="${isFull ? `startPremGeoFull(${n})` : `startPremGeo('${PREM_SUB}',${n})`}">${att.length ? reAtt : T("start")}</button>` : `<span class="tag">${LANG==="hi" ? "RPSC कोर्स के साथ" : "With RPSC Course"}</span>`;
       h += `<div class="smtile"><div class="smt-t">${title}</div><div class="smt-s">${meta}</div><div class="smt-a">${act}</div></div>`;
+    }
+    h += `</div>`;
+  } else if(PREM_LEVEL === 3 || PREM_LEVEL === 4) {
+    const sm = SM_SUBJECTS.find(s=>s[0]===PREM_SM) || SM_SUBJECTS[0];
+    const smName = LANG==="hi" ? sm[2] : sm[1];
+    const isFull = PREM_LEVEL === 4;
+    h += head(isFull ? smName : (LANG==="hi" ? "सभी विषय" : "All Subjects"), isFull ? smName + " · " + (LANG==="hi" ? "फुल मॉक टेस्ट" : "Full Mock Tests") : smName);
+    h += `<div class="tilegrid">`;
+    if(!isFull){
+      for(let n=1; n<=5; n++){
+        const kind = "sm_" + PREM_SM + ":" + n;
+        const att = myA.filter(a=>a.sub===kind);
+        const first = att.find(a=>a.first);
+        const meta = `30 ${T("questions")} · 15 ${T("minutes")}` + (att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : "");
+        const act = owned ? `<button class="btn sm" onclick="startSmTest('${PREM_SM}',${n})">${att.length ? reAtt : T("start")}</button>` : `<span class="tag">${LANG==="hi" ? "RPSC कोर्स के साथ" : "With RPSC Course"}</span>`;
+        h += `<div class="smtile"><div class="smt-t">${LANG==="hi" ? "मॉक टेस्ट " : "Mock Test "}${n}</div><div class="smt-s">${meta}</div><div class="smt-a">${act}</div></div>`;
+      }
+      h += navTile(LANG==="hi" ? "फुल मॉक टेस्ट" : "Full Mock Tests", LANG==="hi" ? "3 फुल मॉक · 150 प्रश्न · 25 मिनट" : "3 Full Mocks · 150 questions · 25 min", "premOpenSmFull()");
+    } else {
+      for(let n=1; n<=3; n++){
+        const kind = "smf_" + PREM_SM + ":" + n;
+        const att = myA.filter(a=>a.sub===kind);
+        const first = att.find(a=>a.first);
+        const meta = `150 ${T("questions")} · 25 ${T("minutes")}` + (att.length ? ` · ${att.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : "");
+        const act = owned ? `<button class="btn sm" onclick="startSmFull('${PREM_SM}',${n})">${att.length ? reAtt : T("start")}</button>` : `<span class="tag">${LANG==="hi" ? "RPSC कोर्स के साथ" : "With RPSC Course"}</span>`;
+        h += `<div class="smtile"><div class="smt-t">${LANG==="hi" ? "फुल मॉक टेस्ट " : "Full Mock Test "}${n}</div><div class="smt-s">${meta}</div><div class="smt-a">${act}</div></div>`;
+      }
     }
     h += `</div>`;
   }
