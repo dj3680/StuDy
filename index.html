@@ -3646,8 +3646,32 @@ function toggleSeries(cat, sub){
   if(EXPANDED.has(key)) EXPANDED.delete(key); else { EXPANDED.clear(); EXPANDED.add(key); }
   renderCategory(cat);
 }
+/* Start confirmation (user order 2026-11-21): every test start first shows
+   this popup with instructions — leaving mid-test or exiting the app
+   auto-submits the saved test on the next boot and counts it as the attempt.
+   STUDY_NO_CONFIRM is a test-harness hook only. */
+let __pendingStart = null;
 function startTestWith(cat, kind, qs, markSeen, secs, winOv){
   if(!qs.length){ toast("No questions available yet."); return; }
+  if(window.STUDY_NO_CONFIRM){ startTestWithCore(cat, kind, qs, markSeen, secs, winOv); return; }
+  __pendingStart = [cat, kind, qs, markSeen, secs, winOv];
+  const n = qs.length, eff = (secs == null ? n * 60 : secs);
+  const timeTxt = eff === -1 ? (LANG === "hi" ? "कोई समय सीमा नहीं" : "No time limit") : (eff >= 3600 ? (Math.round(eff / 360) / 10) + " " + (LANG === "hi" ? "घंटे" : "hours") : Math.round(eff / 60) + " " + T("minutes"));
+  const li = t => `<div style="display:flex;gap:8px;margin-top:7px"><span style="color:var(--gold);font-weight:800">•</span><span>${t}</span></div>`;
+  showModal(`<button class="x" onclick="cancelStartTest()">✕</button>
+  <h3 style="font-size:16px">${LANG === "hi" ? "टेस्ट शुरू करें?" : "Start this test?"}</h3>
+  <div style="margin-top:8px;font-size:14px;line-height:1.5">
+    <div><b>${n} ${T("questions")}</b> · <b>${timeTxt}</b></div>
+    ${li(T("firstCounts"))}
+    ${li(LANG === "hi" ? "नकारात्मक अंकन: प्रत्येक गलत उत्तर पर −0.25 अंक।" : "Negative marking: −0.25 for every wrong answer.")}
+    ${li(LANG === "hi" ? "यदि आप टेस्ट बीच में छोड़ते हैं या ऐप से बाहर निकल जाते हैं / ऐप बंद कर देते हैं, तो आपका टेस्ट आपके दिए गए उत्तरों के साथ स्वतः जमा हो जाएगा और वही आपका प्रयास गिना जाएगा।" : "If you leave the test midway or exit / close the app, your test will be auto-submitted with the answers you have marked and counted as your attempt.")}
+    ${li(LANG === "hi" ? "टेस्ट के दौरान बैक न दबाएँ और ऐप बंद न करें।" : "Do not press Back or close the app during the test.")}
+  </div>
+  <div style="display:flex;gap:8px;margin-top:16px"><button class="btn ghost" style="flex:1" onclick="cancelStartTest()">${LANG === "hi" ? "रद्द करें" : "Cancel"}</button><button class="btn" style="flex:1" onclick="confirmStartTest()">${LANG === "hi" ? "टेस्ट शुरू करें" : "Start Test"}</button></div>`);
+}
+function confirmStartTest(){ const p = __pendingStart; __pendingStart = null; closeModal(); if(p) startTestWithCore(p[0], p[1], p[2], p[3], p[4], p[5]); }
+function cancelStartTest(){ __pendingStart = null; closeModal(); }
+function startTestWithCore(cat, kind, qs, markSeen, secs, winOv){
   settleSavedTest();
   CURCAT_SUBJECT = kind;
   TEST = { cat, kind, win: kind === "mock" ? (winOv != null ? winOv : mockWindow()) : null, qs, idx:0, ans:Array(qs.length).fill(-1), marked:Array(qs.length).fill(false),
