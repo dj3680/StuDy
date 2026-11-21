@@ -4781,40 +4781,96 @@ async function showReportCard(){
   const courseNames = [...new Set(subs.flatMap(x=> x.courses))];
   const snap = { phone: ME.phone, name: ME.name || "", points, tests: firsts.length, avg: overall, acc, rank: ri>=0 ? ri+1 : "—", at: Date.now(),
                  subs: subs.map(x=>({ name:x.name, pct:x.pct, grade:x.grade, courses:x.courses, tests:x.tests })), courses: courseNames };
-  snap.code = cardCode(snap);
+  snap.code = cardCode(snap); LAST_CARD_SNAP = snap;
   if(BACKEND_URL){ try{ await api("issueCard", snap); }catch(e){} }
   else { const cards = DB.read("cards", {}); cards[snap.code] = snap; DB.write("cards", cards); }
   const cardHtml = cardHTMLFor(snap);
   $("print-area").innerHTML = cardHtml;
-  showModal(cardHtml + `<div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal()">${LANG==="hi" ? "बंद करें" : "Close"}</button><button class="btn" style="flex:1" onclick="shareCard(this)">⬇ ${LANG==="hi" ? "डाउनलोड / PDF" : "Download / Print PDF"}</button></div>`);
+  showModal(cardHtml + `<div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal()">${LANG==="hi" ? "बंद करें" : "Close"}</button><button class="btn" style="flex:1" onclick="shareCard(this)">⬇ ${LANG==="hi" ? "डाउनलोड / शेयर करें" : "Download / Share"}</button></div>`);
+}
+let LAST_CARD_SNAP = null;
+function loadImg_(src){ return new Promise((res, rej)=>{ const im = new Image(); const t = setTimeout(()=>rej(new Error("img")), 8000); im.onload = ()=>{ clearTimeout(t); res(im); }; im.onerror = ()=>{ clearTimeout(t); rej(new Error("img")); }; im.src = src; }); }
+function wrapText_(cx, text, maxW){ const words = String(text).split(/\s+/); const lines = []; let line = ""; for(const wd of words){ const t = line ? line + " " + wd : wd; if(cx.measureText(t).width > maxW && line){ lines.push(line); line = wd; } else line = t; } if(line) lines.push(line); return lines; }
+function rr_(cx, x, y, w, h, r){ cx.beginPath(); cx.moveTo(x + r, y); cx.arcTo(x + w, y, x + w, y + h, r); cx.arcTo(x + w, y + h, x, y + h, r); cx.arcTo(x, y + h, x, y, r); cx.arcTo(x, y, x + w, y, r); cx.closePath(); }
+/* Round 76 (user's iPhone report): the old Download turned the card's HTML
+   into an SVG foreignObject image — iOS Safari refuses to render those, and
+   the window.print fallback does nothing in his browser, so the button
+   appeared dead. The card is now PAINTED on a canvas from the snapshot data
+   (the same numbers the on-screen card shows), which works everywhere. */
+async function drawCardImage(snap){
+  const gradeOf = p => p >= 90 ? "A+" : p >= 80 ? "A" : p >= 70 ? "B+" : p >= 60 ? "B" : p >= 50 ? "C" : p >= 40 ? "D" : "E";
+  const W = 720, PAD = 38, S = 2, ink = "#14161d", mut = "#5b6472", gold = "#b8860b", hi = LANG === "hi";
+  const subs = snap.subs || [], courses = snap.courses || [];
+  const meas = document.createElement("canvas").getContext("2d");
+  meas.font = "11.5px Arial, sans-serif";
+  const footLines = wrapText_(meas, hi ? "ग्रेड: A+ ≥90 · A ≥80 · B+ ≥70 · B ≥60 · C ≥50 · D ≥40 · E <40 — कुल % सभी विषयों के % का औसत है।" : "Grades: A+ ≥90 · A ≥80 · B+ ≥70 · B ≥60 · C ≥50 · D ≥40 · E <40 — Overall % is the average of all subject percentages.", W - PAD * 2);
+  meas.font = "14.5px Arial, sans-serif";
+  const emptyLines = subs.length ? [] : wrapText_(meas, hi ? "अभी कोई विषय टेस्ट नहीं — विषय टेस्ट देकर अपनी रिपोर्ट बनाएँ।" : "No subject tests yet — attempt subject tests to build your report.", W - PAD * 2);
+  const dividerY = 206, nameBase = dividerY + 40, metaBase = nameBase + 25;
+  const statsTop = metaBase + (courses.length ? 42 : 22), statsH = 186, statsBot = statsTop + statsH;
+  const headBase = statsBot + 40, tblHeadBase = headBase + 25, tblDivY = headBase + 34;
+  const tableH = subs.length ? subs.length * 32 : (12 + emptyLines.length * 20);
+  const footTop = tblDivY + tableH + 14, footH = footLines.length * 16, botY = footTop + footH + 16;
+  const H = botY + 158 + 24;
+  const cv = document.createElement("canvas"); cv.width = W * S; cv.height = H * S;
+  const cx = cv.getContext("2d"); cx.scale(S, S);
+  cx.fillStyle = "#ffffff"; rr_(cx, 3, 3, W - 6, H - 6, 26); cx.fill();
+  cx.lineWidth = 3; cx.strokeStyle = "#c9a227"; rr_(cx, 3, 3, W - 6, H - 6, 26); cx.stroke();
+  try{ const wm = await loadImg_(ASSET.saraswatiHQ); cx.save(); cx.globalAlpha = 0.10; const ws = 430; cx.drawImage(wm, (W - ws) / 2, statsTop - 30, ws, ws); cx.restore(); }catch(e){}
+  try{ const lg = await loadImg_(ASSET.wordmark); const lw = 196; cx.drawImage(lg, PAD, 30, lw, lw * lg.height / lg.width); }catch(e){}
+  cx.fillStyle = gold; cx.font = "800 24px Arial, sans-serif"; cx.textAlign = "left";
+  cx.fillText(hi ? "सत्यापित" : "VERIFIED", PAD, 112); cx.fillText(hi ? "रिपोर्ट कार्ड" : "REPORT CARD", PAD, 140);
+  const qrSize = 116, qx = W - PAD - qrSize, qy = 30;
+  try{ const q = qrcode(0, "M"); q.addData("https://dj3680.github.io/StuDy/?verify=" + snap.code); q.make(); const n = q.getModuleCount(), cell = qrSize / n; cx.fillStyle = "#ffffff"; cx.fillRect(qx - 6, qy - 6, qrSize + 12, qrSize + 12); cx.strokeStyle = "#14161d"; cx.lineWidth = 1.5; cx.strokeRect(qx - 6, qy - 6, qrSize + 12, qrSize + 12); cx.fillStyle = "#000000"; for(let r = 0; r < n; r++) for(let c = 0; c < n; c++) if(q.isDark(r, c)) cx.fillRect(qx + c * cell, qy + r * cell, Math.ceil(cell), Math.ceil(cell)); }catch(e){}
+  cx.fillStyle = mut; cx.font = "700 11px Arial, sans-serif"; cx.textAlign = "center";
+  cx.fillText(hi ? "सत्यापन हेतु स्कैन करें" : "SCAN TO VERIFY", qx + qrSize / 2, qy + qrSize + 20);
+  cx.fillStyle = "#33415e"; cx.font = "700 14.5px 'Courier New', monospace";
+  cx.fillText(snap.code, qx + qrSize / 2, qy + qrSize + 42);
+  cx.textAlign = "left";
+  cx.strokeStyle = "#e8d48b"; cx.lineWidth = 2; cx.beginPath(); cx.moveTo(PAD, dividerY); cx.lineTo(W - PAD, dividerY); cx.stroke();
+  cx.fillStyle = ink; cx.font = "800 29px Arial, sans-serif"; cx.fillText(snap.name || "", PAD, nameBase);
+  cx.fillStyle = mut; cx.font = "15px Arial, sans-serif";
+  cx.fillText("Phone: " + maskPhone(snap.phone) + " · Issued: " + new Date(snap.at).toLocaleDateString(), PAD, metaBase);
+  if(courses.length){ cx.fillText((hi ? "कोर्स" : "Courses") + ": " + courses.join(" · "), PAD, metaBase + 20); }
+  const stats = [[snap.avg + "%", hi ? "कुल प्रतिशत" : "Overall %"], [gradeOf(snap.avg), hi ? "ग्रेड" : "Grade"], [String(snap.points), hi ? "कुल अंक" : "Total points"], [String(snap.tests), hi ? "दिए गए टेस्ट" : "Tests taken"], [snap.acc + "%", hi ? "सटीकता" : "Accuracy"], ["#" + snap.rank, hi ? "रैंक" : "Overall rank"]];
+  const tw = (W - PAD * 2 - 20) / 3, th = 88;
+  stats.forEach((st, i)=>{ const col = i % 3, row = (i / 3) | 0, x = PAD + col * (tw + 10), yy = statsTop + row * (th + 10);
+    cx.strokeStyle = "#e3e6ee"; cx.lineWidth = 1.5; cx.fillStyle = "#ffffff"; rr_(cx, x, yy, tw, th, 12); cx.fill(); cx.stroke();
+    cx.fillStyle = ink; cx.font = "800 25px Arial, sans-serif"; cx.textAlign = "center"; cx.fillText(st[0], x + tw / 2, yy + 40);
+    cx.fillStyle = mut; cx.font = "12.5px Arial, sans-serif"; cx.fillText(st[1], x + tw / 2, yy + 64); cx.textAlign = "left"; });
+  cx.fillStyle = gold; cx.font = "800 16px Arial, sans-serif"; cx.fillText(hi ? "विषयवार प्रदर्शन" : "SUBJECT-WISE PERFORMANCE", PAD, headBase);
+  const cT = W - PAD - 170, cP = W - PAD - 88, cG = W - PAD;
+  cx.font = "700 12px Arial, sans-serif"; cx.fillStyle = mut;
+  cx.fillText(hi ? "विषय" : "Subject", PAD, tblHeadBase); cx.textAlign = "center"; cx.fillText(hi ? "टेस्ट" : "Tests", cT, tblHeadBase); cx.fillText(hi ? "अंक %" : "Marks %", cP, tblHeadBase); cx.textAlign = "right"; cx.fillText(hi ? "ग्रेड" : "Grade", cG, tblHeadBase); cx.textAlign = "left";
+  cx.strokeStyle = "#eceef3"; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(PAD, tblDivY); cx.lineTo(W - PAD, tblDivY); cx.stroke();
+  if(subs.length){ subs.forEach((sb, i)=>{ const base = tblDivY + 23 + i * 32; cx.fillStyle = ink; cx.font = "600 15px Arial, sans-serif"; let nm = sb.name || ""; while(nm.length && cx.measureText(nm).width > (cT - PAD - 44)) nm = nm.slice(0, -2); if(nm !== (sb.name || "")) nm = nm.trim() + "…"; cx.fillText(nm, PAD, base); cx.textAlign = "center"; cx.font = "15px Arial, sans-serif"; cx.fillText(String(sb.tests != null ? sb.tests : ""), cT, base); cx.fillText(sb.pct + "%", cP, base); cx.textAlign = "right"; cx.font = "700 15px Arial, sans-serif"; cx.fillText(sb.grade || "", cG, base); cx.textAlign = "left"; }); }
+  else { cx.fillStyle = mut; cx.font = "14.5px Arial, sans-serif"; emptyLines.forEach((ln, i)=> cx.fillText(ln, PAD, tblDivY + 21 + i * 20)); }
+  cx.fillStyle = "#9aa0a6"; cx.font = "11.5px Arial, sans-serif";
+  footLines.forEach((ln, i)=> cx.fillText(ln, PAD, footTop + 12 + i * 16));
+  try{ const svgs = document.querySelectorAll("#print-area svg"); if(svgs.length){ const st = svgs[svgs.length - 1].cloneNode(true); st.setAttribute("xmlns", "http://www.w3.org/2000/svg"); st.setAttribute("width", "118"); st.setAttribute("height", "118"); const simg = await loadImg_("data:image/svg+xml;charset=utf-8," + encodeURIComponent(new XMLSerializer().serializeToString(st))); cx.drawImage(simg, PAD, botY, 118, 118); } }catch(e){}
+  try{ const sg = await loadImg_(ASSET.sign); const sw2 = 138; cx.drawImage(sg, W - PAD - sw2, botY, sw2, sw2 * sg.height / sg.width); }catch(e){}
+  cx.strokeStyle = "#33415e"; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(W - PAD - 150, botY + 118); cx.lineTo(W - PAD, botY + 118); cx.stroke();
+  cx.fillStyle = "#33415e"; cx.textAlign = "center"; cx.font = "700 13px Arial, sans-serif";
+  cx.fillText("Dinesh Jangir", W - PAD - 75, botY + 136);
+  cx.font = "11.5px Arial, sans-serif"; cx.fillText(hi ? "प्राधिकृत हस्ताक्षर" : "Authority Signature", W - PAD - 75, botY + 152);
+  cx.textAlign = "left";
+  return cv;
 }
 async function shareCard(btn){
-  const old = btn.innerHTML; btn.disabled = true; btn.innerHTML = "⏳ " + (LANG==="hi" ? "तैयार हो रहा है…" : "Preparing…");
+  const old = btn.innerHTML; btn.disabled = true; btn.innerHTML = "⏳ " + (LANG === "hi" ? "तैयार हो रहा है…" : "Preparing…");
   try{
-    const node = document.querySelector("#print-area > div");
-    if(!node) throw new Error("nocard");
-    const w = node.offsetWidth, h = node.offsetHeight;
-    const clone = node.cloneNode(true);
-    clone.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-    clone.style.margin = "0";
-    const inner = new XMLSerializer().serializeToString(clone);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w * 2}" height="${h * 2}" viewBox="0 0 ${w * 2} ${h * 2}"><foreignObject width="${w}" height="${h}" transform="scale(2)">${inner}</foreignObject></svg>`;
-    const img = new Image();
-    await new Promise((res, rej)=>{ const t = setTimeout(()=>rej(new Error("svgload")), 6000); img.onload = ()=>{ clearTimeout(t); res(); }; img.onerror = ()=>{ clearTimeout(t); rej(new Error("svgerr")); }; img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg); });
-    const cv = document.createElement("canvas"); cv.width = w * 2; cv.height = h * 2;
-    const cx = cv.getContext("2d"); cx.fillStyle = "#ffffff"; cx.fillRect(0, 0, cv.width, cv.height);
-    cx.drawImage(img, 0, 0, cv.width, cv.height);
+    const snap = LAST_CARD_SNAP; if(!snap) throw new Error("nosnap");
+    const cv = await drawCardImage(snap);
     const blob = await new Promise(r=> cv.toBlob(r, "image/png"));
     if(!blob) throw new Error("noblob");
     const file = new File([blob], "StuDy-Report-Card.png", { type: "image/png" });
     if(navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files: [file], title: "StuDy Report Card" }); }
     else{
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a"); a.href = url; a.download = "StuDy-Report-Card.png"; document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(()=> URL.revokeObjectURL(url), 5000);
+      showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG === "hi" ? "आपका रिपोर्ट कार्ड" : "Your report card"}</h3><p class="sub" style="margin-top:6px">${LANG === "hi" ? "इमेज को दबाकर रखें और “Save Image / इमेज सहेजें” चुनें।" : "Press and hold the image, then choose Save to Photos."}</p><img src="${url}" style="width:100%;border-radius:12px;margin-top:10px" alt="StuDy report card"><a class="btn" style="display:block;width:100%;margin-top:10px;text-align:center;box-sizing:border-box" href="${url}" download="StuDy-Report-Card.png">${LANG === "hi" ? "⬇ इमेज डाउनलोड करें" : "⬇ Download image"}</a>`);
     }
   }catch(e){
-    if(!(e && e.name === "AbortError")){ btn.disabled = false; btn.innerHTML = old; printCard(btn); return; }
+    if(!(e && e.name === "AbortError")) toast(LANG === "hi" ? "कार्ड इमेज नहीं बन पाई — फिर से कोशिश करें।" : "Couldn't make the card image — please try again.");
   }
   btn.disabled = false; btn.innerHTML = old;
 }
@@ -4836,16 +4892,24 @@ async function doVerify(){
 
 let SCAN_STREAM = null, SCAN_TIMER = null;
 function stopScan(){ if(SCAN_TIMER){ clearInterval(SCAN_TIMER); SCAN_TIMER = null; } if(SCAN_STREAM){ try{ SCAN_STREAM.getTracks().forEach(t=>t.stop()); }catch(e){} SCAN_STREAM = null; } const v = $("scanvid"); if(v) v.srcObject = null; }
+function loadJsQR_(){ return new Promise((res, rej)=>{ if(window.jsQR) return res(); const t = setTimeout(()=>rej(new Error("jsqr")), 10000); const sc = document.createElement("script"); sc.src = "https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"; sc.onload = ()=>{ clearTimeout(t); res(); }; sc.onerror = ()=>{ clearTimeout(t); rej(new Error("jsqr")); }; document.head.appendChild(sc); }); }
 async function scanVerify(){
-  if(!("BarcodeDetector" in window) || !(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)){ toast(LANG==="hi" ? "इस ब्राउज़र में स्कैन उपलब्ध नहीं है — कृपया कोड डालकर सत्यापित करें।" : "Scanning isn't available in this browser — please type the code instead."); return; }
+  if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)){ toast(LANG==="hi" ? "इस ब्राउज़र में स्कैन उपलब्ध नहीं है — कृपया कोड डालकर सत्यापित करें।" : "Scanning isn't available in this browser — please type the code instead."); return; }
   showModal(`<button class="x" onclick="stopScan();closeModal()">✕</button><h3 style="font-size:16px">${LANG==="hi" ? "QR स्कैन करें" : "Scan the QR code"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi" ? "कार्ड पर छपे QR पर कैमरा रखें।" : "Point the camera at the QR printed on the card."}</p><video id="scanvid" autoplay playsinline muted style="width:100%;border-radius:12px;margin-top:10px;background:#000;aspect-ratio:3/4;object-fit:cover"></video><div id="scan-msg" class="sub" style="margin-top:8px;text-align:center">${LANG==="hi" ? "कैमरा चालू हो रहा है…" : "Starting the camera…"}</div><button class="btn ghost" style="width:100%;margin-top:10px" onclick="stopScan();closeModal()">${LANG==="hi" ? "रद्द करें" : "Cancel"}</button>`);
   try{
     SCAN_STREAM = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
     const v = $("scanvid"); if(!v){ stopScan(); return; }
     v.srcObject = SCAN_STREAM; try{ await v.play(); }catch(e){}
-    const det = new BarcodeDetector({ formats: ["qr_code"] });
-    const msg = $("scan-msg"); if(msg) msg.textContent = LANG==="hi" ? "QR खोजा जा रहा है…" : "Looking for a QR code…";
-    SCAN_TIMER = setInterval(async ()=>{ const vv = $("scanvid"); if(!vv || !SCAN_STREAM){ stopScan(); return; } try{ const codes = await det.detect(vv); if(codes && codes.length){ const raw = String(codes[0].rawValue || ""); const m = raw.match(/verify=([A-Za-z0-9-]+)/) || raw.match(/(SDY-[A-Za-z0-9-]+)/i); if(m){ const code = m[1].toUpperCase(); stopScan(); closeModal(); verifySharedCard(code); } } }catch(e){} }, 350);
+    const onCode_ = raw => { const m = String(raw || "").match(/verify=([A-Za-z0-9-]+)/) || String(raw || "").match(/(SDY-[A-Za-z0-9-]+)/i); if(m){ const code = m[1].toUpperCase(); stopScan(); closeModal(); verifySharedCard(code); return true; } return false; };
+    if("BarcodeDetector" in window){
+      const det = new BarcodeDetector({ formats: ["qr_code"] });
+      SCAN_TIMER = setInterval(async ()=>{ const vv = $("scanvid"); if(!vv || !SCAN_STREAM){ stopScan(); return; } try{ const codes = await det.detect(vv); if(codes && codes.length) onCode_(codes[0].rawValue); }catch(e){} }, 350);
+    } else {
+      try{ await loadJsQR_(); }
+      catch(e){ const m2 = $("scan-msg"); if(m2) m2.textContent = LANG === "hi" ? "स्कैनर लोड नहीं हुआ — इंटरनेट जाँचें या कोड डालकर सत्यापित करें।" : "The scanner couldn't load — check your internet or type the code instead."; return; }
+      const sc = document.createElement("canvas"); const sx = sc.getContext("2d", { willReadFrequently: true });
+      SCAN_TIMER = setInterval(()=>{ const vv = $("scanvid"); if(!vv || !SCAN_STREAM){ stopScan(); return; } try{ if(vv.readyState === vv.HAVE_ENOUGH_DATA && vv.videoWidth){ sc.width = vv.videoWidth; sc.height = vv.videoHeight; sx.drawImage(vv, 0, 0); const d = sx.getImageData(0, 0, sc.width, sc.height); const res = window.jsQR(d.data, d.width, d.height); if(res && res.data) onCode_(res.data); } }catch(e){} }, 300);
+    }
   }catch(e){ const msg = $("scan-msg"); if(msg) msg.textContent = LANG==="hi" ? "कैमरा नहीं खुला — अनुमति दें या कोड डालकर सत्यापित करें।" : "Couldn't open the camera — allow camera access or type the code instead."; }
 }
 async function verifySharedCard(code){
