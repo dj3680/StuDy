@@ -4702,14 +4702,15 @@ function cardHTMLFor(snap){
     : `<tr><td colspan="4" style="padding:14px 6px;text-align:center;color:#70757d;font-size:12.5px">${LANG==="hi" ? "अभी कोई विषय टेस्ट नहीं दिया — विषय टेस्ट देकर अपनी रिपोर्ट बनाएँ।" : "No subject tests yet — attempt subject tests to build your report."}</td></tr>`;
   const statTile = (v, l) => `<div style="border:1px solid #eee;border-radius:10px;text-align:center;padding:10px 4px"><div style="font-size:19px;font-weight:900">${v}</div><div style="font-size:11px;color:#70757d">${l}</div></div>`;
   const qrSvg = (()=>{ try{ const q = qrcode(0, "M"); q.addData("https://dj3680.github.io/StuDy/?verify=" + snap.code); q.make(); return q.createSvgTag(2, 0).replace("<svg ", '<svg style="width:60px;height:60px;display:block" '); }catch(e){ return ""; } })();
-  const cardHtml = `<div style="position:relative;border:2px solid #d9a92c;border-radius:16px;padding:20px;background:#fff;color:#14161d;max-width:520px;margin:0 auto;font-family:inherit;overflow:hidden">
+  const cardHtml = `<div style="position:relative;width:100%;box-sizing:border-box;border:2px solid #d9a92c;border-radius:16px;padding:20px;background:#fff;color:#14161d;max-width:520px;margin:0 auto;font-family:inherit;overflow:hidden">
     <img class="rc-wm" src="${(window.ASSET && ASSET.saraswatiHQ) || ""}" alt="" style="position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);width:300px;max-width:82%;opacity:.16;pointer-events:none;-webkit-mask-image:radial-gradient(circle,#000 55%,transparent 72%);mask-image:radial-gradient(circle,#000 55%,transparent 72%)">
     <div style="position:relative;z-index:1">
-    <div style="display:flex;align-items:center;gap:10px;border-bottom:2px solid #f3e3ac;padding-bottom:12px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:2px solid #f3e3ac;padding-bottom:12px">
       <div><div style="display:flex;align-items:center;font-size:24px;font-weight:900;line-height:1">Stu<img src="${ASSET.logo}" style="height:26px;width:auto;margin:0 1px" alt="D">y</div><div style="font-size:11px;letter-spacing:1.6px;color:#b8860b;font-weight:800;margin-top:3px">VERIFIED REPORT CARD</div></div>
       <div style="margin-left:auto;flex:none;text-align:center">
         <div style="border:1.5px solid #14161d;border-radius:8px;padding:3px;display:inline-block;line-height:0">${qrSvg}</div>
         <div style="font-size:8.5px;letter-spacing:1.2px;color:#70757d;font-weight:700;margin-top:3px">${LANG==="hi" ? "सत्यापित करने हेतु स्कैन करें" : "SCAN TO VERIFY"}</div>
+        <div style="font-size:10.5px;font-weight:800;letter-spacing:.4px;font-family:ui-monospace,monospace;color:#33415e;margin-top:2px">${snap.code}</div>
       </div>
     </div>
     <div style="padding:12px 0 2px">
@@ -4726,14 +4727,14 @@ function cardHTMLFor(snap){
       ${statTile("#" + snap.rank, LANG==="hi" ? "रैंक" : "Overall rank")}
     </div>
     <div style="font-size:12px;letter-spacing:1.2px;color:#b8860b;font-weight:800;margin:16px 0 4px">${LANG==="hi" ? "विषयवार प्रदर्शन" : "SUBJECT-WISE PERFORMANCE"}</div>
-    <table style="width:100%;border-collapse:collapse">
+    <table style="width:100%;border-collapse:collapse;table-layout:fixed">
       <tr><th style="text-align:left;padding:6px;font-size:11px;color:#70757d;border-bottom:2px solid #eee">${LANG==="hi" ? "विषय" : "Subject"}</th><th style="padding:6px;font-size:11px;color:#70757d;border-bottom:2px solid #eee">${LANG==="hi" ? "टेस्ट" : "Tests"}</th><th style="padding:6px;font-size:11px;color:#70757d;border-bottom:2px solid #eee">${LANG==="hi" ? "अंक %" : "Marks %"}</th><th style="padding:6px;font-size:11px;color:#70757d;border-bottom:2px solid #eee">${LANG==="hi" ? "ग्रेड" : "Grade"}</th></tr>
       ${subRows}
     </table>
     <div style="font-size:10.5px;color:#9aa0a6;margin-top:6px">${LANG==="hi" ? "ग्रेड: A+ ≥90 · A ≥80 · B+ ≥70 · B ≥60 · C ≥50 · D ≥40 · E <40 — कुल % सभी विषयों के % का औसत है।" : "Grades: A+ ≥90 · A ≥80 · B+ ≥70 · B ≥60 · C ≥50 · D ≥40 · E <40 — Overall % is the average of all subject percentages."}</div>
     <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-top:16px">
         <div style="position:relative;width:96px;height:96px;flex:none;transform:rotate(-8deg);opacity:.93">
-          <svg viewBox="0 0 120 120" width="96" height="96" aria-label="StuDy stamp">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="96" height="96" aria-label="StuDy stamp">
             <defs><path id="rcArcT" d="M 13.5,60 a 46.5,46.5 0 0,1 93,0"/><path id="rcArcB" d="M 13.5,60 a 46.5,46.5 0 0,0 93,0"/></defs>
             <circle cx="60" cy="60" r="57" fill="none" stroke="#1e3a6e" stroke-width="2.6"/>
             <circle cx="60" cy="60" r="36" fill="none" stroke="#1e3a6e" stroke-width="1.4"/>
@@ -4786,14 +4787,44 @@ async function showReportCard(){
   else { const cards = DB.read("cards", {}); cards[snap.code] = snap; DB.write("cards", cards); }
   const cardHtml = cardHTMLFor(snap);
   $("print-area").innerHTML = cardHtml;
-  showModal(cardHtml + `<div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal()">${LANG==="hi" ? "बंद करें" : "Close"}</button><button class="btn" style="flex:1" onclick="printCard(this)">⬇ ${LANG==="hi" ? "डाउनलोड / PDF" : "Download / Print PDF"}</button></div>`);
+  showModal(cardHtml + `<div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal()">${LANG==="hi" ? "बंद करें" : "Close"}</button><button class="btn" style="flex:1" onclick="shareCard(this)">⬇ ${LANG==="hi" ? "डाउनलोड / PDF" : "Download / Print PDF"}</button></div>`);
+}
+async function shareCard(btn){
+  const old = btn.innerHTML; btn.disabled = true; btn.innerHTML = "⏳ " + (LANG==="hi" ? "तैयार हो रहा है…" : "Preparing…");
+  try{
+    const node = document.querySelector("#print-area > div");
+    if(!node) throw new Error("nocard");
+    const w = node.offsetWidth, h = node.offsetHeight;
+    const clone = node.cloneNode(true);
+    clone.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+    clone.style.margin = "0";
+    const inner = new XMLSerializer().serializeToString(clone);
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w * 2}" height="${h * 2}" viewBox="0 0 ${w * 2} ${h * 2}"><foreignObject width="${w}" height="${h}" transform="scale(2)">${inner}</foreignObject></svg>`;
+    const img = new Image();
+    await new Promise((res, rej)=>{ const t = setTimeout(()=>rej(new Error("svgload")), 6000); img.onload = ()=>{ clearTimeout(t); res(); }; img.onerror = ()=>{ clearTimeout(t); rej(new Error("svgerr")); }; img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg); });
+    const cv = document.createElement("canvas"); cv.width = w * 2; cv.height = h * 2;
+    const cx = cv.getContext("2d"); cx.fillStyle = "#ffffff"; cx.fillRect(0, 0, cv.width, cv.height);
+    cx.drawImage(img, 0, 0, cv.width, cv.height);
+    const blob = await new Promise(r=> cv.toBlob(r, "image/png"));
+    if(!blob) throw new Error("noblob");
+    const file = new File([blob], "StuDy-Report-Card.png", { type: "image/png" });
+    if(navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files: [file], title: "StuDy Report Card" }); }
+    else{
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = "StuDy-Report-Card.png"; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=> URL.revokeObjectURL(url), 5000);
+    }
+  }catch(e){
+    if(!(e && e.name === "AbortError")){ btn.disabled = false; btn.innerHTML = old; printCard(btn); return; }
+  }
+  btn.disabled = false; btn.innerHTML = old;
 }
 function printCard(btn){
   const old = btn.innerHTML; btn.disabled = true; btn.innerHTML = "⏳ " + (LANG==="hi" ? "तैयार हो रहा है…" : "Preparing…");
   setTimeout(()=>{ window.print(); btn.disabled = false; btn.innerHTML = old; }, 700);
 }
 function showVerifier(){
-  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">🔎 ${LANG==="hi" ? "रिपोर्ट कार्ड सत्यापित करें" : "Verify a Report Card"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi" ? "कार्ड पर छपा QR स्कैन करें — या पुराने कार्ड का कोड डालें।" : "Scan the QR printed on the card — or enter the code from an older card."}</p><button class="btn gold" style="width:100%;margin-top:10px" onclick="scanVerify()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>${LANG==="hi" ? "स्कैन करके सत्यापित करें" : "Scan & Verify"}</button><div class="fld" style="margin-top:10px"><input id="vf-code" placeholder="SDY-XXXX-XXXX-XXXX" style="text-transform:uppercase;font-family:ui-monospace,monospace"></div><div id="vf-res"></div><button class="btn" style="width:100%;margin-top:6px" onclick="doVerify()">${LANG==="hi" ? "सत्यापित करें" : "Verify"}</button>`);
+  showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">🔎 ${LANG==="hi" ? "रिपोर्ट कार्ड सत्यापित करें" : "Verify a Report Card"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi" ? "कार्ड पर छपा QR स्कैन करें — या QR के नीचे छपा कोड डालें।" : "Scan the QR printed on the card — or enter the code printed below the QR."}</p><button class="btn gold" style="width:100%;margin-top:10px" onclick="scanVerify()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>${LANG==="hi" ? "स्कैन करके सत्यापित करें" : "Scan & Verify"}</button><div class="fld" style="margin-top:10px"><input id="vf-code" placeholder="SDY-XXXX-XXXX-XXXX" style="text-transform:uppercase;font-family:ui-monospace,monospace"></div><div id="vf-res"></div><button class="btn" style="width:100%;margin-top:6px" onclick="doVerify()">${LANG==="hi" ? "सत्यापित करें" : "Verify"}</button>`);
 }
 async function doVerify(){
   const code = $("vf-code").value.trim().toUpperCase(); const res = $("vf-res"); let snap = null;
