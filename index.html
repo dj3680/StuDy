@@ -664,6 +664,8 @@ html[data-theme="dark"] .tilecard .tile-state.ok{background:#17301f;border-color
 .grpcard2:active{transform:scale(.99)}
 .grpcard2-h{display:flex;align-items:center;gap:11px}
 .grpcard2-ic{font-size:27px;line-height:1;flex:none}
+.grpcard2-ic svg{width:29px;height:29px;display:block}
+.nic{width:1.12em;height:1.12em;vertical-align:-0.2em}
 .grpcard2-t{flex:1;font-weight:800;font-size:16.5px;color:var(--navy)}
 html[data-theme="dark"] .grpcard2-t{color:#e8ecf6}
 .grpcard2-d{margin-top:9px;font-size:13.5px;line-height:1.55;color:var(--mut)}
@@ -1862,7 +1864,7 @@ const hasMock  = cat => hasCourse(cat);
 const GEO_TRIO_KEYS = ["rpsc_geo-world", "rpsc_geo-india", "rpsc_geo-rajasthan"];
 const POL_DUO_KEYS = ["rpsc_pol-india", "rpsc_pol-rajasthan"];
 const PREM_DETAILED_KEYS = ["rpsc_geo-detailed", "rpsc_geo-detailed-india", "rpsc_geo-detailed-world"];
-const hasNotes = key => { const k = String(key || ""); if(PREM_DETAILED_KEYS.includes(k)) return hasCourse("rpsc") && (hasPremNote(k) || hasPremNote("rpsc_geo")); return hasCourse(k.split("_")[0]); };
+const hasNotes = key => { const k = String(key || ""); if(PREM_DETAILED_KEYS.includes(k)) return hasCourse("rpsc") || hasPremNote(k) || hasPremNote("rpsc_geo"); return hasCourse(k.split("_")[0]); };
 function spendStars(amount, label){
   if((ME.stars||0) < amount){ toast(T("insufficient")); go("wallet"); return false; }
   ME.stars -= amount;
@@ -2329,7 +2331,7 @@ function renderMyCourse(){
   if(list) list.classList.remove("hidden");
   const el = $("mc-courses"); if(!el) return;
   const owned = COURSE_CATS.filter(k => hasCourse(k));
-  el.innerHTML = owned.length ? owned.map(ownedCourseCard_).join("") + `<button class="btn gold" style="width:100%;margin-top:12px" onclick="go('courses')">${LANG === "hi" ? "एक और कोर्स खरीदें" : "Buy another course"}</button>` : noCourseCard_();
+  el.innerHTML = owned.length ? owned.map(ownedCourseCard_).join("") + `<button class="btn gold" style="width:100%;margin-top:12px" onclick="go('courses')">${LANG === "hi" ? "एक और कोर्स खरीदें" : "Buy another course"}</button>` : noCourseCard_() + freeMocksSectionHTML_();
   /* Round 62: PYQ no longer lists on My Course - it lives on Home now. */
   initReveal();
 }
@@ -2366,7 +2368,7 @@ function renderHomeCourses(){
     el.innerHTML = `<h2>${LANG === "hi" ? "मेरे कोर्स" : "My Courses"}</h2><div class="grid">${owned.map(ownedCourseCard_).join("")}</div>`;
   } else {
     /* Round 65: no course bought -> ALL courses as mini tiles under "View all courses". */
-    el.innerHTML = `<h2>${LANG === "hi" ? "सभी कोर्स देखें" : "View all courses"}</h2><div class="tilegrid">${COURSE_CATS.map(homeCourseTile_).join("")}</div>`;
+    el.innerHTML = freeMocksSectionHTML_() + `<h2>${LANG === "hi" ? "सभी कोर्स देखें" : "View all courses"}</h2><div class="tilegrid">${COURSE_CATS.map(homeCourseTile_).join("")}</div>`;
   }
   initReveal();
 }
@@ -2627,6 +2629,9 @@ function premExamName_(cat){
 }
 function notesExamCount(cat){ return basicBooksCount_(cat) + premBooksCount_(cat); }
 
+const SVG_BOOK = '<svg class="nic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
+const SVG_CROWN = '<svg class="nic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><path d="M4 18L2.6 7.5 8 11l4-6.5L16 11l5.4-3.5L20 18H4z"/></svg>';
+const SVG_CLOCK = '<svg class="nic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>';
 function notesHeadHtml_(cat){
   const c = CATS[cat] || {};
   /* Round 62d: no category seal on the notes page header - centered .ptitle instead. */
@@ -2647,7 +2652,7 @@ function renderNotesExam(){
     if(NOTES_GRP === "basic"){
       const subs = basicSubjects_(cat);
       box.innerHTML = notesHeadHtml_(cat)
-        + `<h3 style="margin:16px 0 4px">📚 ${LANG === "hi" ? "बेसिक नोट्स" : "Basic Notes"}</h3><p class="sub" style="margin:0 0 12px">${LANG === "hi" ? "किसी विषय को चुनकर उसकी किताबें खोलें।" : "Pick a subject to open its books."}</p>`
+        + `<h3 style="margin:16px 0 4px">${SVG_BOOK} ${LANG === "hi" ? "बेसिक नोट्स" : "Basic Notes"}</h3><p class="sub" style="margin:0 0 12px">${LANG === "hi" ? "किसी विषय को चुनकर उसकी किताबें खोलें।" : "Pick a subject to open its books."}</p>`
         + (subs.length ? `<div class="tilegrid">` + subs.map(s=>{
             const bs = basicBooks_(cat, s);
             const line = bs.length > 1 ? `${bs.length} ${LANG === "hi" ? "किताबें" : "books"}` : (notesTag(s.sub) || "");
@@ -2656,13 +2661,13 @@ function renderNotesExam(){
     } else {
       const subs = premSubjects_(cat);
       box.innerHTML = notesHeadHtml_(cat)
-        + `<h3 style="margin:16px 0 4px">👑 ${LANG === "hi" ? "प्रीमियम विस्तृत नोट्स" : "Premium Detailed Notes"}</h3><p class="sub" style="margin:0 0 12px">${LANG === "hi" ? "हर विस्तृत किताब की अपनी कीमत (₹" + cs.premNotePrice + " से शुरू) — हर किताब अलग से खरीदें।" : "Every detailed book is priced separately (from ₹" + cs.premNotePrice + ") — buy each book on its own."}</p>`
+        + `<h3 style="margin:16px 0 4px">${SVG_CROWN} ${LANG === "hi" ? "प्रीमियम विस्तृत नोट्स" : "Premium Detailed Notes"}</h3><p class="sub" style="margin:0 0 12px">${LANG === "hi" ? "सभी विस्तृत किताबें कोर्स में शामिल हैं — कोर्स लेने पर हर किताब खुल जाती है।" : "All detailed books are included in the course — every book opens with the course."}</p>`
         + `<div class="tilegrid">` + subs.map(s=>{
             const hasBooks = (s.books || []).length > 0;
             let line;
             if(!hasBooks) line = LANG === "hi" ? "जल्द आ रहे हैं" : "Coming soon";
             else {
-              const ownedN = s.books.filter(b => hasPremNote(cat + "_" + b.sub) || (s.key && hasPremNote(s.key))).length;
+              const ownedN = owned ? s.books.length : s.books.filter(b => hasPremNote(cat + "_" + b.sub) || (s.key && hasPremNote(s.key))).length;
               line = ownedN === s.books.length ? (LANG === "hi" ? "सभी किताबें खुली हैं ✓" : "All books unlocked ✓")
                 : ownedN > 0 ? `${ownedN}/${s.books.length} ${LANG === "hi" ? "किताबें खुली" : "books unlocked"}`
                 : `${s.books.length} ${LANG === "hi" ? "विस्तृत किताबें" : "detailed books"}`;
@@ -2677,7 +2682,7 @@ function renderNotesExam(){
       const s = basicSubjects_(cat).find(x => x.sub === NOTES_SUB);
       if(!s){ NOTES_LVL = "subjects"; renderNotesExam(); return; }
       box.innerHTML = notesHeadHtml_(cat)
-        + `<h3 style="margin:16px 0 10px">📚 ${esc(s.name[LANG] || s.name.en)}</h3>`
+        + `<h3 style="margin:16px 0 10px">${SVG_BOOK} ${esc(s.name[LANG] || s.name.en)}</h3>`
         + (owned ? basicBooks_(cat, s).map(b => notesBookRow_(cat, b)).join("")
           : `<div class="card" style="padding:14px"><div class="sub" style="margin-bottom:10px">${esc(notesLockText_(cat))}</div>${notesLockBtn_()}</div>`);
     } else {
@@ -2686,24 +2691,22 @@ function renderNotesExam(){
       const hasBooks = (s.books || []).length > 0;
       let body;
       if(!hasBooks){
-        body = `<div class="card" style="padding:18px 14px;text-align:center"><div style="font-size:28px">🕐</div><b>${LANG === "hi" ? "जल्द आ रहे हैं" : "Coming soon"}</b><div class="sub" style="margin-top:5px">${LANG === "hi" ? "इस विषय के प्रीमियम विस्तृत नोट्स अगले अपडेट में आएंगे।" : "Premium Detailed Notes for this subject arrive in the next update."}</div></div>`;
+        body = `<div class="card" style="padding:18px 14px;text-align:center"><div style="font-size:28px;color:var(--muted,#8a8fa3)">${SVG_CLOCK}</div><b>${LANG === "hi" ? "जल्द आ रहे हैं" : "Coming soon"}</b><div class="sub" style="margin-top:5px">${LANG === "hi" ? "इस विषय के प्रीमियम विस्तृत नोट्स अगले अपडेट में आएंगे।" : "Premium Detailed Notes for this subject arrive in the next update."}</div></div>`;
       } else if(!owned){
         body = `<div class="card" style="padding:14px"><div class="sub" style="margin-bottom:10px">${LANG === "hi" ? ("पहले " + (c.name.hi || c.name.en) + " कोर्स खरीदें") : ("Buy the " + (c.name.en || cat) + " course first")} — ${esc(notesLockText_(cat))}</div>${notesLockBtn_()}</div>`;
       } else {
-        body = `<p class="sub" style="margin:0 0 10px">${esc(premExamName_(cat))} — ${LANG === "hi" ? "हर किताब की अपनी कीमत है; जो चाहिए वही खरीदें।" : "Each book has its own price — buy only the ones you need."}</p>` + s.books.map(b=>{
+        body = `<p class="sub" style="margin:0 0 10px">${esc(premExamName_(cat))} — ${LANG === "hi" ? "ये सभी किताबें आपके कोर्स में शामिल हैं।" : "All these books are included in your course."}</p>` + s.books.map(b=>{
           const bk = cat + "_" + b.sub;
           const sh = PREM_BOOK_SHORT[b.sub] || { en:b.en || b.sub, hi:b.hi || b.en || b.sub };
           const tagTxt = (b.tag && (b.tag[LANG] || b.tag.en)) || "";
-          const ownB = hasPremNote(bk) || (s.key && hasPremNote(s.key));
-          const act = ownB
-            ? `<span class="tag free">${T("owned")}</span><button class="btn sm gold" onclick="event.stopPropagation();downloadNotes('${cat}','${b.sub}')">${LANG === "hi" ? "⬇ डाउनलोड" : "⬇ Download"}</button>`
-            : `<span class="price">₹${premNotePriceFor(bk)}</span><button class="btn sm gold" onclick="buyPremNote('${bk}')">${LANG === "hi" ? "खरीदें" : "Buy"}</button>`;
-          const admB = isAdmin() ? admPencil_("admEditPremNotePrice('" + bk + "')") : "";
+          const ownB = true; /* Round 81: this branch renders only for course owners - every premium book is included in the course now. */
+          const act = `<span class="tag free">${LANG === "hi" ? "कोर्स में शामिल" : "Included in the course"}</span><button class="btn sm gold" onclick="event.stopPropagation();downloadNotes('${cat}','${b.sub}')">${LANG === "hi" ? "⬇ डाउनलोड" : "⬇ Download"}</button>`;
+          const admB = "";
           return `<div class="noterow" data-prembook="${b.sub}"${ownB ? ` onclick="downloadNotes('${cat}','${b.sub}')"` : ""}><div class="tt">${esc(sh[LANG] || sh.en)}</div>${tagTxt ? `<div class="ts">${esc(tagTxt)}</div>` : ""}<div class="nact">${act}${admB}</div></div>`;
         }).join("");
       }
       box.innerHTML = notesHeadHtml_(cat)
-        + `<h3 style="margin:16px 0 10px">👑 ${esc(s.name[LANG] || s.name.en)} — ${esc(premExamName_(cat))}</h3>` + body;
+        + `<h3 style="margin:16px 0 10px">${SVG_CROWN} ${esc(s.name[LANG] || s.name.en)} — ${esc(premExamName_(cat))}</h3>` + body;
     }
     initReveal(); return;
   }
@@ -2711,8 +2714,8 @@ function renderNotesExam(){
      (header row, full-width description, meta line at the bottom). */
   const basicN = basicBooksCount_(cat), premN = premBooksCount_(cat);
   box.innerHTML = notesHeadHtml_(cat)
-    + `<div class="grpcard2" data-notesgrp="basic" onclick="openNotesGroup('basic')"><div class="grpcard2-h"><span class="grpcard2-ic">📚</span><span class="grpcard2-t">${LANG === "hi" ? "बेसिक नोट्स" : "Basic Notes"}</span><span class="grp-chev">›</span></div><div class="grpcard2-d">${LANG === "hi" ? "संक्षिप्त, बिंदुवार नोट्स — तेज़ दोहराव के लिए हर मुख्य तथ्य छोटी पंक्तियों में।" : "Brief, point-wise notes for quick revision — every key fact in short lines."}</div><div class="grpcard2-m">${basicN} ${LANG === "hi" ? "किताबें" : "books"} · ${LANG === "hi" ? "कोर्स में शामिल" : "Included in the course"}</div></div>`
-    + `<div class="grpcard2" data-notesgrp="premium" onclick="openNotesGroup('premium')"><div class="grpcard2-h"><span class="grpcard2-ic">👑</span><span class="grpcard2-t">${LANG === "hi" ? "प्रीमियम विस्तृत नोट्स" : "Premium Detailed Notes"}</span><span class="grp-chev">›</span></div><div class="grpcard2-d">${LANG === "hi" ? "हर टॉपिक के गहरे, विस्तृत नोट्स — हर तथ्य समझाकर लिखी पूरी विस्तृत किताबें।" : "Deep, detailed notes of every topic — the full detailed books with every fact explained."}</div><div class="grpcard2-m">${premN} ${LANG === "hi" ? "विस्तृत किताबें" : "detailed books"} · ${LANG === "hi" ? "हर किताब अलग कीमत पर" : "Priced per book"} · ₹${premMinPrice_(cat)} ${LANG === "hi" ? "से शुरू" : "onwards"}</div></div>`;
+    + `<div class="grpcard2" data-notesgrp="basic" onclick="openNotesGroup('basic')"><div class="grpcard2-h"><span class="grpcard2-ic">${SVG_BOOK}</span><span class="grpcard2-t">${LANG === "hi" ? "बेसिक नोट्स" : "Basic Notes"}</span><span class="grp-chev">›</span></div><div class="grpcard2-d">${LANG === "hi" ? "संक्षिप्त, बिंदुवार नोट्स — तेज़ दोहराव के लिए हर मुख्य तथ्य छोटी पंक्तियों में।" : "Brief, point-wise notes for quick revision — every key fact in short lines."}</div><div class="grpcard2-m">${basicN} ${LANG === "hi" ? "किताबें" : "books"} · ${LANG === "hi" ? "कोर्स में शामिल" : "Included in the course"}</div></div>`
+    + `<div class="grpcard2" data-notesgrp="premium" onclick="openNotesGroup('premium')"><div class="grpcard2-h"><span class="grpcard2-ic" style="color:var(--gold,#c9a227)">${SVG_CROWN}</span><span class="grpcard2-t">${LANG === "hi" ? "प्रीमियम विस्तृत नोट्स" : "Premium Detailed Notes"}</span><span class="grp-chev">›</span></div><div class="grpcard2-d">${LANG === "hi" ? "हर टॉपिक के गहरे, विस्तृत नोट्स — हर तथ्य समझाकर लिखी पूरी विस्तृत किताबें।" : "Deep, detailed notes of every topic — the full detailed books with every fact explained."}</div><div class="grpcard2-m">${premN} ${LANG === "hi" ? "विस्तृत किताबें" : "detailed books"} · ${LANG === "hi" ? "कोर्स में शामिल" : "Included in the course"}</div></div>`;
   initReveal();
 }
 function renderNotes(){
@@ -2785,7 +2788,7 @@ const PYQ_GROUPS = [
 ];
 function pageBack(){ if(CURSCREEN === "pyqgroup") go("mycourse"); else if(CURSCREEN === "notesgroup") notesBack_(); }
 function pyqQuestions(id){ return (window.STUDY_QUESTIONS || []).filter(q=> q[1] === "pyq" && q[2] === id); }
-function pyqOwned(id){ const t = PYQ_TESTS.find(x=>x.id === id); return hasCourse(t ? (t.exam === "RPSC" ? "rpsc" : "upsc") : "rpsc"); }
+function pyqOwned(id){ const t = PYQ_TESTS.find(x=>x.id === id); return hasCourse(t ? (t.exam === "RPSC" ? "rpsc" : "upsc") : "rpsc") || !!(ME && ME.purchases && (ME.purchases.tests || {})["pyq_" + id]); }
 async function buyPYQ(id, btn){
   const t = PYQ_TESTS.find(x=>x.id === id); if(!t) return;
   if(!await confirmBuy(PYQ_PRICE, "PYQ: " + (t.title[LANG] || t.title.en))) return;
@@ -2813,7 +2816,7 @@ function renderPYQ(){
   };
   $("pyq-body").innerHTML = `
     <h1 class="ptitle" style="margin-top:6px">${LANG === "hi" ? "पिछले वर्षों के पेपर (PYQ)" : "Previous Year Papers (PYQ)"}</h1>
-    <p class="sub" style="margin-top:5px">${LANG === "hi" ? "असली पिछले पेपर — पूरे प्रश्न, उत्तर कुंजी के साथ। हर टेस्ट पर उसका वर्ष लिखा है। मात्र ₹3 प्रति टेस्ट।" : "Real previous papers — full questions with the answer key. Every test carries its year. Only ₹3 per test."}</p>
+    <p class="sub" style="margin-top:5px">${LANG === "hi" ? "असली पिछले पेपर — पूरे प्रश्न, उत्तर कुंजी के साथ। हर टेस्ट पर उसका वर्ष लिखा है। ये पेपर RPSC और UPSC कोर्स में शामिल हैं।" : "Real previous papers — full questions with the answer key. Every test carries its year. Papers are included in the RPSC and UPSC courses."}</p>
     ${PYQ_GROUPS.map(g=>{
       const tests = PYQ_TESTS.filter(t=> t.exam === g.exam);
       if(!tests.length) return "";
@@ -3363,6 +3366,20 @@ function freeMockRowHTML(cat, c){
   return `<div class="smtile"><div class="smt-t">${LANG==="hi" ? "मुफ़्त मॉक" : "Free Mock"}</div>
     <div class="smt-s">${cfg.n} ${T("questions")} · ${cfg.mins} ${T("minutes")}${mine.length ? ` · ${mine.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : ""}</div>
     <div class="smt-a">${btn}</div></div>`;
+}
+const FREE_MOCK_LABEL = { rpsc:"RPSC RAS", upsc:"UPSC CSE", ssc:"SSC CGL" };
+function freeMockTileHTML(cat){
+  const cfg = FULLMOCK[cat]; if(!cfg) return "";
+  const mine = Store.attempts().filter(a=> ME && a.phone===ME.phone && a.cat===cat && a.type==="mock" && a.win===0);
+  const first = mine.find(a=> a.first);
+  return `<div class="smtile" data-freemock="${cat}"><div class="smt-t">${FREE_MOCK_LABEL[cat]} \u00b7 ${LANG==="hi" ? "\u092e\u0941\u092b\u093c\u094d\u0924 \u092e\u0949\u0915" : "Free Mock"}</div>
+    <div class="smt-s">${cfg.n} ${T("questions")} \u00b7 ${cfg.mins} ${T("minutes")}${mine.length ? ` \u00b7 ${mine.length} ${T("attempts")}${first ? ` \u00b7 ${T("bestScore")}: ${first.score}` : ""}` : ""}</div>
+    <div class="smt-a"><span class="tag free">${T("free")}</span><button class="btn sm" onclick="startFreeMock('${cat}')">${mine.length ? (LANG==="hi" ? "\u092a\u0941\u0928\u0903 \u092a\u094d\u0930\u092f\u093e\u0938" : "Re-Attempt") : T("start")}</button></div></div>`;
+}
+/* Round 81: the 3 free mocks as their own section for users with no course -
+   Home (above "View all courses") and My Course (below the Buy Course card). */
+function freeMocksSectionHTML_(){
+  return `<h2>${LANG === "hi" ? "\u092e\u0941\u092b\u093c\u094d\u0924 \u092e\u0949\u0915 \u091f\u0947\u0938\u094d\u091f" : "Free Mocks"}</h2><div class="tilegrid" style="margin-bottom:16px">${FREE_MOCK_CATS.map(freeMockTileHTML).join("")}</div>`;
 }
 function mockSectionHTML(cat, c, P){
   const cnt = libMockCount(); let rows = "";
