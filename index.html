@@ -154,6 +154,11 @@ h3{font-size:15.5px;font-weight:700}
 .spbanner .spb-price{font-size:17px;font-weight:800}
 .spbanner .btn{background:#fff;color:#7b1e1e;font-weight:800}
 .spbanner .btn.gold{background:#f5b301;color:#3a2a00}
+.spbanner .spb-flex{display:flex;gap:12px;align-items:center}
+.spbanner .spb-main{flex:1;min-width:0}
+.spbanner .spb-cd{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.45);border-radius:14px;padding:9px 10px;text-align:center;min-width:88px}
+.spbanner .spb-cd-n{font-size:25px;font-weight:800;line-height:1.1}
+.spbanner .spb-cd-l{font-size:10.5px;font-weight:700;opacity:.94;letter-spacing:.3px;margin-top:2px}
 .price{color:var(--gold);font-weight:800;font-size:14.5px;white-space:nowrap}
 .banner{display:flex;gap:11px;align-items:flex-start;border:1px solid #f0dfae;background:linear-gradient(180deg,#fffdf4,#fff6d8);border-radius:var(--rad);padding:14px 15px;margin-top:14px;box-shadow:var(--sh-card)}
 .banner .bt{font-weight:800;font-size:13.5px}
@@ -3422,9 +3427,31 @@ function freeMocksSectionHTML_(){
 const SPECIAL_KEY = "rpsc_special", SPECIAL_PRICE = 49, SPECIAL_WIN = 909090;
 const SPECIAL_LIVE_MS = new Date("2026-11-30T08:00:00+05:30").getTime();
 function specialLive_(){ return Date.now() >= SPECIAL_LIVE_MS; }
+function specialCountdown_(){
+  const ms = SPECIAL_LIVE_MS - Date.now();
+  if(ms <= 0) return null;
+  const d = Math.floor(ms / 86400000);
+  if(d >= 1) return { n: String(d), l: LANG === "hi" ? "दिन बाकी" : (d === 1 ? "day to go" : "days to go") };
+  const h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000);
+  return { n: h + "h " + String(m).padStart(2, "0") + "m", l: LANG === "hi" ? "बाकी · सुबह 8 बजे LIVE" : "to go · LIVE 8:00 AM" };
+}
+function specialTickStart_(){
+  if(window._spTick) return;
+  window._spTick = setInterval(() => {
+    const cd = specialCountdown_();
+    if(cd){
+      document.querySelectorAll(".spb-cd-n").forEach(e => e.textContent = cd.n);
+      document.querySelectorAll(".spb-cd-l").forEach(e => e.textContent = cd.l);
+    } else {
+      clearInterval(window._spTick); window._spTick = null;
+      if(document.querySelector(".spbanner") && ["home", "mycourse", "courses"].includes(CURSCREEN)) go(CURSCREEN);
+    }
+  }, 30000);
+}
 function specialOwned_(){ return hasCourse("rpsc") || !!(ME && ME.purchases && ME.purchases.mocks && ME.purchases.mocks[SPECIAL_KEY]); }
 function specialMine_(){ return Store.attempts().filter(a=> ME && a.phone===ME.phone && a.cat==="rpsc" && a.type==="mock" && a.win===SPECIAL_WIN); }
 async function buySpecialMock(){
+  if(!specialLive_()){ toast(LANG==="hi" ? "यह टेस्ट 30 नवंबर सुबह 8 बजे LIVE होगा" : "This test goes LIVE on 30 Nov at 8:00 AM"); return; }
   const label = "RAS Pre 2026 Special Mock Test";
   if(!await confirmBuy(SPECIAL_PRICE, label)) return;
   if(!spendStars(SPECIAL_PRICE, label)) return;
@@ -3433,6 +3460,7 @@ async function buySpecialMock(){
   toast(T("purchased")); renderHome(); renderCourses(); if(CURSCREEN === "mycourse" && !MC_OPEN) renderMyCourse();
 }
 function startSpecialMock(){
+  if(!specialLive_()){ toast(LANG==="hi" ? "यह टेस्ट 30 नवंबर सुबह 8 बजे LIVE होगा" : "This test goes LIVE on 30 Nov at 8:00 AM"); return; }
   if(!specialOwned_()){ buySpecialMock(); return; }
   const cfg = FULLMOCK.rpsc;
   const qs = assembleFullMockSet("rpsc", SPECIAL_WIN);
@@ -3440,8 +3468,14 @@ function startSpecialMock(){
   startTestWith("rpsc", "mock", qs, true, cfg.mins*60, SPECIAL_WIN);
 }
 function specialMockBannerHTML_(){
-  if(!specialLive_()) return "";
   const cfg = FULLMOCK.rpsc;
+  if(!specialLive_()){
+    const cd = specialCountdown_() || { n: "0", l: "" };
+    specialTickStart_();
+    return `<div class="spbanner"><div class="spb-flex"><div class="spb-main"><div class="spb-t">${LANG==="hi" ? "RAS Pre 2026 · स्पेशल मॉक टेस्ट" : "RAS Pre 2026 · Special Mock Test"}</div>`
+      + `<div class="spb-s">${cfg.n} ${T("questions")} · ${cfg.mins} ${T("minutes")} · ${LANG==="hi" ? "पूरा सिलेबस · परीक्षा से पहले आख़िरी बड़ा मॉक" : "Full syllabus · The last big mock before the exam"}<br>${LANG==="hi" ? "30 नवंबर · सुबह 8 बजे से LIVE · RAS कोर्स के छात्रों के लिए मुफ़्त · बाक़ी सभी के लिए केवल यह टेस्ट ₹49 में" : "30 November · LIVE from 8:00 AM · FREE for RAS course students · Only this test for ₹49 for everyone else"}</div></div>`
+      + `<div class="spb-cd"><div class="spb-cd-n">${cd.n}</div><div class="spb-cd-l">${cd.l}</div></div></div></div>`;
+  }
   const mine = specialMine_(); const first = mine.find(a=> a.first);
   const act = specialOwned_()
     ? `<span class="spb-tag">${hasCourse("rpsc") ? (LANG==="hi" ? "आपके कोर्स के साथ मुफ़्त" : "FREE with your course") : T("owned")}</span><button class="btn sm" onclick="startSpecialMock()">${mine.length ? (LANG==="hi" ? "पुनः प्रयास" : "Re-Attempt") : T("start")}</button>`
