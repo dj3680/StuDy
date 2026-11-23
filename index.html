@@ -768,6 +768,11 @@ html[data-theme="dark"] #pf-streak{background:#4a3503;color:#ffd97a}
 .focus-st{position:relative}
 .focus-x{position:absolute;top:7px;right:9px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(127,127,127,.18);color:inherit;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .focus-cd .focus-x{background:rgba(255,255,255,.18);color:#fff}
+.focus-cs{display:flex;margin-top:14px;position:relative;padding:0;overflow:hidden}
+.focus-cs .cs-cd{flex:1.2;background:linear-gradient(120deg,#1447c8,#0b2a5b);color:#fff;padding:13px 14px;display:flex;align-items:center;gap:10px;min-width:0}
+.focus-cs .cs-st{flex:1;padding:13px 14px;display:flex;align-items:center;gap:10px;min-width:0}
+.focus-cs .focus-x{top:6px;right:7px;z-index:2}
+.focus-nt{position:relative}
 .cat-cd{display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 13px;border-radius:11px;background:linear-gradient(120deg,#1447c8,#0b2a5b);color:#fff;font-size:13px}
 .cat-cd span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cat-cd b{color:var(--gold);white-space:nowrap}
@@ -3096,23 +3101,40 @@ function dismissBuyPrompt(){
   if(ME){ try{ localStorage.setItem("study_buyprompt_x_" + ME.phone, buyPromptSig_()); }catch(e){} }
   renderHomeFocus();
 }
+function homeNotifKey_(n){ return ((n && n.at) || 0) + "|" + ((n && n.title) || ""); }
+function homeNewestNotif_(){
+  const merged = [...personalNotifs(), ...globalNotifs()].sort((a, b)=> (b.at || 0) - (a.at || 0));
+  return merged[0] || null;
+}
+function dismissHomeNotif(){
+  const n = homeNewestNotif_();
+  if(n){ try{ localStorage.setItem("study_ntx_" + (ME ? ME.phone : "guest"), homeNotifKey_(n)); }catch(e){} }
+  renderHomeFocus();
+}
 function renderHomeFocus(){
   const el = $("home-focus"); if(!el) return;
   if(!ME){ el.innerHTML = ""; return; }
   const now = new Date(); const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  let cd = "";
+  /* Round 83: the days-to-go countdown shows ONLY for a course the user bought. */
+  let cdCell = "";
   for(const e of EXAM_DATES){
+    if(!hasCourse(e.cat)) continue;
     const days = Math.round((new Date(e.date + "T00:00:00") - today0) / 86400000);
     if(days < 0) continue;
-    if(fxClosed("cd")){ cd = ""; break; }
-    cd = `<div class="card focus-cd"><div style="flex:1;min-width:0"><div class="focus-cd-name">🎯 ${esc(e.name[LANG] || e.name.en)}</div><div class="focus-cd-date">${new Date(e.date + "T00:00:00").toLocaleDateString(LANG === "hi" ? "hi-IN" : "en-IN", { day:"numeric", month:"short", year:"numeric" })}</div></div><div class="focus-cd-days"><b>${days}</b><span>${days === 0 ? (LANG === "hi" ? "आज ही है!" : "is today!") : (LANG === "hi" ? "दिन बाकी" : "days to go")}</span></div><button class="focus-x" onclick="closeFocus('cd')" aria-label="Close">✕</button></div>`;
+    cdCell = `<div class="cs-cd"><div style="flex:1;min-width:0"><div class="focus-cd-name">🎯 ${esc(e.name[LANG] || e.name.en)}</div><div class="focus-cd-date">${new Date(e.date + "T00:00:00").toLocaleDateString(LANG === "hi" ? "hi-IN" : "en-IN", { day:"numeric", month:"short", year:"numeric" })}</div></div><div class="focus-cd-days"><b>${days}</b><span>${days === 0 ? (LANG === "hi" ? "आज ही है!" : "is today!") : (LANG === "hi" ? "दिन बाकी" : "days to go")}</span></div></div>`;
     break;
   }
   const st = studyStreak();
-  const streakHtml = fxClosed("st") ? "" : `<div class="card focus-st"><span style="font-size:22px">${st.streak > 0 || st.todayDone ? "🔥" : "🎯"}</span><div style="flex:1;min-width:0;padding-right:24px"><b>${st.streak} ${LANG === "hi" ? "दिन की स्ट्रीक" : "day streak"}</b><div class="sub">${st.todayDone ? (LANG === "hi" ? "आज का लक्ष्य पूरा ✓ — बढ़िया!" : "Today's goal done ✓ — great going!") : (LANG === "hi" ? "आज का लक्ष्य: 1 टेस्ट दें और स्ट्रीक जारी रखें" : "Today's goal: attempt 1 test to keep it going")}</div></div><button class="focus-x" onclick="closeFocus('st')" aria-label="Close">✕</button></div>`;
-   const gn = globalNotifs();
-  const ntHtml = gn.length ? `<div class="card focus-nt" onclick="go('notifications')"><span class="focus-nt-ic">🔔</span><div style="flex:1;min-width:0"><div class="focus-nt-t">${esc(gn[0].title || "")}</div><div class="sub focus-nt-b">${esc(gn[0].body || "")}</div></div><span class="focus-nt-when">${timeAgo(gn[0].at)}</span></div>` : "";
-  el.innerHTML = ntHtml + buyPromptHtml() + cd + streakHtml;
+  const stCell = `<div class="cs-st"><span style="font-size:22px">${st.streak > 0 || st.todayDone ? "🔥" : "🎯"}</span><div style="flex:1;min-width:0"><b>${st.streak} ${LANG === "hi" ? "दिन की स्ट्रीक" : "day streak"}</b><div class="sub">${st.todayDone ? (LANG === "hi" ? "आज का लक्ष्य पूरा ✓ — बढ़िया!" : "Today's goal done ✓ — great going!") : (LANG === "hi" ? "आज का लक्ष्य: 1 टेस्ट दें और स्ट्रीक जारी रखें" : "Today's goal: attempt 1 test to keep it going")}</div></div></div>`;
+  /* Round 83: countdown + streak in ONE side-by-side card, ONE close for both. */
+  const csHtml = fxClosed("cs") ? "" : `<div class="card focus-cs">${cdCell}${stCell}<button class="focus-x" onclick="closeFocus('cs')" aria-label="Close">✕</button></div>`;
+  /* Round 83: Home banner = the single NEWEST notification, global or personal
+     (balance-added notices are personal and never reached Home before). A newer
+     notification replaces the shown one; closing dismisses only that one. */
+  const nn = homeNewestNotif_();
+  let ntDismissed = ""; try{ ntDismissed = localStorage.getItem("study_ntx_" + ME.phone) || ""; }catch(e){}
+  const ntHtml = (nn && ntDismissed !== homeNotifKey_(nn)) ? `<div class="card focus-nt" onclick="go('notifications')"><span class="focus-nt-ic">🔔</span><div style="flex:1;min-width:0;padding-right:24px"><div class="focus-nt-t">${esc(nn.title || "")}</div><div class="sub focus-nt-b">${esc(nn.body || "")}</div></div><span class="focus-nt-when">${timeAgo(nn.at)}</span><button class="focus-x" onclick="event.stopPropagation();dismissHomeNotif()" aria-label="Close">✕</button></div>` : "";
+  el.innerHTML = ntHtml + buyPromptHtml() + csHtml;
 }
 
 /* Round 67: Saved Questions + PYQ tiles now render BELOW My Courses. */
