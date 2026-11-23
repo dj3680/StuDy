@@ -2,7 +2,7 @@
    The OneSignal worker code is merged into this worker (importScripts at
    the top) so ONE service worker serves both offline caching and push. */
 try{ importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js"); }catch(e){}
-const CACHE = "study-v2-107";
+const CACHE = "study-v2-108";
 const CORE = ["./", "./index.html", "./questions.js", "./questions2.js", "./questions3.js", "./questions4.js", "./questions5.js", "./questions6.js", "./questions7.js", "./questions8.js", "./questions9.js", "./manifest.webmanifest",
   ];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(()=>self.skipWaiting())); });

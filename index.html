@@ -146,6 +146,14 @@ h3{font-size:15.5px;font-weight:700}
 .btn:disabled{opacity:.45;box-shadow:none}
 .tag{display:inline-block;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--mut);letter-spacing:.3px;background:var(--card)}
 .tag.free{color:var(--grn);border-color:#a9dfc0;background:var(--grnsoft)}
+.spbanner{background:linear-gradient(135deg,#7b1e1e,#b3541e);color:#fff;border-radius:16px;padding:14px 16px;margin-bottom:14px;box-shadow:0 6px 18px rgba(123,30,30,.25)}
+.spbanner .spb-t{font-size:16.5px;font-weight:800;letter-spacing:.2px}
+.spbanner .spb-s{font-size:12.5px;opacity:.94;margin-top:3px;line-height:1.55}
+.spbanner .spb-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.spbanner .spb-tag{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.45);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+.spbanner .spb-price{font-size:17px;font-weight:800}
+.spbanner .btn{background:#fff;color:#7b1e1e;font-weight:800}
+.spbanner .btn.gold{background:#f5b301;color:#3a2a00}
 .price{color:var(--gold);font-weight:800;font-size:14.5px;white-space:nowrap}
 .banner{display:flex;gap:11px;align-items:flex-start;border:1px solid #f0dfae;background:linear-gradient(180deg,#fffdf4,#fff6d8);border-radius:var(--rad);padding:14px 15px;margin-top:14px;box-shadow:var(--sh-card)}
 .banner .bt{font-weight:800;font-size:13.5px}
@@ -2316,7 +2324,7 @@ function renderCourses(){
   const el = $("courses-list"); if(!el) return;
   normalizePurchases();
   const cs = csSet();
-  el.innerHTML = COURSE_CATS.map(k=>{
+  el.innerHTML = specialMockBannerHTML_() + COURSE_CATS.map(k=>{
     const c = CATS[k];
     const logo = `<img class="catlogo" src="${ASSET[k] || ASSET.logo}" alt="" onerror="this.outerHTML='<div class=catletter>${k[0].toUpperCase()}</div>'">`;
     if(k === "school"){
@@ -2366,7 +2374,7 @@ function renderMyCourse(){
   if(list) list.classList.remove("hidden");
   const el = $("mc-courses"); if(!el) return;
   const owned = COURSE_CATS.filter(k => hasCourse(k));
-  el.innerHTML = owned.length ? owned.map(ownedCourseCard_).join("") + `<button class="btn gold" style="width:100%;margin-top:12px" onclick="go('courses')">${LANG === "hi" ? "एक और कोर्स खरीदें" : "Buy another course"}</button>` : noCourseCard_() + freeMocksSectionHTML_();
+  el.innerHTML = specialMockBannerHTML_() + (owned.length ? owned.map(ownedCourseCard_).join("") + `<button class="btn gold" style="width:100%;margin-top:12px" onclick="go('courses')">${LANG === "hi" ? "एक और कोर्स खरीदें" : "Buy another course"}</button>` : noCourseCard_() + freeMocksSectionHTML_());
   /* Round 62: PYQ no longer lists on My Course - it lives on Home now. */
   initReveal();
 }
@@ -2400,10 +2408,10 @@ function renderHomeCourses(){
   normalizePurchases();
   const owned = COURSE_CATS.filter(k => hasCourse(k));
   if(owned.length){
-    el.innerHTML = `<h2>${LANG === "hi" ? "मेरे कोर्स" : "My Courses"}</h2><div class="grid">${owned.map(ownedCourseCard_).join("")}</div>`;
+    el.innerHTML = specialMockBannerHTML_() + `<h2>${LANG === "hi" ? "मेरे कोर्स" : "My Courses"}</h2><div class="grid">${owned.map(ownedCourseCard_).join("")}</div>`;
   } else {
     /* Round 65: no course bought -> ALL courses as mini tiles under "View all courses". */
-    el.innerHTML = freeMocksSectionHTML_() + `<h2>${LANG === "hi" ? "सभी कोर्स देखें" : "View all courses"}</h2><div class="tilegrid">${COURSE_CATS.map(homeCourseTile_).join("")}</div>`;
+    el.innerHTML = specialMockBannerHTML_() + freeMocksSectionHTML_() + `<h2>${LANG === "hi" ? "सभी कोर्स देखें" : "View all courses"}</h2><div class="tilegrid">${COURSE_CATS.map(homeCourseTile_).join("")}</div>`;
   }
   initReveal();
 }
@@ -3406,6 +3414,43 @@ function freeMockTileHTML(cat){
 function freeMocksSectionHTML_(){
   return `<h2>${LANG === "hi" ? "\u092e\u0941\u092b\u093c\u094d\u0924 \u092e\u0949\u0915 \u091f\u0947\u0938\u094d\u091f" : "Free Mocks"}</h2><div class="tilegrid" style="margin-bottom:16px">${FREE_MOCK_CATS.map(freeMockTileHTML).join("")}</div>`;
 }
+/* ----- Round 86: RAS Pre 2026 Special Mock (30 Nov) -----
+   One special full mock for RAS Pre 2026. FREE for RAS course owners;
+   everyone else can buy ONLY this test for Rs.49 (single-test purchase,
+   purchases.mocks["rpsc_special"]). Appears on Home, above My Course and
+   above All Courses from 30 Nov, 8:00 AM IST. ----- */
+const SPECIAL_KEY = "rpsc_special", SPECIAL_PRICE = 49, SPECIAL_WIN = 909090;
+const SPECIAL_LIVE_MS = new Date("2026-11-30T08:00:00+05:30").getTime();
+function specialLive_(){ return Date.now() >= SPECIAL_LIVE_MS; }
+function specialOwned_(){ return hasCourse("rpsc") || !!(ME && ME.purchases && ME.purchases.mocks && ME.purchases.mocks[SPECIAL_KEY]); }
+function specialMine_(){ return Store.attempts().filter(a=> ME && a.phone===ME.phone && a.cat==="rpsc" && a.type==="mock" && a.win===SPECIAL_WIN); }
+async function buySpecialMock(){
+  const label = "RAS Pre 2026 Special Mock Test";
+  if(!await confirmBuy(SPECIAL_PRICE, label)) return;
+  if(!spendStars(SPECIAL_PRICE, label)) return;
+  ME.purchases.mocks[SPECIAL_KEY] = Date.now();
+  if(!BACKEND_URL) Store.updateMe(u=>u.purchases=ME.purchases); else api("buy",{phone:ME.phone, kind:"mock", key:SPECIAL_KEY});
+  toast(T("purchased")); renderHome(); renderCourses(); if(CURSCREEN === "mycourse" && !MC_OPEN) renderMyCourse();
+}
+function startSpecialMock(){
+  if(!specialOwned_()){ buySpecialMock(); return; }
+  const cfg = FULLMOCK.rpsc;
+  const qs = assembleFullMockSet("rpsc", SPECIAL_WIN);
+  if(qs.length < cfg.n){ toast(LANG==="hi" ? "यह मॉक अभी तैयार हो रहा है।" : "This mock is being prepared."); return; }
+  startTestWith("rpsc", "mock", qs, true, cfg.mins*60, SPECIAL_WIN);
+}
+function specialMockBannerHTML_(){
+  if(!specialLive_()) return "";
+  const cfg = FULLMOCK.rpsc;
+  const mine = specialMine_(); const first = mine.find(a=> a.first);
+  const act = specialOwned_()
+    ? `<span class="spb-tag">${hasCourse("rpsc") ? (LANG==="hi" ? "आपके कोर्स के साथ मुफ़्त" : "FREE with your course") : T("owned")}</span><button class="btn sm" onclick="startSpecialMock()">${mine.length ? (LANG==="hi" ? "पुनः प्रयास" : "Re-Attempt") : T("start")}</button>`
+    : `<span class="spb-price">₹${SPECIAL_PRICE}</span><button class="btn sm gold" onclick="buySpecialMock()">${T("buyStart")}</button>`;
+  return `<div class="spbanner"><div class="spb-t">${LANG==="hi" ? "RAS Pre 2026 · स्पेशल मॉक टेस्ट" : "RAS Pre 2026 · Special Mock Test"}</div>`
+    + `<div class="spb-s">${cfg.n} ${T("questions")} · ${cfg.mins} ${T("minutes")} · ${LANG==="hi" ? "पूरा सिलेबस · परीक्षा से पहले आख़िरी बड़ा मॉक" : "Full syllabus · The last big mock before the exam"}${mine.length ? ` · ${mine.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : ""}<br>${LANG==="hi" ? "RAS कोर्स के छात्रों के लिए मुफ़्त · बाक़ी सभी के लिए केवल यह टेस्ट ₹49 में" : "FREE for RAS course students · Only this test for ₹49 for everyone else"}</div>`
+    + `<div class="spb-row">${act}</div></div>`;
+}
+
 function mockSectionHTML(cat, c, P){
   const cnt = libMockCount(); let rows = "";
   for(let n = cnt; n >= 1; n--) rows += fullMockRowHTML(cat, c, P, n);
