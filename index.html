@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>StuDy — Test Series for UPSC, RPSC, SSC</title>
-<meta name="description" content="StuDy: subject-wise tests, full mocks and notes for UPSC, RPSC and SSC aspirants.">
+<title>StuDy — Test Series for RPSC, SSC</title>
+<meta name="description" content="StuDy: subject-wise tests, full mocks and notes for RPSC and SSC aspirants.">
 <meta name="theme-color" content="#ffffff">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icon-192.png">
@@ -61,6 +61,14 @@ header{position:sticky;top:0;z-index:50;background:var(--hdr);-webkit-backdrop-f
 #eye-shield{position:fixed;inset:0;z-index:5000;pointer-events:none}
 #hdr-eye.on,#hdr-wake.on{color:var(--gold,#c9a227)}
 #eye-range,#pf-eye-range{accent-color:#e8930c;width:100%}
+#igate{position:fixed;inset:0;z-index:9000;background:rgba(6,10,24,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px}
+.ig-card{background:var(--card,#fff);color:var(--tx,#122);border-radius:20px;max-width:400px;width:100%;padding:26px 22px;text-align:center;box-shadow:0 24px 60px -18px rgba(0,0,0,.5);max-height:92vh;overflow:auto}
+.ig-card img.ig-logo{height:58px;width:58px;object-fit:contain}
+.ig-barwrap{height:10px;border-radius:99px;background:rgba(127,127,127,.25);overflow:hidden;margin-top:16px}
+.ig-bar{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#1447c8,#2fb3c9)}
+.ig-steps{text-align:left;line-height:1.65;margin-top:10px}
+.ig-shareic{display:inline-flex;vertical-align:-4px;border:1.5px solid currentColor;border-radius:6px;padding:2px 5px;margin:0 2px}
+.ig-shareic svg{width:15px;height:15px;display:block}
 /* Round 65: Maa Saraswati centered watermark behind every screen */
 #sarwm{position:fixed;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 #sarwm img{width:min(80vw,400px);height:auto;opacity:.10;-webkit-mask-image:radial-gradient(circle,#000 52%,transparent 71%);mask-image:radial-gradient(circle,#000 52%,transparent 71%)}
@@ -964,7 +972,7 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
     <div class="authwrap">
       <div class="logobig"><img data-a="logo" alt="StuDy logo"></div>
       <div class="apptitle">Stu<span class="gold">Dy</span></div>
-      <div class="tagline" data-i18n="tagline">Tests • Mocks • Notes — UPSC · RPSC · SSC</div>
+      <div class="tagline" data-i18n="tagline">Tests • Mocks • Notes — RPSC · SSC</div>
       <div id="auth-cta"></div>
       <div class="authtabs">
         <button id="tab-login" class="on" onclick="authTab('login')" data-i18n="login">Login</button>
@@ -1332,7 +1340,7 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
     <div id="refer-body"></div>
   </section>
   <footer id="appfooter" class="hidden">
-    <div>Stu<img data-a="logo" alt="D" style="height:14px;vertical-align:-2px">y — <span data-i18n="tagline">Tests • Mocks • Notes — UPSC · RPSC · SSC</span></div>
+    <div>Stu<img data-a="logo" alt="D" style="height:14px;vertical-align:-2px">y — <span data-i18n="tagline">Tests • Mocks • Notes — RPSC · SSC</span></div>
     <div style="margin-top:5px"><a href="#" onclick="showHelp();return false" data-i18n="helpLink">Help / FAQ</a> · <a href="#" onclick="showContact();return false" data-i18n="contactLink">Contact Us</a></div>
     <div style="margin-top:7px;font-size:11.5px">Owner: <a href="https://www.instagram.com/dinesh.jangir_/" target="_blank" rel="noopener" style="color:var(--gold);font-weight:800">Dinesh</a> · © 2026 StuDy · All rights reserved · सर्वाधिकार सुरक्षित</div>
   </footer>
@@ -1543,9 +1551,7 @@ const CATS = {
           subjects:[["eng","English Language","अंग्रेज़ी भाषा"],["quant","Quantitative Aptitude","मात्रात्मक अभियोग्यता"],["reas","General Intelligence & Reasoning","सामान्य बुद्धि एवं तर्क"],["ga","General Awareness","सामान्य जागरूकता"],["ca","Current Affairs","समसामयिक घटनाएँ"]] },
   rpsc: { name:{en:"RPSC",hi:"RPSC"}, desc:{en:"RAS · RPSC Exams — Rajasthan Public Service Commission",hi:"RAS · RPSC परीक्षाएँ — राजस्थान लोक सेवा आयोग"},
           subjects:[["raj","Rajasthan GK","राजस्थान सामान्य ज्ञान"],["hist","Indian History","भारतीय इतिहास"],["geo","Geography","भूगोल"],["pol","Polity","राजनीति विज्ञान"],["sci","General Science","सामान्य विज्ञान"],["ca","Current Affairs","समसामयिक घटनाएँ"]] },
-  upsc: { name:{en:"UPSC",hi:"UPSC"}, desc:{en:"Civil Services (IAS/IPS) — Union Public Service Commission",hi:"सिविल सेवा (IAS/IPS) — संघ लोक सेवा आयोग"},
-          subjects:[["hist","History","इतिहास"],["geo","Geography","भूगोल"],["pol","Polity","राजनीति विज्ञान"],["eco","Economy","अर्थशास्त्र"],["env","Environment & Ecology","पर्यावरण एवं पारिस्थितिकी"],["ca","Current Affairs","समसामयिक घटनाएँ"]] },
-  ca:   { name:{en:"Current Affairs",hi:"करंट अफेयर्स"}, desc:{en:"Daily 50-question test · RPSC + UPSC · No time limit",hi:"रोज़ 50 प्रश्नों की टेस्ट · RPSC + UPSC · कोई समय सीमा नहीं"}, subjects:[] },
+  ca:   { name:{en:"Current Affairs",hi:"करंट अफेयर्स"}, desc:{en:"Daily 50-question test · RPSC · No time limit",hi:"रोज़ 50 प्रश्नों की टेस्ट · RPSC · कोई समय सीमा नहीं"}, subjects:[] },
   pyq:  { name:{en:"PYQ",hi:"PYQ"}, desc:{en:"Previous year papers",hi:"पिछले वर्षों के पेपर"}, subjects:[] },
   reet: { name:{en:"REET",hi:"REET"}, desc:{en:"Rajasthan Eligibility Examination for Teachers — complete mock test only",hi:"राजस्थान अध्यापक पात्रता परीक्षा — केवल पूर्ण मॉक टेस्ट"},
           subjects:[] },
@@ -1604,9 +1610,9 @@ const subName = (cat, sub, lang) => { const hi = lang==="hi";
 
 /* ---------------- i18n ---------------- */
 const STR = {
-en:{tagline:"Tests • Mocks • Notes — UPSC · RPSC · SSC",login:"Login",register:"Register",name:"Student name",phone:"Phone number",password:"Password",gmail:"Gmail",dob:"Date of birth",otp:"OTP (sent to your Gmail)",spamNote:"If you don't find the OTP in your inbox, please check the Spam folder.",loginBtn:"Login",forgot:"Forgot password?",sendOtp:"Send OTP & Register",verifyBtn:"Verify OTP & Create Account",helpLink:"Help / FAQ",contactLink:"Contact Us",langNote:"Language can be changed anytime in your Profile.",chooseCat:"Choose your exam",freeMocks:"Free mock tests",whyUs:"Why StuDy?",why1t:"StuDy wallet",why1:"Top up once (min ₹100), then buy any test or notes instantly with your balance.",why2t:"No repeated questions",why2:"A question once shown to you is never repeated in your account.",why3t:"Detailed results & solutions",why3:"Score, rank, percentile, accuracy and full solutions.",why4t:"Weekly prizes for top rankers",why4:"Every week, the Top 3 rankers in your leaderboard category win ₹30, ₹20 and ₹10. Pick your category from your courses and give tests daily to climb the board — every week is a new race!",back:"Back",subjectTests:"Subject-wise tests",fullMock:"Full mock test",paidNotes:"Paid notes (PDF)",wallet:"StuDy Wallet",yourBalance:"Your balance",starsUse:"Your balance buys tests, mocks and notes",addStars:"Add money",addStarsBtn:"Add money",minDep:"Or pay by UPI QR — packs of ₹100, ₹200, ₹500 or ₹1,000.",scanPay:"Scan the QR with any UPI app (GPay / PhonePe / Paytm) and pay.",utr:"UPI Transaction / UTR number (12 digits)",paidBtn:"I have paid — submit for approval",approveNote:"Money is credited after a quick approval, usually within a few hours.",history:"History",profile:"Profile",levelProgress:"Progress to next level",testsTaken:"Tests taken",avgScore:"Average score",accuracy:"Accuracy",settings:"Settings",appLang:"App language / ऐप भाषा",notifT:"Notifications",notifD:"Get alerts for new tests and current affairs",enable:"Enable",installT:"Install app",installD:"Add StuDy to your home screen",install:"Install",myPurchases:"My purchases",myAttempts:"My attempts",logout:"Logout",notifications:"Notifications",result:"Result",rank:"Rank",percentile:"Percentile",correct:"Correct",wrong:"Wrong",skipped:"Skipped",goHome:"Go home",reattempt:"Re-attempt (practice)",solutions:"Solutions",navHome:"Home",navWallet:"Wallet",navNotif:"Alerts",navProfile:"Profile",navNotes:"Notes",navPyq:"PYQ",navMyCourse:"My Course",savedQ:"Saved Questions",navCourses:"Courses",lgAns:"Answered",lgNot:"Not answered",lgMark:"Marked for review",lgNotVis:"Not visited",referTitle:"Refer & Win",couponTitle:"Coupon code",couponHint:"Have a coupon code? Enter it to get free wallet balance.",couponBtn:"Redeem",
+en:{tagline:"Tests • Mocks • Notes — RPSC · SSC",login:"Login",register:"Register",name:"Student name",phone:"Phone number",password:"Password",gmail:"Gmail",dob:"Date of birth",otp:"OTP (sent to your Gmail)",spamNote:"If you don't find the OTP in your inbox, please check the Spam folder.",loginBtn:"Login",forgot:"Forgot password?",sendOtp:"Send OTP & Register",verifyBtn:"Verify OTP & Create Account",helpLink:"Help / FAQ",contactLink:"Contact Us",langNote:"Language can be changed anytime in your Profile.",chooseCat:"Choose your exam",freeMocks:"Free mock tests",whyUs:"Why StuDy?",why1t:"StuDy wallet",why1:"Top up once (min ₹100), then buy any test or notes instantly with your balance.",why2t:"No repeated questions",why2:"A question once shown to you is never repeated in your account.",why3t:"Detailed results & solutions",why3:"Score, rank, percentile, accuracy and full solutions.",why4t:"Weekly prizes for top rankers",why4:"Every week, the Top 3 rankers in your leaderboard category win ₹30, ₹20 and ₹10. Pick your category from your courses and give tests daily to climb the board — every week is a new race!",back:"Back",subjectTests:"Subject-wise tests",fullMock:"Full mock test",paidNotes:"Paid notes (PDF)",wallet:"StuDy Wallet",yourBalance:"Your balance",starsUse:"Your balance buys tests, mocks and notes",addStars:"Add money",addStarsBtn:"Add money",minDep:"Or pay by UPI QR — packs of ₹100, ₹200, ₹500 or ₹1,000.",scanPay:"Scan the QR with any UPI app (GPay / PhonePe / Paytm) and pay.",utr:"UPI Transaction / UTR number (12 digits)",paidBtn:"I have paid — submit for approval",approveNote:"Money is credited after a quick approval, usually within a few hours.",history:"History",profile:"Profile",levelProgress:"Progress to next level",testsTaken:"Tests taken",avgScore:"Average score",accuracy:"Accuracy",settings:"Settings",appLang:"App language / ऐप भाषा",notifT:"Notifications",notifD:"Get alerts for new tests and current affairs",enable:"Enable",installT:"Install app",installD:"Add StuDy to your home screen",install:"Install",myPurchases:"My purchases",myAttempts:"My attempts",logout:"Logout",notifications:"Notifications",result:"Result",rank:"Rank",percentile:"Percentile",correct:"Correct",wrong:"Wrong",skipped:"Skipped",goHome:"Go home",reattempt:"Re-attempt (practice)",solutions:"Solutions",navHome:"Home",navWallet:"Wallet",navNotif:"Alerts",navProfile:"Profile",navNotes:"Notes",navPyq:"PYQ",navMyCourse:"My Course",savedQ:"Saved Questions",navCourses:"Courses",lgAns:"Answered",lgNot:"Not answered",lgMark:"Marked for review",lgNotVis:"Not visited",referTitle:"Refer & Win",couponTitle:"Coupon code",couponHint:"Have a coupon code? Enter it to get free wallet balance.",couponBtn:"Redeem",
 free:"FREE",start:"Start",buyStart:"Buy & Start",owned:"Owned",questions:"questions",minutes:"min",attempts:"attempts",bestScore:"Best (1st attempt)",download:"Download",buyNotes:"Buy notes",bundle:"All subjects — one PDF",bundleSub:"Every subject of this exam in a single PDF",mockSub:"Mixed questions from all subjects",freeMockSub:"One FREE full mock for this exam",firstCounts:"Only your first attempt's marks count. Re-attempts are free practice.",depositPending:"Deposit submitted — waiting for approval.",noHistory:"Nothing here yet.",noNotif:"No notifications yet.",noPurchases:"No purchases yet.",noAttempts:"No attempts yet — take your first test!",errName:"Please enter the student's full name.",errPhone:"Enter a valid 10-digit phone number.",errPass:"Password must be at least 6 characters.",errGmail:"Enter a valid Gmail address.",errDob:"Select your date of birth.",errOtp:"Enter the 6-digit OTP.",errExists:"This phone number is already registered. Please login.",errNoUser:"Account not found. Please register first.",errBadPass:"Wrong password. Please try again.",errBadOtp:"Incorrect or expired OTP.",otpSent:"OTP sent to your Gmail. If you don't find it, check the Spam folder.",welcome:"Welcome to StuDy!",insufficient:"Not enough balance. Add money to your StuDy wallet first.",purchased:"Unlocked!",depErrUtr:"Enter the 12-digit UTR / transaction number.",depDup:"This UTR is already submitted.",submitConfirm:"Submit the test? You cannot change answers after submitting.",timeUp:"Time is over — your test was auto-submitted.",firstAttemptNote:"This score is from your first attempt and is final.",practiceNote:"Practice attempt — your first-attempt score remains the official one.",level:"Level",reportCard:"My Report Card",verifyCard:"Verify Report Card",telegram:"Chat on Telegram",telegramSub:"Fastest support — replies within a few hours"},
-hi:{tagline:"टेस्ट • मॉक • नोट्स — UPSC · RPSC · SSC",login:"लॉगिन",register:"रजिस्टर",name:"छात्र का नाम",phone:"फ़ोन नंबर",password:"पासवर्ड",gmail:"Gmail",dob:"जन्म तिथि",otp:"OTP (आपके Gmail पर भेजा गया)",spamNote:"यदि OTP इनबॉक्स में न मिले, तो कृपया Spam फ़ोल्डर देखें।",loginBtn:"लॉगिन करें",forgot:"पासवर्ड भूल गए?",sendOtp:"OTP भेजें और रजिस्टर करें",verifyBtn:"OTP सत्यापित करें और खाता बनाएँ",helpLink:"सहायता / FAQ",contactLink:"संपर्क करें",langNote:"भाषा कभी भी प्रोफ़ाइल में बदली जा सकती है।",chooseCat:"अपनी परीक्षा चुनें",freeMocks:"निःशुल्क मॉक टेस्ट",whyUs:"StuDy ही क्यों",why1t:"StuDy वॉलेट",why1:"एक बार टॉप-अप करें (न्यूनतम ₹100), फिर बैलेंस से कोई भी टेस्ट या नोट्स तुरंत खरीदें।",why2t:"कोई प्रश्न दोहराया नहीं",why2:"जो प्रश्न आपको एक बार दिखा, वह आपके खाते में दोबारा नहीं आएगा।",why3t:"विस्तृत परिणाम और हल",why3:"स्कोर, रैंक, प्रतिशतक, सटीकता और पूर्ण हल।",why4t:"टॉप रैंकर्स के लिए साप्ताहिक इनाम",why4:"हर सप्ताह, आपकी लीडरबोर्ड कैटेगरी के टॉप 3 रैंकर्स ₹30, ₹20 और ₹10 जीतते हैं। अपने कोर्सेज़ में से अपनी कैटेगरी चुनें और बोर्ड पर ऊपर चढ़ने के लिए रोज़ टेस्ट दें — हर सप्ताह एक नई दौड़ है!",back:"वापस",subjectTests:"विषयवार टेस्ट",fullMock:"पूर्ण मॉक टेस्ट",paidNotes:"सशुल्क नोट्स (PDF)",wallet:"StuDy वॉलेट",yourBalance:"आपका बैलेंस",starsUse:"बैलेंस से टेस्ट, मॉक और नोट्स खरीदें",addStars:"पैसे जोड़ें",addStarsBtn:"पैसे जोड़ें",minDep:"या UPI QR से जोड़ें — ₹100, ₹200, ₹500 या ₹1,000 के पैक।",scanPay:"किसी भी UPI ऐप (GPay / PhonePe / Paytm) से QR स्कैन कर भुगतान करें।",utr:"UPI लेनदेन / UTR नंबर (12 अंक)",paidBtn:"मैंने भुगतान कर दिया — स्वीकृति हेतु भेजें",approveNote:"त्वरित स्वीकृति के बाद पैसे जुड़ जाते हैं, प्रायः कुछ घंटों में।",history:"इतिहास",profile:"प्रोफ़ाइल",levelProgress:"अगले स्तर की प्रगति",testsTaken:"दिए गए टेस्ट",avgScore:"औसत स्कोर",accuracy:"सटीकता",settings:"सेटिंग्स",appLang:"ऐप भाषा / App language",notifT:"सूचनाएँ",notifD:"नए टेस्ट और समसामयिकी की सूचना पाएँ",enable:"चालू करें",installT:"ऐप इंस्टॉल करें",installD:"StuDy को होम स्क्रीन पर जोड़ें",install:"इंस्टॉल",myPurchases:"मेरी खरीद",myAttempts:"मेरे प्रयास",logout:"लॉगआउट",notifications:"सूचनाएँ",result:"परिणाम",rank:"रैंक",percentile:"प्रतिशतक",correct:"सही",wrong:"गलत",skipped:"छोड़े गए",goHome:"होम पर जाएँ",reattempt:"पुनः प्रयास (अभ्यास)",solutions:"हल",navHome:"होम",navWallet:"वॉलेट",navNotif:"सूचनाएँ",navProfile:"प्रोफ़ाइल",navNotes:"नोट्स",navPyq:"PYQ",navMyCourse:"मेरा कोर्स",savedQ:"सहेजे गए प्रश्न",navCourses:"कोर्स",lgAns:"उत्तर दिया",lgNot:"उत्तर नहीं दिया",lgMark:"समीक्षा हेतु चिह्नित",lgNotVis:"देखा नहीं",referTitle:"रेफ़र करें और जीतें",couponTitle:"कूपन कोड",couponHint:"कूपन कोड है? मुफ़्त वॉलेट बैलेंस पाने के लिए दर्ज करें।",couponBtn:"रिडीम करें",
+hi:{tagline:"टेस्ट • मॉक • नोट्स — RPSC · SSC",login:"लॉगिन",register:"रजिस्टर",name:"छात्र का नाम",phone:"फ़ोन नंबर",password:"पासवर्ड",gmail:"Gmail",dob:"जन्म तिथि",otp:"OTP (आपके Gmail पर भेजा गया)",spamNote:"यदि OTP इनबॉक्स में न मिले, तो कृपया Spam फ़ोल्डर देखें।",loginBtn:"लॉगिन करें",forgot:"पासवर्ड भूल गए?",sendOtp:"OTP भेजें और रजिस्टर करें",verifyBtn:"OTP सत्यापित करें और खाता बनाएँ",helpLink:"सहायता / FAQ",contactLink:"संपर्क करें",langNote:"भाषा कभी भी प्रोफ़ाइल में बदली जा सकती है।",chooseCat:"अपनी परीक्षा चुनें",freeMocks:"निःशुल्क मॉक टेस्ट",whyUs:"StuDy ही क्यों",why1t:"StuDy वॉलेट",why1:"एक बार टॉप-अप करें (न्यूनतम ₹100), फिर बैलेंस से कोई भी टेस्ट या नोट्स तुरंत खरीदें।",why2t:"कोई प्रश्न दोहराया नहीं",why2:"जो प्रश्न आपको एक बार दिखा, वह आपके खाते में दोबारा नहीं आएगा।",why3t:"विस्तृत परिणाम और हल",why3:"स्कोर, रैंक, प्रतिशतक, सटीकता और पूर्ण हल।",why4t:"टॉप रैंकर्स के लिए साप्ताहिक इनाम",why4:"हर सप्ताह, आपकी लीडरबोर्ड कैटेगरी के टॉप 3 रैंकर्स ₹30, ₹20 और ₹10 जीतते हैं। अपने कोर्सेज़ में से अपनी कैटेगरी चुनें और बोर्ड पर ऊपर चढ़ने के लिए रोज़ टेस्ट दें — हर सप्ताह एक नई दौड़ है!",back:"वापस",subjectTests:"विषयवार टेस्ट",fullMock:"पूर्ण मॉक टेस्ट",paidNotes:"सशुल्क नोट्स (PDF)",wallet:"StuDy वॉलेट",yourBalance:"आपका बैलेंस",starsUse:"बैलेंस से टेस्ट, मॉक और नोट्स खरीदें",addStars:"पैसे जोड़ें",addStarsBtn:"पैसे जोड़ें",minDep:"या UPI QR से जोड़ें — ₹100, ₹200, ₹500 या ₹1,000 के पैक।",scanPay:"किसी भी UPI ऐप (GPay / PhonePe / Paytm) से QR स्कैन कर भुगतान करें।",utr:"UPI लेनदेन / UTR नंबर (12 अंक)",paidBtn:"मैंने भुगतान कर दिया — स्वीकृति हेतु भेजें",approveNote:"त्वरित स्वीकृति के बाद पैसे जुड़ जाते हैं, प्रायः कुछ घंटों में।",history:"इतिहास",profile:"प्रोफ़ाइल",levelProgress:"अगले स्तर की प्रगति",testsTaken:"दिए गए टेस्ट",avgScore:"औसत स्कोर",accuracy:"सटीकता",settings:"सेटिंग्स",appLang:"ऐप भाषा / App language",notifT:"सूचनाएँ",notifD:"नए टेस्ट और समसामयिकी की सूचना पाएँ",enable:"चालू करें",installT:"ऐप इंस्टॉल करें",installD:"StuDy को होम स्क्रीन पर जोड़ें",install:"इंस्टॉल",myPurchases:"मेरी खरीद",myAttempts:"मेरे प्रयास",logout:"लॉगआउट",notifications:"सूचनाएँ",result:"परिणाम",rank:"रैंक",percentile:"प्रतिशतक",correct:"सही",wrong:"गलत",skipped:"छोड़े गए",goHome:"होम पर जाएँ",reattempt:"पुनः प्रयास (अभ्यास)",solutions:"हल",navHome:"होम",navWallet:"वॉलेट",navNotif:"सूचनाएँ",navProfile:"प्रोफ़ाइल",navNotes:"नोट्स",navPyq:"PYQ",navMyCourse:"मेरा कोर्स",savedQ:"सहेजे गए प्रश्न",navCourses:"कोर्स",lgAns:"उत्तर दिया",lgNot:"उत्तर नहीं दिया",lgMark:"समीक्षा हेतु चिह्नित",lgNotVis:"देखा नहीं",referTitle:"रेफ़र करें और जीतें",couponTitle:"कूपन कोड",couponHint:"कूपन कोड है? मुफ़्त वॉलेट बैलेंस पाने के लिए दर्ज करें।",couponBtn:"रिडीम करें",
 free:"निःशुल्क",start:"प्रारंभ करें",buyStart:"खरीदें और प्रारंभ करें",owned:"खरीदा हुआ",questions:"प्रश्न",minutes:"मिनट",attempts:"प्रयास",bestScore:"सर्वश्रेष्ठ (पहला प्रयास)",download:"डाउनलोड",buyNotes:"नोट्स खरीदें",bundle:"सभी विषय — एक PDF",bundleSub:"इस परीक्षा के सभी विषय एक ही PDF में",mockSub:"सभी विषयों के मिश्रित प्रश्न",freeMockSub:"इस परीक्षा का एक निःशुल्क पूर्ण मॉक",firstCounts:"केवल आपके पहले प्रयास के अंक मान्य हैं। पुनः प्रयास निःशुल्क अभ्यास है।",depositPending:"जमा अनुरोध भेजा गया — स्वीकृति की प्रतीक्षा है।",noHistory:"अभी यहाँ कुछ नहीं है।",noNotif:"अभी कोई सूचना नहीं है।",noPurchases:"अभी कोई खरीद नहीं है।",noAttempts:"अभी कोई प्रयास नहीं — अपना पहला टेस्ट दें!",errName:"कृपया छात्र का पूरा नाम डालें।",errPhone:"सही 10-अंकों का फ़ोन नंबर डालें।",errPass:"पासवर्ड कम से कम 6 अक्षरों का हो।",errGmail:"सही Gmail पता डालें।",errDob:"अपनी जन्म तिथि चुनें।",errOtp:"6-अंकों का OTP डालें।",errExists:"यह फ़ोन नंबर पहले से रजिस्टर्ड है। कृपया लॉगिन करें।",errNoUser:"खाता नहीं मिला। कृपया पहले रजिस्टर करें।",errBadPass:"गलत पासवर्ड। पुनः प्रयास करें।",errBadOtp:"गलत या समाप्त OTP।",otpSent:"OTP आपके Gmail पर भेजा गया। न मिले तो Spam फ़ोल्डर देखें।",welcome:"StuDy में आपका स्वागत है!",insufficient:"बैलेंस पर्याप्त नहीं है। पहले StuDy वॉलेट में पैसे जोड़ें।",purchased:"अनलॉक हो गया!",depErrUtr:"12-अंकों का UTR / लेनदेन नंबर डालें।",depDup:"यह UTR पहले से भेजा जा चुका है।",submitConfirm:"टेस्ट जमा करें? जमा करने के बाद उत्तर नहीं बदले जा सकेंगे।",timeUp:"समय समाप्त — आपका टेस्ट स्वतः जमा हो गया।",firstAttemptNote:"यह स्कोर आपके पहले प्रयास का है और अंतिम है।",practiceNote:"अभ्यास प्रयास — आपका पहला-प्रयास स्कोर ही आधिकारिक रहेगा।",level:"स्तर",reportCard:"मेरी रिपोर्ट कार्ड",verifyCard:"रिपोर्ट कार्ड सत्यापित करें",telegram:"Telegram पर चैट करें",telegramSub:"सबसे तेज़ सहायता — कुछ घंटों में जवाब"}
 };
 let LANG = localStorage.getItem("study_lang") || "en";
@@ -1968,7 +1974,7 @@ async function buyNotes(cat, key, label, fixedPrice){
    semantics run locally against the Store. Prices come from settings
    with client-side defaults, because bootstrap ships the raw saved
    settings row, which does not carry the new keys yet. */
-const COURSE_CATS = ["rpsc","upsc","ssc","neet","jee","reet","cuet","ca","school"];
+const COURSE_CATS = ["rpsc","ssc","neet","jee","reet","cuet","ca","school"];
 const COURSE_YEAR_MS = 365*24*3600*1000;
 function normalizePurchases(){
   if(!ME) return;
@@ -2785,39 +2791,13 @@ const PYQ_TESTS = [
     meta:{ en:"Raj. State & Sub. Services Comb. Comp. (Pre) Exam – 2021 · GK & General Science · Held on 27 Oct 2021 · Official final answer key (22 Nov 2021)",
            hi:"राज. राज्य एवं अधीनस्थ सेवाएँ संयुक्त प्रतियोगी (प्रा.) परीक्षा – 2021 · सामान्य ज्ञान एवं सामान्य विज्ञान · परीक्षा तिथि 27 अक्टूबर 2021 · आधिकारिक अंतिम उत्तर कुंजी (22 नवम्बर 2021)" },
     n:150, mins:180 },
-  { id:"upsc2026", exam:"UPSC",
-    title:{ en:"UPSC Prelims (GS Paper-I) — 2026", hi:"UPSC प्रीलिम्स (GS प्रश्नपत्र-I) — 2026" },
-    meta:{ en:"UPSC Civil Services Preliminary Exam – 2026 · General Studies Paper-I · Questions in English · Answers as per the key given with the paper",
-           hi:"UPSC सिविल सेवा प्रारंभिक परीक्षा – 2026 · सामान्य अध्ययन प्रश्नपत्र-I · प्रश्न अंग्रेज़ी में · उत्तर पेपर के साथ दी गई कुंजी के अनुसार" },
-    n:100, mins:120 },
-  { id:"upsc2025", exam:"UPSC",
-    title:{ en:"UPSC Prelims (GS Paper-I) — 2025", hi:"UPSC प्रीलिम्स (GS प्रश्नपत्र-I) — 2025" },
-    meta:{ en:"UPSC Civil Services Preliminary Exam – 2025 · General Studies Paper-I · Questions in English · Answers as per the key given with the paper",
-           hi:"UPSC सिविल सेवा प्रारंभिक परीक्षा – 2025 · सामान्य अध्ययन प्रश्नपत्र-I · प्रश्न अंग्रेज़ी में · उत्तर पेपर के साथ दी गई कुंजी के अनुसार" },
-    n:100, mins:120 },
-  { id:"upsc2024", exam:"UPSC",
-    title:{ en:"UPSC Prelims (GS Paper-I) — 2024", hi:"UPSC प्रीलिम्स (GS प्रश्नपत्र-I) — 2024" },
-    meta:{ en:"UPSC Civil Services Preliminary Exam – 2024 · General Studies Paper-I · Questions in English · Answers as per the key given with the paper",
-           hi:"UPSC सिविल सेवा प्रारंभिक परीक्षा – 2024 · सामान्य अध्ययन प्रश्नपत्र-I · प्रश्न अंग्रेज़ी में · उत्तर पेपर के साथ दी गई कुंजी के अनुसार" },
-    n:100, mins:120 },
-  { id:"upsc2023", exam:"UPSC",
-    title:{ en:"UPSC Prelims (GS Paper-I) — 2023", hi:"UPSC प्रीलिम्स (GS प्रश्नपत्र-I) — 2023" },
-    meta:{ en:"UPSC Civil Services Preliminary Exam – 2023 · General Studies Paper-I · Questions in English · Answers as per the key given with the paper",
-           hi:"UPSC सिविल सेवा प्रारंभिक परीक्षा – 2023 · सामान्य अध्ययन प्रश्नपत्र-I · प्रश्न अंग्रेज़ी में · उत्तर पेपर के साथ दी गई कुंजी के अनुसार" },
-    n:100, mins:120 },
-  { id:"upsc2022", exam:"UPSC",
-    title:{ en:"UPSC Prelims (GS Paper-I) — 2022", hi:"UPSC प्रीलिम्स (GS प्रश्नपत्र-I) — 2022" },
-    meta:{ en:"UPSC Civil Services Preliminary Exam – 2022 · General Studies Paper-I · Questions in English · Answers as per the key given with the paper",
-           hi:"UPSC सिविल सेवा प्रारंभिक परीक्षा – 2022 · सामान्य अध्ययन प्रश्नपत्र-I · प्रश्न अंग्रेज़ी में · उत्तर पेपर के साथ दी गई कुंजी के अनुसार" },
-    n:100, mins:120 }
 ];
 const PYQ_GROUPS = [
-  { exam:"RPSC", logo:"rpsc", name:{ en:"RPSC — RAS Prelims", hi:"RPSC — RAS प्रीलिम्स" } },
-  { exam:"UPSC", logo:"upsc", name:{ en:"UPSC — Civil Services Prelims", hi:"UPSC — सिविल सेवा प्रीलिम्स" } }
+  { exam:"RPSC", logo:"rpsc", name:{ en:"RPSC — RAS Prelims", hi:"RPSC — RAS प्रीलिम्स" } }
 ];
 function pageBack(){ if(CURSCREEN === "pyqgroup") go("mycourse"); else if(CURSCREEN === "notesgroup") notesBack_(); }
 function pyqQuestions(id){ return (window.STUDY_QUESTIONS || []).filter(q=> q[1] === "pyq" && q[2] === id); }
-function pyqOwned(id){ const t = PYQ_TESTS.find(x=>x.id === id); return hasCourse(t ? (t.exam === "RPSC" ? "rpsc" : "upsc") : "rpsc") || !!(ME && ME.purchases && (ME.purchases.tests || {})["pyq_" + id]); }
+function pyqOwned(id){ const t = PYQ_TESTS.find(x=>x.id === id); return hasCourse("rpsc") || !!(ME && ME.purchases && (ME.purchases.tests || {})["pyq_" + id]); }
 async function buyPYQ(id, btn){
   const t = PYQ_TESTS.find(x=>x.id === id); if(!t) return;
   if(!await confirmBuy(PYQ_PRICE, "PYQ: " + (t.title[LANG] || t.title.en))) return;
@@ -2845,7 +2825,7 @@ function renderPYQ(){
   };
   $("pyq-body").innerHTML = `
     <h1 class="ptitle" style="margin-top:6px">${LANG === "hi" ? "पिछले वर्षों के पेपर (PYQ)" : "Previous Year Papers (PYQ)"}</h1>
-    <p class="sub" style="margin-top:5px">${LANG === "hi" ? "असली पिछले पेपर — पूरे प्रश्न, उत्तर कुंजी के साथ। हर टेस्ट पर उसका वर्ष लिखा है। ये पेपर RPSC और UPSC कोर्स में शामिल हैं।" : "Real previous papers — full questions with the answer key. Every test carries its year. Papers are included in the RPSC and UPSC courses."}</p>
+    <p class="sub" style="margin-top:5px">${LANG === "hi" ? "असली पिछले पेपर — पूरे प्रश्न, उत्तर कुंजी के साथ। हर टेस्ट पर उसका वर्ष लिखा है। ये पेपर RPSC कोर्स में शामिल हैं।" : "Real previous papers — full questions with the answer key. Every test carries its year. Papers are included in the RPSC course."}</p>
     ${PYQ_GROUPS.map(g=>{
       const tests = PYQ_TESTS.filter(t=> t.exam === g.exam);
       if(!tests.length) return "";
@@ -2857,7 +2837,7 @@ let PYQ_GROUP = "RPSC";
 function openPYQGroup(exam){ PYQ_GROUP = exam; go("pyqgroup"); }
 function renderPYQGroup(){
   const g = PYQ_GROUPS.find(x=> x.exam === PYQ_GROUP) || PYQ_GROUPS[0];
-  const cat = g.exam === "RPSC" ? "rpsc" : "upsc";
+  const cat = "rpsc";
   const mine = Store.attempts().filter(a=> ME && a.phone === ME.phone && a.cat === "pyq");
   const rowFor = t=>{
     const owned = pyqOwned(t.id);
@@ -2913,7 +2893,7 @@ function renderCACategory(c){
   };
   const caDay = (date, tag, minis)=>`<div class="card ca-day"><div class="ca-day-h"><span>🗓️ ${caDateLabel(date)}</span><span class="tag">${tag}</span></div><div class="ca-pair">${minis}</div></div>`;
   $("subject-list").innerHTML =
-    `<div class="card" style="border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff)"><b>📰 ${LANG === "hi" ? "रोज़ नई करंट अफेयर्स टेस्ट" : "Daily new Current Affairs test"}</b><div class="sub" style="margin-top:4px">${LANG === "hi" ? "हर दिन दो नई टेस्ट — राजस्थान (RAS स्तर, 25 प्रश्न) और भारत (UPSC स्तर, 25 प्रश्न) · ₹3 प्रति टेस्ट · कोई समय सीमा नहीं" : "Two fresh tests every day — Rajasthan (RAS level, 25 questions) and India (UPSC level, 25 questions) · ₹3 per test · No time limit"}</div></div>` +
+    `<div class="card" style="border-color:#ecd28a;background:linear-gradient(90deg,#fffbf0,#fff)"><b>📰 ${LANG === "hi" ? "रोज़ नई करंट अफेयर्स टेस्ट" : "Daily new Current Affairs test"}</b><div class="sub" style="margin-top:4px">${LANG === "hi" ? "हर दिन दो नई टेस्ट — राजस्थान (RAS स्तर, 25 प्रश्न) और भारत (राष्ट्रीय स्तर, 25 प्रश्न) · ₹3 प्रति टेस्ट · कोई समय सीमा नहीं" : "Two fresh tests every day — Rajasthan (RAS level, 25 questions) and India (national level, 25 questions) · ₹3 per test · No time limit"}</div></div>` +
     (sets.length ? sets.map(s=>{
       if(caIsSplit(s.date)){
         const minis = ["rj", "in"].map(part=>{
@@ -2924,7 +2904,7 @@ function renderCACategory(c){
           const att = mine.find(a=> a.sub === sub && a.first);
           const label = part === "rj"
             ? (LANG === "hi" ? "राजस्थान करंट अफेयर्स · RAS स्तर" : "Rajasthan CA · RAS level")
-            : (LANG === "hi" ? "भारत करंट अफेयर्स · UPSC स्तर" : "India CA · UPSC level");
+            : (LANG === "hi" ? "भारत करंट अफेयर्स" : "India CA");
           return caMini(label, qs, owned, att, sub, `'${s.date}', this, '${part}'`, CA_PART_PRICE);
         }).join("");
         return caDay(s.date, `2 ${LANG === "hi" ? "टेस्ट" : "tests"} · ₹${CA_PART_PRICE} ${LANG === "hi" ? "प्रत्येक" : "each"}`, minis);
@@ -3184,7 +3164,7 @@ async function referData(){
 }
 async function shareRefer(){
   const link = myRefLink();
-  const data = { title: "StuDy", text: LANG === "hi" ? "StuDy — UPSC · RPSC · SSC के टेस्ट, मॉक और नोट्स। मेरे लिंक से जुड़ें 👇" : "StuDy — tests, full mocks & notes for UPSC · RPSC · SSC. Join with my link 👇", url: link };
+  const data = { title: "StuDy", text: LANG === "hi" ? "StuDy — RPSC · SSC के टेस्ट, मॉक और नोट्स। मेरे लिंक से जुड़ें 👇" : "StuDy — tests, full mocks & notes for RPSC · SSC. Join with my link 👇", url: link };
   if(navigator.share){ try{ await navigator.share(data); }catch(e){} return; }
   try{ await navigator.clipboard.writeText(link); toast(LANG === "hi" ? "इनवाइट लिंक कॉपी हो गया ✓" : "Invite link copied ✓"); }
   catch(e){ showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">🔗 ${LANG === "hi" ? "आपका इनवाइट लिंक" : "Your invite link"}</h3><p class="sub" style="margin-top:8px;word-break:break-all">${esc(link)}</p>`); }
@@ -3385,16 +3365,15 @@ function renderSchoolCategory(c, P){
 }
 const FULLMOCK = {
   rpsc: { n:150, mins:180, title:{en:"RPSC RAS Complete Mock Test", hi:"RPSC RAS पूर्ण मॉक टेस्ट"}, pattern:{en:"Rajasthan GK · History · Geography · Polity · Science — RAS Prelims pattern · 200 marks", hi:"राजस्थान GK · इतिहास · भूगोल · राजनीति · विज्ञान — RAS प्रीलिम्स पैटर्न · 200 अंक"} },
-  upsc: { n:100, mins:120, title:{en:"UPSC Prelims Complete Mock Test (GS-I)", hi:"UPSC प्रीलिम्स पूर्ण मॉक टेस्ट (GS-I)"}, pattern:{en:"History · Geography · Polity · Economy · Environment — UPSC Prelims GS-I pattern · 200 marks", hi:"इतिहास · भूगोल · राजनीति · अर्थशास्त्र · पर्यावरण — UPSC प्रीलिम्स GS-I पैटर्न · 200 अंक"} },
   ssc: { n:100, mins:60, title:{en:"SSC CGL Complete Mock Test (Tier-I)", hi:"SSC CGL पूर्ण मॉक टेस्ट (Tier-I)"}, pattern:{en:"English · Quant · Reasoning · General Awareness — SSC CGL Tier-I pattern · 200 marks", hi:"अंग्रेज़ी · गणित · तर्कशक्ति · सामान्य जागरूकता — SSC CGL Tier-I पैटर्न · 200 अंक"} },
   cuet: { n:60, mins:60, price:10, title:{en:"CUET UG Complete Mock Test (General Test)", hi:"CUET UG पूर्ण मॉक टेस्ट (सामान्य टेस्ट)"}, pattern:{en:"General Knowledge · Current Affairs · Reasoning · Numerical Ability — CUET-UG General Test pattern", hi:"सामान्य ज्ञान · समसामयिकी · तर्कशक्ति · संख्यात्मक क्षमता — CUET-UG सामान्य टेस्ट पैटर्न"} },
   reet: { n:150, mins:150, title:{en:"REET Complete Mock Test", hi:"REET \u092a\u0942\u0930\u094d\u0923 \u092e\u0949\u0915 \u091f\u0947\u0938\u094d\u091f"}, pattern:{en:"Child pedagogy \u00b7 Hindi \u00b7 English \u00b7 Maths \u00b7 EVS + Rajasthan GK", hi:"\u092c\u093e\u0932 \u0935\u093f\u0915\u093e\u0938, \u0939\u093f\u0902\u0926\u0940, \u0905\u0902\u0917\u094d\u0930\u0947\u091c\u093c\u0940, \u0917\u0923\u093f\u0924, EVS + \u0930\u093e\u091c\u0938\u094d\u0925\u093e\u0928 GK"} },
   neet: { n:180, mins:180, title:{en:"NEET Complete Mock Test", hi:"NEET \u092a\u0942\u0930\u094d\u0923 \u092e\u0949\u0915 \u091f\u0947\u0938\u094d\u091f"}, pattern:{en:"Physics 45 \u00b7 Chemistry 45 \u00b7 Botany 45 \u00b7 Zoology 45 \u2014 NEET-UG pattern \u00b7 720 marks", hi:"\u092d\u094c\u0924\u093f\u0915\u0940 45 \u00b7 \u0930\u0938\u093e\u092f\u0928 45 \u00b7 \u0935\u0928\u0938\u094d\u092a\u0924\u093f \u0935\u093f\u091c\u094d\u091e\u093e\u0928 45 \u00b7 \u092a\u094d\u0930\u093e\u0923\u0940 \u0935\u093f\u091c\u094d\u091e\u093e\u0928 45 \u2014 NEET-UG \u092a\u0948\u091f\u0930\u094d\u0928 \u00b7 720 \u0905\u0902\u0915"} },
   jee: { n:75, mins:180, title:{en:"JEE Main Complete Mock Test", hi:"JEE \u092e\u0947\u0928 \u092a\u0942\u0930\u094d\u0923 \u092e\u0949\u0915 \u091f\u0947\u0938\u094d\u091f"}, pattern:{en:"Physics 25 \u00b7 Chemistry 25 \u00b7 Maths 25 \u2014 JEE Main pattern \u00b7 300 marks", hi:"\u092d\u094c\u0924\u093f\u0915\u0940 25 \u00b7 \u0930\u0938\u093e\u092f\u0928 25 \u00b7 \u0917\u0923\u093f\u0924 25 \u2014 JEE \u092e\u0947\u0928 \u092a\u0948\u091f\u0930\u094d\u0928 \u00b7 300 \u0905\u0902\u0915"} }
 };
-const FREE_MOCK_CATS = ["rpsc","upsc","ssc"];
+const FREE_MOCK_CATS = ["rpsc","ssc"];
 function mockPrice(cat){ const cfg = FULLMOCK[cat]; return (cfg && cfg.price) ? cfg.price : getSettings().prices.mock; }
-/* ----- Separate FIXED free mock (RPSC/UPSC/SSC only): one permanent set drawn
+/* ----- Separate FIXED free mock (RPSC/SSC only): one permanent set drawn
    with seed window 0. It is NOT part of the paid library, never rotates, and
    stays free forever — first attempt official, re-attempts practice. ----- */
 function freeMockDone(cat){ return !!ME && Store.attempts().some(a=> a.phone===ME.phone && a.cat===cat && a.sub==="mock" && a.type==="mock" && a.win===0); }
@@ -3413,7 +3392,7 @@ function freeMockRowHTML(cat, c){
     <div class="smt-s">${cfg.n} ${T("questions")} · ${cfg.mins} ${T("minutes")}${mine.length ? ` · ${mine.length} ${T("attempts")}${first ? ` · ${T("bestScore")}: ${first.score}` : ""}` : ""}</div>
     <div class="smt-a">${btn}</div></div>`;
 }
-const FREE_MOCK_LABEL = { rpsc:"RPSC RAS", upsc:"UPSC CSE", ssc:"SSC CGL" };
+const FREE_MOCK_LABEL = { rpsc:"RPSC RAS", ssc:"SSC CGL" };
 function freeMockTileHTML(cat){
   const cfg = FULLMOCK[cat]; if(!cfg) return "";
   const mine = Store.attempts().filter(a=> ME && a.phone===ME.phone && a.cat===cat && a.type==="mock" && a.win===0);
@@ -3915,7 +3894,7 @@ function renderResult(rec){
      by the Rajasthan / India split in the question id). Shown only when
      the test genuinely spans 2+ sections. */
   const scWrap = $("res-sections");
-  const SC_OK = ["rpsc", "upsc", "ssc", "neet", "jee", "reet", "cuet", "ca"].includes(rec.cat);
+  const SC_OK = ["rpsc", "ssc", "neet", "jee", "reet", "cuet", "ca"].includes(rec.cat);
   if(scWrap && SC_OK){
     const secOf = d => { if(rec.cat === "ca") return /-rj-\d+$/.test(d.id) ? "rj" : /-in-\d+$/.test(d.id) ? "in" : null; const q = byId[d.id]; return q ? q[2] : null; };
     const secs = {};
@@ -4198,7 +4177,7 @@ function renderProfile(){
   $("rc-note").textContent = firsts.length
     ? (LANG === "hi" ? `${firsts.length} टेस्ट के पहले प्रयासों पर आधारित` : `Based on first attempts in ${firsts.length} test${firsts.length > 1 ? "s" : ""}`)
     : (LANG === "hi" ? "अभी कोई टेस्ट नहीं दिया — पहला टेस्ट देते ही रिपोर्ट कार्ड यहाँ बनेगा" : "No tests yet — your report card appears here after your first test");
-  const RC_ORDER = ["rpsc", "upsc", "ssc", "neet", "jee", "reet", "cuet", "ca", "pyq", "school"];
+  const RC_ORDER = ["rpsc", "ssc", "neet", "jee", "reet", "cuet", "ca", "pyq", "school"];
   const rcByCat = {};
   firsts.forEach(a => { const b = rcByCat[a.cat] || (rcByCat[a.cat] = { n:0, s:0, t:0 }); b.n++; b.s += a.score || 0; b.t += a.total || 0; });
   renderAnalytics();
@@ -5224,7 +5203,7 @@ function installCTAHTML(force){
 function paintAuthCTA(){ const a = $("auth-cta"); if(a) a.innerHTML = installCTAHTML(); }
 function dismissInstallCTA(){ try{ sessionStorage.setItem("study_cta_x","1"); }catch(e){} paintAuthCTA(); if(CURSCREEN === "home") renderHome(); }
 async function shareApp(){
-  const data = { title:"StuDy", text: LANG==="hi" ? "StuDy — UPSC · RPSC · SSC के टेस्ट, मॉक टेस्ट और नोट्स। ऐप इंस्टॉल करें 👇" : "StuDy — tests, full mocks & notes for UPSC · RPSC · SSC. Install the app 👇", url: myRefLink() };
+  const data = { title:"StuDy", text: LANG==="hi" ? "StuDy — RPSC · SSC के टेस्ट, मॉक टेस्ट और नोट्स। ऐप इंस्टॉल करें 👇" : "StuDy — tests, full mocks & notes for RPSC · SSC. Install the app 👇", url: myRefLink() };
   if(navigator.share){ try{ await navigator.share(data); }catch(e){} return; }
   let copied = false;
   try{ await navigator.clipboard.writeText(myRefLink()); copied = true; }catch(e){}
@@ -5249,6 +5228,86 @@ function showInstallIOS(){
     <h3 style="margin-top:6px;font-size:16px">Install StuDy</h3>
     <p class="sub" style="margin-top:6px;line-height:1.6;text-align:left">1. Tap the <b>Share</b> button <span style="border:1px solid var(--line);border-radius:6px;padding:0 6px">⎙</span> in Safari's toolbar.<br>2. Scroll down and tap <b>"Add to Home Screen"</b>.<br>3. Tap <b>Add</b> — StuDy will appear on your home screen like an app.</p></div>`);
 }
+
+
+/* ===== Round 84: compulsory install gate for mobile/tablet browsers ===== */
+let IG_PROGRESS_MS = 7000;
+const IG_SHARE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>`;
+function igUA_(){ return navigator.userAgent || ""; }
+function igIsMobile_(){
+  const ua = igUA_();
+  if(/Android|iPhone|iPad|iPod|Mobile/i.test(ua)) return true;
+  if(/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1 && Math.min(screen.width || 9999, screen.height || 9999) <= 1180) return true;
+  return false;
+}
+function igInApp_(){
+  const ua = igUA_();
+  if(/Instagram/i.test(ua)) return "Instagram";
+  if(/FBAN|FBAV|FB_IAB/i.test(ua)) return "Facebook";
+  if(/Telegram/i.test(ua)) return "Telegram";
+  if(/Snapchat/i.test(ua)) return "Snapchat";
+  if(/LinkedIn/i.test(ua)) return "LinkedIn";
+  return "";
+}
+function installGateNeeded_(){
+  if(isStandalone) return "";
+  try{ if(new URLSearchParams(location.search).get("verify")) return ""; }catch(e){}
+  if(!igIsMobile_()) return "";
+  const app = igInApp_();
+  if(app) return "inapp:" + app;
+  if(/iphone|ipad|ipod/i.test(igUA_())) return "ios";
+  return "android";
+}
+function maybeInstallGate_(){ const k = installGateNeeded_(); if(k) showInstallGate_(k); }
+function igCardHTML_(inner){
+  return `<img class="ig-logo" src="${ASSET.logo}" alt=""><h3 style="margin-top:8px;font-size:19px">${LANG === "hi" ? "StuDy ऐप इंस्टॉल करें" : "Install the StuDy app"}</h3><div id="ig-body">${inner}</div>`;
+}
+function showInstallGate_(kind){
+  if($("igate")) return;
+  kind = kind || installGateNeeded_();
+  const g = document.createElement("div");
+  g.id = "igate";
+  let inner = "";
+  if(kind === "android"){
+    inner = `<p class="sub" style="margin-top:6px">${LANG === "hi" ? "फ़ोन और टैबलेट पर StuDy सिर्फ़ ऐप के रूप में चलता है। जारी रखने के लिए इंस्टॉल करें।" : "On phones and tablets StuDy works only as an app. Please install it to continue."}</p>
+    <button class="btn gold" style="width:100%;margin-top:16px" onclick="igInstall_()">${LANG === "hi" ? "ऐप इंस्टॉल करें" : "Install the app"}</button>`;
+  } else if(kind === "ios"){
+    inner = `<p class="sub" style="margin-top:6px">${LANG === "hi" ? "फ़ोन पर StuDy सिर्फ़ ऐप के रूप में चलता है। Safari से इसे होम स्क्रीन पर जोड़ें:" : "On phones StuDy works only as an app. Add it to your home screen from Safari:"}</p>
+    <p class="sub ig-steps">1. ${LANG === "hi" ? "Safari टूलबार में" : "Tap the"} <span class="ig-shareic">${IG_SHARE_SVG}</span> <b>Share</b> ${LANG === "hi" ? "बटन दबाएँ।" : "button in Safari's toolbar."}<br>2. ${LANG === "hi" ? "नीचे स्क्रॉल करके" : "Scroll down and tap"} <b>"Add to Home Screen"</b>.<br>3. ${LANG === "hi" ? "<b>Add</b> दबाएँ — StuDy आपकी होम स्क्रीन पर आ जाएगा।" : "Tap <b>Add</b> — StuDy will appear on your home screen."}</p>
+    <p class="sub" style="margin-top:10px">${LANG === "hi" ? "फिर StuDy को होम स्क्रीन से खोलें।" : "Then open StuDy from your home screen."}</p>`;
+  } else if(kind && kind.indexOf("inapp:") === 0){
+    const app = kind.slice(6);
+    inner = `<p class="sub" style="margin-top:6px">${LANG === "hi" ? `आप ${app} के ब्राउज़र में हैं — यहाँ से ऐप इंस्टॉल नहीं हो सकता।` : `You're inside the ${app} browser — apps can't be installed from here.`}</p>
+    <p class="sub ig-steps">1. ${LANG === "hi" ? "ऊपर दिए मेनू (⋮) पर दबाएँ।" : "Tap the menu (⋮) at the top."}<br>2. ${LANG === "hi" ? "<b>\"Open in external browser\"</b> या <b>\"Open in Chrome / Safari\"</b> चुनें।" : `Tap <b>"Open in external browser"</b> or <b>"Open in Chrome / Safari"</b>.`}<br>3. ${LANG === "hi" ? "असली ब्राउज़र में खुलने पर वहीं से ऐप इंस्टॉल करें।" : "When StuDy opens in the real browser, install the app there."}</p>
+    <button class="btn" style="width:100%;margin-top:14px" onclick="igCopyLink_()">${LANG === "hi" ? "ऐप लिंक कॉपी करें" : "Copy the app link"}</button>
+    <p class="sub" style="margin-top:8px">${LANG === "hi" ? "या लिंक कॉपी करके Chrome / Safari में पेस्ट करें।" : "Or copy the link and paste it in Chrome / Safari."}</p>`;
+  }
+  g.innerHTML = `<div class="ig-card">${igCardHTML_(inner)}</div>`;
+  document.body.appendChild(g);
+}
+async function igCopyLink_(){
+  const url = location.origin + location.pathname;
+  try{ await navigator.clipboard.writeText(url); toast(LANG === "hi" ? "लिंक कॉपी हो गया ✓" : "Link copied ✓ — paste it in Chrome / Safari"); }
+  catch(e){ toast(url); }
+}
+function igInstall_(){
+  const body = $("ig-body"); if(!body) return;
+  const hadPrompt = !!_installPrompt;
+  if(_installPrompt){ const p = _installPrompt; _installPrompt = null; try{ p.prompt(); }catch(e){} }
+  body.innerHTML = `<p class="sub" style="margin-top:6px">${LANG === "hi" ? "इंस्टॉल हो रहा है… कृपया प्रतीक्षा करें।" : "Installing… please wait."}</p>
+  <div class="ig-barwrap"><div class="ig-bar" id="ig-bar"></div></div>
+  <p class="sub" style="margin-top:10px">${hadPrompt ? "" : (LANG === "hi" ? "अगर इंस्टॉल का प्रश्न न आया हो, तो ब्राउज़र मेनू (⋮) → 'Install app' चुनें।" : "If no install prompt appeared, use the browser menu (⋮) → 'Install app'.")}</p>`;
+  const bar = $("ig-bar");
+  if(bar){ requestAnimationFrame(()=>{ bar.style.transition = "width " + IG_PROGRESS_MS + "ms linear"; bar.style.width = "100%"; }); }
+  setTimeout(igInstalledMsg_, IG_PROGRESS_MS + 200);
+}
+function igInstalledMsg_(){
+  const body = $("ig-body"); if(!body || !$("igate")) return;
+  body.innerHTML = `<div style="font-size:34px">✅</div>
+  <p style="margin-top:8px;line-height:1.6">${LANG === "hi" ? "इंस्टॉल शुरू हो गया है — <b>StuDy आपकी होम स्क्रीन पर कुछ ही सेकंड में दिख सकता है।</b>" : "Installation has started — <b>the StuDy app might appear on your home screen after a few seconds.</b>"}</p>
+  <p class="sub" style="margin-top:8px">${LANG === "hi" ? "कृपया StuDy को होम स्क्रीन से खोलें। वहाँ न दिखे, तो ऐप ड्रॉर में देखें।" : "Please open StuDy from your home screen. If it isn't there yet, check your app drawer."}</p>`;
+}
+window.addEventListener("appinstalled", ()=>{ if($("igate")) igInstalledMsg_(); });
 
 /* ---------------- Splash + install prompt ---------------- */
 const _bootT = Date.now();
@@ -5299,6 +5358,7 @@ async function bootApp(){
   armBack();
   applyTheme(localStorage.getItem("study_theme") || "light", false);
   hdrToolsInit_();
+  maybeInstallGate_();
   document.addEventListener("gesturestart", e=>e.preventDefault());
   if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
   document.querySelectorAll("img[data-a]").forEach(im=>{ im.src = ASSET[im.dataset.a]; });
