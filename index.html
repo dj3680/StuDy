@@ -281,12 +281,14 @@ html[data-theme="dark"] .adm-pencil{background:rgba(245,197,66,.12);color:#ffd96
 .palgrid button.cur{outline:2.5px solid var(--navy);outline-offset:1px}
 .legend{font-size:11px;color:var(--mut);margin-top:11px;line-height:1.9}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.tfoot{background:var(--card);border-top:1px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;flex-wrap:wrap}
+.tfoot{background:var(--card);border-top:1px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px}
+.trow{display:flex;gap:8px}
+.trow .tbtn{flex:1}
 .tbtn{padding:10px 15px;border-radius:12px;font-weight:700;font-size:13.5px;border:1.5px solid var(--line);background:var(--card);color:var(--navy);box-shadow:0 2px 6px rgba(11,32,77,.06);transition:transform .12s ease,filter .15s ease}
 .tbtn:active{transform:scale(.96)}
 .tbtn.m{background:linear-gradient(180deg,#a855f7,#9333ea);border-color:#7e22ce;color:#fff}
 .tbtn.n{background:linear-gradient(180deg,#1750d6,#0b2a5b);border-color:#0b2a5b;color:#fff}
-.tbtn.s{background:linear-gradient(180deg,#22c55e,#12994a);border-color:#0e7a3a;color:#fff;margin-left:auto;box-shadow:0 4px 12px rgba(18,153,74,.32)}
+.tbtn.s{background:linear-gradient(180deg,#22c55e,#12994a);border-color:#0e7a3a;color:#fff;box-shadow:0 4px 12px rgba(18,153,74,.32)}
 .rotatehint{display:none;background:#fff7e0;color:#7a5b00;border-bottom:1px solid #f0dfae;font-weight:600;text-align:center;padding:7px;font-size:12.5px}
 @media(orientation:portrait) and (max-width:760px){.rotatehint{display:block}}
 
@@ -382,6 +384,13 @@ html[data-theme="dark"] .opt.sel{background:#1b2745;border-color:#6ea8ff}
 html[data-theme="dark"] .opt .ol{background:#1d222f}
 html[data-theme="dark"] .palgrid button{background:#1d222f;border-color:#333b52;color:#aab4c8}
 html[data-theme="dark"] .tpal{background:#141824}
+html[data-theme="dark"] .palgrid button.ans{background:#16a34a;border-color:#16a34a;color:#fff}
+html[data-theme="dark"] .palgrid button.notans{background:#ef4444;border-color:#ef4444;color:#fff}
+html[data-theme="dark"] .palgrid button.mark{background:#9333ea;border-color:#9333ea;color:#fff}
+html[data-theme="dark"] .palgrid button.markans{background:#7c3aed;border-color:#7c3aed;color:#fff;box-shadow:inset 0 -4px 0 #16a34a}
+html[data-theme="dark"] .palgrid button.cur{outline-color:#e8ecf6}
+.tbody.paloff .tpal{display:none}
+.palshow{flex:0 0 26px;align-self:stretch;border:none;border-left:1px solid var(--line);background:var(--card);color:var(--mut);font-size:15px;font-weight:800;cursor:pointer;padding:0}
 html[data-theme="dark"] .tfoot{background:#141824}
 html[data-theme="dark"] .tbtn{background:#1d222f;color:#eef1f8;border-color:#333b52}
 html[data-theme="dark"] .solopt{background:#1a1e2a}
@@ -1401,6 +1410,7 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
   <div class="thead">
     <span id="t-catname">Test</span><span style="color:var(--mut);font-weight:600" id="t-subname"></span>
     <div class="timer">⏱ <span id="t-timer">10:00</span></div>
+    <button class="tbtn" id="t-exit" onclick="tExitTest()" style="padding:5px 12px;font-size:12.5px;border-radius:999px;color:#dc2626;border-color:#f3b4b4;margin-left:8px">Exit Test</button>
     <select id="t-lang" onchange="setTestLang(this.value)" aria-label="Test language" title="Question language — saved for future tests" style="width:auto;margin-left:8px;padding:5px 7px;font-size:12.5px;font-weight:700;border-radius:999px;border:1px solid var(--goldb);background:linear-gradient(180deg,#fffdf4,#fff3cf);color:#141414;flex:0 0 auto">
       <option value="en">English</option>
       <option value="hi">हिंदी</option>
@@ -1415,7 +1425,7 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
       <div id="t-opts"></div>
     </div>
     <div class="tpal">
-      <div style="font-weight:700;font-size:12.5px;margin-bottom:8px" id="t-palname">Question Palette</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="font-weight:700;font-size:12.5px" id="t-palname">Question Palette</div><button class="tbtn" style="padding:1px 10px;font-size:14px;line-height:1.4" onclick="tPalToggle(false)" aria-label="Hide question palette">›</button></div>
       <div class="palgrid" id="t-pal"></div>
       <div class="legend">
         <div><i style="background:#16a34a"></i><span data-i18n="lgAns">Answered</span></div>
@@ -1424,13 +1434,11 @@ html[data-theme="dark"] .pfsoc{color:#eef1f8}
         <div><i style="background:#fff;border:1px solid #ccc"></i><span data-i18n="lgNotVis">Not visited</span></div>
       </div>
     </div>
+    <button id="t-palshow" class="palshow hidden" onclick="tPalToggle(true)" aria-label="Show question palette">‹</button>
   </div>
   <div class="tfoot">
-    <button class="tbtn" id="t-prev" onclick="tNav(-1)">← Previous</button>
-    <button class="tbtn m" id="t-mark" onclick="tMark()">Mark for Review</button>
-    <button class="tbtn" id="t-clear" onclick="tClear()">Clear Response</button>
-    <button class="tbtn n" id="t-next" onclick="tNav(1)">Next →</button>
-    <button class="tbtn s" onclick="tConfirmSubmit()">Submit Test</button>
+    <div class="trow"><button class="tbtn" id="t-prev" onclick="tNav(-1)">← Previous</button><button class="tbtn n" id="t-next" onclick="tNav(1)">Next →</button></div>
+    <div class="trow"><button class="tbtn m" id="t-mark" onclick="tMark()">Mark for Review</button><button class="tbtn" id="t-clear" onclick="tClear()">Clear Response</button><button class="tbtn s" onclick="tConfirmSubmit()">Submit Test</button></div>
   </div>
 </div>
 
@@ -2578,7 +2586,7 @@ const NOTES_SUB_OPEN = {};
 /* Sub-dropdown toggle for the notes groups: unlike toggleCollapse it
    must NOT close the parent exam dropdown, so the sub-wrap id ends in
    "-sub" (not "-wrap") and this toggle closes nothing else. */
-function toggleNotesSub(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); NOTES_SUB_OPEN[id] = opening; }
+function toggleNotesSub(id, btn){ const el = $(id); if(!el) return; const y0 = btn ? btn.getBoundingClientRect().top : null; const opening = el.classList.contains("hidden"); el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); NOTES_SUB_OPEN[id] = opening; if(btn && y0 !== null){ const dy = btn.getBoundingClientRect().top - y0; if(dy) window.scrollBy(0, dy); } }
 /* ---------------- Round 61: Notes - owned categories + Basic/Premium drill-down ----------------
    Notes tab lists ONLY categories the user owns a course for (School if
    any class is owned). Category page -> two cards (Basic Notes /
@@ -2984,7 +2992,7 @@ function initReveal(){
   if(!RVO) RVO = new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); RVO.unobserve(e.target); } }); }, {threshold:0, rootMargin:"0px 0px -6% 0px"});
   els.forEach(el=>{ el.classList.add("rv"); RVO.observe(el); });
 }
-function toggleCollapse(id, btn){ const el = $(id); if(!el) return; const opening = el.classList.contains("hidden"); if(opening){ document.querySelectorAll('[id$="-wrap"]').forEach(o=>{ if(o.id !== id && !o.classList.contains("hidden")){ o.classList.add("hidden"); const b = o.previousElementSibling; if(b && b.classList) b.classList.remove("open"); } }); } el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); if(id.indexOf("notes-") === 0 && id.slice(-5) === "-wrap"){ NOTES_OPEN_CAT = opening ? id.slice(6, -5) : null; } }
+function toggleCollapse(id, btn){ const el = $(id); if(!el) return; const y0 = btn ? btn.getBoundingClientRect().top : null; const opening = el.classList.contains("hidden"); if(opening){ document.querySelectorAll('[id$="-wrap"]').forEach(o=>{ if(o.id !== id && !o.classList.contains("hidden")){ o.classList.add("hidden"); const b = o.previousElementSibling; if(b && b.classList) b.classList.remove("open"); } }); } el.classList.toggle("hidden"); if(btn) btn.classList.toggle("open", opening); if(id.indexOf("notes-") === 0 && id.slice(-5) === "-wrap"){ NOTES_OPEN_CAT = opening ? id.slice(6, -5) : null; } if(btn && y0 !== null){ const dy = btn.getBoundingClientRect().top - y0; if(dy) window.scrollBy(0, dy); } }
 function hidePremiumStrip(){
   try{ localStorage.setItem("study_phide_"+(ME?ME.phone:""), isSubActive() ? String((ME&&ME.subUntil)||"") : "promo"); }catch(e){}
   const el = $("home-premium"); if(el) el.innerHTML = "";
@@ -3724,6 +3732,7 @@ function renderPremSection(){
     h += `<div class="tilegrid">`;
     (CATS.rpsc ? CATS.rpsc.subjects : []).forEach(([sub])=>{
       const nm = subName("rpsc", sub, LANG);
+      if(sub === "hist" || sub === "pol" || sub === "sci") return; /* covered by the detailed subjects below — no duplicate Coming Soon card */
       if(sub === "geo") h += navTile(nm, LANG==="hi" ? "मॉक टेस्ट · प्रीमियम नोट्स" : "Mock Tests · Premium Notes", "premOpenGeo()");
       else h += `<div class="smtile" style="opacity:.55"><div class="smt-t">${nm}</div><div class="smt-s">${LANG==="hi" ? "जल्द आ रहा है" : "Coming Soon"}</div></div>`;
     });
@@ -3833,7 +3842,7 @@ function startTestWithCore(cat, kind, qs, markSeen, secs, winOv){
   $("t-catname").textContent = c.name.en;
   $("t-subname").textContent = cat==="pyq" ? ((PYQ_TESTS.find(x=>x.id===kind)||{}).title?.en || kind) : cat==="ca" ? (LANG==="hi" ? "डेली टेस्ट · " : "Daily Test · ") + kind : kind==="mock" ? "Full Mock" : subName(cat,kind,"en");
   const el = document.documentElement;
-  if(el.requestFullscreen){ el.requestFullscreen().then(()=>{ if(TEST){ TEST.fs = true; } if(screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(()=>{}); }).catch(()=>{}); }
+  if(el.requestFullscreen){ el.requestFullscreen().then(()=>{ if(TEST){ TEST.fs = true; } }).catch(()=>{}); }
   renderQ(); startTimer(); updTimer();
 }
 let NEG_BANNER_TIMER = null;
@@ -3855,7 +3864,7 @@ if(document.addEventListener) document.addEventListener("fullscreenchange", ()=>
   showModal(`<h3 style="font-size:16px">${LANG==="hi" ? "टेस्ट से बाहर निकलें?" : "Exit the test?"}</h3><p class="sub" style="margin-top:6px">${LANG==="hi" ? "फ़ुल स्क्रीन बंद हो गया है। यदि आप बाहर निकलते हैं, तो यह प्रयास गिना नहीं जाएगा और आप उसी श्रेणी के पेज पर वापस जाएँगे।" : "Fullscreen was closed. If you exit, this attempt will not be counted and you will go back to the category page."}</p><div style="display:flex;gap:8px;margin-top:14px"><button class="btn red" style="flex:1" onclick="exitTestNow()">${LANG==="hi" ? "टेस्ट छोड़ें" : "Exit test"}</button><button class="btn" style="flex:1" onclick="resumeTest()">${LANG==="hi" ? "टेस्ट जारी रखें" : "Don\'t exit — resume"}</button></div>`);
 });
 function exitTestNow(){ if(!TEST) return; const cat = TEST.cat; TEST.done = true; clearInTest(); clearInterval(TEST.timer); closeModal(); exitTestUI(); TEST = null; renderCategory(cat); go("category"); }
-function resumeTest(){ closeModal(); const el = document.documentElement; if(el.requestFullscreen){ el.requestFullscreen().then(()=>{ if(screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(()=>{}); }).catch(()=>{}); } if(TEST) startTimer(); }
+function resumeTest(){ closeModal(); const el = document.documentElement; if(el.requestFullscreen){ el.requestFullscreen().then(()=>{}).catch(()=>{}); } if(TEST) startTimer(); }
 function updTimer(){ if(!TEST) return; if(TEST.noTimer){ $("t-timer").textContent = "∞"; return; } const s=Math.max(0,TEST.left); $("t-timer").textContent = String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); }
 function renderQ(){
   const q = TEST.qs[TEST.idx]; const L = qLang(q);
@@ -3870,6 +3879,9 @@ function renderQ(){
   }).join("");
   $("t-mark").textContent = TEST.marked[TEST.idx] ? (LANG==="hi"?"चिह्न हटाएँ":"Unmark") : (LANG==="hi"?"समीक्षा हेतु चिह्नित करें":"Mark for Review");
   $("t-palname").textContent = LANG==="hi" ? "प्रश्न पैलेट" : "Question Palette";
+  const _tb = document.querySelector("#screen-test .tbody"); if(_tb) _tb.classList.toggle("paloff", PAL_OFF);
+  const _ps = $("t-palshow"); if(_ps) _ps.classList.toggle("hidden", !PAL_OFF);
+  const _ex = $("t-exit"); if(_ex) _ex.textContent = LANG==="hi" ? "टेस्ट समाप्त करें" : "Exit Test";
   saveInTest();
 }
 function tSelect(i){ TEST.ans[TEST.idx]=i; renderQ(); }
@@ -3877,8 +3889,11 @@ function tClear(){ if(!TEST) return; TEST.ans[TEST.idx]=-1; renderQ(); }
 function tJump(i){ TEST.idx=i; TEST.visited[i]=true; renderQ(); }
 function tNav(d){ const n=TEST.idx+d; if(n<0||n>=TEST.qs.length) return; TEST.idx=n; TEST.visited[n]=true; renderQ(); }
 function tMark(){ TEST.marked[TEST.idx]=!TEST.marked[TEST.idx]; renderQ(); }
+let PAL_OFF = false; try{ PAL_OFF = localStorage.getItem("study_paloff") === "1"; }catch(e){}
+function tPalToggle(show){ PAL_OFF = !show; try{ localStorage.setItem("study_paloff", PAL_OFF ? "1" : "0"); }catch(e){} const tb = document.querySelector("#screen-test .tbody"); if(tb) tb.classList.toggle("paloff", PAL_OFF); const ps = $("t-palshow"); if(ps) ps.classList.toggle("hidden", !PAL_OFF); }
 function tConfirmSubmit(){ showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${T("submitConfirm")}</h3>
   <div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal()">${LANG==="hi"?"रद्द करें":"Cancel"}</button><button class="btn" style="flex:1" onclick="closeModal();submitTest()">${LANG==="hi"?"जमा करें":"Submit"}</button></div>`); }
+function tExitTest(){ if(!TEST || TEST.done) return; showModal(`<button class="x" onclick="closeModal()">✕</button><h3 style="font-size:16px">${LANG==="hi" ? "टेस्ट समाप्त करें?" : "Exit the test?"}</h3><p class="sub" style="margin-top:8px;line-height:1.55">${LANG==="hi" ? "टेस्ट यहीं सबमिट हो जाएगा और परिणाम आपके अब तक दिए गए उत्तरों पर बनेगा।" : "The test will be submitted now and your result will be based on the answers you have given so far."}</p><div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="closeModal()">${LANG==="hi" ? "रद्द करें" : "Cancel"}</button><button class="btn danger" style="flex:1" onclick="closeModal();submitTest()">${LANG==="hi" ? "सबमिट करके निकलें" : "Exit & Submit"}</button></div>`); }
 function exitTestUI(){
   closeNegBanner();
   ["appheader","mainwrap","bnav"].forEach(id=>$(id).classList.remove("hidden"));
@@ -4849,7 +4864,7 @@ function toggleWake(){
     else { wakeAcquire_(); toast(LANG === "hi" ? "स्क्रीन अब बंद नहीं होगी" : "Screen will stay awake"); }
   } else { wakeRelease_(); toast(LANG === "hi" ? "स्क्रीन सामान्य रूप से सो सकती है" : "Screen can sleep normally"); }
 }
-let EYE = { on:false, level:70, mode:"manual", from:"19:00", to:"06:00", ovrUntil:0 };
+let EYE = { on:false, level:40, mode:"manual", from:"19:00", to:"06:00", ovrUntil:0 };
 function eyeLoad_(){ try{ const s = JSON.parse(localStorage.getItem("study_eye") || "null"); if(s) EYE = Object.assign(EYE, s); }catch(e){} }
 function eyeSave_(){ try{ localStorage.setItem("study_eye", JSON.stringify(EYE)); }catch(e){} }
 function eyeMins_(t){ const p = String(t || "00:00").split(":"); return (+p[0] || 0) * 60 + (+p[1] || 0); }
@@ -5112,14 +5127,21 @@ async function showReportCard(){
   const gradeOf = p => p >= 90 ? "A+" : p >= 80 ? "A" : p >= 70 ? "B+" : p >= 60 ? "B" : p >= 50 ? "C" : p >= 40 ? "D" : "E";
   const subAgg = {};
   firsts.filter(a=> a.type === "test" && a.sub && a.cat !== "ca" && a.cat !== "pyq").forEach(a=>{
-    const g = subAgg[a.sub] || (subAgg[a.sub] = { score:0, total:0, tests:0, cats:{} });
+    /* Round 88 (user): ONE row per subject per course — all tests of the same
+       subject in the same course merge into a single entry; the same subject
+       tested in another course gets its own separate row. */
+    let base = String(a.sub || "").replace(/:\d+$/, "");
+    const smk = /^smock_[a-z]+_(.+)$/.exec(base); if(smk) base = smk[1];
+    const nm = /^rfull_\d+$/.test(String(a.sub || "")) ? (LANG === "hi" ? "RAS प्री 2026 फुल मॉक टेस्ट" : "RAS Pre 2026 Full Mock Test") : (subName(a.cat, base, LANG) || base);
+    const key = a.cat + "|" + nm;
+    const g = subAgg[key] || (subAgg[key] = { name: nm, score:0, total:0, tests:0, cats:{} });
     g.score += (+a.score || 0); g.total += (+a.total || 0); g.tests++; g.cats[a.cat] = 1;
   });
   const subs = Object.keys(subAgg).map(k=>{
     const g = subAgg[k];
     const pct = g.total ? Math.max(0, Math.round(1000 * g.score / g.total) / 10) : 0;
     const cats = Object.keys(g.cats);
-    return { key:k, name: subName(cats[0], k, LANG) || k, pct, grade: gradeOf(pct), tests: g.tests,
+    return { key:k, name: g.name, pct, grade: gradeOf(pct), tests: g.tests,
              courses: cats.map(c => (CATS[c] && CATS[c].name && (CATS[c].name[LANG] || CATS[c].name.en)) || c) };
   }).sort((a,b)=> b.pct - a.pct);
   const overall = subs.length ? Math.round(10 * subs.reduce((s,x)=> s + x.pct, 0) / subs.length) / 10 : 0;
@@ -5363,6 +5385,7 @@ function showInstallGate_(kind){
   }
   g.innerHTML = `<div class="ig-card">${igCardHTML_(inner)}</div>`;
   document.body.appendChild(g);
+  if(kind === "android"){ g.addEventListener("click", ()=>{ if(!$("ig-bar")) igInstall_(); }); }
 }
 async function igCopyLink_(){
   const url = location.origin + location.pathname;
